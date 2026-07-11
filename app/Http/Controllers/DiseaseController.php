@@ -35,7 +35,7 @@ class DiseaseController extends Controller
             ->withQueryString();
 
         return view(
-            'diseases.index',
+            'app.diseases.index',
             compact('diseases')
         );
     }
@@ -49,7 +49,7 @@ class DiseaseController extends Controller
         ]);
 
         return view(
-            'diseases.show',
+            'app.diseases.show',
             compact('disease')
         );
     }

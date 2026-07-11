@@ -54,7 +54,7 @@ class SearchController extends Controller
         }
 
         return view(
-            'search.index',
+            'app.search.index',
             compact(
                 'q',
                 'products',

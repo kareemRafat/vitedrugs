@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('home', [
+        return view('app.home', [
             'productsCount' => Product::count(),
             'companiesCount' => Company::count(),
             'diseasesCount' => Disease::count(),

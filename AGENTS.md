@@ -17,6 +17,34 @@ A **Laravel 12 + Filament 5** veterinary drug database with public frontend and 
 | IDs | **ULIDs** on all domain models (`HasUlids` trait) |
 | Code style | Laravel Pint (`./vendor/bin/pint`) |
 
+## Flowbite v4 class conventions
+
+This project uses **Flowbite v4** which introduces **semantic design tokens** instead of standard Tailwind color utilities. Do NOT use old v3 classes like `bg-primary-700`, `border-gray-300`, `rounded-lg`, `bg-gray-50`, `text-gray-900`, `text-gray-500` — they will NOT render in v4.
+
+| Purpose | v4 class | Notes |
+|---|---|---|
+| Primary button bg | `bg-brand` | `hover:bg-brand-strong`, `focus:ring-4 focus:ring-brand-medium` |
+| Secondary/outline button | `bg-neutral-primary-soft border border-default-medium` | `hover:bg-neutral-secondary-soft` |
+| Card/surface bg | `bg-neutral-primary-soft` | |
+| Page/input bg | `bg-neutral-secondary-soft` / `bg-neutral-secondary-medium` | |
+| Headings | `text-heading` | |
+| Body/secondary text | `text-body` | |
+| Links | `text-fg-brand hover:underline` | |
+| **Danger/success alerts** | `bg-danger-soft border-danger-subtle text-fg-danger-strong` / `bg-success-soft border-success-subtle text-fg-success-strong` | |
+| Borders (default) | `border-default-medium` | |
+| Border radius | `rounded-base` | |
+| Shadows | `shadow-xs` | |
+| Checkboxes | `rounded-xs` | `focus:ring-2 focus:ring-brand-soft` |
+| Focus rings (inputs) | `focus:ring-brand focus:border-brand` | |
+| Dividers | `border-default-medium` | |
+| Input fields | `bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body` | + dark variants |
+| Icons inside inputs | `w-4 h-4 text-body` (positioned absolute with `ps-10`) | |
+| Icon placeholders (prefix) | `absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none` wrapper | |
+
+Also uses **Lucide icons** via Blade components (`<x-lucide-home />`, `<x-lucide-search />`, etc.) from `fuzzyfox/lucide-for-laravel`.
+
+Refer to [Flowbite v4 forms](https://flowbite.com/docs/components/forms/) and [buttons](https://flowbite.com/docs/components/buttons/) docs for reference. |
+
 ## Dev commands
 
 ```bash

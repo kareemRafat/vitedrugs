@@ -117,7 +117,7 @@ class ProductController extends Controller
             ->get();
 
         return view(
-            'products.index',
+            'app.products.index',
             compact(
                 'products',
                 'companies',
@@ -165,7 +165,7 @@ class ProductController extends Controller
             ->get();
 
         return view(
-            'products.show',
+            'app.products.show',
 
             compact('product', 'relatedProducts', 'relatedByIngredients')
         );

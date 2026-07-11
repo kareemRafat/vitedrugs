@@ -14,7 +14,7 @@ class ActiveIngredientController extends Controller
             ->paginate(20);
 
         return view(
-            'active-ingredients.index',
+            'app.active-ingredients.index',
             compact('ingredients')
         );
     }
@@ -40,7 +40,7 @@ class ActiveIngredientController extends Controller
         $diseases = $diseases->unique('id');
 
         return view(
-            'active-ingredients.show',
+            'app.active-ingredients.show',
             compact('activeIngredient', 'diseases')
         );
     }

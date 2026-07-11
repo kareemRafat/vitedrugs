@@ -15,7 +15,7 @@ class CompanyController extends Controller
         ]);
 
         return view(
-            'companies.show',
+            'app.companies.show',
             compact('company')
         );
     }
@@ -41,7 +41,7 @@ class CompanyController extends Controller
             ->withQueryString();
 
         return view(
-            'companies.index',
+            'app.companies.index',
             compact('companies')
         );
     }
