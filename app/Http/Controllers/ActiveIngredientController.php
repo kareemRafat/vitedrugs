@@ -10,6 +10,9 @@ class ActiveIngredientController extends Controller
     {
         $ingredients = ActiveIngredient::query()
             ->withCount('products')
+            ->when(request('search'), function ($query, $search) {
+                $query->whereFullText(['name', 'name_ar'], $search);
+            })
             ->orderBy('name')
             ->paginate(20);
 
@@ -23,8 +26,8 @@ class ActiveIngredientController extends Controller
         ActiveIngredient $activeIngredient
     ) {
         $activeIngredient->load([
-            'products.dosageForm',
             'products.companies',
+            'products.diseases',
             'drugClasses',
         ]);
         $diseases = collect();

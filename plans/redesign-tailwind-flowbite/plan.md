@@ -101,21 +101,25 @@
 
 ---
 
-## Milestone 6: Active Ingredients pages — Index & Show
+## ✅ Milestone 6: Active Ingredients pages — Index & Show
+
+**Status:** ✅ Complete
 
 | # | Task | Priority | Dependencies |
-|---|---|---|---|---|
-| 6.1 | - [ ] Rewrite `resources/views/app/active-ingredients/index.blade.php` — Flowbite table, pagination | High | 2.1 |
-| 6.2 | - [ ] Rewrite `resources/views/app/active-ingredients/show.blade.php` — ingredient info, related products, drug classes, diseases | High | 2.1 |
+|---|---|---|---|---|---|
+| 6.1 | - [x] Rewrite `resources/views/app/active-ingredients/index.blade.php` — Flowbite table, pagination | High | 2.1 |
+| 6.2 | - [x] Rewrite `resources/views/app/active-ingredients/show.blade.php` — ingredient info, related products, drug classes, diseases | High | 2.1 |
 
 ---
 
-## Milestone 7: Search page
+## ✅ Milestone 7: Search page
+
+**Status:** ✅ Complete
 
 | # | Task | Priority | Dependencies |
-|---|---|---|---|---|
-| 7.1 | - [ ] Rewrite `resources/views/app/search/index.blade.php` — Flowbite search form + result cards grid | High | 2.1 |
-| 7.2 | - [ ] Expand search to cover `name_ar` and product-related entities | Medium | 7.1 |
+|---|---|---|---|---|---|
+| 7.1 | - [x] Rewrite `resources/views/app/search/index.blade.php` — Flowbite search form + result cards grid | High | 2.1 |
+| 7.2 | - [x] Expand search to cover `name_ar` and product-related entities | Medium | 7.1 |
 
 ---
 

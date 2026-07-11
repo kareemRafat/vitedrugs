@@ -26,36 +26,32 @@ class ProductController extends Controller
 
             $query->where(function ($q) use ($search) {
 
-                $q->where(
-                    'trade_name',
-                    'like',
-                    "%{$search}%"
+                $q->whereFullText(
+                    ['trade_name', 'trade_name_ar'],
+                    $search
                 )
 
                     ->orWhereHas(
                         'activeIngredients',
-                        fn ($q) => $q->where(
-                            'name',
-                            'like',
-                            "%{$search}%"
+                        fn ($q) => $q->whereFullText(
+                            ['name', 'name_ar'],
+                            $search
                         )
                     )
 
                     ->orWhereHas(
                         'companies',
-                        fn ($q) => $q->where(
-                            'name',
-                            'like',
-                            "%{$search}%"
+                        fn ($q) => $q->whereFullText(
+                            ['name', 'name_ar'],
+                            $search
                         )
                     )
 
                     ->orWhereHas(
                         'diseases',
-                        fn ($q) => $q->where(
-                            'name',
-                            'like',
-                            "%{$search}%"
+                        fn ($q) => $q->whereFullText(
+                            ['name', 'name_ar'],
+                            $search
                         )
                     );
             });

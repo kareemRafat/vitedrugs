@@ -48,7 +48,7 @@
                 @endif
                 <div class="flex flex-wrap gap-2 mb-3">
                     @if ($product->product_type)
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-base text-sm font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $product->product_type }}</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-base text-base font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('messages.products.types.' . $product->product_type) }}</span>
                     @endif
                     @if ($product->dosageForm?->name)
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-base text-sm font-medium bg-neutral-secondary-soft text-heading border border-default-medium dark:bg-gray-700 dark:text-white dark:border-gray-600">{{ $product->dosageForm->name }}</span>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-gray-700 dark:border-gray-600">
                         <span class="block text-sm uppercase text-body dark:text-gray-400 mb-1">{{ __('messages.products.product_type') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-sm">{{ $product->product_type ?? __('messages.products.na') }}</span>
+                        <span class="font-semibold text-heading dark:text-white text-sm">{{ $product->product_type ? __('messages.products.types.' . $product->product_type) : __('messages.products.na') }}</span>
                     </div>
                     <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-gray-700 dark:border-gray-600">
                         <span class="block text-sm uppercase text-body dark:text-gray-400 mb-1">{{ __('messages.products.manufacturer') }}</span>

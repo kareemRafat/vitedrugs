@@ -20,35 +20,24 @@ class SearchController extends Controller
 
         if ($q) {
 
-            $products = Product::where(
-                'trade_name',
-                'like',
-                "%{$q}%"
-            )
+            $products = Product::where(function ($query) use ($q) {
+                $query->whereFullText(['trade_name', 'trade_name_ar'], $q)
+                    ->orWhereHas('activeIngredients', fn ($q2) => $q2->whereFullText(['name', 'name_ar'], $q))
+                    ->orWhereHas('companies', fn ($q2) => $q2->whereFullText(['name', 'name_ar'], $q))
+                    ->orWhereHas('diseases', fn ($q2) => $q2->whereFullText(['name', 'name_ar'], $q));
+            })
                 ->limit(20)
                 ->get();
 
-            $companies = Company::where(
-                'name',
-                'like',
-                "%{$q}%"
-            )
+            $companies = Company::whereFullText(['name', 'name_ar'], $q)
                 ->limit(20)
                 ->get();
 
-            $diseases = Disease::where(
-                'name',
-                'like',
-                "%{$q}%"
-            )
+            $diseases = Disease::whereFullText(['name', 'name_ar'], $q)
                 ->limit(20)
                 ->get();
 
-            $ingredients = ActiveIngredient::where(
-                'name',
-                'like',
-                "%{$q}%"
-            )
+            $ingredients = ActiveIngredient::whereFullText(['name', 'name_ar'], $q)
                 ->limit(20)
                 ->get();
         }

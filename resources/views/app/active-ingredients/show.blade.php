@@ -1,402 +1,226 @@
 @extends('app.layouts.master')
-@section('title')
-{{ $activeIngredient->name }} | VetPedia
-@endsection
+
+@section('title', $activeIngredient->name . ' | VetPedia')
 
 @section('meta_description')
-{{ Str::limit(strip_tags($activeIngredient->description), 160) }}
+    {{ \Illuminate\Support\Str::limit(strip_tags($activeIngredient->description ?? ''), 160) }}
 @endsection
 
 @section('meta_keywords')
-{{ $activeIngredient->name }},
-active ingredient,
-veterinary pharmacology
+    {{ $activeIngredient->name }},
+    active ingredient,
+    veterinary pharmacology
 @endsection
-@section('og_title')
-{{ $activeIngredient->name }}
-@endsection
+
+@section('og_title', $activeIngredient->name)
 
 @section('og_description')
-{{ \Illuminate\Support\Str::limit($activeIngredient->description, 160) }}
-@endsection
-
-@section('page-header')
-
-<div class="breadcrumb-header justify-content-between">
-
-    <div class="my-auto">
-
-        <div class="d-flex">
-
-            <h4 class="content-title mb-0 my-auto">
-                {{ $activeIngredient->name }}
-            </h4>
-
-            <span class="text-muted mt-1 tx-13 mr-2 mb-0">
-
-                <a href="{{ route('home') }}">
-                    Home
-                </a>
-
-                /
-
-                <a href="{{ route('active-ingredients.index') }}">
-                    Active Ingredients
-                </a>
-
-                /
-
-                {{ $activeIngredient->name }}
-
-            </span>
-
-        </div>
-
-    </div>
-
-</div>
-
+    {{ \Illuminate\Support\Str::limit($activeIngredient->description, 160) }}
 @endsection
 
 @section('content')
+    {{-- Breadcrumb --}}
+    <nav class="flex mb-4" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-base text-body dark:text-gray-400">
+            <li class="inline-flex items-center">
+                <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.active_ingredients.home') }}</a>
+            </li>
+            <li>
+                <div class="flex items-center gap-1">
+                    <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
+                    <a href="{{ route('active-ingredients.index') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.active_ingredients.ingredients') }}</a>
+                </div>
+            </li>
+            <li aria-current="page">
+                <div class="flex items-center gap-1">
+                    <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
+                    <span class="text-heading dark:text-white font-medium">{{ $activeIngredient->name }}</span>
+                </div>
+            </li>
+        </ol>
+    </nav>
 
-<div class="container py-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
+        {{-- Main Column --}}
+        <div class="lg:col-span-7 xl:col-span-8 space-y-4">
 
-<div class="row">
-
-    {{-- Main Content --}}
-    <div class="col-lg-8">
-
-        {{-- Overview --}}
-        <div class="card mb-4">
-
-            <div class="card-body">
-
-                <h1 class="mb-1">
-                    {{ $activeIngredient->name }}
-                </h1>
-
-                @if($activeIngredient->name_ar)
-                    <div class="text-muted mb-3">
-                        {{ $activeIngredient->name_ar }}
-                    </div>
+            {{-- Overview --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm p-4 sm:p-6 dark:bg-gray-800">
+                <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-1">{{ $activeIngredient->name }}</h1>
+                @if ($activeIngredient->name_ar && app()->getLocale() === 'ar')
+                    <p class="text-body dark:text-gray-400 text-base mb-2">{{ $activeIngredient->name_ar }}</p>
+                @endif
+                @if ($activeIngredient->description)
+                    <p class="text-base text-body dark:text-gray-400">{{ $activeIngredient->description }}</p>
+                @else
+                    <p class="text-base text-body dark:text-gray-400">{{ __('messages.active_ingredients.no_description') }}</p>
                 @endif
 
-                <hr>
-
-                <p>
-                    {{ $activeIngredient->description ?: 'No description available.' }}
-                </p>
-
-                <div class="row mt-4">
-
-                    <div class="col-md-6">
-
-                        <div class="border rounded p-3">
-
-                            <strong>
-                                Products Using This Ingredient
-                            </strong>
-
-                            <div class="h3 mb-0 mt-2">
-                                {{ $activeIngredient->products->count() }}
-                            </div>
-
-                        </div>
-
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-gray-700 dark:border-gray-600">
+                        <span class="block text-base uppercase text-body dark:text-gray-400 mb-1">{{ __('messages.active_ingredients.products_using') }}</span>
+                        <span class="font-semibold text-heading dark:text-white text-base">{{ $activeIngredient->products->count() }}</span>
                     </div>
-
-                    <div class="col-md-6">
-
-                        <div class="border rounded p-3">
-
-                            <strong>
-                                Drug Classes
-                            </strong>
-
-                            <div class="h3 mb-0 mt-2">
-                                {{ $activeIngredient->drugClasses->count() }}
-                            </div>
-
-                        </div>
-
+                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-gray-700 dark:border-gray-600">
+                        <span class="block text-base uppercase text-body dark:text-gray-400 mb-1">{{ __('messages.active_ingredients.drug_classes') }}</span>
+                        <span class="font-semibold text-heading dark:text-white text-base">{{ $activeIngredient->drugClasses->count() }}</span>
                     </div>
-
                 </div>
-
             </div>
 
-        </div>
-
-        {{-- Indications --}}
-        @if($activeIngredient->indications)
-
-            <div class="card mb-4">
-
-                <div class="card-header">
-                    Indications
+            {{-- Indications --}}
+            @if ($activeIngredient->indications)
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-default-medium">
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.indications') }}</h2>
+                    </div>
+                    <div class="p-5 text-base text-body dark:text-gray-400">
+                        {!! nl2br(e($activeIngredient->indications)) !!}
+                    </div>
                 </div>
+            @endif
 
-                <div class="card-body">
-
-                    {!! nl2br(e($activeIngredient->indications)) !!}
-
+            {{-- Contraindications --}}
+            @if ($activeIngredient->contraindications)
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-default-medium">
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.contraindications') }}</h2>
+                    </div>
+                    <div class="p-5 text-base text-body dark:text-gray-400">
+                        {!! nl2br(e($activeIngredient->contraindications)) !!}
+                    </div>
                 </div>
+            @endif
 
-            </div>
-
-        @endif
-
-        {{-- Contraindications --}}
-        @if($activeIngredient->contraindications)
-
-            <div class="card mb-4">
-
-                <div class="card-header">
-                    Contraindications
+            {{-- Precautions --}}
+            @if ($activeIngredient->precautions)
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-default-medium">
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.precautions') }}</h2>
+                    </div>
+                    <div class="p-5 text-base text-body dark:text-gray-400">
+                        {!! nl2br(e($activeIngredient->precautions)) !!}
+                    </div>
                 </div>
+            @endif
 
-                <div class="card-body">
-
-                    {!! nl2br(e($activeIngredient->contraindications)) !!}
-
+            {{-- Side Effects --}}
+            @if ($activeIngredient->side_effects)
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-default-medium">
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.side_effects') }}</h2>
+                    </div>
+                    <div class="p-5 text-base text-body dark:text-gray-400">
+                        {!! nl2br(e($activeIngredient->side_effects)) !!}
+                    </div>
                 </div>
+            @endif
 
-            </div>
-
-        @endif
-
-        {{-- Precautions --}}
-        @if($activeIngredient->precautions)
-
-            <div class="card mb-4">
-
-                <div class="card-header">
-                    Precautions
+            {{-- Related Products --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-package class="w-4 h-4 text-body" />
+                    <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.related_products') }}</h2>
                 </div>
-
-                <div class="card-body">
-
-                    {!! nl2br(e($activeIngredient->precautions)) !!}
-
-                </div>
-
-            </div>
-
-        @endif
-
-        {{-- Side Effects --}}
-        @if($activeIngredient->side_effects)
-
-            <div class="card mb-4">
-
-                <div class="card-header">
-                    Side Effects
-                </div>
-
-                <div class="card-body">
-
-                    {!! nl2br(e($activeIngredient->side_effects)) !!}
-
-                </div>
-
-            </div>
-
-        @endif
-
-        {{-- Related Products --}}
-        <div class="card mb-4">
-
-            <div class="card-header">
-                Related Products
-            </div>
-
-            <div class="card-body">
-
-                @if($activeIngredient->products->count())
-
-                    <div class="table-responsive">
-
-                        <table class="table table-hover table-bordered">
-
-                            <thead>
-
+                <div class="overflow-x-auto">
+                    @if ($activeIngredient->products->isEmpty())
+                        <p class="text-base text-body dark:text-gray-400 text-center py-8">{{ __('messages.active_ingredients.no_products') }}</p>
+                    @else
+                        <table class="w-full text-base text-left rtl:text-right text-heading dark:text-white">
+                            <thead class="text-base uppercase text-body bg-neutral-secondary-soft dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-
-                                    <th>Trade Name</th>
-
-                                    <th>Strength</th>
-
-                                    <th>Company</th>
-
-                                    <th width="120">
-                                        Action
-                                    </th>
-
+                                    <th scope="col" class="px-5 py-3">{{ __('messages.active_ingredients.trade_name') }}</th>
+                                    <th scope="col" class="px-5 py-3 hidden md:table-cell">{{ __('messages.active_ingredients.strength') }}</th>
+                                    <th scope="col" class="px-5 py-3 hidden md:table-cell">{{ __('messages.active_ingredients.company') }}</th>
+                                    <th scope="col" class="px-5 py-3 w-20">{{ __('messages.active_ingredients.action') }}</th>
                                 </tr>
-
                             </thead>
-
                             <tbody>
-
-                            @foreach($activeIngredient->products as $product)
-
-                                <tr>
-
-                                    <td>
-
-                                        <a href="{{ route('products.show', $product) }}">
-
-                                            {{ $product->trade_name }}
-
-                                        </a>
-
-                                    </td>
-
-                                    <td>
-
-                                        {{ $product->pivot->strength }}
-                                        {{ $product->pivot->unit }}
-
-                                    </td>
-
-                                    <td>
-
-                                        @if($manufacturer = $product->manufacturer()->first())
-
-                                            <a href="{{ route('companies.show', $manufacturer) }}">
-
-                                                {{ $manufacturer->name }}
-
+                                @foreach ($activeIngredient->products as $product)
+                                    <tr class="border-b border-default-medium dark:border-gray-700">
+                                        <td class="px-5 py-4">
+                                            <a href="{{ route('products.show', $product) }}" class="font-medium text-fg-brand hover:underline">
+                                                {{ $product->trade_name }}
                                             </a>
-
-                                        @else
-
-                                            N/A
-
-                                        @endif
-
-                                    </td>
-
-                                    <td>
-
-                                        <a
-                                            href="{{ route('products.show', $product) }}"
-                                            class="btn btn-sm btn-primary"
-                                        >
-                                            View
-                                        </a>
-
-                                    </td>
-
-                                </tr>
-
-                            @endforeach
-
+                                        </td>
+                                        <td class="px-5 py-4 hidden md:table-cell text-body dark:text-gray-400 text-base">
+                                            {{ $product->pivot->strength }} {{ $product->pivot->unit }}
+                                        </td>
+                                        <td class="px-5 py-4 hidden md:table-cell">
+                                            @php
+                                                $manufacturer = $product->manufacturer()->first();
+                                            @endphp
+                                            @if ($manufacturer)
+                                                <a href="{{ route('companies.show', $manufacturer) }}" class="font-medium text-fg-brand hover:underline">
+                                                    {{ $manufacturer->name }}
+                                                </a>
+                                            @else
+                                                <span class="text-body dark:text-gray-400">{{ __('messages.active_ingredients.na') }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-5 py-4">
+                                            <a href="{{ route('products.show', $product) }}"
+                                                class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm">
+                                                <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
-
                         </table>
+                    @endif
+                </div>
+            </div>
 
-                    </div>
+        </div>
 
-                @else
+        {{-- Sidebar --}}
+        <div class="lg:col-span-5 xl:col-span-4 space-y-4">
 
-                    <p class="text-muted mb-0">
-                        No related products found.
-                    </p>
+            {{-- Drug Classes --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-flask-conical class="w-4 h-4 text-body" />
+                    <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.drug_classes') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($activeIngredient->drugClasses->isNotEmpty())
+                        <ul class="space-y-2">
+                            @foreach ($activeIngredient->drugClasses as $class)
+                                <li class="text-base font-medium text-heading dark:text-white">{{ $class->name }}</li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-base text-body dark:text-gray-400">{{ __('messages.active_ingredients.no_drug_classes') }}</p>
+                    @endif
+                </div>
+            </div>
 
-                @endif
-
+            {{-- Related Diseases --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-activity class="w-4 h-4 text-body" />
+                    <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.related_diseases') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($diseases->isNotEmpty())
+                        <ul class="space-y-2">
+                            @foreach ($diseases as $disease)
+                                <li>
+                                    <a href="{{ route('diseases.show', $disease) }}" class="text-base font-medium text-fg-brand hover:underline">
+                                        {{ $disease->name }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-base text-body dark:text-gray-400">{{ __('messages.active_ingredients.no_diseases') }}</p>
+                    @endif
+                </div>
             </div>
 
         </div>
 
     </div>
-
-    {{-- Sidebar --}}
-    <div class="col-lg-4">
-
-        <div class="card mb-4">
-
-            <div class="card-header">
-                Drug Classes
-            </div>
-
-            <div class="card-body">
-
-                @if($activeIngredient->drugClasses->count())
-
-                    <ul class="mb-0">
-
-                        @foreach($activeIngredient->drugClasses as $class)
-
-                            <li>
-
-                                {{ $class->name }}
-
-                            </li>
-
-                        @endforeach
-
-                    </ul>
-
-                @else
-
-                    <span class="text-muted">
-                        No drug classes assigned.
-                    </span>
-
-                @endif
-
-            </div>
-
-        </div>
-        <div class="card mb-4">
-
-    <div class="card-header">
-        Related Diseases
-    </div>
-
-    <div class="card-body">
-
-        @if($diseases->count())
-
-            <ul class="mb-0">
-
-                @foreach($diseases as $disease)
-
-                    <li>
-
-                        <a href="{{ route('diseases.show', $disease) }}">
-
-                            {{ $disease->name }}
-
-                        </a>
-
-                    </li>
-
-                @endforeach
-
-            </ul>
-
-        @else
-
-            <span class="text-muted">
-                No diseases found.
-            </span>
-
-        @endif
-
-    </div>
-
-</div>
-
-    </div>
-
-</div>
-
-
-</div>
-
 @endsection

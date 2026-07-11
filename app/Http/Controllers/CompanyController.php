@@ -29,8 +29,7 @@ class CompanyController extends Controller
 
             $query->where(function ($q) use ($search) {
 
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('name_ar', 'like', "%{$search}%")
+                $q->whereFullText(['name', 'name_ar'], $search)
                     ->orWhere('country', 'like', "%{$search}%");
             });
         }
