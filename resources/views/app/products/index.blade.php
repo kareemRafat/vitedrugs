@@ -10,18 +10,18 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('messages.products.index_heading') }}</h1>
-                    <p class="text-body dark:text-gray-400 text-sm mt-1">{{ __('messages.products.index_subtitle') }}</p>
+                    <p class="text-body dark:text-gray-400 text-sm font-semibold mt-1">{{ __('messages.products.index_subtitle') }}</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-xs font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
                         <x-lucide-package class="w-3.5 h-3.5" />
                         {{ number_format($products->total()) }} {{ __('messages.products.products_label') }}
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-xs font-medium bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
                         <x-lucide-building-2 class="w-3.5 h-3.5" />
                         {{ $companies->count() }} {{ __('messages.products.companies_label') }}
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-xs font-medium bg-danger-soft text-fg-danger-strong dark:bg-danger/20 dark:text-danger">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-danger-soft text-fg-danger-strong dark:bg-danger/20 dark:text-danger">
                         <x-lucide-pill class="w-3.5 h-3.5" />
                         {{ $dosageForms->count() }} {{ __('messages.products.forms_label') }}
                     </span>
@@ -80,7 +80,7 @@
         <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 overflow-hidden">
             <div class="px-5 py-4 border-b border-default-medium flex items-center justify-between">
                 <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.products.directory_title') }}</h2>
-                <span class="text-xs text-body dark:text-gray-400">
+                <span class="text-sm text-body dark:text-gray-400">
                     {{ __('messages.products.showing') }}
                     {{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }}
                     {{ __('messages.products.of') }}
@@ -90,7 +90,7 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left rtl:text-right text-heading dark:text-white">
-                    <thead class="text-xs uppercase text-body bg-neutral-secondary-soft dark:bg-gray-700 dark:text-gray-400">
+                    <thead class="text-sm uppercase text-body bg-neutral-secondary-soft dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-5 py-3 w-16">#</th>
                             <th scope="col" class="px-5 py-3">{{ __('messages.products.trade_name') }}</th>
@@ -110,7 +110,7 @@
                                         {{ $product->trade_name }}
                                     </a>
                                 </td>
-                                <td class="px-5 py-4 hidden sm:table-cell text-body dark:text-gray-400">
+                                <td class="px-5 py-4 hidden sm:table-cell text-gray-800 font-semibold dark:text-gray-400">
                                     {{ $product->company?->name ?? __('messages.products.unknown') }}
                                 </td>
                                 <td class="px-5 py-4 hidden md:table-cell text-body dark:text-gray-400">
