@@ -135,12 +135,14 @@
 
 ---
 
-## Milestone 9: Static pages — About, Contact, Privacy, Terms
+## ✅ Milestone 9: Static pages — About, Contact, Privacy, Terms
+
+**Status:** ✅ Complete
 
 | # | Task | Priority | Dependencies |
 |---|---|---|---|---|
-| 9.1 | - [ ] Rewrite all 4 static pages (`resources/views/app/pages/*.blade.php`) using Flowbite prose/typography | Medium | 2.1 |
-| 9.2 | - [ ] Add ContactController with form submission, validation, mail-to-log | Medium | 9.1 |
+| 9.1 | - [x] Rewrite all 4 static pages (`resources/views/app/pages/*.blade.php`) using Flowbite prose/typography | Medium | 2.1 |
+| 9.2 | - [x] Add ContactController with form submission, validation, mail-to-log | Medium | 9.1 |
 
 ---
 

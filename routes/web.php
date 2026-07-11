@@ -4,6 +4,7 @@ use App\Http\Controllers\ActiveIngredientController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -35,10 +36,11 @@ Route::group([
         ->middleware('auth')
         ->name('logout');
 
-    Route::view('/about', 'pages.about')->name('about');
-    Route::view('/contact', 'pages.contact')->name('contact');
-    Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy-policy');
-    Route::view('/terms-of-service', 'pages.terms-of-service')->name('terms-of-service');
+    Route::view('/about', 'app.pages.about')->name('about');
+    Route::get('/contact', [ContactController::class, 'create'])->name('contact');
+    Route::post('/contact', [ContactController::class, 'store']);
+    Route::view('/privacy-policy', 'app.pages.privacy-policy')->name('privacy-policy');
+    Route::view('/terms-of-service', 'app.pages.terms-of-service')->name('terms-of-service');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');

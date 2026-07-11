@@ -26,16 +26,16 @@
                 <div id="moreDropdownMenu" class="z-50 hidden my-4 w-48 bg-neutral-primary-soft rounded-base shadow-lg dark:bg-gray-700">
                     <ul class="py-1 text-sm text-heading dark:text-gray-300">
                         <li>
-                            <a href="{{ route('about') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold bg-brand-soft dark:bg-brand/20' => request()->routeIs('about'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('about')])>{{ __('messages.nav.about') }}</a>
+                            <a href="{{ route('about') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('about'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('about')])>{{ __('messages.nav.about') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('contact') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold bg-brand-soft dark:bg-brand/20' => request()->routeIs('contact'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('contact')])>{{ __('messages.nav.contact') }}</a>
+                            <a href="{{ route('contact') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('contact'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('contact')])>{{ __('messages.nav.contact') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('privacy-policy') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold bg-brand-soft dark:bg-brand/20' => request()->routeIs('privacy-policy'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('privacy-policy')])>{{ __('messages.nav.privacy_policy') }}</a>
+                            <a href="{{ route('privacy-policy') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('privacy-policy'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('privacy-policy')])>{{ __('messages.nav.privacy_policy') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('terms-of-service') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold bg-brand-soft dark:bg-brand/20' => request()->routeIs('terms-of-service'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('terms-of-service')])>{{ __('messages.nav.terms_of_service') }}</a>
+                            <a href="{{ route('terms-of-service') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('terms-of-service'), 'hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white' => !request()->routeIs('terms-of-service')])>{{ __('messages.nav.terms_of_service') }}</a>
                         </li>
                     </ul>
                 </div>
