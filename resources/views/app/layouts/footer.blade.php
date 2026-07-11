@@ -15,6 +15,13 @@
             <a href="{{ route('terms-of-service') }}" class="hover:text-heading dark:hover:text-gray-300">Terms of Service</a>
             <span class="text-body dark:text-gray-600">|</span>
             <a href="{{ route('sitemap') }}" class="hover:text-heading dark:hover:text-gray-300">Sitemap</a>
+            <span class="text-body dark:text-gray-600">|</span>
+            @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                @if ($localeCode !== LaravelLocalization::getCurrentLocale())
+                    <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
+                        class="hover:text-heading dark:hover:text-gray-300">{{ $properties['native'] }}</a>
+                @endif
+            @endforeach
         </div>
     </div>
 </footer>

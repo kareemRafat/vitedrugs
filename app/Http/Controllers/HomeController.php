@@ -17,7 +17,8 @@ class HomeController extends Controller
             'diseasesCount' => Disease::count(),
             'ingredientsCount' => ActiveIngredient::count(),
 
-            'latestProducts' => Product::latest()
+            'latestProducts' => Product::with('dosageForm')
+                ->latest()
                 ->take(5)
                 ->get(),
 

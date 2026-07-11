@@ -115,12 +115,15 @@
 
 ---
 
-## Milestone 8: Home page
+## ✅ Milestone 8: Home page
 
-| # | Task | Priority | Dependencies |
-|---|---|---|---|
-| 8.1 | Rewrite `resources/views/app/home.blade.php` — stat cards, latest products/companies using Flowbite cards | High | 2.1 |
-| 8.2 | Fix search form action to point to `route('search')` with `q` param | Low | 8.1 |
+**Status:** ✅ Complete
+
+| # | Task | Priority | Dependencies | Done |
+|---|---|---|---|---|
+| 8.1 | Rewrite `resources/views/app/home.blade.php` — stat cards, latest products/companies using Flowbite v4 cards | High | 2.1 | - [x] |
+| 8.2 | Fix search form action to point to `route('search')` with `q` param | Low | 8.1 | - [x] |
+| 8.3 | Add `with('dosageForm')` to `$latestProducts` query to prevent N+1 | Low | None | - [x] |
 
 ---
 
