@@ -42,7 +42,7 @@ class CompanyInfolist
                 TextEntry::make('registration_number'),
 
                 TextEntry::make('google_maps_url')
-                    ->url(fn($state) => $state),
+                    ->url(fn ($state) => $state),
                 TextEntry::make('website')
                     ->placeholder('-'),
                 TextEntry::make('email')
@@ -66,7 +66,7 @@ class CompanyInfolist
                     ->placeholder('-'),
                 TextEntry::make('deleted_at')
                     ->dateTime()
-                    ->visible(fn(Company $record): bool => $record->trashed()),
+                    ->visible(fn (Company $record): bool => $record->trashed()),
             ]);
     }
 }

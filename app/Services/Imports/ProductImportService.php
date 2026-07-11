@@ -2,19 +2,19 @@
 
 namespace App\Services\Imports;
 
-use App\Models\Product;
+use App\Models\ActiveIngredient;
 use App\Models\Company;
+use App\Models\Contraindication;
 use App\Models\Disease;
-use App\Models\Species;
 use App\Models\DosageForm;
 use App\Models\Indication;
 use App\Models\Precaution;
+use App\Models\Product;
 use App\Models\SideEffect;
-use App\Models\Contraindication;
-use App\Models\ActiveIngredient;
+use App\Models\Species;
 use App\Models\WithdrawalPeriod;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductImportService
 {

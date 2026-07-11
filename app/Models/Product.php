@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
@@ -37,14 +37,14 @@ class Product extends Model
     }
 
     public function companies()
-{
-    return $this->belongsToMany(
-        Company::class,
-        'product_company'
-    )
-    ->withPivot('role')
-    ->withTimestamps();
-}
+    {
+        return $this->belongsToMany(
+            Company::class,
+            'product_company'
+        )
+            ->withPivot('role')
+            ->withTimestamps();
+    }
 
     public function dosageForm()
     {
@@ -92,22 +92,22 @@ class Product extends Model
 
     public function indications()
     {
-        return $this->hasMany(\App\Models\Indication::class);
+        return $this->hasMany(Indication::class);
     }
 
     public function contraindications()
     {
-        return $this->hasMany(\App\Models\Contraindication::class);
+        return $this->hasMany(Contraindication::class);
     }
 
     public function precautions()
     {
-        return $this->hasMany(\App\Models\Precaution::class);
+        return $this->hasMany(Precaution::class);
     }
 
     public function sideEffects()
     {
-        return $this->hasMany(\App\Models\SideEffect::class);
+        return $this->hasMany(SideEffect::class);
     }
 
     public function diseases()

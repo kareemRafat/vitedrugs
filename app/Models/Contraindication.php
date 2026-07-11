@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contraindication extends Model
 {
-  use HasUlids;
+    use HasUlids;
 
     protected $fillable = [
         'product_id',

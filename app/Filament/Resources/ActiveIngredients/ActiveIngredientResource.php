@@ -6,6 +6,8 @@ use App\Filament\Resources\ActiveIngredients\Pages\CreateActiveIngredient;
 use App\Filament\Resources\ActiveIngredients\Pages\EditActiveIngredient;
 use App\Filament\Resources\ActiveIngredients\Pages\ListActiveIngredients;
 use App\Filament\Resources\ActiveIngredients\Pages\ViewActiveIngredient;
+use App\Filament\Resources\ActiveIngredients\RelationManagers\DrugClassesRelationManager;
+use App\Filament\Resources\ActiveIngredients\RelationManagers\DrugInteractionsRelationManager;
 use App\Filament\Resources\ActiveIngredients\Schemas\ActiveIngredientForm;
 use App\Filament\Resources\ActiveIngredients\Schemas\ActiveIngredientInfolist;
 use App\Filament\Resources\ActiveIngredients\Tables\ActiveIngredientsTable;
@@ -42,9 +44,9 @@ class ActiveIngredientResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Resources\ActiveIngredients\RelationManagers\DrugInteractionsRelationManager::class,
+            DrugInteractionsRelationManager::class,
 
-            \App\Filament\Resources\ActiveIngredients\RelationManagers\DrugClassesRelationManager::class,
+            DrugClassesRelationManager::class,
         ];
     }
 

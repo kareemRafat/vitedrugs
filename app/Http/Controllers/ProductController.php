@@ -8,7 +8,6 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
-
     public function index()
     {
         $query = Product::query()
@@ -16,7 +15,6 @@ class ProductController extends Controller
                 'company',
                 'dosageForm',
             ]);
-
 
         /*
 |--------------------------------------------------------------------------
@@ -36,7 +34,7 @@ class ProductController extends Controller
 
                     ->orWhereHas(
                         'activeIngredients',
-                        fn($q) => $q->where(
+                        fn ($q) => $q->where(
                             'name',
                             'like',
                             "%{$search}%"
@@ -45,7 +43,7 @@ class ProductController extends Controller
 
                     ->orWhereHas(
                         'companies',
-                        fn($q) => $q->where(
+                        fn ($q) => $q->where(
                             'name',
                             'like',
                             "%{$search}%"
@@ -54,7 +52,7 @@ class ProductController extends Controller
 
                     ->orWhereHas(
                         'diseases',
-                        fn($q) => $q->where(
+                        fn ($q) => $q->where(
                             'name',
                             'like',
                             "%{$search}%"

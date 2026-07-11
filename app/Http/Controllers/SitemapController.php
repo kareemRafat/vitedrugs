@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Disease;
-use App\Models\Company;
 use App\Models\ActiveIngredient;
+use App\Models\Company;
+use App\Models\Disease;
+use App\Models\Product;
 
 class SitemapController extends Controller
 {

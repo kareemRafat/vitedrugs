@@ -5,8 +5,8 @@ namespace App\Filament\Resources\Products\RelationManagers;
 use App\Models\Company;
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Forms\Components\Select;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 

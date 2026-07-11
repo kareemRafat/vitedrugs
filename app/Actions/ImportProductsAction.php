@@ -4,8 +4,8 @@ namespace App\Actions;
 
 use App\Models\ImportJob;
 use App\Services\Imports\ProductImportService;
-use App\Services\Imports\ProductNormalizer;
 use App\Services\Imports\ProductImportValidator;
+use App\Services\Imports\ProductNormalizer;
 use Illuminate\Support\Facades\Log;
 
 class ImportProductsAction

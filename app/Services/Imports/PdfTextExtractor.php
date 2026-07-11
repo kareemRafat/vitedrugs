@@ -7,7 +7,7 @@ class PdfTextExtractor
     public function extract(string $pdfPath): string
     {
         return (string) shell_exec(
-            'pdftotext "' . $pdfPath . '" -'
+            'pdftotext "'.$pdfPath.'" -'
         );
     }
 }

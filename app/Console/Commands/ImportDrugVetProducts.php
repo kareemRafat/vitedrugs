@@ -12,10 +12,10 @@ use Illuminate\Support\Str;
 class ImportDrugVetProducts extends Command
 {
     protected $signature =
-    'drugvet:import {file}';
+        'drugvet:import {file}';
 
     protected $description =
-    'Import DrugVet products';
+        'Import DrugVet products';
 
     public function handle()
     {
@@ -44,7 +44,7 @@ class ImportDrugVetProducts extends Command
 
             if (
                 Product::where('slug', $slug)
-                ->exists()
+                    ->exists()
             ) {
 
                 $this->warn(
@@ -68,7 +68,7 @@ class ImportDrugVetProducts extends Command
                 [
                     'slug' => Str::slug(
                         $companyName
-                    )
+                    ),
                 ],
                 [
                     'name' => $companyName,
@@ -90,8 +90,7 @@ class ImportDrugVetProducts extends Command
 
                 'company_id' => $company->id,
 
-                'product_type'
-                => 'pharmaceutical',
+                'product_type' => 'pharmaceutical',
 
                 'is_active' => true,
             ]);
@@ -104,7 +103,7 @@ class ImportDrugVetProducts extends Command
 
             $ingredients = [];
 
-            if (!isset($item['active_ingredient'])) {
+            if (! isset($item['active_ingredient'])) {
 
                 $this->warn(
                     "No active ingredient for {$tradeName}"
@@ -115,7 +114,7 @@ class ImportDrugVetProducts extends Command
 
             if (is_string($item['active_ingredient'])) {
 
-                if (!empty(trim($item['active_ingredient']))) {
+                if (! empty(trim($item['active_ingredient']))) {
 
                     $ingredients[] = [
                         'name' => $item['active_ingredient'],
@@ -126,8 +125,7 @@ class ImportDrugVetProducts extends Command
 
                 $ingredients = array_filter(
                     $item['active_ingredient'],
-                    fn($ingredient) =>
-                    !empty($ingredient['name'] ?? null)
+                    fn ($ingredient) => ! empty($ingredient['name'] ?? null)
                 );
             }
 
@@ -141,8 +139,7 @@ class ImportDrugVetProducts extends Command
             }
 
             foreach (
-                $ingredients
-                as $order => $ingredientData
+                $ingredients as $order => $ingredientData
             ) {
 
                 $ingredientName =
@@ -153,21 +150,18 @@ class ImportDrugVetProducts extends Command
                 $ingredient =
                     ActiveIngredient::firstOrCreate(
                         [
-                            'slug'
-                            => Str::slug(
+                            'slug' => Str::slug(
                                 $ingredientName
-                            )
+                            ),
                         ],
                         [
-                            'name'
-                            => ucfirst(
+                            'name' => ucfirst(
                                 strtolower(
                                     $ingredientName
                                 )
                             ),
 
-                            'is_active'
-                            => true
+                            'is_active' => true,
                         ]
                     );
 
@@ -176,7 +170,7 @@ class ImportDrugVetProducts extends Command
                 $unit = null;
 
                 if (
-                    !empty($ingredientData['strength'])
+                    ! empty($ingredientData['strength'])
                 ) {
 
                     preg_match(
@@ -204,15 +198,12 @@ class ImportDrugVetProducts extends Command
                     ->syncWithoutDetaching([
                         $ingredient->id => [
 
-                            'strength'
-                            => $strength,
+                            'strength' => $strength,
 
-                            'unit'
-                            => $unit,
+                            'unit' => $unit,
 
-                            'sort_order'
-                            => $order
-                        ]
+                            'sort_order' => $order,
+                        ],
                     ]);
             }
 

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\ActiveIngredient;
 use App\Models\Company;
 use App\Models\Disease;
-use App\Models\ActiveIngredient;
+use App\Models\Product;
 
 class HomeController extends Controller
 {

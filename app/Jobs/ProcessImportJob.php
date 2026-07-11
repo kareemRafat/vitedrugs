@@ -6,9 +6,10 @@ use App\Actions\ImportProductsAction;
 use App\Models\ImportJob;
 use App\Services\Imports\ProductImportService;
 use App\Services\Imports\ProductImportValidator;
+use App\Services\Imports\ProductNormalizer;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use App\Services\Imports\ProductNormalizer;
+use Illuminate\Support\Facades\Log;
 
 class ProcessImportJob implements ShouldQueue
 {
@@ -49,7 +50,7 @@ class ProcessImportJob implements ShouldQueue
             ]);
         } catch (\Throwable $e) {
 
-            \Illuminate\Support\Facades\Log::error(
+            Log::error(
                 'Import job failed',
                 [
                     'import_job_id' => $job->id,

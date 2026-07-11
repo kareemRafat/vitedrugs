@@ -6,6 +6,7 @@ use App\Filament\Resources\Diseases\Pages\CreateDisease;
 use App\Filament\Resources\Diseases\Pages\EditDisease;
 use App\Filament\Resources\Diseases\Pages\ListDiseases;
 use App\Filament\Resources\Diseases\Pages\ViewDisease;
+use App\Filament\Resources\Diseases\RelationManagers\ProductsRelationManager;
 use App\Filament\Resources\Diseases\Schemas\DiseaseForm;
 use App\Filament\Resources\Diseases\Schemas\DiseaseInfolist;
 use App\Filament\Resources\Diseases\Tables\DiseasesTable;
@@ -42,7 +43,7 @@ class DiseaseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Resources\Diseases\RelationManagers\ProductsRelationManager::class,
+            ProductsRelationManager::class,
         ];
     }
 

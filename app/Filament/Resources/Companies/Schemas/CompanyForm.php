@@ -39,8 +39,7 @@ class CompanyForm
                     ->searchable()
                     ->preload()
                     ->visible(
-                        fn($get) =>
-                        in_array(
+                        fn ($get) => in_array(
                             $get('company_type'),
                             ['agent', 'distributor', 'marketing']
                         )

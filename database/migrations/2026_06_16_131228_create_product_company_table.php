@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('product_company', function (Blueprint $table) {
 
-
             $table->foreignUlid('product_id')
                 ->constrained()
                 ->cascadeOnDelete();

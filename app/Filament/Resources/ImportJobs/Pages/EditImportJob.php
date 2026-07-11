@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\ImportJobs\Pages;
 
+use App\Filament\Resources\ImportJobs\ImportJobResource;
 use App\Jobs\ProcessImportJob;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\ImportJobs\ImportJobResource;
 
 class EditImportJob extends EditRecord
 {

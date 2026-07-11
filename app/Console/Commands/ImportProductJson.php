@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\Imports\ProductImportService;
+use Illuminate\Console\Command;
 
 class ImportProductJson extends Command
 {

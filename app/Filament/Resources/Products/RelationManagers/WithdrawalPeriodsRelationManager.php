@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Products\RelationManagers;
 
-use App\Models\Species;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;

@@ -28,7 +28,7 @@ return new class extends Migration
                 'manufacturer',
                 'agent',
                 'distributor',
-                'marketing'
+                'marketing',
             ]);
 
             $table->string('logo')->nullable();
@@ -71,7 +71,6 @@ return new class extends Migration
             $table->string('instagram')->nullable();
 
             $table->boolean('is_active')->default(true);
-
 
             $table->timestamps();
             $table->softDeletes();

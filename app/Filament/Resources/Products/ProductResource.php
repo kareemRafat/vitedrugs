@@ -6,6 +6,17 @@ use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
 use App\Filament\Resources\Products\Pages\ViewProduct;
+use App\Filament\Resources\Products\RelationManagers\ActiveIngredientsRelationManager;
+use App\Filament\Resources\Products\RelationManagers\AlternativesRelationManager;
+use App\Filament\Resources\Products\RelationManagers\CompaniesRelationManager;
+use App\Filament\Resources\Products\RelationManagers\ContraindicationsRelationManager;
+use App\Filament\Resources\Products\RelationManagers\DocumentsRelationManager;
+use App\Filament\Resources\Products\RelationManagers\DosagesRelationManager;
+use App\Filament\Resources\Products\RelationManagers\ImagesRelationManager;
+use App\Filament\Resources\Products\RelationManagers\IndicationsRelationManager;
+use App\Filament\Resources\Products\RelationManagers\PrecautionsRelationManager;
+use App\Filament\Resources\Products\RelationManagers\SideEffectsRelationManager;
+use App\Filament\Resources\Products\RelationManagers\WithdrawalPeriodsRelationManager;
 use App\Filament\Resources\Products\Schemas\ProductForm;
 use App\Filament\Resources\Products\Schemas\ProductInfolist;
 use App\Filament\Resources\Products\Tables\ProductsTable;
@@ -44,28 +55,28 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Resources\Products\RelationManagers\ActiveIngredientsRelationManager::class,
+            ActiveIngredientsRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\ImagesRelationManager::class,
+            ImagesRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\DosagesRelationManager::class,
+            DosagesRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\WithdrawalPeriodsRelationManager::class,
+            WithdrawalPeriodsRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\DocumentsRelationManager::class,
+            DocumentsRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\AlternativesRelationManager::class,
+            AlternativesRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\IndicationsRelationManager::class,
+            IndicationsRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\ContraindicationsRelationManager::class,
+            ContraindicationsRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\PrecautionsRelationManager::class,
+            PrecautionsRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\SideEffectsRelationManager::class,
+            SideEffectsRelationManager::class,
 
-            \App\Filament\Resources\Products\RelationManagers\CompaniesRelationManager::class,
-            
+            CompaniesRelationManager::class,
+
         ];
     }
 

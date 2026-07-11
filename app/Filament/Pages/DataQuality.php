@@ -2,10 +2,10 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Product;
+use App\Models\ActiveIngredient;
 use App\Models\Company;
 use App\Models\Disease;
-use App\Models\ActiveIngredient;
+use App\Models\Product;
 use Filament\Pages\Page;
 
 class DataQuality extends Page
@@ -14,7 +14,7 @@ class DataQuality extends Page
 
     protected static string|\UnitEnum|null $navigationGroup = 'System';
 
-   public string $view = 'filament.pages.data-quality';
+    public string $view = 'filament.pages.data-quality';
 
     public array $stats = [];
 
@@ -22,20 +22,15 @@ class DataQuality extends Page
     {
         $this->stats = [
 
-            'products_without_diseases' =>
-            Product::doesntHave('diseases')->count(),
+            'products_without_diseases' => Product::doesntHave('diseases')->count(),
 
-            'products_without_ingredients' =>
-            Product::doesntHave('activeIngredients')->count(),
+            'products_without_ingredients' => Product::doesntHave('activeIngredients')->count(),
 
-            'companies_without_products' =>
-            Company::doesntHave('products')->count(),
+            'companies_without_products' => Company::doesntHave('products')->count(),
 
-            'diseases_without_products' =>
-            Disease::doesntHave('products')->count(),
+            'diseases_without_products' => Disease::doesntHave('products')->count(),
 
-            'ingredients_without_products' =>
-            ActiveIngredient::doesntHave('products')->count(),
+            'ingredients_without_products' => ActiveIngredient::doesntHave('products')->count(),
         ];
     }
 }

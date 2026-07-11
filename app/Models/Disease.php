@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Disease extends Model
 {
@@ -30,9 +30,9 @@ class Disease extends Model
             Product::class,
             'disease_product'
         )
-        ->withPivot([
-            'sort_order',
-        ])
-        ->withTimestamps();
+            ->withPivot([
+                'sort_order',
+            ])
+            ->withTimestamps();
     }
 }

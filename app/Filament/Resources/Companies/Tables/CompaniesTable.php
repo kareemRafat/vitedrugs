@@ -72,7 +72,7 @@ class CompaniesTable
                         'agent' => 'Agent',
                         'distributor' => 'Distributor',
                         'marketing' => 'Marketing',
-                    ])
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make(),

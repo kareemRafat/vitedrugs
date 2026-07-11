@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActiveIngredient extends Model
 {
@@ -29,7 +29,6 @@ class ActiveIngredient extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
 
     public function drugClasses()
     {

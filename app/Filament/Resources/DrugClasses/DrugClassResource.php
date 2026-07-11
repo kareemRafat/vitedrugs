@@ -6,6 +6,7 @@ use App\Filament\Resources\DrugClasses\Pages\CreateDrugClass;
 use App\Filament\Resources\DrugClasses\Pages\EditDrugClass;
 use App\Filament\Resources\DrugClasses\Pages\ListDrugClasses;
 use App\Filament\Resources\DrugClasses\Pages\ViewDrugClass;
+use App\Filament\Resources\DrugClasses\RelationManagers\ActiveIngredientsRelationManager;
 use App\Filament\Resources\DrugClasses\Schemas\DrugClassForm;
 use App\Filament\Resources\DrugClasses\Schemas\DrugClassInfolist;
 use App\Filament\Resources\DrugClasses\Tables\DrugClassesTable;
@@ -42,7 +43,7 @@ class DrugClassResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Resources\DrugClasses\RelationManagers\ActiveIngredientsRelationManager::class,
+            ActiveIngredientsRelationManager::class,
         ];
     }
 

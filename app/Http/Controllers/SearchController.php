@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\ActiveIngredient;
 use App\Models\Company;
 use App\Models\Disease;
-use App\Models\ActiveIngredient;
+use App\Models\Product;
 
 class SearchController extends Controller
 {
@@ -25,32 +25,32 @@ class SearchController extends Controller
                 'like',
                 "%{$q}%"
             )
-            ->limit(20)
-            ->get();
+                ->limit(20)
+                ->get();
 
             $companies = Company::where(
                 'name',
                 'like',
                 "%{$q}%"
             )
-            ->limit(20)
-            ->get();
+                ->limit(20)
+                ->get();
 
             $diseases = Disease::where(
                 'name',
                 'like',
                 "%{$q}%"
             )
-            ->limit(20)
-            ->get();
+                ->limit(20)
+                ->get();
 
             $ingredients = ActiveIngredient::where(
                 'name',
                 'like',
                 "%{$q}%"
             )
-            ->limit(20)
-            ->get();
+                ->limit(20)
+                ->get();
         }
 
         return view(
