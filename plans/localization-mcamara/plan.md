@@ -53,10 +53,10 @@
 | 3.8 | - [x] Translate `app/home.blade.php` — hero, stat card titles, section headings, empty states | Medium | 2.1 |
 | 3.9 | - [ ] Translate `app/products/index.blade.php` — page title, search, table headers, filter labels, pagination, empty state | High | 2.1 |
 | 3.10 | - [ ] Translate `app/products/show.blade.php` — tabs, table headers, sidebar sections, action labels | High | 2.1 |
-| 3.11 | - [ ] Translate `app/companies/index.blade.php` — page title, search, table, empty state | High | 2.1 |
-| 3.12 | - [ ] Translate `app/companies/show.blade.php` — info labels, table, sidebar sections | High | 2.1 |
-| 3.13 | - [ ] Translate `app/diseases/index.blade.php` — page title, search, table, empty state | High | 2.1 |
-| 3.14 | - [ ] Translate `app/diseases/show.blade.php` — info labels, related products, sidebar | High | 2.1 |
+| 3.11 | - [x] Translate `app/companies/index.blade.php` — page title, search, table, empty state | High | 2.1 |
+| 3.12 | - [x] Translate `app/companies/show.blade.php` — info labels, table, sidebar sections | High | 2.1 |
+| 3.13 | - [x] Translate `app/diseases/index.blade.php` — page title, search, table, empty state | High | 2.1 |
+| 3.14 | - [x] Translate `app/diseases/show.blade.php` — info labels, related products, sidebar | High | 2.1 |
 | 3.15 | - [ ] Translate `app/active-ingredients/index.blade.php` — page title, table, empty state | High | 2.1 |
 | 3.16 | - [ ] Translate `app/active-ingredients/show.blade.php` — info labels, tables, sidebar sections | High | 2.1 |
 | 3.17 | - [ ] Translate `app/search/index.blade.php` — search placeholder, result labels, empty state | Medium | 2.1 |

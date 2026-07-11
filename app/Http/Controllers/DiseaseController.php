@@ -48,9 +48,13 @@ class DiseaseController extends Controller
             'products.companies',
         ]);
 
+        $ingredients = $disease->products
+            ->flatMap(fn ($product) => $product->activeIngredients)
+            ->unique('id');
+
         return view(
             'app.diseases.show',
-            compact('disease')
+            compact('disease', 'ingredients')
         );
     }
 }

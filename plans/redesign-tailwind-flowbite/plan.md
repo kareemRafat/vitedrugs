@@ -77,23 +77,27 @@
 
 ---
 
-## Milestone 4: Companies pages — Index & Show
+## ✅ Milestone 4: Companies pages — Index & Show
+
+**Status:** ✅ Complete
 
 | # | Task | Priority | Dependencies |
-|---|---|---|---|---|
-| 4.1 | - [ ] Rewrite `resources/views/app/companies/index.blade.php` — Flowbite table, search, pagination | High | 2.1 |
-| 4.2 | - [ ] Rewrite `resources/views/app/companies/show.blade.php` — info cards, products table, parent/subsidiaries | High | 2.1 |
-| 4.3 | - [ ] Display `products.dosageForm`, `parentCompany`, and `subsidiaries` (loaded but not shown) | Medium | 4.2 |
+|---|---|---|---|
+| 4.1 | - [x] Rewrite `resources/views/app/companies/index.blade.php` — Flowbite table, search, pagination | High | 2.1 |
+| 4.2 | - [x] Rewrite `resources/views/app/companies/show.blade.php` — info cards, products table, parent/subsidiaries | High | 2.1 |
+| 4.3 | - [x] Display `products.dosageForm`, `parentCompany`, and `subsidiaries` (loaded but not shown) | Medium | 4.2 |
 
 ---
 
-## Milestone 5: Diseases pages — Index & Show
+## ✅ Milestone 5: Diseases pages — Index & Show
+
+**Status:** ✅ Complete
 
 | # | Task | Priority | Dependencies |
-|---|---|---|---|---|
-| 5.1 | - [ ] Rewrite `resources/views/app/diseases/index.blade.php` — Flowbite table, search, pagination | High | 2.1 |
-| 5.2 | - [ ] Rewrite `resources/views/app/diseases/show.blade.php` — disease info, related products, ingredients sidebar | High | 2.1 |
-| 5.3 | - [ ] Move `$ingredients` logic from view to controller | Medium | 5.2 |
+|---|---|---|---|
+| 5.1 | - [x] Rewrite `resources/views/app/diseases/index.blade.php` — Flowbite table, search, pagination | High | 2.1 |
+| 5.2 | - [x] Rewrite `resources/views/app/diseases/show.blade.php` — disease info, related products, ingredients sidebar | High | 2.1 |
+| 5.3 | - [x] Move `$ingredients` logic from view to controller | Medium | 5.2 |
 
 ---
 

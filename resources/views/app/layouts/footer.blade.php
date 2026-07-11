@@ -1,27 +1,89 @@
-<footer class="py-4 mt-6 border-t border-default-medium dark:border-gray-700">
-    <div class="flex flex-col items-center justify-between gap-2 sm:flex-row">
-        <span class="text-sm text-body dark:text-gray-400">
-            &copy; {{ date('Y') }}
-            <strong class="text-heading dark:text-gray-300">VetPedia</strong>.
-            Veterinary Drugs, Active Ingredients & Clinical Decision Support Platform. All rights reserved.
-        </span>
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-body dark:text-gray-400">
-            <a href="{{ route('about') }}" class="hover:text-heading dark:hover:text-gray-300">About</a>
-            <span class="text-body dark:text-gray-600">|</span>
-            <a href="{{ route('contact') }}" class="hover:text-heading dark:hover:text-gray-300">Contact</a>
-            <span class="text-body dark:text-gray-600">|</span>
-            <a href="{{ route('privacy-policy') }}" class="hover:text-heading dark:hover:text-gray-300">Privacy Policy</a>
-            <span class="text-body dark:text-gray-600">|</span>
-            <a href="{{ route('terms-of-service') }}" class="hover:text-heading dark:hover:text-gray-300">Terms of Service</a>
-            <span class="text-body dark:text-gray-600">|</span>
-            <a href="{{ route('sitemap') }}" class="hover:text-heading dark:hover:text-gray-300">Sitemap</a>
-            <span class="text-body dark:text-gray-600">|</span>
-            @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-                @if ($localeCode !== LaravelLocalization::getCurrentLocale())
-                    <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
-                        class="hover:text-heading dark:hover:text-gray-300">{{ $properties['native'] }}</a>
-                @endif
-            @endforeach
+<footer class="bg-neutral-primary-soft border-t border-default-medium dark:bg-gray-800 dark:border-gray-700">
+    <div class="w-full px-4 py-8 mx-auto lg:py-10">
+        <div class="flex flex-col gap-12 lg:flex-row lg:gap-24">
+
+            {{-- Brand --}}
+            <div class="lg:w-1/3 ms-5">
+                <a href="{{ route('home') }}" class="flex items-center mb-3">
+                    <span class="self-center text-xl font-semibold whitespace-nowrap text-heading dark:text-white">VetPedia</span>
+                </a>
+                <p class="text-sm text-body dark:text-gray-400 max-w-xs">
+                    {{ __('messages.nav.footer_text') }}
+                </p>
+            </div>
+
+            {{-- Quick Links, Resources, Language --}}
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-3 lg:w-2/3">
+
+                <div class="w-50">
+                    <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider mb-3">{{ __('messages.nav.quick_links') }}</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>
+                            <a href="{{ route('products.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('products.*'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('products.*')])>{{ __('messages.nav.products') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('diseases.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('diseases.*'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('diseases.*')])>{{ __('messages.nav.diseases') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('active-ingredients.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('active-ingredients.*'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('active-ingredients.*')])>{{ __('messages.nav.ingredients') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('companies.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('companies.*'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('companies.*')])>{{ __('messages.nav.companies') }}</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="w-50">
+                    <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider mb-3">{{ __('messages.nav.resources') }}</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>
+                            <a href="{{ route('about') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('about'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('about')])>{{ __('messages.nav.about') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('contact') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('contact'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('contact')])>{{ __('messages.nav.contact') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('privacy-policy') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('privacy-policy'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('privacy-policy')])>{{ __('messages.nav.privacy_policy') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('terms-of-service') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('terms-of-service'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('terms-of-service')])>{{ __('messages.nav.terms_of_service') }}</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="w-50">
+                    <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider mb-3">{{ __('messages.nav.language') }}</h3>
+                    <ul class="space-y-2 text-sm">
+                        @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                            <li>
+                                <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
+                                   @class(['transition-colors duration-150', 'text-fg-brand font-medium' => $localeCode === LaravelLocalization::getCurrentLocale(), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => $localeCode !== LaravelLocalization::getCurrentLocale()])>
+                                    {{ $properties['native'] }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- Divider --}}
+        <hr class="my-6 border-default-medium dark:border-gray-700 sm:mx-auto lg:my-8">
+
+        {{-- Bottom bar --}}
+        <div class="sm:flex sm:items-center sm:justify-between">
+            <span class="text-sm text-body dark:text-gray-400 sm:text-center">
+                &copy; {{ date('Y') }}
+                <a href="{{ route('home') }}" class="hover:underline text-heading dark:text-white">VetPedia</a>.
+                {{ __('messages.nav.all_rights_reserved') }}
+            </span>
+            <div class="flex gap-2 mt-4 sm:mt-0">
+                <a href="{{ route('sitemap') }}" class="text-sm text-body hover:text-heading dark:text-gray-400 dark:hover:text-white transition-colors duration-150">
+                    <x-lucide-folder-tree class="w-4 h-4 inline me-1" />{{ __('messages.nav.sitemap') }}
+                </a>
+            </div>
         </div>
     </div>
 </footer>

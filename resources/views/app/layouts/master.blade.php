@@ -15,17 +15,18 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('css')
 </head>
-<body class="bg-neutral-secondary-soft dark:bg-gray-900">
+<body class="bg-neutral-secondary-soft dark:bg-gray-900 min-h-screen flex flex-col">
 
     @include('app.layouts.main-header')
 
-    <div class="p-4">
-        <div class="mt-14">
+    <div class="p-4 flex-1 flex flex-col">
+        <div class="mt-14 flex-1 flex flex-col">
             @yield('page-header')
             @yield('content')
         </div>
-        @include('app.layouts.footer')
     </div>
+
+    @include('app.layouts.footer')
 
     @include('app.layouts.footer-scripts')
 </body>
