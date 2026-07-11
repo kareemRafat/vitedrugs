@@ -9,12 +9,12 @@
 
 | # | Task | Priority | Dependencies | Done |
 |---|---|---|---|---|
-| 0.1 | Run `composer require mcamara/laravel-localization` | High | None | - [ ] |
-| 0.2 | Publish config: `php artisan vendor:publish --provider="Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider"` | High | 0.1 | - [ ] |
-| 0.3 | Edit `config/laravellocalization.php` — set `supportedLocales` to `en` + `ar`, `hideDefaultLocaleInURL` to `false`, `useAcceptLanguageHeader` to `false` | High | 0.2 | - [ ] |
-| 0.4 | Set `APP_LOCALE=en` and `APP_FALLBACK_LOCALE=en` in `.env` | High | None | - [ ] |
-| 0.5 | Create `lang/en/` and `lang/ar/` directories with `messages.php` files | High | None | - [ ] |
-| 0.6 | Register middleware aliases in `bootstrap/app.php` (localize, localizationRedirect, localeSessionRedirect, localeViewPath) | High | 0.1 | - [ ] |
+| 0.1 | Run `composer require mcamara/laravel-localization` | High | None | - [x] |
+| 0.2 | Publish config: `php artisan vendor:publish --provider="Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider"` | High | 0.1 | - [x] |
+| 0.3 | Edit `config/laravellocalization.php` — set `supportedLocales` to `en` + `ar`, `hideDefaultLocaleInURL` to `false`, `useAcceptLanguageHeader` to `false` | High | 0.2 | - [x] |
+| 0.4 | Set `APP_LOCALE=en` and `APP_FALLBACK_LOCALE=en` in `.env` | High | None | - [x] |
+| 0.5 | Create `lang/en/` and `lang/ar/` directories with `messages.php` files | High | None | - [x] |
+| 0.6 | Register middleware aliases in `bootstrap/app.php` (localize, localizationRedirect, localeSessionRedirect, localeViewPath) | High | 0.1 | - [x] |
 | 0.7 | Add `LoadsTranslatedCachedRoutes` trait to `AppServiceProvider` for route cache support | Medium | 0.1 | - [ ] |
 
 ---
@@ -23,10 +23,10 @@
 
 | # | Task | Priority | Dependencies | Done |
 |---|---|---|---|---|
-| 1.1 | Wrap all public GET routes in `Route::group(['prefix' => LaravelLocalization::setLocale(), ...])` | High | 0.6 | - [ ] |
-| 1.2 | Keep `admin/*`, `/sitemap.xml`, `/robots.txt` outside the locale group | High | 1.1 | - [ ] |
-| 1.3 | Localize POST routes for login, register, logout inside the group | High | 1.1 | - [ ] |
-| 1.4 | Update route references in controllers if needed | Medium | 1.1 | - [ ] |
+| 1.1 | Wrap all public GET routes in `Route::group(['prefix' => LaravelLocalization::setLocale(), ...])` | High | 0.6 | - [x] |
+| 1.2 | Keep `admin/*`, `/sitemap.xml`, `/robots.txt` outside the locale group | High | 1.1 | - [x] |
+| 1.3 | Localize POST routes for login, register, logout inside the group | High | 1.1 | - [x] |
+| 1.4 | Update route references in controllers if needed | Medium | 1.1 | - [x] |
 
 ---
 
@@ -34,8 +34,8 @@
 
 | # | Task | Priority | Dependencies | Done |
 |---|---|---|---|---|
-| 2.1 | Create `lang/en/messages.php` — all English UI strings (nav, auth forms, buttons, headings, placeholders, footer, empty states, search, pages) | High | 0.5 | - [ ] |
-| 2.2 | Create `lang/ar/messages.php` — Arabic translations for all keys | High | 2.1 | - [ ] |
+| 2.1 | Create `lang/en/messages.php` — all English UI strings (nav, auth forms, buttons, headings, placeholders, footer, empty states, search, pages) | High | 0.5 | - [x] |
+| 2.2 | Create `lang/ar/messages.php` — Arabic translations for all keys | High | 2.1 | - [x] |
 
 ---
 
@@ -43,14 +43,14 @@
 
 | # | Task | Priority | Dependencies | Done |
 |---|---|---|---|---|
-| 3.1 | Translate `app/layouts/main-header.blade.php` — nav links, dropdown, sign-in button | High | 2.1 | - [ ] |
-| 3.2 | Translate `app/layouts/main-sidebar.blade.php` — section labels, all nav items | High | 2.1 | - [ ] |
-| 3.3 | Translate `app/layouts/footer.blade.php` — links, copyright line | Medium | 2.1 | - [ ] |
-| 3.4 | Translate `app/layouts/guest.blade.php` — app name + footer text | Medium | 2.1 | - [ ] |
-| 3.5 | Translate `app/auth/login.blade.php` — heading, email, password, remember, button, link | High | 2.1 | - [ ] |
-| 3.6 | Translate `app/auth/register.blade.php` — heading, name, email, password, confirm, button, link | High | 2.1 | - [ ] |
-| 3.7 | Translate `app/welcome.blade.php` — welcome text, buttons | Medium | 2.1 | - [ ] |
-| 3.8 | Translate `app/home.blade.php` — hero, stat card titles, section headings, empty states | Medium | 2.1 | - [ ] |
+| 3.1 | Translate `app/layouts/main-header.blade.php` — nav links, dropdown, sign-in button | High | 2.1 | - [x] |
+| 3.2 | Translate `app/layouts/main-sidebar.blade.php` — section labels, all nav items | High | 2.1 | - [x] |
+| 3.3 | Translate `app/layouts/footer.blade.php` — links, copyright line | Medium | 2.1 | - [x] |
+| 3.4 | Translate `app/layouts/guest.blade.php` — app name + footer text | Medium | 2.1 | - [x] |
+| 3.5 | Translate `app/auth/login.blade.php` — heading, email, password, remember, button, link | High | 2.1 | - [x] |
+| 3.6 | Translate `app/auth/register.blade.php` — heading, name, email, password, confirm, button, link | High | 2.1 | - [x] |
+| 3.7 | Translate `app/welcome.blade.php` — welcome text, buttons | Medium | 2.1 | - [x] |
+| 3.8 | Translate `app/home.blade.php` — hero, stat card titles, section headings, empty states | Medium | 2.1 | - [x] |
 | 3.9 | Translate `app/products/index.blade.php` — page title, search, table headers, filter labels, pagination, empty state | High | 2.1 | - [ ] |
 | 3.10 | Translate `app/products/show.blade.php` — tabs, table headers, sidebar sections, action labels | High | 2.1 | - [ ] |
 | 3.11 | Translate `app/companies/index.blade.php` — page title, search, table, empty state | High | 2.1 | - [ ] |
@@ -83,10 +83,10 @@
 
 | # | Task | Priority | Dependencies | Done |
 |---|---|---|---|---|
-| 5.1 | Create `resources/views/app/components/language-switcher.blade.php` — dropdown using `LaravelLocalization::getSupportedLocales()` and `getLocalizedURL()` with native names + flag | High | 0.3 | - [ ] |
-| 5.2 | Include switcher in `app/layouts/main-header.blade.php` — next to user menu / nav links | High | 5.1 | - [ ] |
-| 5.3 | Include switcher in `app/layouts/footer.blade.php` — alongside footer links | Medium | 5.1 | - [ ] |
-| 5.4 | Add `dir="rtl"` class/attribute support for Arabic layout (optional but nice) | Low | 5.1 | - [ ] |
+| 5.1 | Create `resources/views/app/components/language-switcher.blade.php` — dropdown using `LaravelLocalization::getSupportedLocales()` and `getLocalizedURL()` with native names + flag | High | 0.3 | - [x] |
+| 5.2 | Include switcher in `app/layouts/main-header.blade.php` — next to user menu / nav links | High | 5.1 | - [x] |
+| 5.3 | Include switcher in `app/layouts/footer.blade.php` — alongside footer links | Medium | 5.1 | - [x] |
+| 5.4 | Add `dir="rtl"` class/attribute support for Arabic layout (optional but nice) | Low | 5.1 | - [x] |
 
 ---
 
@@ -97,6 +97,6 @@
 | 6.1 | Run `php artisan route:trans:list en` — verify all English routes resolve | High | 1.1 | - [ ] |
 | 6.2 | Run `php artisan route:trans:list ar` — verify all Arabic routes resolve | High | 1.1 | - [ ] |
 | 6.3 | Visit `/en/products` and `/ar/products` in browser — both load, language switcher works | High | 5.2 | - [ ] |
-| 6.4 | Run `npm run build` | High | 3.1–3.20 | - [ ] |
-| 6.5 | Run `./vendor/bin/pint` | High | 4.1–4.6 | - [ ] |
+| 6.4 | Run `npm run build` | High | 3.1–3.20 | - [x] |
+| 6.5 | Run `./vendor/bin/pint` | High | 4.1–4.6 | - [x] |
 | 6.6 | Run `composer test` | Medium | All | - [ ] |

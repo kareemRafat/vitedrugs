@@ -66,14 +66,14 @@
 
 ## Milestone 3: Products pages — Index & Show
 
-**Status:** Fully functional with Bootstrap classes
+**Status:** Index and show views rewritten with Flowbite v4. Missing sections (indications, contraindications, etc.) not yet added.
 
-| # | Task | Priority | Dependencies |
-|---|---|---|---|
-| 3.1 | Rewrite `resources/views/app/products/index.blade.php` — Flowbite table, search/filter, pagination | High | 2.1 |
-| 3.2 | Rewrite `resources/views/app/products/show.blade.php` — hero, meta cards, tables, sidebar lists | High | 2.1, 2.2 |
-| 3.3 | Add missing sections: indications, contraindications, precautions, side effects, alternatives, images, documents | High | 3.2 |
-| 3.4 | Add responsive grid for mobile | High | 3.1, 3.2 |
+| # | Task | Priority | Dependencies | Done |
+|---|---|---|---|---|
+| 3.1 | Rewrite `resources/views/app/products/index.blade.php` — Flowbite table, search/filter, pagination | High | 2.1 | - [x] |
+| 3.2 | Rewrite `resources/views/app/products/show.blade.php` — hero, meta cards, tables, sidebar lists | High | 2.1, 2.2 | - [x] |
+| 3.3 | Add missing sections: indications, contraindications, precautions, side effects, alternatives, images, documents | High | 3.2 | - [ ] |
+| 3.4 | Add responsive grid for mobile | High | 3.1, 3.2 | - [x] |
 
 ---
 

@@ -1,412 +1,148 @@
 @extends('app.layouts.master')
 
-@section('css')
-<style>
-
-    /* ==========================
-       Products Table
-    ========================== */
-
-    .table thead th {
-        background: #eef3f9;
-        color: #1e293b;
-
-        font-size: 15px;
-        font-weight: 700;
-
-        white-space: nowrap;
-        vertical-align: middle;
-
-        padding: 20px 18px;
-
-        border-top: 0;
-        border-bottom: 2px solid #dbe4f0;
-        
-    }
-
-    .table thead tr {
-        height: 72px;
-    }
-
-    .table tbody tr {
-        height: 64px;
-        transition: background-color .15s ease;
-    }
-
-    .table tbody tr:hover {
-        background: #f8fbff;
-    }
-
-    .table tbody td {
-        vertical-align: middle;
-        padding: 16px 18px;
-    }
-
-    /* ==========================
-       Product Link
-    ========================== */
-
-    .product-link {
-        font-size: 16px;
-        font-weight: 700;
-        color: #0F4C81;
-        text-decoration: none;
-    }
-
-    .product-link:hover {
-        color: #0b3a62;
-        text-decoration: none;
-    }
-
-    /* ==========================
-       Search Card
-    ========================== */
-
-    .products-search-card {
-        background: #f8fbff;
-        border: 1px solid #e5e9f2;
-    }
-
-    .products-search-card .form-control,
-    .products-search-card .custom-select,
-    .products-search-card select {
-        height: 50px;
-    }
-
-    .products-search-card .btn {
-        height: 50px;
-    }
-
-    /* ==========================
-       Pagination
-    ========================== */
-
-    .pagination {
-        justify-content: center;
-    }
-
-    /* ==========================
-       Small Screens
-    ========================== */
-
-    @media (max-width: 768px) {
-
-        .table thead th {
-            font-size: 13px;
-            padding: 14px 12px;
-        }
-
-        .table tbody td {
-            padding: 14px 12px;
-        }
-
-        .product-link {
-            font-size: 15px;
-        }
-    }
-
-</style>
-
-@endsection
-
-@section('page-header')
-@endsection
+@section('title', __('messages.products.index_title'))
 
 @section('content')
-    <div class="container py-4">
+    <div class="space-y-4">
 
         {{-- Header --}}
-
-        <div class="card border-0 shadow-sm mb-4 products-search-card">
-
-            <div class="card-body">
-
-                <div class="row align-items-center">
-
-                    <div class="col-md-8">
-
-                        <h2 class="mb-1">
-                            Veterinary Products
-                        </h2>
-
-                        <p class="text-muted mb-0">
-                            Browse veterinary pharmaceutical products and formulations.
-                        </p>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <div class="d-flex justify-content-md-end flex-wrap">
-
-                            <span class="badge badge-primary mr-2 mb-1 p-2">
-                                {{ number_format($products->total()) }} Products
-                            </span>
-
-                            <span class="badge badge-success mr-2 mb-1 p-2">
-                                {{ $companies->count() }} Companies
-                            </span>
-
-                            <span class="badge badge-info mb-1 p-2">
-                                {{ $dosageForms->count() }} Forms
-                            </span>
-
-                        </div>
-
-                    </div>
-
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('messages.products.index_heading') }}</h1>
+                    <p class="text-body dark:text-gray-400 text-sm mt-1">{{ __('messages.products.index_subtitle') }}</p>
                 </div>
-
+                <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-xs font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
+                        <x-lucide-package class="w-3.5 h-3.5" />
+                        {{ number_format($products->total()) }} {{ __('messages.products.products_label') }}
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-xs font-medium bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
+                        <x-lucide-building-2 class="w-3.5 h-3.5" />
+                        {{ $companies->count() }} {{ __('messages.products.companies_label') }}
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-xs font-medium bg-danger-soft text-fg-danger-strong dark:bg-danger/20 dark:text-danger">
+                        <x-lucide-pill class="w-3.5 h-3.5" />
+                        {{ $dosageForms->count() }} {{ __('messages.products.forms_label') }}
+                    </span>
+                </div>
             </div>
-
         </div>
 
-
-        {{-- Search --}}
-
-        <div class="card border-0 shadow-sm mb-4 products-search-card">
-
-
-            <div class="card-body">
-
-                <form method="GET">
-
-                    <div class="row">
-
-                        {{-- Search --}}
-
-                        <div class="col-lg-4 mb-2">
-
-                            <input type="text" name="search" class="form-control form-control-lg"
-                                placeholder="Search products, ingredients, diseases..." value="{{ request('search') }}">
-
-                        </div>
-
-                        {{-- Company Filter --}}
-
-                        <div class="col-lg-2 mb-2">
-
-                            <select name="company" class="form-control form-control-lg">
-
-                                <option value="">
-                                    All Companies
-                                </option>
-
-                                @foreach ($companies as $company)
-                                    <option value="{{ $company->id }}" @selected(request('company') == $company->id)>
-                                        {{ $company->name }}
-                                    </option>
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-                        {{-- Dosage Form Filter --}}
-
-                        <div class="col-lg-2 mb-2">
-
-                            <select name="dosage_form" class="form-control form-control-lg">
-
-                                <option value="">
-                                    All Forms
-                                </option>
-
-                                @foreach ($dosageForms as $form)
-                                    <option value="{{ $form->id }}" @selected(request('dosage_form') == $form->id)>
-                                        {{ $form->name }}
-                                    </option>
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-                        {{-- Sort --}}
-
-                        <div class="col-lg-2 mb-2">
-
-                            <select name="sort" class="form-control form-control-lg">
-
-                                <option value="latest" @selected(request('sort') == 'latest')>
-                                    Latest
-                                </option>
-
-                                <option value="name" @selected(request('sort') == 'name')>
-                                    Name A-Z
-                                </option>
-
-                                <option value="oldest" @selected(request('sort') == 'oldest')>
-                                    Oldest
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        {{-- Buttons --}}
-
-                        <div class="col-lg-2 mb-2">
-
-                            <div class="d-flex">
-
-                                <button type="submit" class="btn btn-primary flex-fill mr-1">
-                                    Search
-                                </button>
-
-                                <a href="{{ route('products.index') }}" class="btn btn-light border">
-                                    Reset
-                                </a>
-
-                            </div>
-
-                        </div>
-
+        {{-- Search / Filters --}}
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
+            <form method="GET">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <div class="lg:col-span-1">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-3 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            placeholder="{{ __('messages.products.search_placeholder') }}">
                     </div>
 
-                </form>
+                    <select name="company"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="">{{ __('messages.products.all_companies') }}</option>
+                        @foreach ($companies as $company)
+                            <option value="{{ $company->id }}" @selected(request('company') == $company->id)>{{ $company->name }}</option>
+                        @endforeach
+                    </select>
 
-            </div>
+                    <select name="dosage_form"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="">{{ __('messages.products.all_forms') }}</option>
+                        @foreach ($dosageForms as $form)
+                            <option value="{{ $form->id }}" @selected(request('dosage_form') == $form->id)>{{ $form->name }}</option>
+                        @endforeach
+                    </select>
 
+                    <select name="sort"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="latest" @selected(request('sort') == 'latest')>{{ __('messages.products.sort_latest') }}</option>
+                        <option value="name" @selected(request('sort') == 'name')>{{ __('messages.products.sort_name') }}</option>
+                        <option value="oldest" @selected(request('sort') == 'oldest')>{{ __('messages.products.sort_oldest') }}</option>
+                    </select>
 
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="flex-1 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-4 py-2.5 focus:outline-none">
+                            {{ __('messages.products.search_button') }}
+                        </button>
+                        <a href="{{ route('products.index') }}"
+                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600">
+                            <x-lucide-x class="w-4 h-4" />
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
 
-
-
-
-
-        {{-- Results --}}
-
-        <div class="card border-0 shadow-sm">
-
-
-            <div class="card-header bg-white">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <h5 class="mb-0">
-
-                        Products Directory
-
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Showing
-
-                        {{ $products->firstItem() ?? 0 }}
-
-                        -
-
-                        {{ $products->lastItem() ?? 0 }}
-
-                        of
-
-                        {{ number_format($products->total()) }}
-
-                        products
-
-                    </small>
-
-                </div>
-
+        {{-- Results Table --}}
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 overflow-hidden">
+            <div class="px-5 py-4 border-b border-default-medium flex items-center justify-between">
+                <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.products.directory_title') }}</h2>
+                <span class="text-xs text-body dark:text-gray-400">
+                    {{ __('messages.products.showing') }}
+                    {{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }}
+                    {{ __('messages.products.of') }}
+                    {{ number_format($products->total()) }}
+                </span>
             </div>
 
-            <div class="table-responsive">
-
-                <table class="table table-hover table-striped mb-0">
-
-                    <thead>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-heading dark:text-white">
+                    <thead class="text-xs uppercase text-body bg-neutral-secondary-soft dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th width="5%">#</th>
-                            <th width="45%">Trade Name</th>
-                            <th width="25%">Company</th>
-                            <th width="15%">Dosage Form</th>
-                            <th width="10%">Details</th>
+                            <th scope="col" class="px-5 py-3 w-16">#</th>
+                            <th scope="col" class="px-5 py-3">{{ __('messages.products.trade_name') }}</th>
+                            <th scope="col" class="px-5 py-3 hidden sm:table-cell">{{ __('messages.products.company') }}</th>
+                            <th scope="col" class="px-5 py-3 hidden md:table-cell">{{ __('messages.products.dosage_form') }}</th>
+                            <th scope="col" class="px-5 py-3 w-20">{{ __('messages.products.details') }}</th>
                         </tr>
-
                     </thead>
-
                     <tbody>
-
                         @forelse($products as $product)
-                            <tr>
-                                <td>
+                            <tr class="border-b border-default-medium hover:bg-neutral-secondary-soft dark:hover:bg-gray-700 dark:border-gray-700">
+                                <td class="px-5 py-4 text-body dark:text-gray-400">
                                     {{ $products->firstItem() + $loop->index }}
                                 </td>
-
-                                <td>
-
-                                    <a href="{{ route('products.show', $product) }}" class="product-link">
+                                <td class="px-5 py-4">
+                                    <a href="{{ route('products.show', $product) }}" class="font-semibold text-fg-brand hover:underline">
                                         {{ $product->trade_name }}
                                     </a>
-
                                 </td>
-                                <td>
-                                    <span class="text-muted">
-                                        {{ $product->company?->name ?? 'Unknown' }}
-                                    </span>
+                                <td class="px-5 py-4 hidden sm:table-cell text-body dark:text-gray-400">
+                                    {{ $product->company?->name ?? __('messages.products.unknown') }}
                                 </td>
-
-                                <td>
-                                    <span class="text-muted">
-                                        {{ $product->dosageForm?->name ?? 'N/A' }}
-                                    </span>
+                                <td class="px-5 py-4 hidden md:table-cell text-body dark:text-gray-400">
+                                    {{ $product->dosageForm?->name ?? __('messages.products.na') }}
                                 </td>
-                                <td class="text-center">
-
-                                    <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-primary px-3">
-                                        <i class="fe fe-arrow-right"></i>
+                                <td class="px-5 py-4">
+                                    <a href="{{ route('products.show', $product) }}"
+                                        class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm">
+                                        <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
                                     </a>
-
                                 </td>
-
                             </tr>
-
                         @empty
-
                             <tr>
-
-                                <td colspan="5" class="text-center py-5">
-
-                                    <i class="fe fe-package tx-40 text-muted d-block mb-3"></i>
-
-                                    <h5>
-                                        No Products Found
-                                    </h5>
-
-                                    <span class="text-muted">
-                                        Try another search term.
-                                    </span>
-
+                                <td colspan="5" class="px-5 py-12 text-center">
+                                    <x-lucide-package class="w-10 h-10 text-body mx-auto mb-3" />
+                                    <h3 class="text-base font-semibold text-heading dark:text-white mb-1">{{ __('messages.products.no_products') }}</h3>
+                                    <p class="text-sm text-body dark:text-gray-400">{{ __('messages.products.try_another') }}</p>
                                 </td>
-
                             </tr>
                         @endforelse
-
                     </tbody>
-
                 </table>
-
             </div>
-
-
         </div>
 
-
-
         {{-- Pagination --}}
-
         @if ($products->hasPages())
-            <div class="products-pagination mt-4">
-
-                {{ $products->withQueryString()->links() }}
-
+            <div class="w-full">
+                {{ $products->withQueryString()->links('pagination::tailwind') }}
             </div>
         @endif
 
     </div>
-@endsection
-
-@section('js')
 @endsection
