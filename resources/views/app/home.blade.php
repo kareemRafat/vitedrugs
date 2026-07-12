@@ -83,6 +83,54 @@
         </a>
     </div>
 
+    {{-- Latest Blog Posts --}}
+            @if ($latestBlogs->count())
+        <div class="mb-6">
+            @php $locale = app()->getLocale(); @endphp
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-semibold text-heading dark:text-white flex items-center gap-2">
+                    <x-lucide-newspaper class="w-5 h-5 text-fg-brand" />
+                    {{ __('messages.home.latest_blog') }}
+                </h4>
+                <a href="{{ route('blog.index') }}"
+                    class="text-sm font-medium text-fg-brand hover:underline">
+                    {{ __('messages.home.view_all') }}
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach ($latestBlogs as $blog)
+                    <a href="{{ route('blog.show', $blog) }}"
+                        class="group bg-neutral-primary-soft rounded-base border border-default-medium overflow-hidden hover:shadow-md transition-all duration-300 dark:bg-gray-800 dark:border-gray-700">
+                        <div class="h-40 bg-neutral-secondary-soft dark:bg-gray-700 overflow-hidden">
+                            @if ($blog->cover_image)
+                                <img src="{{ Storage::url($blog->cover_image) }}"
+                                    alt="{{ $locale === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <div class="flex items-center justify-center h-full">
+                                    <x-lucide-newspaper class="w-10 h-10 text-body dark:text-gray-500" />
+                                </div>
+                            @endif
+                        </div>
+                        <div class="p-4">
+                            @if ($blog->category)
+                                <span class="inline-block px-2 py-0.5 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand mb-2">
+                                    {{ $locale === 'ar' && $blog->category->name_ar ? $blog->category->name_ar : $blog->category->name }}
+                                </span>
+                            @endif
+                            <h3 class="text-sm font-semibold text-heading dark:text-white group-hover:text-fg-brand line-clamp-2 transition-colors duration-150">
+                                {{ $locale === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}
+                            </h3>
+                            <p class="text-xs text-body dark:text-gray-400 mt-1">
+                                {{ $blog->published_at->format('M d, Y') }}
+                            </p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     {{-- Latest Products & Featured Companies --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {{-- Latest Products --}}

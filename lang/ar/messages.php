@@ -65,6 +65,7 @@ return [
         'ingredients_title' => 'المكونات النشطة',
         'ingredients_desc' => 'استكشف المواد الصيدلانية النشطة',
         'latest_products' => 'أحدث المنتجات البيطرية',
+        'latest_blog' => 'أحدث المقالات',
         'featured_companies' => 'شركات مميزة',
         'view_all' => 'عرض الكل',
         'no_products' => 'لا توجد منتجات متاحة.',
@@ -82,6 +83,7 @@ return [
         'diseases' => 'الأمراض',
         'ingredients' => 'المكونات',
         'companies' => 'الشركات',
+        'blog' => 'المدونة',
         'search' => 'بحث',
         'sidebar_label' => 'الشريط الجانبي',
         'dashboard' => 'لوحة التحكم',
@@ -123,6 +125,27 @@ return [
         'success' => 'تم بنجاح',
         'loading' => 'جار التحميل...',
         'switch_language' => 'تغيير اللغة',
+    ],
+
+    'blog' => [
+        'title' => 'المدونة',
+        'index_title' => 'المدونة | VetPedia',
+        'index_heading' => 'مدونتنا',
+        'index_subtitle' => 'مقالات وأدلة ورؤى حول الطب البيطري والأدوية.',
+        'search_placeholder' => 'ابحث في المقالات...',
+        'search_button' => 'بحث',
+        'filter_by' => 'تصفية',
+        'all_categories' => 'الكل',
+        'showing' => 'عرض',
+        'of' => 'من',
+        'read_more' => 'اقرأ المزيد',
+        'read_time' => 'قراءة :minutes دقائق',
+        'no_posts' => 'لا توجد مقالات',
+        'no_posts_desc' => 'لا توجد مقالات تطابق بحثك. جرب تصفية مختلفة أو كلمة بحث مختلفة.',
+        'clear_filters' => 'مسح التصفية',
+        'back_to_blog' => 'العودة إلى المدونة',
+        'related_posts' => 'مقالات ذات صلة',
+        'view_all' => 'عرض الكل',
     ],
 
     'errors' => [
@@ -459,4 +482,5 @@ return [
         'message' => 'يستخدم هذا الموقع ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة.',
         'accept' => 'قبول',
     ],
+
 ];

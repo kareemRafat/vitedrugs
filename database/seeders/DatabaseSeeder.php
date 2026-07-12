@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SpeciesSeeder::class,
             DosageFormSeeder::class,
             DrugClassSeeder::class,
+            BlogSeeder::class,
         ]);
 
         User::factory()->create([

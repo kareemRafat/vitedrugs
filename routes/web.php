@@ -4,6 +4,7 @@ use App\Http\Controllers\ActiveIngredientController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DiseaseController;
@@ -65,6 +66,9 @@ Route::group([
 
     Route::get('/active-ingredients', [ActiveIngredientController::class, 'index'])->name('active-ingredients.index');
     Route::get('/active-ingredients/{activeIngredient:slug}', [ActiveIngredientController::class, 'show'])->name('active-ingredients.show');
+
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.show');
 
     Route::get('/search', [SearchController::class, 'index'])->name('search');
 });

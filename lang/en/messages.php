@@ -65,6 +65,7 @@ return [
         'ingredients_title' => 'Active Ingredients',
         'ingredients_desc' => 'Explore active pharmaceutical substances',
         'latest_products' => 'Latest Veterinary Products',
+        'latest_blog' => 'Latest from Blog',
         'featured_companies' => 'Featured Companies',
         'view_all' => 'View All',
         'no_products' => 'No products available.',
@@ -82,6 +83,7 @@ return [
         'diseases' => 'Diseases',
         'ingredients' => 'Ingredients',
         'companies' => 'Companies',
+        'blog' => 'Blog',
         'search' => 'Search',
         'sidebar_label' => 'Sidebar',
         'dashboard' => 'Dashboard',
@@ -123,6 +125,27 @@ return [
         'success' => 'Success',
         'loading' => 'Loading...',
         'switch_language' => 'Switch language',
+    ],
+
+    'blog' => [
+        'title' => 'Blog',
+        'index_title' => 'Blog | VetPedia',
+        'index_heading' => 'Our Blog',
+        'index_subtitle' => 'Articles, guides, and insights on veterinary medicine and pharmaceuticals.',
+        'search_placeholder' => 'Search articles...',
+        'search_button' => 'Search',
+        'filter_by' => 'Filter',
+        'all_categories' => 'All',
+        'showing' => 'Showing',
+        'of' => 'of',
+        'read_more' => 'Read More',
+        'read_time' => ':minutes min read',
+        'no_posts' => 'No Posts Found',
+        'no_posts_desc' => 'No articles match your search. Try a different filter or keyword.',
+        'clear_filters' => 'Clear Filters',
+        'back_to_blog' => 'Back to Blog',
+        'related_posts' => 'Related Articles',
+        'view_all' => 'View All',
     ],
 
     'errors' => [
@@ -459,4 +482,5 @@ return [
         'message' => 'This website uses cookies to ensure you get the best experience.',
         'accept' => 'Accept',
     ],
+
 ];

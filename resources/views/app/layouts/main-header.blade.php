@@ -17,6 +17,7 @@
                 <a href="{{ route('diseases.index') }}" @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('diseases.*'), 'text-body hover:text-fg-brand dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('diseases.*')])>{{ __('messages.nav.diseases') }}</a>
                 <a href="{{ route('active-ingredients.index') }}" @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('active-ingredients.*'), 'text-body hover:text-fg-brand dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('active-ingredients.*')])>{{ __('messages.nav.ingredients') }}</a>
                 <a href="{{ route('companies.index') }}" @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('companies.*'), 'text-body hover:text-fg-brand dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('companies.*')])>{{ __('messages.nav.companies') }}</a>
+                <a href="{{ route('blog.index') }}" @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('blog.*'), 'text-body hover:text-fg-brand dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('blog.*')])>{{ __('messages.nav.blog') }}</a>
 
                 <button id="moreDropdown" data-dropdown-toggle="moreDropdownMenu" class="text-body hover:text-fg-brand dark:text-gray-400 dark:hover:text-white px-2 py-1 text-sm font-medium inline-flex items-center gap-1" type="button">
                     {{ __('messages.nav.platform') }}
@@ -118,6 +119,10 @@
             <a href="{{ route('companies.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('companies.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' => !request()->routeIs('companies.*')])>
                 <x-lucide-building-2 class="w-5 h-5" />
                 {{ __('messages.nav.companies') }}
+            </a>
+            <a href="{{ route('blog.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('blog.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' => !request()->routeIs('blog.*')])>
+                <x-lucide-newspaper class="w-5 h-5" />
+                {{ __('messages.nav.blog') }}
             </a>
         </div>
 

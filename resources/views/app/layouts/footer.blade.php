@@ -30,6 +30,9 @@
                         <li>
                             <a href="{{ route('companies.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('companies.*'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('companies.*')])>{{ __('messages.nav.companies') }}</a>
                         </li>
+                        <li>
+                            <a href="{{ route('blog.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('blog.*'), 'text-body hover:text-heading dark:text-gray-400 dark:hover:text-white' => !request()->routeIs('blog.*')])>{{ __('messages.nav.blog') }}</a>
+                        </li>
                     </ul>
                 </div>
 
@@ -69,10 +72,8 @@
 
         </div>
 
-        {{-- Divider --}}
         <hr class="my-6 border-default-medium dark:border-gray-700 sm:mx-auto lg:my-8">
 
-        {{-- Bottom bar --}}
         <div class="text-center">
             <span class="text-sm text-body dark:text-gray-400">
                 &copy; {{ date('Y') }}

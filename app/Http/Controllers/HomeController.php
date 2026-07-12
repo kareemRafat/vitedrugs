@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActiveIngredient;
+use App\Models\Blog;
 use App\Models\Company;
 use App\Models\Disease;
 use App\Models\Product;
@@ -24,6 +25,12 @@ class HomeController extends Controller
 
             'latestCompanies' => Company::latest()
                 ->take(5)
+                ->get(),
+
+            'latestBlogs' => Blog::published()
+                ->with('category')
+                ->latest('published_at')
+                ->take(3)
                 ->get(),
         ]);
     }

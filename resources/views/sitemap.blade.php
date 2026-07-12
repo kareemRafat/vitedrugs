@@ -91,4 +91,18 @@
         </url>
     @endforeach
 
+    {{-- Blog --}}
+    @foreach($blogs as $blog)
+        @php $enUrl = LaravelLocalization::getLocalizedURL('en', route('blog.show', $blog, false)); @endphp
+        <url>
+            <loc>{{ $enUrl }}</loc>
+            <lastmod>{{ $blog->updated_at->toW3cString() }}</lastmod>
+            <changefreq>monthly</changefreq>
+            <priority>0.5</priority>
+            @foreach($locales as $locale)
+                <xhtml:link rel="alternate" hreflang="{{ $locale }}" href="{{ LaravelLocalization::getLocalizedURL($locale, route('blog.show', $blog, false)) }}" />
+            @endforeach
+        </url>
+    @endforeach
+
 </urlset>
