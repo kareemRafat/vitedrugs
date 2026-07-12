@@ -28,6 +28,8 @@
 
     @include('app.layouts.footer')
 
+    <x-cookie-consent />
+
     @include('app.layouts.footer-scripts')
 </body>
 </html>

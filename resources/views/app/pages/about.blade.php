@@ -10,31 +10,18 @@
 <div id="about-page" class="max-w-7xl mx-auto space-y-12 py-8 sm:py-12">
 
   {{-- Hero --}}
-  <div class="relative text-center overflow-hidden rounded-2xl bg-gradient-to-br from-slate-50 to-white border border-slate-100 p-10 sm:p-14 lg:p-18">
-    {{-- Decorative elements --}}
-    <div class="absolute top-4 right-4 text-blue-100">
-      <x-lucide-plus class="w-12 h-12" />
-    </div>
-    <div class="absolute bottom-4 left-4 text-blue-50">
-      <x-lucide-activity class="w-10 h-10" />
-    </div>
-    <div class="absolute top-1/2 left-6 -translate-y-1/2 text-blue-50 hidden sm:block">
-      <x-lucide-heart-pulse class="w-8 h-8" />
-    </div>
-    <div class="absolute top-1/3 right-12 text-blue-50 hidden sm:block">
-      <x-lucide-stethoscope class="w-7 h-7" />
-    </div>
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm">
 
-    <div class="relative z-10 max-w-3xl mx-auto">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-5">
+    <div class="relative z-10 max-w-2xl">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-100 border border-white/10 mb-5">
         <x-lucide-info class="w-4 h-4" />
         <span>{{ __('messages.nav.about') }}</span>
       </div>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
         {{ __('messages.pages.about.heading') }}
       </h1>
-      <div class="w-16 h-1 bg-blue-600 rounded-full mx-auto mt-6 mb-6"></div>
-      <p class="text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+      <div class="w-16 h-1 bg-cyan-300 rounded-full mt-6 mb-6"></div>
+      <p class="text-lg sm:text-xl text-blue-50 max-w-xl leading-relaxed">
         {{ __('messages.pages.about.subtitle') }}
       </p>
     </div>

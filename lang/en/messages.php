@@ -80,7 +80,7 @@ return [
         'knowledge_base' => 'Knowledge Base',
         'active_ingredients' => 'Active Ingredients',
         'platform' => 'Platform',
-        'about' => 'About',
+        'about' => 'About us',
         'contact' => 'Contact',
         'privacy_policy' => 'Privacy Policy',
         'terms_of_service' => 'Terms of Service',
@@ -285,6 +285,17 @@ return [
             'message_placeholder' => 'Write your message...',
             'submit' => 'Send Message',
             'success' => 'Your message has been sent successfully. We will get back to you soon.',
+            'validation' => [
+                'name_required' => 'Please enter your name.',
+                'name_max' => 'Name must not exceed 255 characters.',
+                'email_required' => 'Please enter your email address.',
+                'email_email' => 'Please enter a valid email address.',
+                'email_max' => 'Email must not exceed 255 characters.',
+                'subject_required' => 'Please enter a subject.',
+                'subject_max' => 'Subject must not exceed 255 characters.',
+                'message_required' => 'Please write your message.',
+                'message_max' => 'Message must not exceed 5000 characters.',
+            ],
         ],
         'privacy' => [
             'title' => 'Privacy Policy | VetPedia',
@@ -398,5 +409,10 @@ return [
         'types' => [
             'pharmaceutical' => 'Pharmaceutical',
         ],
+    ],
+
+    'cookie_banner' => [
+        'message' => 'This website uses cookies to ensure you get the best experience.',
+        'accept' => 'Accept',
     ],
 ];
