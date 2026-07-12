@@ -23,7 +23,8 @@ class ContactSubmissionsTable
                     ->sortable(),
 
                 TextColumn::make('subject')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(50),
 
                 TextColumn::make('created_at')
                     ->dateTime()
