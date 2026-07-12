@@ -22,7 +22,7 @@ class ContraindicationResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedXCircle;
 
     protected static ?string $recordTitleAttribute = 'description';
 
