@@ -32,6 +32,16 @@ return [
         'login_link' => 'تسجيل الدخول',
     ],
 
+    'verify_email' => [
+        'title' => 'تأكيد البريد الإلكتروني | VetPedia',
+        'heading' => 'تأكيد بريدك الإلكتروني',
+        'subtitle' => 'خطوة أخيرة للبدء',
+        'instruction' => 'قبل الوصول إلى المنصة، يرجى تأكيد بريدك الإلكتروني بالنقر على الرابط الذي أرسلناه لك. إذا لم تستلم البريد، انقر على الزر أدناه.',
+        'sent' => 'تم إرسال رابط تحقق جديد إلى بريدك الإلكتروني.',
+        'resend_button' => 'إعادة إرسال رابط التحقق',
+        'logout' => 'تسجيل الخروج',
+    ],
+
     'welcome' => [
         'title' => 'مرحباً',
         'heading' => 'مرحباً بك في :app',
@@ -111,7 +121,15 @@ return [
     'common' => [
         'error' => 'خطأ',
         'success' => 'تم بنجاح',
+        'loading' => 'جار التحميل...',
         'switch_language' => 'تغيير اللغة',
+    ],
+
+    'errors' => [
+        '404_title' => 'الصفحة غير موجودة',
+        '404_heading' => 'عذراً! الصفحة غير موجودة',
+        '404_message' => 'الصفحة التي تبحث عنها غير موجودة أو تم نقلها.',
+        '404_cta' => 'العودة إلى الرئيسية',
     ],
 
     'diseases' => [
@@ -406,6 +424,32 @@ return [
         'no_related_desc' => 'لم تتم إضافة المعلومات بعد.',
         'companies' => 'الشركات',
         'no_companies' => 'لا توجد شركات متاحة.',
+        'indications' => 'الاستخدامات',
+        'no_indications' => 'لا توجد معلومات عن الاستخدامات.',
+        'contraindications' => 'موانع الاستخدام',
+        'no_contraindications' => 'لا توجد معلومات عن موانع الاستخدام.',
+        'precautions' => 'الاحتياطات',
+        'no_precautions' => 'لا توجد معلومات عن الاحتياطات.',
+        'side_effects' => 'الآثار الجانبية',
+        'no_side_effects' => 'لا توجد معلومات عن الآثار الجانبية.',
+        'alternatives' => 'البدائل',
+        'no_alternatives' => 'لا توجد بدائل متاحة.',
+        'images' => 'الصور',
+        'no_images' => 'لا توجد صور متاحة.',
+        'documents' => 'المستندات',
+        'no_documents' => 'لا توجد مستندات متاحة.',
+        'download' => 'تحميل',
+        'alternative_types' => [
+            'commercial' => 'تجاري',
+            'therapeutic' => 'علاجي',
+            'economic' => 'اقتصادي',
+        ],
+        'document_types' => [
+            'leaflet' => 'نشرة',
+            'datasheet' => 'ورقة بيانات',
+            'brochure' => 'كتيب',
+            'certificate' => 'شهادة',
+        ],
         'types' => [
             'pharmaceutical' => 'دواء',
         ],

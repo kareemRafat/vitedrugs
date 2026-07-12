@@ -11,21 +11,16 @@ class SitemapController extends Controller
 {
     public function index()
     {
+        $locales = ['en', 'ar'];
+
         return response()
             ->view('sitemap', [
-
-                'products' => Product::all(),
-
-                'diseases' => Disease::all(),
-
-                'companies' => Company::all(),
-
-                'ingredients' => ActiveIngredient::all(),
-
+                'locales' => $locales,
+                'products' => Product::cursor(),
+                'diseases' => Disease::cursor(),
+                'companies' => Company::cursor(),
+                'ingredients' => ActiveIngredient::cursor(),
             ])
-            ->header(
-                'Content-Type',
-                'text/xml'
-            );
+            ->header('Content-Type', 'text/xml');
     }
 }

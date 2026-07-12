@@ -52,22 +52,30 @@
 
                 @auth
                     <div class="hidden sm:flex items-center">
-                        <button id="userDropdown" data-dropdown-toggle="userDropdownMenu" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-neutral-secondary-soft dark:focus:ring-gray-600" type="button">
+                        <button id="userDropdown" data-dropdown-toggle="userDropdownMenu" class="flex text-sm rounded-full focus:ring-4 focus:ring-neutral-secondary-soft dark:focus:ring-gray-600" type="button">
                             <span class="sr-only">{{ __('messages.nav.toggle_user_menu') }}</span>
                             <div class="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center text-sm font-medium">
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </div>
                         </button>
-                        <div id="userDropdownMenu" class="z-50 hidden my-4 w-48 bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-700">
-                            <div class="px-4 py-3 text-sm text-heading dark:text-white">
-                                <div class="font-medium truncate">{{ Auth::user()->name }}</div>
-                                <div class="truncate text-xs text-body dark:text-gray-400">{{ Auth::user()->email }}</div>
+                        <div id="userDropdownMenu" class="z-50 hidden my-2 w-56 bg-neutral-primary-soft rounded-base shadow-lg border border-default-medium dark:bg-gray-700 dark:border-gray-600">
+                            <div class="px-4 py-4 flex items-center gap-3 border-b border-default-medium dark:border-gray-600">
+                                <div class="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center text-sm font-semibold shrink-0">
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-semibold text-heading dark:text-white truncate">{{ Auth::user()->name }}</div>
+                                    <div class="text-xs text-body dark:text-gray-400 truncate">{{ Auth::user()->email }}</div>
+                                </div>
                             </div>
                             <ul class="py-1 text-sm text-heading dark:text-gray-300">
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                        <button type="submit" class="block w-full text-start px-4 py-2 hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white">{{ __('messages.nav.sign_out') }}</button>
+                                        <button type="submit" class="flex items-center gap-3 w-full text-start px-4 py-2.5 rounded-base transition-colors duration-150 hover:bg-danger-soft dark:hover:bg-gray-600 text-body hover:text-fg-danger-strong dark:hover:text-red-400">
+                                            <x-lucide-log-out class="w-4 h-4" />
+                                            {{ __('messages.nav.sign_out') }}
+                                        </button>
                                     </form>
                                 </li>
                             </ul>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActiveIngredientController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DiseaseController;
@@ -35,6 +36,17 @@ Route::group([
     Route::post('/logout', [LoginController::class, 'destroy'])
         ->middleware('auth')
         ->name('logout');
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/email/verify', [VerificationController::class, 'notice'])
+            ->name('verification.notice');
+        Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+            ->middleware('signed')
+            ->name('verification.verify');
+        Route::post('/email/verification-notification', [VerificationController::class, 'resend'])
+            ->middleware('throttle:6,1')
+            ->name('verification.resend');
+    });
 
     Route::view('/about', 'app.pages.about')->name('about');
     Route::get('/contact', [ContactController::class, 'create'])->name('contact');

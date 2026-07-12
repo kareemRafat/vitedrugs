@@ -12,6 +12,14 @@
     <meta property="og:description" content="@yield('og_description', View::yieldContent('meta_description'))">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @if(app()->getLocale() === 'ar')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            html { font-family: 'Readex Pro', sans-serif; }
+        </style>
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('css')
 </head>

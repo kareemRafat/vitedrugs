@@ -125,7 +125,6 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load([
-            'company',
             'companies',
             'dosageForm',
             'activeIngredients',
@@ -138,6 +137,7 @@ class ProductController extends Controller
             'diseases',
             'images',
             'documents',
+            'alternatives.alternativeProduct',
         ]);
 
         $relatedProducts = Product::where('id', '!=', $product->id)

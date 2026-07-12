@@ -32,6 +32,16 @@ return [
         'login_link' => 'Sign in',
     ],
 
+    'verify_email' => [
+        'title' => 'Verify Email | VetPedia',
+        'heading' => 'Verify your email',
+        'subtitle' => 'One more step to get started',
+        'instruction' => 'Before accessing the platform, please verify your email address by clicking the link we sent you. If you did not receive the email, click the button below.',
+        'sent' => 'A new verification link has been sent to your email address.',
+        'resend_button' => 'Resend verification email',
+        'logout' => 'Sign out',
+    ],
+
     'welcome' => [
         'title' => 'Welcome',
         'heading' => 'Welcome to :app',
@@ -111,7 +121,15 @@ return [
     'common' => [
         'error' => 'Error',
         'success' => 'Success',
+        'loading' => 'Loading...',
         'switch_language' => 'Switch language',
+    ],
+
+    'errors' => [
+        '404_title' => 'Page Not Found',
+        '404_heading' => 'Oops! Page Not Found',
+        '404_message' => 'The page you are looking for does not exist or has been moved.',
+        '404_cta' => 'Back to Home',
     ],
 
     'diseases' => [
@@ -406,6 +424,32 @@ return [
         'no_related_desc' => 'Information has not been added yet.',
         'companies' => 'Companies',
         'no_companies' => 'No companies available.',
+        'indications' => 'Indications',
+        'no_indications' => 'No indications information available.',
+        'contraindications' => 'Contraindications',
+        'no_contraindications' => 'No contraindications information available.',
+        'precautions' => 'Precautions',
+        'no_precautions' => 'No precautions information available.',
+        'side_effects' => 'Side Effects',
+        'no_side_effects' => 'No side effects information available.',
+        'alternatives' => 'Alternatives',
+        'no_alternatives' => 'No alternatives available.',
+        'images' => 'Images',
+        'no_images' => 'No images available.',
+        'documents' => 'Documents',
+        'no_documents' => 'No documents available.',
+        'download' => 'Download',
+        'alternative_types' => [
+            'commercial' => 'Commercial',
+            'therapeutic' => 'Therapeutic',
+            'economic' => 'Economic',
+        ],
+        'document_types' => [
+            'leaflet' => 'Leaflet',
+            'datasheet' => 'Datasheet',
+            'brochure' => 'Brochure',
+            'certificate' => 'Certificate',
+        ],
         'types' => [
             'pharmaceutical' => 'Pharmaceutical',
         ],

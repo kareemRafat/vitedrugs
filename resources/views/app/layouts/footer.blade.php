@@ -73,17 +73,12 @@
         <hr class="my-6 border-default-medium dark:border-gray-700 sm:mx-auto lg:my-8">
 
         {{-- Bottom bar --}}
-        <div class="sm:flex sm:items-center sm:justify-between">
-            <span class="text-sm text-body dark:text-gray-400 sm:text-center">
+        <div class="text-center">
+            <span class="text-sm text-body dark:text-gray-400">
                 &copy; {{ date('Y') }}
                 <a href="{{ route('home') }}" class="hover:underline text-heading dark:text-white">VetPedia</a>.
                 {{ __('messages.nav.all_rights_reserved') }}
             </span>
-            <div class="flex gap-2 mt-4 sm:mt-0">
-                <a href="{{ route('sitemap') }}" class="text-sm text-body hover:text-heading dark:text-gray-400 dark:hover:text-white transition-colors duration-150">
-                    <x-lucide-folder-tree class="w-4 h-4 inline me-1" />{{ __('messages.nav.sitemap') }}
-                </a>
-            </div>
         </div>
     </div>
 </footer>

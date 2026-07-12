@@ -164,6 +164,166 @@
                 </div>
             </div>
 
+            {{-- Indications --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-check-circle class="w-4 h-4 text-body" />
+                    <h2 class="text-sm font-semibold text-heading dark:text-white">{{ __('messages.products.indications') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($product->indications->isEmpty())
+                        <p class="text-sm text-body dark:text-gray-400 text-center py-4">{{ __('messages.products.no_indications') }}</p>
+                    @else
+                        <ul class="space-y-3">
+                            @foreach ($product->indications as $indication)
+                                <li class="flex items-start gap-2">
+                                    <x-lucide-check-circle class="w-4 h-4 text-fg-brand mt-0.5 shrink-0" />
+                                    <div>
+                                        <p class="text-sm text-heading dark:text-white">{{ $indication->description }}</p>
+                                        @if ($indication->description_ar)
+                                            <p class="text-sm text-body dark:text-gray-400 mt-0.5" dir="rtl">{{ $indication->description_ar }}</p>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Contraindications --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-ban class="w-4 h-4 text-body" />
+                    <h2 class="text-sm font-semibold text-heading dark:text-white">{{ __('messages.products.contraindications') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($product->contraindications->isEmpty())
+                        <p class="text-sm text-body dark:text-gray-400 text-center py-4">{{ __('messages.products.no_contraindications') }}</p>
+                    @else
+                        <ul class="space-y-3">
+                            @foreach ($product->contraindications as $contraindication)
+                                <li class="flex items-start gap-2">
+                                    <x-lucide-ban class="w-4 h-4 text-red-500 dark:text-red-400 mt-0.5 shrink-0" />
+                                    <div>
+                                        <p class="text-sm text-heading dark:text-white">{{ $contraindication->description }}</p>
+                                        @if ($contraindication->description_ar)
+                                            <p class="text-sm text-body dark:text-gray-400 mt-0.5" dir="rtl">{{ $contraindication->description_ar }}</p>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Precautions --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-alert-triangle class="w-4 h-4 text-body" />
+                    <h2 class="text-sm font-semibold text-heading dark:text-white">{{ __('messages.products.precautions') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($product->precautions->isEmpty())
+                        <p class="text-sm text-body dark:text-gray-400 text-center py-4">{{ __('messages.products.no_precautions') }}</p>
+                    @else
+                        <ul class="space-y-3">
+                            @foreach ($product->precautions as $precaution)
+                                <li class="flex items-start gap-2">
+                                    <x-lucide-alert-triangle class="w-4 h-4 text-amber-500 dark:text-amber-400 mt-0.5 shrink-0" />
+                                    <div>
+                                        <p class="text-sm text-heading dark:text-white">{{ $precaution->description }}</p>
+                                        @if ($precaution->description_ar)
+                                            <p class="text-sm text-body dark:text-gray-400 mt-0.5" dir="rtl">{{ $precaution->description_ar }}</p>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Side Effects --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-alert-circle class="w-4 h-4 text-body" />
+                    <h2 class="text-sm font-semibold text-heading dark:text-white">{{ __('messages.products.side_effects') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($product->sideEffects->isEmpty())
+                        <p class="text-sm text-body dark:text-gray-400 text-center py-4">{{ __('messages.products.no_side_effects') }}</p>
+                    @else
+                        <ul class="space-y-3">
+                            @foreach ($product->sideEffects as $sideEffect)
+                                <li class="flex items-start gap-2">
+                                    <x-lucide-alert-circle class="w-4 h-4 text-red-500 dark:text-red-400 mt-0.5 shrink-0" />
+                                    <div>
+                                        <p class="text-sm text-heading dark:text-white">{{ $sideEffect->description }}</p>
+                                        @if ($sideEffect->description_ar)
+                                            <p class="text-sm text-body dark:text-gray-400 mt-0.5" dir="rtl">{{ $sideEffect->description_ar }}</p>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Images --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-image class="w-4 h-4 text-body" />
+                    <h2 class="text-sm font-semibold text-heading dark:text-white">{{ __('messages.products.images') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($product->images->isEmpty())
+                        <p class="text-sm text-body dark:text-gray-400 text-center py-4">{{ __('messages.products.no_images') }}</p>
+                    @else
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            @foreach ($product->images as $image)
+                                <a href="{{ Storage::disk('public')->url($image->image) }}" target="_blank" class="block aspect-square rounded-base overflow-hidden border border-default-medium bg-neutral-secondary-soft hover:opacity-90 transition-opacity">
+                                    <img src="{{ Storage::disk('public')->url($image->image) }}" alt="{{ $product->trade_name }}" class="w-full h-full object-cover" loading="lazy" />
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Documents --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-file-text class="w-4 h-4 text-body" />
+                    <h2 class="text-sm font-semibold text-heading dark:text-white">{{ __('messages.products.documents') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($product->documents->isEmpty())
+                        <p class="text-sm text-body dark:text-gray-400 text-center py-4">{{ __('messages.products.no_documents') }}</p>
+                    @else
+                        <ul class="space-y-3">
+                            @foreach ($product->documents as $document)
+                                <li class="flex items-center justify-between py-2 px-3 rounded-base bg-neutral-secondary-soft border border-default-medium dark:bg-gray-700 dark:border-gray-600">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <x-lucide-file class="w-5 h-5 text-body shrink-0" />
+                                        <div class="min-w-0">
+                                            <p class="text-sm font-medium text-heading dark:text-white truncate">{{ $document->title }}</p>
+                                            <span class="text-xs text-body dark:text-gray-400">{{ __('messages.products.document_types.' . $document->type) }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="{{ Storage::disk('public')->url($document->file_path) }}" target="_blank" class="inline-flex items-center gap-1 text-sm font-medium text-fg-brand hover:underline shrink-0 ms-3">
+                                        <x-lucide-download class="w-4 h-4" />
+                                        {{ __('messages.products.download') }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+
         </div>
 
         {{-- Sidebar --}}
@@ -277,6 +437,33 @@
                                 <li class="pb-3 border-b border-default-medium last:border-0 last:pb-0">
                                     <a href="{{ route('companies.show', $company) }}" class="text-sm font-medium text-fg-brand hover:underline">{{ $company->name }}</a>
                                     <p class="text-sm text-body dark:text-gray-400 mt-0.5 capitalize">{{ $company->pivot->role }}</p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Alternatives --}}
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800">
+                <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                    <x-lucide-shuffle class="w-4 h-4 text-body" />
+                    <h2 class="text-sm font-semibold text-heading dark:text-white">{{ __('messages.products.alternatives') }}</h2>
+                </div>
+                <div class="p-5">
+                    @if ($product->alternatives->isEmpty())
+                        <p class="text-sm text-body dark:text-gray-400 text-center py-4">{{ __('messages.products.no_alternatives') }}</p>
+                    @else
+                        <ul class="space-y-3">
+                            @foreach ($product->alternatives as $alternative)
+                                <li class="pb-3 border-b border-default-medium last:border-0 last:pb-0">
+                                    <a href="{{ route('products.show', $alternative->alternativeProduct) }}" class="text-sm font-medium text-fg-brand hover:underline">{{ $alternative->alternativeProduct->trade_name }}</a>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-base text-xs font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('messages.products.alternative_types.' . $alternative->type) }}</span>
+                                        @if ($alternative->notes)
+                                            <span class="text-xs text-body dark:text-gray-400">{{ $alternative->notes }}</span>
+                                        @endif
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>

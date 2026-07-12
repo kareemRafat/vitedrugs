@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- Hero / Search Section --}}
-    <div class="relative overflow-hidden mb-6 rounded-base bg-gradient-to-br from-brand to-brand-strong dark:from-brand/80 dark:to-brand/60">
+    <div class="relative overflow-hidden mb-6 rounded-base shadow-xs bg-gradient-to-br from-brand to-brand-strong dark:from-brand/80 dark:to-brand/60">
         <div class="absolute inset-0 opacity-10 dark:opacity-20">
             <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white"></div>
             <div class="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-white"></div>
@@ -137,7 +137,7 @@
                         </div>
                         <div class="min-w-0 flex-1">
                             <p class="font-medium text-heading dark:text-white truncate">{{ $company->name }}</p>
-                            <p class="text-xs text-body dark:text-gray-400 truncate">{{ ucfirst($company->company_type ?? __('messages.home.company_type_fallback')) }}</p>
+                            <p class="text-xs text-body dark:text-gray-400 truncate">{{ $company->company_type ? __('messages.companies.types.' . $company->company_type) : __('messages.home.company_type_fallback') }}</p>
                         </div>
                         <x-lucide-chevron-right class="w-4 h-4 text-body shrink-0 rtl:rotate-180" />
                     </a>
