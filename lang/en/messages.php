@@ -146,6 +146,7 @@ return [
         'back_to_blog' => 'Back to Blog',
         'related_posts' => 'Related Articles',
         'view_all' => 'View All',
+        'articles_label' => 'Articles',
     ],
 
     'errors' => [

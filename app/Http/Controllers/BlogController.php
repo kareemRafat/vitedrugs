@@ -32,7 +32,7 @@ class BlogController extends Controller
                 break;
         }
 
-        $blogs = $query->paginate(20)->withQueryString();
+        $blogs = $query->paginate(12)->withQueryString();
 
         $categories = BlogCategory::where('is_active', true)
             ->orderBy('name')

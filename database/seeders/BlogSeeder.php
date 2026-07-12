@@ -16,11 +16,19 @@ class BlogSeeder extends Seeder
             'email' => 'admin@vetpedia.com',
         ]);
 
-        $categories = BlogCategory::factory()->createMany([
-            ['name' => 'Clinical Guides', 'name_ar' => 'أدلة سريرية', 'description' => 'In-depth guides on veterinary clinical practices'],
-            ['name' => 'Drug Updates', 'name_ar' => 'تحديثات الأدوية', 'description' => 'Latest updates on veterinary pharmaceuticals'],
-            ['name' => 'Case Studies', 'name_ar' => 'دراسات حالة', 'description' => 'Real-world veterinary case studies'],
-        ]);
+        $categoryData = [
+            ['name' => 'Clinical Guides', 'slug' => 'clinical-guides', 'name_ar' => 'أدلة سريرية', 'description' => 'In-depth guides on veterinary clinical practices'],
+            ['name' => 'Drug Updates', 'slug' => 'drug-updates', 'name_ar' => 'تحديثات الأدوية', 'description' => 'Latest updates on veterinary pharmaceuticals'],
+            ['name' => 'Case Studies', 'slug' => 'case-studies', 'name_ar' => 'دراسات حالة', 'description' => 'Real-world veterinary case studies'],
+        ];
+
+        $categories = collect();
+        foreach ($categoryData as $data) {
+            $categories->push(BlogCategory::firstOrCreate(
+                ['slug' => $data['slug']],
+                $data,
+            ));
+        }
 
         Blog::factory()
             ->count(10)

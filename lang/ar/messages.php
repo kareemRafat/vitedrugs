@@ -146,6 +146,7 @@ return [
         'back_to_blog' => 'العودة إلى المدونة',
         'related_posts' => 'مقالات ذات صلة',
         'view_all' => 'عرض الكل',
+        'articles_label' => 'مقالات',
     ],
 
     'errors' => [

@@ -5,21 +5,13 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('messages.diseases.index_heading') }}</h1>
-                    <p class="text-body dark:text-gray-400 text-base font-semibold mt-1">{{ __('messages.diseases.index_subtitle') }}</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
-                        <x-lucide-activity class="w-3.5 h-3.5" />
-                        {{ number_format($diseases->total()) }} {{ __('messages.diseases.diseases_label') }}
-                    </span>
-                </div>
-            </div>
-        </div>
+        <x-page-hero
+            :heading="__('messages.diseases.index_heading')"
+            :subtitle="__('messages.diseases.index_subtitle')"
+            :stats="[
+                ['count' => number_format($diseases->total()), 'label' => __('messages.diseases.diseases_label'), 'icon' => 'activity'],
+            ]"
+        />
 
         {{-- Search --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">

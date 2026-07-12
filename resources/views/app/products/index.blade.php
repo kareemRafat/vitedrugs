@@ -5,29 +5,15 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('messages.products.index_heading') }}</h1>
-                    <p class="text-body dark:text-gray-400 text-sm font-semibold mt-1">{{ __('messages.products.index_subtitle') }}</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
-                        <x-lucide-package class="w-3.5 h-3.5" />
-                        {{ number_format($products->total()) }} {{ __('messages.products.products_label') }}
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
-                        <x-lucide-building-2 class="w-3.5 h-3.5" />
-                        {{ $companies->count() }} {{ __('messages.products.companies_label') }}
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-danger-soft text-fg-danger-strong dark:bg-danger/20 dark:text-danger">
-                        <x-lucide-pill class="w-3.5 h-3.5" />
-                        {{ $dosageForms->count() }} {{ __('messages.products.forms_label') }}
-                    </span>
-                </div>
-            </div>
-        </div>
+        <x-page-hero
+            :heading="__('messages.products.index_heading')"
+            :subtitle="__('messages.products.index_subtitle')"
+            :stats="[
+                ['count' => number_format($products->total()), 'label' => __('messages.products.products_label'), 'icon' => 'package'],
+                ['count' => $companies->count(), 'label' => __('messages.products.companies_label'), 'icon' => 'building-2'],
+                ['count' => $dosageForms->count(), 'label' => __('messages.products.forms_label'), 'icon' => 'pill'],
+            ]"
+        />
 
         {{-- Search / Filters --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">

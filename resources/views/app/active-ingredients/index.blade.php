@@ -5,21 +5,13 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('messages.active_ingredients.index_heading') }}</h1>
-                    <p class="text-body dark:text-gray-400 text-base font-semibold mt-1">{{ __('messages.active_ingredients.index_subtitle') }}</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-base text-sm font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
-                        <x-lucide-flask-conical class="w-3.5 h-3.5" />
-                        {{ number_format($ingredients->total()) }} {{ __('messages.active_ingredients.ingredients_label') }}
-                    </span>
-                </div>
-            </div>
-        </div>
+        <x-page-hero
+            :heading="__('messages.active_ingredients.index_heading')"
+            :subtitle="__('messages.active_ingredients.index_subtitle')"
+            :stats="[
+                ['count' => number_format($ingredients->total()), 'label' => __('messages.active_ingredients.ingredients_label'), 'icon' => 'flask-conical'],
+            ]"
+        />
 
         {{-- Search --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">

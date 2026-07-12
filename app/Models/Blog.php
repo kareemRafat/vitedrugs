@@ -57,6 +57,15 @@ class Blog extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    public function getReadTimeAttribute(): int
+    {
+        $body = app()->getLocale() === 'ar' && $this->body_ar
+            ? $this->body_ar
+            : $this->body;
+
+        return max(1, (int) round(str_word_count(strip_tags($body ?? '')) / 200));
+    }
+
     public function scopePublished(Builder $query): void
     {
         $query->where('is_active', true)

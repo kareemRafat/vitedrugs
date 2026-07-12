@@ -62,8 +62,7 @@
                     </span>
                     <span class="flex items-center gap-1.5">
                         <x-lucide-clock class="w-3.5 h-3.5" />
-                        @php $body = $locale === 'ar' && $blog->body_ar ? $blog->body_ar : $blog->body; @endphp
-                        {{ __('messages.blog.read_time', ['minutes' => number_format(max(1, str_word_count(strip_tags($body)) / 200))]) }}
+                        {{ __('messages.blog.read_time', ['minutes' => $blog->read_time]) }}
                     </span>
                 </div>
 
