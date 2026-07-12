@@ -10,7 +10,7 @@
         class="z-50 hidden my-2 w-40 bg-neutral-primary-soft rounded-base shadow-xs border border-default-medium dark:bg-gray-700 dark:border-gray-600">
         @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
             <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
-                class="block px-4 py-2 text-sm text-heading hover:bg-neutral-secondary-soft dark:text-gray-300 dark:hover:bg-gray-600 {{ $localeCode === LaravelLocalization::getCurrentLocale() ? 'bg-neutral-secondary-soft dark:bg-gray-600' : '' }}">
+                class="block px-4 py-2 text-sm text-heading dark:text-gray-300 rounded-base transition-colors duration-150 hover:bg-neutral-secondary-soft dark:hover:bg-gray-600 dark:hover:text-white {{ $localeCode === LaravelLocalization::getCurrentLocale() ? 'bg-neutral-secondary-soft dark:bg-gray-600' : '' }}">
                 {{ $properties['native'] }}
             </a>
         @endforeach

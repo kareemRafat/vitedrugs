@@ -10,7 +10,7 @@ Terms of Service governing the use of the VetPedia veterinary medical knowledge 
 <div id="terms-page" class="max-w-7xl mx-auto space-y-12 py-8 sm:py-12">
 
   {{-- Hero --}}
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm">
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-brand/80 dark:to-brand/60 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm">
     <div class="relative z-10 max-w-2xl">
       <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-100 border border-white/10 mb-5">
         <x-lucide-file-text class="w-4 h-4" />

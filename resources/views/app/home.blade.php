@@ -4,14 +4,14 @@
     {{-- Hero / Search Section --}}
     <div class="relative overflow-hidden mb-6 rounded-base bg-gradient-to-br from-brand to-brand-strong dark:from-brand/80 dark:to-brand/60">
         <div class="absolute inset-0 opacity-10 dark:opacity-20">
-            <div class="absolute -top-24 -end-24 w-96 h-96 rounded-full bg-white"></div>
-            <div class="absolute -bottom-32 -start-32 w-80 h-80 rounded-full bg-white"></div>
+            <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white"></div>
+            <div class="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-white"></div>
         </div>
         <div class="relative px-6 py-10 sm:py-14 text-center">
             <h1 class="text-4xl sm:text-5xl font-bold text-white mb-3 drop-shadow-sm">
                 VetPedia
             </h1>
-            <p class="text-white/90 text-base sm:text-lg mb-6 max-w-xl mx-auto">
+            <p class="text-white/90 text-base sm:text-lg mb-6 max-w-2xl mx-auto">
                 {{ __('messages.home.hero_subtitle') }}
             </p>
 
