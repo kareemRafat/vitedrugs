@@ -12,6 +12,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use stdClass;
 
 class ProductsTable
 {
@@ -19,6 +20,9 @@ class ProductsTable
     {
         return $table
             ->columns([
+
+                TextColumn::make('#')
+                    ->state(fn (stdClass $rowLoop, $livewire): string => (string) ($livewire->getTableRecords()->firstItem() + $rowLoop->iteration - 1)),
 
                 TextColumn::make('trade_name')
                     ->searchable()

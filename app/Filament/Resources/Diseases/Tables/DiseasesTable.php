@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use stdClass;
 
 class DiseasesTable
 {
@@ -17,12 +18,17 @@ class DiseasesTable
         return $table
             ->columns([
 
+                TextColumn::make('#')
+                    ->state(fn (stdClass $rowLoop, $livewire): string => (string) ($livewire->getTableRecords()->firstItem() + $rowLoop->iteration - 1)),
+
                 TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(30),
 
                 TextColumn::make('name_ar')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(30),
 
                 TextColumn::make('slug')
                     ->searchable(),

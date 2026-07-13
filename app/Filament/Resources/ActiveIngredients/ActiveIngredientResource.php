@@ -48,7 +48,6 @@ class ActiveIngredientResource extends Resource
     {
         return [
             DrugInteractionsRelationManager::class,
-
             DrugClassesRelationManager::class,
         ];
     }
