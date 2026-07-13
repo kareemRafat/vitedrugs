@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ContactSubmissions\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ContactSubmissionInfolist
@@ -10,13 +11,30 @@ class ContactSubmissionInfolist
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(2)
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('email'),
-                TextEntry::make('subject'),
-                TextEntry::make('message'),
-                TextEntry::make('created_at')
-                    ->dateTime(),
+
+                Section::make('Sender Information')
+                    ->columnSpan(1)
+                    ->schema([
+                        TextEntry::make('name'),
+                        TextEntry::make('email'),
+                    ]),
+
+                Section::make('Details')
+                    ->columnSpan(1)
+                    ->schema([
+                        TextEntry::make('subject'),
+                        TextEntry::make('created_at')
+                            ->dateTime(),
+                    ]),
+
+                Section::make('Message')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('message'),
+                    ]),
+
             ]);
     }
 }

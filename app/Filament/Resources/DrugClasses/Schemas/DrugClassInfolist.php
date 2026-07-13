@@ -5,6 +5,7 @@ namespace App\Filament\Resources\DrugClasses\Schemas;
 use App\Models\DrugClass;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class DrugClassInfolist
@@ -12,29 +13,43 @@ class DrugClassInfolist
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(2)
             ->components([
-                TextEntry::make('id')
-                    ->label('ID'),
-                TextEntry::make('name'),
-                TextEntry::make('name_ar'),
-                TextEntry::make('slug'),
-                TextEntry::make('description')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                TextEntry::make('description_ar')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                IconEntry::make('is_active')
-                    ->boolean(),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('deleted_at')
-                    ->dateTime()
-                    ->visible(fn (DrugClass $record): bool => $record->trashed()),
+
+                Section::make('Basic Information')
+                    ->columnSpan(1)
+                    ->schema([
+                        TextEntry::make('name'),
+                        TextEntry::make('name_ar')
+                            ->placeholder('-'),
+                        TextEntry::make('slug'),
+                        IconEntry::make('is_active')
+                            ->boolean(),
+                    ]),
+
+                Section::make('Timestamps')
+                    ->columnSpan(1)
+                    ->schema([
+                        TextEntry::make('created_at')
+                            ->dateTime()
+                            ->placeholder('-'),
+                        TextEntry::make('updated_at')
+                            ->dateTime()
+                            ->placeholder('-'),
+                        TextEntry::make('deleted_at')
+                            ->dateTime()
+                            ->visible(fn (DrugClass $record): bool => $record->trashed()),
+                    ]),
+
+                Section::make('Description')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('description')
+                            ->placeholder('-'),
+                        TextEntry::make('description_ar')
+                            ->placeholder('-'),
+                    ]),
+
             ]);
     }
 }
