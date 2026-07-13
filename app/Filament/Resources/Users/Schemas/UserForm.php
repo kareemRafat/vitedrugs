@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\UserRole;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Validation\Rules\Password;
@@ -24,13 +26,16 @@ class UserForm
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
+                Select::make('role')
+                    ->options(UserRole::class)
+                    ->native(false)
+                    ->required(),
+
                 TextInput::make('password')
                     ->password()
                     ->required(fn ($livewire) => $livewire instanceof CreateUser)
                     ->rule(Password::default())
                     ->dehydrated(fn ($state) => filled($state)),
-
-                DateTimePicker::make('email_verified_at'),
             ]);
     }
 }

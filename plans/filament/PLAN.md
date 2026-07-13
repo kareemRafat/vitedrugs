@@ -80,6 +80,44 @@ System
 
 ---
 
+## Milestone: Admin/User Login Separation
+
+Separates the public (`/login`) and admin (`/admin/login`) authentication — admins can only log in via `/admin`, regular users only via `/login`.
+
+### Tasks
+
+#### Phase 1 — Backend Foundation
+
+- `[x]` **Create `app/Enums/UserRole.php`** — backed enum with `Admin = 'admin'` and `User = 'user'` cases
+- `[x]` **Create migration** — add `role` string column to `users` table (default `'user'`, after `email`)
+- `[x]` **Run migration** — `php artisan migrate`
+- `[x]` **Promote existing admin user** — set `admin@admin.com` to role `admin`
+- `[x]` **Update `User` model** — add `role` to `$fillable`, add cast `'role' => UserRole::class`, add `$attributes` default
+
+#### Phase 2 — Public Login Guard
+
+- `[x]` **Modify `LoginController::store`** — after `Auth::attempt()`, check if user is `admin`; if so, logout, redirect back with error
+- `[x]` **Add translation key** `messages.login.admin_restricted` — English + Arabic
+
+#### Phase 3 — Admin Login Guard
+
+- `[x]` **Create `EnsureUserIsAdmin` middleware** — if authenticated user's role is not `admin`, logout + redirect to public `/login` with error
+- `[x]` **Register middleware alias** in `bootstrap/app.php` — `'ensure.user.is.admin' => \App\Http\Middleware\EnsureUserIsAdmin::class`
+- `[x]` **Add to `AdminPanelProvider`** — append `EnsureUserIsAdmin::class` to the `authMiddleware` array (after `Authenticate::class`)
+
+#### Phase 4 — Filament UserResource Updates
+
+- `[x]` **Update `UserForm`** — add `Select::make('role')->options(UserRole::class)->required()`
+- `[x]` **Update `UsersTable`** — add `TextColumn::make('role')->badge()->color(fn($state) => ...)` with color mapping
+- `[x]` **Update `UserInfolist`** — add `TextEntry::make('role')->badge()` with same color logic
+
+#### Phase 5 — Verification
+
+- `[x]` **Run `php artisan test`** — ensure no existing tests break (1 passed, 7 skipped)
+- `[x]` **Run `./vendor/bin/pint --format agent`** — fix code style
+
+---
+
 ## Implementation Order
 
 1. `[x]` Fix existing navigation icons & groups
@@ -88,11 +126,12 @@ System
 4. `[x]` ContactSubmissionResource
 5. `[x]` UserResource
 6. `[x]` DrugInteractionResource
+7. `[x]` **Milestone: Admin/User Login Separation**
 
 ---
 
 ## Remaining
 
 - `[ ]` Write Filament resource tests for new resources
-- `[ ]]` Blog model — verify `author_id` foreign key index in migration
+- `[ ]` Blog model — verify `author_id` foreign key index in migration
 - `[ ]` BlogCategory model — verify `slug` unique constraint in migration

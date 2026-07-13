@@ -13,6 +13,7 @@ return [
         'submit' => 'تسجيل الدخول',
         'no_account' => 'ليس لديك حساب؟',
         'register_link' => 'سجل هنا',
+        'admin_restricted' => 'يجب على المسؤولين استخدام لوحة التحكم على /admin.',
     ],
 
     'register' => [

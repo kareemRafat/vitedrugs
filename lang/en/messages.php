@@ -13,6 +13,7 @@ return [
         'submit' => 'Sign in',
         'no_account' => "Don't have an account?",
         'register_link' => 'Register here',
+        'admin_restricted' => 'Admins must use the admin panel at /admin.',
     ],
 
     'register' => [
