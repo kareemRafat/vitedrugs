@@ -14,7 +14,6 @@ class Product extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'company_id',
         'trade_name',
         'trade_name_ar',
         'slug',
@@ -30,11 +29,6 @@ class Product extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
 
     public function companies()
     {
@@ -67,7 +61,7 @@ class Product extends Model
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
     }
 
     public function documents()

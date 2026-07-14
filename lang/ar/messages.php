@@ -98,6 +98,7 @@ return [
         'privacy_policy' => 'سياسة الخصوصية',
         'terms_of_service' => 'شروط الخدمة',
         'sitemap' => 'خريطة الموقع',
+        'breadcrumb' => 'مسار التنقل',
         'quick_links' => 'روابط سريعة',
         'resources' => 'المصادر',
         'language' => 'اللغة',
@@ -425,6 +426,7 @@ return [
         'home' => 'الرئيسية',
         'products' => 'المنتجات',
         'no_description' => 'لا يوجد وصف متاح.',
+        'veterinary_drug' => 'دواء بيطري',
         'product_type' => 'نوع المنتج',
         'manufacturer' => 'الشركة المصنعة',
         'package' => 'الحجم',
@@ -477,6 +479,11 @@ return [
         ],
         'types' => [
             'pharmaceutical' => 'دواء',
+            'vaccine' => 'لقاح',
+            'supplement' => 'مكمل غذائي',
+            'feed_additive' => 'إضافة علفية',
+            'disinfectant' => 'مطهر',
+            'biological' => 'بيولوجي',
         ],
     ],
 

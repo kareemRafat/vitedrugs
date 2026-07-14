@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Models\Company;
 use App\Models\DosageForm;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -17,9 +18,9 @@ class ProductForm
         return $schema
             ->components([
 
-                Select::make('company_id')
-                    ->label('Company')
-                    ->relationship('company', 'name')
+                Select::make('manufacturer_id')
+                    ->label('Manufacturer')
+                    ->options(Company::pluck('name', 'id'))
                     ->searchable()
                     ->preload()
                     ->required(),

@@ -48,7 +48,6 @@ class ProductImportService
                     'trade_name' => $data['trade_name'],
                 ],
                 [
-                    'company_id' => $company->id, // Legacy
                     'trade_name_ar' => $data['trade_name_ar'] ?? null,
                     'slug' => Str::slug($data['trade_name']),
                     'dosage_form_id' => $dosageForm->id,

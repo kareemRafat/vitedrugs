@@ -33,8 +33,20 @@ class ProductInfolist
                 Section::make('Classification')
                     ->columnSpan(1)
                     ->schema([
-                        TextEntry::make('company.name')
-                            ->label('Company')
+                        TextEntry::make('manufacturer')
+                            ->label('Manufacturer')
+                            ->state(fn (Product $record): ?string => $record->companies
+                                ->firstWhere('pivot.role', 'manufacturer')?->name)
+                            ->placeholder('-'),
+                        TextEntry::make('agent')
+                            ->label('Agent')
+                            ->state(fn (Product $record): ?string => $record->companies
+                                ->firstWhere('pivot.role', 'agent')?->name)
+                            ->placeholder('-'),
+                        TextEntry::make('distributor')
+                            ->label('Distributor')
+                            ->state(fn (Product $record): ?string => $record->companies
+                                ->firstWhere('pivot.role', 'distributor')?->name)
                             ->placeholder('-'),
                         TextEntry::make('dosageForm.name')
                             ->label('Dosage Form')

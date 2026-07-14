@@ -7,7 +7,7 @@
 @endsection
 
 @section('meta_keywords')
-    {{ $product->trade_name }}, veterinary drug, {{ $product->dosageForm?->name }}
+    {{ $product->trade_name }}, {{ __('messages.products.veterinary_drug') }}, {{ $product->dosageForm?->name }}
 @endsection
 
 @section('og_title', $product->trade_name)
@@ -18,7 +18,7 @@
 
 @section('content')
     {{-- Breadcrumb --}}
-    <nav class="flex mb-4" aria-label="Breadcrumb">
+    <nav class="flex mb-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
         <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-sm text-body dark:text-gray-400">
             <li class="inline-flex items-center">
                 <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.products.home') }}</a>
@@ -436,7 +436,7 @@
                             @foreach ($product->companies as $company)
                                 <li class="pb-3 border-b border-default-medium last:border-0 last:pb-0">
                                     <a href="{{ route('companies.show', $company) }}" class="text-sm font-medium text-fg-brand hover:underline">{{ $company->name }}</a>
-                                    <p class="text-sm text-body dark:text-gray-400 mt-0.5 capitalize">{{ $company->pivot->role }}</p>
+                                    <p class="text-sm text-body dark:text-gray-400 mt-0.5">{{ __('messages.companies.types.' . $company->pivot->role) }}</p>
                                 </li>
                             @endforeach
                         </ul>

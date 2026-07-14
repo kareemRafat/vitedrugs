@@ -70,7 +70,9 @@ class BlogInfolist
                 Section::make('Cover Image')
                     ->columnSpanFull()
                     ->schema([
-                        ImageEntry::make('cover_image'),
+                        ImageEntry::make('cover_image')
+                            ->disk('public')
+                            ->visibility('public'),
                     ]),
 
             ]);

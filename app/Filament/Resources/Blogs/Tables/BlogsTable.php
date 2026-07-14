@@ -18,6 +18,9 @@ class BlogsTable
         return $table
             ->columns([
                 ImageColumn::make('cover_image')
+                    ->label('Cover')
+                    ->disk('public')
+                    ->visibility('public')
                     ->circular()
                     ->toggleable(),
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Models\Product;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -12,6 +13,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use stdClass;
 
 class ProductsTable
@@ -28,16 +30,11 @@ class ProductsTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('trade_name_ar')
-                    ->searchable(),
-
-                TextColumn::make('company.name')
+                TextColumn::make('manufacturer')
                     ->label('Company')
-                    ->searchable(),
-
-                TextColumn::make('dosageForm.name')
-                    ->label('Dosage Form')
-                    ->searchable(),
+                    ->limit(20)
+                    ->state(fn (Product $record): ?string => $record->manufacturer->first()?->name)
+                    ->searchable(query: fn (Builder $query, string $search) => $query->whereHas('manufacturer', fn ($q) => $q->where('name', 'like', "%{$search}%"))),
 
                 TextColumn::make('product_type')
                     ->badge()
@@ -50,7 +47,7 @@ class ProductsTable
                     ->boolean(),
 
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->date()
                     ->sortable(),
 
             ])

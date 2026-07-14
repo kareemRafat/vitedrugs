@@ -61,7 +61,6 @@ class BlogForm
                     ->fileAttachmentsDirectory('blog'),
 
                 FileUpload::make('cover_image')
-                    ->image()
                     ->disk('public')
                     ->directory('blog/covers')
                     ->visibility('public'),

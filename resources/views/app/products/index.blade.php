@@ -97,7 +97,7 @@
                                     </a>
                                 </td>
                                 <td class="px-5 py-4 hidden sm:table-cell text-gray-800 font-semibold dark:text-gray-400">
-                                    {{ $product->company?->name ?? __('messages.products.unknown') }}
+                                    {{ $product->manufacturer->first()?->name ?? __('messages.products.unknown') }}
                                 </td>
                                 <td class="px-5 py-4 hidden md:table-cell text-body dark:text-gray-400">
                                     {{ $product->dosageForm?->name ?? __('messages.products.na') }}

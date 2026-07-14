@@ -88,11 +88,13 @@ class ImportDrugVetProducts extends Command
 
                 'slug' => $slug,
 
-                'company_id' => $company->id,
-
                 'product_type' => 'pharmaceutical',
 
                 'is_active' => true,
+            ]);
+
+            $product->companies()->syncWithoutDetaching([
+                $company->id => ['role' => 'manufacturer'],
             ]);
 
             /*

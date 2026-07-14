@@ -22,4 +22,32 @@ class EditProduct extends EditRecord
             RestoreAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['manufacturer_id'] = $this->record->manufacturer()->first()?->id;
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        unset($data['manufacturer_id']);
+
+        return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        $manufacturerId = $this->form->getState()['manufacturer_id'];
+
+        $this->record->companies()
+            ->newPivotQuery()
+            ->where('role', 'manufacturer')
+            ->delete();
+
+        $this->record->companies()->syncWithoutDetaching([
+            $manufacturerId => ['role' => 'manufacturer'],
+        ]);
+    }
 }

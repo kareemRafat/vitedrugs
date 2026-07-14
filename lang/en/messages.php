@@ -98,6 +98,7 @@ return [
         'privacy_policy' => 'Privacy Policy',
         'terms_of_service' => 'Terms of Service',
         'sitemap' => 'Sitemap',
+        'breadcrumb' => 'Breadcrumb',
         'quick_links' => 'Quick Links',
         'resources' => 'Resources',
         'language' => 'Language',
@@ -425,6 +426,7 @@ return [
         'home' => 'Home',
         'products' => 'Products',
         'no_description' => 'No description available.',
+        'veterinary_drug' => 'Veterinary Drug',
         'product_type' => 'Product Type',
         'manufacturer' => 'Manufacturer',
         'package' => 'Package',
@@ -477,6 +479,11 @@ return [
         ],
         'types' => [
             'pharmaceutical' => 'Pharmaceutical',
+            'vaccine' => 'Vaccine',
+            'supplement' => 'Supplement',
+            'feed_additive' => 'Feed Additive',
+            'disinfectant' => 'Disinfectant',
+            'biological' => 'Biological',
         ],
     ],
 
