@@ -270,6 +270,10 @@ return [
         'action' => 'إجراء',
         'related_diseases' => 'الأمراض ذات الصلة',
         'no_diseases' => 'لا توجد أمراض.',
+        'starting_with' => 'تبدأ بحرف :letter',
+        'clear_filter' => 'مسح',
+        'previous_page' => 'السابق',
+        'next_page' => 'التالي',
     ],
 
     'pages' => [

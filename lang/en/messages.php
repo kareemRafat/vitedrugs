@@ -270,6 +270,10 @@ return [
         'action' => 'Action',
         'related_diseases' => 'Related Diseases',
         'no_diseases' => 'No diseases found.',
+        'starting_with' => 'starting with :letter',
+        'clear_filter' => 'Clear',
+        'previous_page' => 'Previous',
+        'next_page' => 'Next',
     ],
 
     'pages' => [

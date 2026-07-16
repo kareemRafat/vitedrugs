@@ -8,18 +8,7 @@ class ActiveIngredientController extends Controller
 {
     public function index()
     {
-        $ingredients = ActiveIngredient::query()
-            ->withCount('products')
-            ->when(request('search'), function ($query, $search) {
-                $query->whereFullText(['name', 'name_ar'], $search);
-            })
-            ->orderBy('name')
-            ->paginate(20);
-
-        return view(
-            'app.active-ingredients.index',
-            compact('ingredients')
-        );
+        return view('app.active-ingredients.index');
     }
 
     public function show(
@@ -33,9 +22,7 @@ class ActiveIngredientController extends Controller
         $diseases = collect();
 
         foreach ($activeIngredient->products as $product) {
-
             foreach ($product->diseases as $disease) {
-
                 $diseases->push($disease);
             }
         }
