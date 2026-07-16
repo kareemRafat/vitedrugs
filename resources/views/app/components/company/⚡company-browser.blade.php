@@ -277,35 +277,37 @@ new class extends Component
                     <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
 
                     <div class="p-5 pt-6 flex flex-col flex-1">
-                        {{-- Avatar + Name row --}}
-                        <div class="flex items-center gap-3">
-                            <div class="shrink-0 w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold text-base">
-                                {{ $initial }}
+                        {{-- Card header --}}
+                        <div class="bg-gray-100 dark:bg-gray-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="shrink-0 w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold text-base">
+                                    {{ $initial }}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <a href="{{ route('companies.show', $company) }}" class="text-base font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-snug block truncate">
+                                        {{ $company->name }}
+                                    </a>
+                                    @if ($company->name_ar && app()->getLocale() === 'ar')
+                                        <p class="text-xs text-body dark:text-gray-400 truncate">{{ $company->name_ar }}</p>
+                                    @endif
+                                </div>
                             </div>
-                            <div class="min-w-0 flex-1">
-                                <a href="{{ route('companies.show', $company) }}" class="text-base font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-snug block truncate">
-                                    {{ $company->name }}
-                                </a>
-                                @if ($company->name_ar && app()->getLocale() === 'ar')
-                                    <p class="text-xs text-body dark:text-gray-400 truncate">{{ $company->name_ar }}</p>
-                                @endif
-                            </div>
-                        </div>
 
-                        {{-- Type badge --}}
-                        <div class="mt-2.5">
-                            @php
-                                $typeDotStyles = [
-                                    'manufacturer' => 'bg-success',
-                                    'agent' => 'bg-brand',
-                                    'distributor' => 'bg-danger',
-                                    'marketing' => 'bg-body',
-                                ];
-                            @endphp
-                            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-body dark:text-gray-400">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $typeDotStyles[$company->company_type] ?? 'bg-brand' }}"></span>
-                                {{ __('messages.companies.types.' . $company->company_type) }}
-                            </span>
+                            {{-- Type badge --}}
+                            <div class="mt-2.5">
+                                @php
+                                    $typeDotStyles = [
+                                        'manufacturer' => 'bg-success',
+                                        'agent' => 'bg-brand',
+                                        'distributor' => 'bg-danger',
+                                        'marketing' => 'bg-body',
+                                    ];
+                                @endphp
+                                <span class="inline-flex items-center gap-1.5 text-xs font-medium text-body dark:text-gray-400">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $typeDotStyles[$company->company_type] ?? 'bg-brand' }}"></span>
+                                    {{ __('messages.companies.types.' . $company->company_type) }}
+                                </span>
+                            </div>
                         </div>
 
                         {{-- Metadata row --}}

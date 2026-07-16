@@ -82,27 +82,33 @@
                             <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
 
                             <div class="p-5 pt-6 flex flex-col flex-1">
-                                {{-- Top row: product type + manufacturer --}}
-                                <div class="flex items-center justify-between gap-2 mb-3">
-                                    <div class="flex items-center gap-2 min-w-0">
-                                        @if ($product->product_type)
-                                            <span class="inline-flex items-center px-2.5 py-1.5 rounded text-xs font-semibold tracking-wider rtl:tracking-normal bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand shrink-0">
-                                                {{ __('messages.products.types.' . $product->product_type) }}
-                                            </span>
-                                        @endif
+                                {{-- Card header --}}
+                                <div class="bg-gray-100 dark:bg-gray-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
+                                    {{-- Top row: product type + manufacturer --}}
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            @if ($product->product_type)
+                                                <span class="inline-flex items-center px-2.5 py-1.5 rounded text-xs font-semibold tracking-wider rtl:tracking-normal bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand shrink-0">
+                                                    {{ __('messages.products.types.' . $product->product_type) }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <span class="text-xs text-white truncate text-right bg-slate-600 py-1.5 px-2.5 rounded font-semibold tracking-wider rtl:tracking-normal">
+                                            {{ $product->manufacturer->first()?->name ?? __('messages.products.unknown') }}
+                                        </span>
                                     </div>
-                                    <span class="text-xs text-white truncate text-right bg-slate-600 py-1.5 px-2.5 rounded font-semibold tracking-wider rtl:tracking-normal">
-                                        {{ $product->manufacturer->first()?->name ?? __('messages.products.unknown') }}
-                                    </span>
+
+                                    {{-- Trade name --}}
+                                    <a href="{{ route('products.show', $product) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-tight">
+                                        {{ $product->trade_name }}
+                                    </a>
                                 </div>
 
-                                {{-- Trade name --}}
-                                <a href="{{ route('products.show', $product) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-tight mb-3">
-                                    {{ $product->trade_name }}
-                                </a>
+                                {{-- Divider line under header --}}
+                                <div class="border-t border-dashed border-neutral-200 dark:border-gray-700 mb-3"></div>
 
                                 {{-- Details section --}}
-                                <div class="mt-auto pt-3 border-t border-dashed border-neutral-200 dark:border-gray-700 space-y-2">
+                                <div class="flex-1 space-y-2">
                                     @if ($product->dosageForm)
                                         <div class="flex items-center gap-2 text-sm text-body dark:text-gray-400">
                                             <x-lucide-pill class="w-4 h-4 shrink-0" />
