@@ -230,10 +230,16 @@ return [
         'address' => 'Address',
         'registration' => 'Registration',
         'description' => 'Description',
+        'filter_all' => 'All',
+        'starting_with' => 'starting with :letter',
+        'clear_filter' => 'Clear',
+        'previous_page' => 'Previous',
+        'next_page' => 'Next',
         'types' => [
             'manufacturer' => 'Manufacturer',
             'agent' => 'Agent',
             'distributor' => 'Distributor',
+            'marketing' => 'Marketing',
         ],
     ],
 

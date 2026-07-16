@@ -230,10 +230,16 @@ return [
         'address' => 'العنوان',
         'registration' => 'رقم التسجيل',
         'description' => 'الوصف',
+        'filter_all' => 'الكل',
+        'starting_with' => 'تبدأ بحرف :letter',
+        'clear_filter' => 'مسح',
+        'previous_page' => 'السابق',
+        'next_page' => 'التالي',
         'types' => [
             'manufacturer' => 'شركة مصنعة',
             'agent' => 'وكيل',
             'distributor' => 'موزع',
+            'marketing' => 'تسويق',
         ],
     ],
 

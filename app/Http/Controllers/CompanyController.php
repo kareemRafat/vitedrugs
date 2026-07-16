@@ -22,26 +22,6 @@ class CompanyController extends Controller
 
     public function index()
     {
-        $query = Company::query()
-            ->withCount('products');
-
-        if ($search = request('search')) {
-
-            $query->where(function ($q) use ($search) {
-
-                $q->whereFullText(['name', 'name_ar'], $search)
-                    ->orWhere('country', 'like', "%{$search}%");
-            });
-        }
-
-        $companies = $query
-            ->orderBy('name')
-            ->paginate(20)
-            ->withQueryString();
-
-        return view(
-            'app.companies.index',
-            compact('companies')
-        );
+        return view('app.companies.index');
     }
 }
