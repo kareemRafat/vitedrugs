@@ -36,7 +36,7 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
     <div class="lg:col-span-5 xl:col-span-4 space-y-5">
 
       {{-- Email --}}
-      <div class="p-6 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="p-6 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
         <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <x-lucide-mail class="w-5 h-5 text-blue-600 dark:text-blue-400" />
           {{ __('messages.pages.contact.info_title') }}
@@ -55,7 +55,7 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
       </div>
 
       {{-- Categories --}}
-      <div class="p-6 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="p-6 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
         <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <x-lucide-list class="w-5 h-5 text-blue-600 dark:text-blue-400" />
           {{ __('messages.pages.contact.categories_title') }}
@@ -71,7 +71,7 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
       </div>
 
       {{-- Response Time --}}
-      <div class="p-6 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="p-6 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
         <div class="flex items-start gap-3">
           <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0">
             <x-lucide-clock class="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -87,7 +87,7 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
 
     {{-- Right: Contact Form --}}
     <div class="lg:col-span-7 xl:col-span-8">
-      <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
         <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6">{{ __('messages.pages.contact.form_title') }}</h2>
 
         <form id="contactForm" method="POST" action="{{ route('contact') }}">

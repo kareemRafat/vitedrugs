@@ -79,7 +79,7 @@
                     @forelse($products as $product)
                         <div class="group bg-white dark:bg-slate-800 rounded border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
                             {{-- Top brand accent bar --}}
-                            <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
+                            <div class="h-1 w-full bg-brand/40 group-hover:bg-brand dark:group-hover:bg-sky-500 absolute top-0 left-0 transition-all duration-300"></div>
 
                             <div class="p-5 pt-6 flex flex-col flex-1">
                                 {{-- Card header --}}

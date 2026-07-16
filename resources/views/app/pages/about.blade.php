@@ -29,7 +29,7 @@
 
   {{-- Mission / Vision --}}
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+    <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
       <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
         <x-lucide-heart class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
@@ -38,7 +38,7 @@
         {{ __('messages.pages.about.mission_text') }}
       </p>
     </div>
-    <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+    <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
       <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
         <x-lucide-eye class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
@@ -68,7 +68,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       @foreach ($featuresList as $item)
         @php $feature = __('messages.pages.about.features.' . $item['key']); @endphp
-        <div class="p-5 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="p-5 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700  shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
           <div class="w-10 h-10 {{ $item['bg'] }} rounded-lg flex items-center justify-center mb-4">
             @svg('lucide-' . $item['icon'], 'w-5 h-5 ' . $item['tc'])
           </div>

@@ -35,7 +35,7 @@
     {{-- Stats Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <a href="{{ route('products.index') }}"
-            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700 group">
+            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
                     <x-lucide-package class="w-5 h-5" />
@@ -47,7 +47,7 @@
         </a>
 
         <a href="{{ route('companies.index') }}"
-            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700 group">
+            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
                     <x-lucide-building-2 class="w-5 h-5" />
@@ -59,7 +59,7 @@
         </a>
 
         <a href="{{ route('diseases.index') }}"
-            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700 group">
+            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-danger-soft text-fg-danger-strong dark:bg-danger/20 dark:text-danger">
                     <x-lucide-activity class="w-5 h-5" />
@@ -71,7 +71,7 @@
         </a>
 
         <a href="{{ route('active-ingredients.index') }}"
-            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700 group">
+            class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
                     <x-lucide-flask-conical class="w-5 h-5" />
@@ -100,7 +100,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach ($latestBlogs as $blog)
                     <a href="{{ route('blog.show', $blog) }}"
-                        class="group bg-neutral-primary-soft rounded-base border border-default-medium overflow-hidden hover:shadow-md transition-all duration-300 dark:bg-slate-800 dark:border-slate-700">
+                        class="group bg-neutral-primary-soft rounded-base border border-default-medium overflow-hidden hover:shadow-md transition-all duration-300 dark:bg-slate-800 dark:border-slate-700 ">
                         <div class="h-40 bg-neutral-secondary-soft dark:bg-slate-700 overflow-hidden">
                             @if ($blog->cover_image)
                                 <img src="{{ Storage::url($blog->cover_image) }}"
@@ -148,7 +148,7 @@
             <div class="p-5 space-y-3">
                 @forelse($latestProducts as $product)
                     <a href="{{ route('products.show', $product) }}"
-                        class="flex items-center gap-3 p-3 rounded-base border border-default-medium hover:bg-neutral-secondary-soft dark:border-slate-600 dark:hover:bg-slate-700 transition-all duration-200">
+                        class="flex items-center gap-3 p-3 rounded-base border border-default-medium hover:bg-neutral-secondary-soft dark:border-slate-600 dark:hover:bg-slate-700  transition-all duration-200">
                         <div class="flex items-center justify-center w-10 h-10 rounded-base shrink-0 bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
                             <x-lucide-package class="w-5 h-5" />
                         </div>
@@ -179,7 +179,7 @@
             <div class="p-5 space-y-3">
                 @forelse($latestCompanies as $company)
                     <a href="{{ route('companies.show', $company) }}"
-                        class="flex items-center gap-3 p-3 rounded-base border border-default-medium hover:bg-neutral-secondary-soft dark:border-slate-600 dark:hover:bg-slate-700 transition-all duration-200">
+                        class="flex items-center gap-3 p-3 rounded-base border border-default-medium hover:bg-neutral-secondary-soft dark:border-slate-600 dark:hover:bg-slate-700  transition-all duration-200">
                         <div class="flex items-center justify-center w-10 h-10 rounded-base shrink-0 bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
                             <x-lucide-building-2 class="w-5 h-5" />
                         </div>

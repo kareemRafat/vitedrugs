@@ -240,7 +240,7 @@ new class extends Component
                             <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-brand text-white text-sm font-bold cursor-default">{{ $letter }}</span>
                         @else
                             <button type="button" wire:click="filterByLetter('{{ $letter }}')"
-                                class="inline-flex items-center justify-center w-9 h-9 rounded-full text-sm font-medium text-heading hover:bg-brand/10 hover:text-brand dark:text-white dark:hover:text-brand transition-colors">
+                                class="inline-flex items-center justify-center w-9 h-9 rounded-full text-sm font-medium text-heading bg-neutral-secondary-soft dark:bg-transparent hover:bg-brand/10 hover:text-brand dark:text-white dark:hover:text-brand transition-colors">
                                 {{ $letter }}
                             </button>
                         @endif
@@ -274,7 +274,7 @@ new class extends Component
                 @endphp
                 <div class="group bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
                     {{-- Accent bar --}}
-                    <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
+                    <div class="h-1 w-full bg-brand/40 group-hover:bg-brand dark:group-hover:bg-sky-500 absolute top-0 left-0 transition-all duration-300"></div>
 
                     <div class="p-5 pt-6 flex flex-col flex-1">
                         {{-- Card header --}}

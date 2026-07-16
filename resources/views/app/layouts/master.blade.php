@@ -39,8 +39,8 @@
 
     @include('app.layouts.main-header')
 
-    <div class="p-4 flex-1 flex flex-col">
-        <div class="mt-14 flex-1 flex flex-col">
+    <div class="px-4 pb-4 flex-1 flex flex-col">
+        <div class="mt-10 flex-1 flex flex-col">
             @yield('page-header')
             @yield('content')
         </div>
