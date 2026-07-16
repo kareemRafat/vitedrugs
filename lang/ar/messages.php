@@ -189,6 +189,8 @@ return [
         'ingredients_count' => 'المكونات النشطة',
         'starting_with' => 'تبدأ بحرف :letter',
         'clear_filter' => 'مسح',
+        'previous_page' => 'السابق',
+        'next_page' => 'التالي',
     ],
 
     'companies' => [

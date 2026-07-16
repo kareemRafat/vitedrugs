@@ -7,25 +7,40 @@ use Livewire\Component;
 
 new class extends Component
 {
+    private const PER_PAGE = 21;
+
     #[Url(as: 'search')]
     public string $search = '';
 
     #[Url(as: 'letter')]
     public ?string $activeLetter = null;
 
+    #[Url]
+    public ?int $page = null;
+
     public function filterByLetter(string $letter): void
     {
         $this->activeLetter = $letter;
         $this->search = '';
+        $this->page = null;
     }
 
     public function clear(): void
     {
-        $this->reset('search', 'activeLetter');
+        $this->reset('search', 'activeLetter', 'page');
     }
 
-    #[Computed]
-    public function diseases()
+    public function updatedSearch(): void
+    {
+        $this->page = null;
+    }
+
+    public function goToPage(int $page): void
+    {
+        $this->page = $page;
+    }
+
+    private function filteredQuery()
     {
         $query = Disease::query()->withCount('products');
 
@@ -39,7 +54,53 @@ new class extends Component
             $query->where('name', 'LIKE', $this->activeLetter.'%');
         }
 
-        return $query->orderBy('name')->get();
+        return $query->orderBy('name');
+    }
+
+    #[Computed]
+    public function totalCount(): int
+    {
+        $query = Disease::query();
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->whereFullText(['name', 'name_ar'], $this->search);
+            });
+        }
+
+        if ($this->activeLetter) {
+            $query->where('name', 'LIKE', $this->activeLetter.'%');
+        }
+
+        return $query->count();
+    }
+
+    #[Computed]
+    public function diseases()
+    {
+        $currentPage = max(1, $this->page ?? 1);
+
+        return $this->filteredQuery()
+            ->forPage($currentPage, self::PER_PAGE)
+            ->get();
+    }
+
+    #[Computed]
+    public function hasMorePages(): bool
+    {
+        return $this->totalCount > (max(1, $this->page ?? 1) * self::PER_PAGE);
+    }
+
+    #[Computed]
+    public function currentPage(): int
+    {
+        return max(1, $this->page ?? 1);
+    }
+
+    #[Computed]
+    public function lastPage(): int
+    {
+        return (int) ceil($this->totalCount / self::PER_PAGE);
     }
 
     #[Computed]
@@ -61,7 +122,7 @@ new class extends Component
         :heading="__('messages.diseases.index_heading')"
         :subtitle="__('messages.diseases.index_subtitle')"
         :stats="[
-            ['count' => number_format($this->diseases->count()), 'label' => __('messages.diseases.diseases_label'), 'icon' => 'activity'],
+            ['count' => number_format($this->totalCount), 'label' => __('messages.diseases.diseases_label'), 'icon' => 'activity'],
         ]"
     />
 
@@ -93,15 +154,15 @@ new class extends Component
             @foreach ($letters as $letter)
                 @if (in_array($letter, $this->availableLetters))
                     @if ($activeLetter === $letter)
-                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-base bg-brand text-white text-sm font-bold cursor-default">{{ $letter }}</span>
+                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-base bg-brand text-white text-sm font-bold cursor-default">{{ $letter }}</span>
                     @else
                         <button type="button" wire:click="filterByLetter('{{ $letter }}')"
-                            class="inline-flex items-center justify-center w-8 h-8 rounded-base text-base font-medium text-heading hover:bg-brand/10 hover:text-brand dark:text-white dark:hover:text-brand transition-colors">
+                            class="inline-flex items-center justify-center w-9 h-9 rounded-base text-sm font-medium text-heading hover:bg-brand/10 hover:text-brand dark:text-white dark:hover:text-brand transition-colors">
                             {{ $letter }}
                         </button>
                     @endif
                 @else
-                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-base text-sm text-body/30 dark:text-gray-600 cursor-default">{{ $letter }}</span>
+                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-base text-sm text-body/30 dark:text-gray-600 cursor-default">{{ $letter }}</span>
                 @endif
             @endforeach
         </div>
@@ -111,10 +172,10 @@ new class extends Component
     <div class="flex items-center justify-between">
         <div class="text-sm text-body dark:text-gray-400">
             @if ($activeLetter)
-                {{ __('messages.diseases.showing') }} {{ $this->diseases->count() }} {{ __('messages.diseases.diseases_label') }}
+                {{ $this->diseases->count() }} {{ __('messages.diseases.of') }} {{ $this->totalCount }} {{ __('messages.diseases.diseases_label') }}
                 {{ __('messages.diseases.starting_with', ['letter' => $activeLetter]) }}
             @else
-                {{ __('messages.diseases.showing') }} {{ $this->diseases->count() }} {{ __('messages.diseases.diseases_label') }}
+                {{ $this->diseases->count() }} {{ __('messages.diseases.of') }} {{ $this->totalCount }} {{ __('messages.diseases.diseases_label') }}
             @endif
         </div>
     </div>
@@ -151,6 +212,32 @@ new class extends Component
                 </div>
             @endforeach
         </div>
+
+        {{-- Pagination --}}
+        @if ($this->lastPage > 1)
+            <div class="flex items-center justify-between bg-neutral-primary-soft rounded-base shadow-xs px-5 py-3 dark:bg-gray-800">
+                <div class="text-sm text-body dark:text-gray-400">
+                    {{ __('messages.diseases.showing') }}
+                    {{ (($this->currentPage - 1) * self::PER_PAGE) + 1 }}–{{ min($this->currentPage * self::PER_PAGE, $this->totalCount) }}
+                    {{ __('messages.diseases.of') }}
+                    {{ $this->totalCount }}
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button type="button" wire:click="goToPage({{ $this->currentPage - 1 }})" @if($this->currentPage === 1) disabled @endif
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors">
+                        <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
+                        <span class="ms-1">{{ __('messages.diseases.previous_page') }}</span>
+                    </button>
+
+                    <button type="button" wire:click="goToPage({{ $this->currentPage + 1 }})" @if(!$this->hasMorePages) disabled @endif
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors">
+                        <span class="me-1">{{ __('messages.diseases.next_page') }}</span>
+                        <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
+                    </button>
+                </div>
+            </div>
+        @endif
     @else
         <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 py-16 text-center">
             <x-lucide-activity class="w-12 h-12 text-body mx-auto mb-4" />
