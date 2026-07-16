@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $path = resource_path('views/app/components');
+
+        app('livewire.finder')->addLocation(viewPath: $path);
+        app('blade.compiler')->anonymousComponentPath($path);
+        app('view')->addLocation($path);
     }
 }

@@ -187,6 +187,8 @@ return [
         'action' => 'Action',
         'related_products' => 'Related Products',
         'ingredients_count' => 'Active Ingredients',
+        'starting_with' => 'starting with :letter',
+        'clear_filter' => 'Clear',
     ],
 
     'companies' => [

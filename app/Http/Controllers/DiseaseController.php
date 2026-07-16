@@ -8,29 +8,7 @@ class DiseaseController extends Controller
 {
     public function index()
     {
-        $query = Disease::query()
-            ->withCount('products');
-
-        if ($search = request('search')) {
-
-            $query->where(function ($q) use ($search) {
-
-                $q->whereFullText(
-                    ['name', 'name_ar'],
-                    $search
-                );
-            });
-        }
-
-        $diseases = $query
-            ->orderBy('name')
-            ->paginate(20)
-            ->withQueryString();
-
-        return view(
-            'app.diseases.index',
-            compact('diseases')
-        );
+        return view('app.diseases.index');
     }
 
     public function show(Disease $disease)

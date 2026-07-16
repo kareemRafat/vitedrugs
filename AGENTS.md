@@ -82,6 +82,16 @@ app/
 ├── Services/Imports/     # PDF → AI → normalize → validate → import
 ```
 
+### Livewire v4 component conventions
+- **Single-file components (SFC)** live in `resources/views/app/components/{domain}/` (registered in `AppServiceProvider::boot()` via:
+  ```php
+  app('livewire.finder')->addLocation(viewPath: resource_path('views/app/components'));
+  app('blade.compiler')->anonymousComponentPath(resource_path('views/app/components'));
+  app('view')->addLocation(resource_path('views/app/components'));
+  ```
+- Component names use dot notation matching the subdirectory: `resources/views/app/components/disease/⚡disease-browser.blade.php` → `@livewire('disease.disease-browser')`
+- Create new SFCs with: `php artisan make:livewire {domain}.{name}` (e.g. `php artisan make:livewire products.product-card`), then move the generated file from `resources/views/components/` to `resources/views/app/components/{domain}/`
+
 ### Key models & relationships
 - **Product** has: company, dosageForm, activeIngredients (w/ pivot: strength, unit), diseases, companies (w/ pivot: role), dosages, withdrawalPeriods, indications, contraindications, precautions, sideEffects, images, documents
 - **Company** has type (`manufacturer`/`agent`/`distributor`) and self-referential `parent_company_id` for subsidiaries

@@ -187,6 +187,8 @@ return [
         'action' => 'إجراء',
         'related_products' => 'المنتجات ذات الصلة',
         'ingredients_count' => 'المكونات النشطة',
+        'starting_with' => 'تبدأ بحرف :letter',
+        'clear_filter' => 'مسح',
     ],
 
     'companies' => [
