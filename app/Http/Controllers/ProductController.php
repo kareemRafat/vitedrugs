@@ -14,6 +14,7 @@ class ProductController extends Controller
             ->with([
                 'manufacturer',
                 'dosageForm',
+                'activeIngredients',
             ]);
 
         // Search
@@ -49,7 +50,7 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $query->paginate(20)->withQueryString();
+        $products = $query->paginate(21)->withQueryString();
         $companies = Company::query()->orderBy('name')->get();
         $dosageForms = DosageForm::query()->orderBy('name')->get();
 

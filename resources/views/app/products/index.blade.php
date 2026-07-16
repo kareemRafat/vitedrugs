@@ -62,8 +62,8 @@
             </form>
         </div>
 
-        {{-- Results Table --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 overflow-hidden">
+        {{-- Products Grid --}}
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800">
             <div class="px-5 py-4 border-b border-default-medium flex items-center justify-between">
                 <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.products.directory_title') }}</h2>
                 <span class="text-sm text-body dark:text-gray-400">
@@ -74,52 +74,87 @@
                 </span>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left rtl:text-right text-heading dark:text-white">
-                    <thead class="text-sm uppercase text-body bg-neutral-secondary-soft dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-5 py-3 w-16">#</th>
-                            <th scope="col" class="px-5 py-3">{{ __('messages.products.trade_name') }}</th>
-                            <th scope="col" class="px-5 py-3 hidden sm:table-cell">{{ __('messages.products.company') }}</th>
-                            <th scope="col" class="px-5 py-3 hidden md:table-cell">{{ __('messages.products.dosage_form') }}</th>
-                            <th scope="col" class="px-5 py-3 w-20">{{ __('messages.products.details') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($products as $product)
-                            <tr class="border-b border-default-medium hover:bg-neutral-secondary-soft dark:hover:bg-gray-700 dark:border-gray-700">
-                                <td class="px-5 py-4 text-body dark:text-gray-400">
-                                    {{ $products->firstItem() + $loop->index }}
-                                </td>
-                                <td class="px-5 py-4">
-                                    <a href="{{ route('products.show', $product) }}" class="font-semibold text-fg-brand hover:underline">
-                                        {{ $product->trade_name }}
-                                    </a>
-                                </td>
-                                <td class="px-5 py-4 hidden sm:table-cell text-gray-800 font-semibold dark:text-gray-400">
-                                    {{ $product->manufacturer->first()?->name ?? __('messages.products.unknown') }}
-                                </td>
-                                <td class="px-5 py-4 hidden md:table-cell text-body dark:text-gray-400">
-                                    {{ $product->dosageForm?->name ?? __('messages.products.na') }}
-                                </td>
-                                <td class="px-5 py-4">
-                                    <a href="{{ route('products.show', $product) }}"
-                                        class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm">
-                                        <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-5 py-12 text-center">
-                                    <x-lucide-package class="w-10 h-10 text-body mx-auto mb-3" />
-                                    <h3 class="text-base font-semibold text-heading dark:text-white mb-1">{{ __('messages.products.no_products') }}</h3>
-                                    <p class="text-sm text-body dark:text-gray-400">{{ __('messages.products.try_another') }}</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div class="p-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    @forelse($products as $product)
+                        <div class="group bg-white dark:bg-gray-800 rounded border border-neutral-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
+                            {{-- Top brand accent bar --}}
+                            <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
+
+                            <div class="p-5 pt-6 flex flex-col flex-1">
+                                {{-- Top row: product type + manufacturer --}}
+                                <div class="flex items-center justify-between gap-2 mb-3">
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        @if ($product->product_type)
+                                            <span class="inline-flex items-center px-2.5 py-1.5 rounded text-xs font-semibold tracking-wider rtl:tracking-normal bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand shrink-0">
+                                                {{ __('messages.products.types.' . $product->product_type) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <span class="text-xs text-white truncate text-right bg-slate-600 py-1.5 px-2.5 rounded font-semibold tracking-wider rtl:tracking-normal">
+                                        {{ $product->manufacturer->first()?->name ?? __('messages.products.unknown') }}
+                                    </span>
+                                </div>
+
+                                {{-- Trade name --}}
+                                <a href="{{ route('products.show', $product) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-tight mb-3">
+                                    {{ $product->trade_name }}
+                                </a>
+
+                                {{-- Details section --}}
+                                <div class="mt-auto pt-3 border-t border-dashed border-neutral-200 dark:border-gray-700 space-y-2">
+                                    @if ($product->dosageForm)
+                                        <div class="flex items-center gap-2 text-sm text-body dark:text-gray-400">
+                                            <x-lucide-pill class="w-4 h-4 shrink-0" />
+                                            <span>{{ $product->dosageForm->name }}</span>
+                                        </div>
+                                    @endif
+
+                                    @if ($product->activeIngredients->isNotEmpty())
+                                        @php $firstIngredient = $product->activeIngredients->first(); @endphp
+                                        <div class="flex items-center gap-2 text-sm text-body dark:text-gray-400">
+                                            <x-lucide-flask-conical class="w-4 h-4 shrink-0" />
+                                            <span>
+                                                <span class="font-medium text-heading dark:text-white">{{ $firstIngredient->name }}</span>
+                                                @if ($firstIngredient->pivot?->strength)
+                                                    <span class="text-brand font-semibold">—{{ rtrim(rtrim($firstIngredient->pivot->strength, '0'), '.') }}</span>
+                                                    @if ($firstIngredient->pivot?->unit)
+                                                        <span class="text-body">/{{ $firstIngredient->pivot->unit }}</span>
+                                                    @endif
+                                                @endif
+                                                @if ($product->activeIngredients->count() > 1)
+                                                    <span class="text-brand font-medium"> +{{ $product->activeIngredients->count() - 1 }}</span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                    @endif
+
+                                    @if ($product->package_size)
+                                        <div class="flex items-center gap-2 text-sm text-body dark:text-gray-400">
+                                            <x-lucide-package class="w-4 h-4 shrink-0" />
+                                            <span>{{ $product->package_size }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Bottom action bar --}}
+                            <a href="{{ route('products.show', $product) }}" class="border-t border-default-medium dark:border-gray-700 px-5 py-3 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-gray-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-gray-700/50 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <x-lucide-eye class="w-4 h-4" />
+                                    {{ __('messages.products.details') }}
+                                </span>
+                                <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 transition-transform" />
+                            </a>
+                        </div>
+                    @empty
+                        <div class="col-span-full py-16 text-center">
+                            <x-lucide-package class="w-12 h-12 text-body mx-auto mb-4" />
+                            <h3 class="text-lg font-semibold text-heading dark:text-white mb-1">{{ __('messages.products.no_products') }}</h3>
+                            <p class="text-sm text-body dark:text-gray-400">{{ __('messages.products.try_another') }}</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
