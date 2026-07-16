@@ -20,10 +20,22 @@
             html { font-family: 'Readex Pro', sans-serif; }
         </style>
     @endif
+    {{-- Dark mode: apply before render to prevent flash --}}
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme');
+            if (!theme) {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('css')
 </head>
-<body class="bg-neutral-secondary-soft dark:bg-gray-900 min-h-screen flex flex-col">
+<body class="bg-neutral-secondary-soft dark:bg-slate-900 min-h-screen flex flex-col">
 
     @include('app.layouts.main-header')
 

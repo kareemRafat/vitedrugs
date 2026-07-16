@@ -3,6 +3,35 @@
 @plugin 'flowbite/plugin';
 @source '../node_modules/flowbite';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+    --color-slate-50: #f0f4f8;
+    --color-slate-100: #d4dfe9;
+    --color-slate-200: #bcccdc;
+    --color-slate-300: #a0b5c7;
+    --color-slate-400: #829ab1;
+    --color-slate-500: #65849e;
+    --color-slate-600: #486581;
+    --color-slate-700: #1e405e;
+    --color-slate-800: #102a43;
+
+    --color-heading: var(--color-slate-50);
+    --color-body: var(--color-slate-200);
+    --color-muted: var(--color-slate-400);
+
+    --color-brand: var(--color-slate-400);
+    --color-brand-soft: var(--color-slate-800);
+    --color-brand-medium: var(--color-slate-600);
+    --color-brand-strong: var(--color-slate-200);
+    --color-brand-softer: var(--color-slate-800);
+    --color-brand-subtle: var(--color-slate-700);
+    --color-brand-light: var(--color-slate-300);
+    --color-fg-brand: var(--color-slate-200);
+    --color-fg-brand-strong: var(--color-slate-50);
+    --color-fg-brand-subtle: var(--color-slate-400);
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';

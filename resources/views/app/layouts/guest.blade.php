@@ -16,7 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('css')
 </head>
-<body class="bg-neutral-secondary-soft dark:bg-gray-900 antialiased" data-loading-text="{{ __('messages.common.loading') }}">
+<body class="bg-neutral-secondary-soft dark:bg-slate-900 antialiased" data-loading-text="{{ __('messages.common.loading') }}">
     <div class="flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 min-h-screen">
         <a href="{{ route('home') }}" class="flex items-center mb-8 space-x-3 rtl:space-x-reverse">
             <x-lucide-shield-check class="w-8 h-8 text-fg-brand dark:text-brand" />
@@ -25,8 +25,8 @@
 
         @yield('content')
 
-        <p class="mt-8 text-sm text-body dark:text-gray-400">
-            &copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:underline text-heading dark:text-gray-300">{{ config('app.name', 'VetPedia') }}</a>. All rights reserved.
+        <p class="mt-8 text-sm text-body dark:text-slate-400">
+            &copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:underline text-heading dark:text-slate-300">{{ config('app.name', 'VetPedia') }}</a>. All rights reserved.
         </p>
     </div>
 

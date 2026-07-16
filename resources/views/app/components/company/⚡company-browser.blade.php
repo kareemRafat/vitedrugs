@@ -187,19 +187,19 @@ new class extends Component
     />
 
     {{-- Search --}}
-    <div class="bg-neutral-primary-soft rounded-full shadow-xs p-5 dark:bg-gray-800">
+    <div class="bg-neutral-primary-soft rounded-full shadow-xs p-5 dark:bg-slate-800">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative sm:col-span-2">
                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                    <x-lucide-search class="w-4 h-4 text-body" />
+                    <x-lucide-search class="w-4 h-4 text-body dark:text-slate-400" />
                 </div>
                 <input type="text" wire:model.live.debounce.300ms="search"
-                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-full focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-full focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:placeholder:text-slate-400 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                     placeholder="{{ __('messages.companies.search_placeholder') }}">
             </div>
             <div class="flex justify-between gap-2">
                 <button type="button" wire:click="clear"
-                    class="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-full hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 px-4 py-2.5">
+                    class="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-full hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 px-4 py-2.5">
                     <x-lucide-x class="w-4 h-4" />
                     {{ __('messages.companies.clear_filter') }}
                 </button>
@@ -208,22 +208,22 @@ new class extends Component
     </div>
 
     {{-- Type filter (segmented control) --}}
-    <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-gray-800">
-        <div class="bg-neutral-secondary-soft p-1 rounded-full border border-default-medium inline-flex flex-wrap gap-0.5 w-full sm:w-auto">
+    <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-slate-800">
+        <div class="bg-neutral-secondary-soft dark:bg-slate-700 p-1 rounded-full border border-default-medium dark:border-slate-600 inline-flex flex-wrap gap-0.5 w-full sm:w-auto">
             <button type="button" wire:click="filterByType('all')"
-                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if(!$activeType) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-gray-700 @endif">
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if(!$activeType) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-slate-700 @endif">
                 <x-lucide-layers class="w-4 h-4" />
                 {{ __('messages.companies.filter_all') }}
-                <span class="text-xs @if(!$activeType) text-white/80 @else text-body @endif">({{ number_format(array_sum($this->typeCounts)) }})</span>
+                <span class="text-xs @if(!$activeType) text-white/80 @else text-body dark:text-slate-400 @endif">({{ number_format(array_sum($this->typeCounts)) }})</span>
             </button>
 
             @foreach (['manufacturer', 'agent', 'distributor', 'marketing'] as $type)
                 <button type="button" wire:click="filterByType('{{ $type }}')"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if($activeType === $type) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-gray-700 @endif">
+                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if($activeType === $type) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-slate-700 @endif">
                     @php $icon = $this->typeIcon($type); @endphp
                     <x-dynamic-component :component="'lucide-' . $icon" class="w-4 h-4" />
                     {{ __('messages.companies.types.' . $type) }}
-                    <span class="text-xs @if($activeType === $type) text-white/80 @else text-body @endif">({{ $this->typeCounts[$type] }})</span>
+                    <span class="text-xs @if($activeType === $type) text-white/80 @else text-body dark:text-slate-400 @endif">({{ $this->typeCounts[$type] }})</span>
                 </button>
             @endforeach
         </div>
@@ -231,7 +231,7 @@ new class extends Component
 
     {{-- Letter navigation --}}
     @if ($this->availableLetters)
-        <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-gray-800">
+        <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-slate-800">
             <div class="flex flex-wrap items-center justify-center gap-1">
                 @php $letters = range('A', 'Z'); @endphp
                 @foreach ($letters as $letter)
@@ -245,7 +245,7 @@ new class extends Component
                             </button>
                         @endif
                     @else
-                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-full text-sm text-body/30 dark:text-gray-600 cursor-default">{{ $letter }}</span>
+                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-full text-sm text-body/30 dark:text-slate-600 cursor-default">{{ $letter }}</span>
                     @endif
                 @endforeach
             </div>
@@ -254,7 +254,7 @@ new class extends Component
 
     {{-- Results header --}}
     <div class="flex items-center justify-between">
-        <div class="text-sm text-body dark:text-gray-400">
+        <div class="text-sm text-body dark:text-slate-400">
             @if ($activeLetter)
                 {{ $this->companies->count() }} {{ __('messages.companies.of') }} {{ $this->totalCount }} {{ __('messages.companies.companies_label') }}
                 {{ __('messages.companies.starting_with', ['letter' => $activeLetter]) }}
@@ -272,23 +272,23 @@ new class extends Component
                     $initial = strtoupper(substr($company->name, 0, 1));
                     $hasWebsite = $company->website !== null && $company->website !== '';
                 @endphp
-                <div class="group bg-white dark:bg-gray-800 rounded-xl border border-neutral-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
+                <div class="group bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
                     {{-- Accent bar --}}
                     <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
 
                     <div class="p-5 pt-6 flex flex-col flex-1">
                         {{-- Card header --}}
-                        <div class="bg-gray-100 dark:bg-gray-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
+                        <div class="bg-gray-100 dark:bg-slate-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
                             <div class="flex items-center gap-3">
-                                <div class="shrink-0 w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold text-base">
+                                <div class="shrink-0 w-10 h-10 rounded-full bg-brand/10 dark:bg-brand/20 flex items-center justify-center text-brand font-bold text-base">
                                     {{ $initial }}
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <a href="{{ route('companies.show', $company) }}" class="text-base font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-snug block truncate">
+                                    <a href="{{ route('companies.show', $company) }}" class="text-base font-semibold text-heading dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug block truncate">
                                         {{ $company->name }}
                                     </a>
                                     @if ($company->name_ar && app()->getLocale() === 'ar')
-                                        <p class="text-xs text-body dark:text-gray-400 truncate">{{ $company->name_ar }}</p>
+                                        <p class="text-xs text-body dark:text-slate-400 truncate">{{ $company->name_ar }}</p>
                                     @endif
                                 </div>
                             </div>
@@ -303,7 +303,7 @@ new class extends Component
                                         'marketing' => 'bg-body',
                                     ];
                                 @endphp
-                                <span class="inline-flex items-center gap-1.5 text-xs font-medium text-body dark:text-gray-400">
+                                <span class="inline-flex items-center gap-1.5 text-xs font-medium text-body dark:text-slate-400">
                                     <span class="w-1.5 h-1.5 rounded-full {{ $typeDotStyles[$company->company_type] ?? 'bg-brand' }}"></span>
                                     {{ __('messages.companies.types.' . $company->company_type) }}
                                 </span>
@@ -311,13 +311,13 @@ new class extends Component
                         </div>
 
                         {{-- Metadata row --}}
-                        <div class="mt-auto pt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-body dark:text-gray-400">
+                        <div class="mt-auto pt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-body dark:text-slate-400">
                             @if ($company->country)
                                 <span class="inline-flex items-center gap-1">
                                     <x-lucide-map-pin class="w-3.5 h-3.5 shrink-0" />
                                     {{ $company->country }}
                                 </span>
-                                <span class="text-body/30 dark:text-gray-600">|</span>
+                                <span class="text-body/30 dark:text-slate-600">|</span>
                             @endif
                             <span class="inline-flex items-center gap-1">
                                 <x-lucide-package class="w-3.5 h-3.5 shrink-0" />
@@ -325,7 +325,7 @@ new class extends Component
                             </span>
 
                             @if ($hasWebsite)
-                                <span class="text-body/30 dark:text-gray-600">|</span>
+                                <span class="text-body/30 dark:text-slate-600">|</span>
                                 <a href="{{ $company->website }}" target="_blank" rel="noopener noreferrer"
                                     class="inline-flex items-center gap-1 text-fg-brand hover:underline">
                                     <x-lucide-globe class="w-3.5 h-3.5 shrink-0" />
@@ -336,7 +336,7 @@ new class extends Component
                     </div>
 
                     {{-- Action bar --}}
-                    <a href="{{ route('companies.show', $company) }}" class="border-t border-default-medium dark:border-gray-700 px-5 py-2.5 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-gray-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-gray-700/50 transition-colors">
+                    <a href="{{ route('companies.show', $company) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-2.5 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-slate-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-slate-700/50 transition-colors">
                         <span class="flex items-center gap-2">
                             <x-lucide-eye class="w-4 h-4" />
                             {{ __('messages.companies.details') }}
@@ -349,8 +349,8 @@ new class extends Component
 
         {{-- Pagination --}}
         @if ($this->lastPage > 1)
-            <div class="flex items-center justify-between bg-neutral-primary-soft rounded-full shadow-xs px-5 py-3 dark:bg-gray-800">
-                <div class="text-sm text-body dark:text-gray-400">
+            <div class="flex items-center justify-between bg-neutral-primary-soft rounded-full shadow-xs px-5 py-3 dark:bg-slate-800">
+                <div class="text-sm text-body dark:text-slate-400">
                     {{ __('messages.companies.showing') }}
                     {{ (($this->currentPage - 1) * self::PER_PAGE) + 1 }}–{{ min($this->currentPage * self::PER_PAGE, $this->totalCount) }}
                     {{ __('messages.companies.of') }}
@@ -359,13 +359,13 @@ new class extends Component
 
                 <div class="flex items-center gap-2">
                     <button type="button" wire:click="goToPage({{ $this->currentPage - 1 }})" @if($this->currentPage === 1) disabled @endif
-                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-full hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors">
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-full hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                         <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
                         <span class="ms-1">{{ __('messages.companies.previous_page') }}</span>
                     </button>
 
                     <button type="button" wire:click="goToPage({{ $this->currentPage + 1 }})" @if(!$this->hasMorePages) disabled @endif
-                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-full hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors">
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-full hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                         <span class="me-1">{{ __('messages.companies.next_page') }}</span>
                         <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
                     </button>
@@ -373,10 +373,10 @@ new class extends Component
             </div>
         @endif
     @else
-        <div class="bg-neutral-primary-soft rounded-full shadow-xs dark:bg-gray-800 py-16 text-center">
-            <x-lucide-building-2 class="w-12 h-12 text-body mx-auto mb-4" />
+        <div class="bg-neutral-primary-soft rounded-full shadow-xs dark:bg-slate-800 py-16 text-center">
+            <x-lucide-building-2 class="w-12 h-12 text-body dark:text-slate-400 mx-auto mb-4" />
             <h3 class="text-lg font-semibold text-heading dark:text-white mb-1">{{ __('messages.companies.no_companies') }}</h3>
-            <p class="text-sm text-body dark:text-gray-400">{{ __('messages.companies.try_another') }}</p>
+            <p class="text-sm text-body dark:text-slate-400">{{ __('messages.companies.try_another') }}</p>
         </div>
     @endif
 </div>

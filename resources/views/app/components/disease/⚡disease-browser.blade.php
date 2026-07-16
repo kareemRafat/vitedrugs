@@ -127,19 +127,19 @@ new class extends Component
     />
 
     {{-- Search --}}
-    <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
+    <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative sm:col-span-2">
                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                    <x-lucide-search class="w-4 h-4 text-body" />
+                    <x-lucide-search class="w-4 h-4 text-body dark:text-slate-400" />
                 </div>
                 <input type="text" wire:model.live.debounce.300ms="search"
-                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:placeholder:text-slate-400 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                     placeholder="{{ __('messages.diseases.search_placeholder') }}">
             </div>
             <div class="flex justify-between gap-2">
                 <button type="button" wire:click="clear"
-                    class="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 px-4 py-2.5">
+                    class="flex-1 inline-flex items-center justify-center gap-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 px-4 py-2.5">
                     <x-lucide-x class="w-4 h-4" />
                     {{ __('messages.diseases.clear_filter') }}
                 </button>
@@ -148,7 +148,7 @@ new class extends Component
     </div>
 
     {{-- Letter navigation --}}
-    <div class="bg-neutral-primary-soft rounded-base shadow-xs p-4 dark:bg-gray-800">
+    <div class="bg-neutral-primary-soft rounded-base shadow-xs p-4 dark:bg-slate-800">
         <div class="flex flex-wrap items-center justify-center gap-1">
             @php $letters = range('A', 'Z'); @endphp
             @foreach ($letters as $letter)
@@ -162,7 +162,7 @@ new class extends Component
                         </button>
                     @endif
                 @else
-                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-base text-sm text-body/30 dark:text-gray-600 cursor-default">{{ $letter }}</span>
+                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-base text-sm text-body/30 dark:text-slate-600 cursor-default">{{ $letter }}</span>
                 @endif
             @endforeach
         </div>
@@ -170,7 +170,7 @@ new class extends Component
 
     {{-- Results header --}}
     <div class="flex items-center justify-between">
-        <div class="text-sm text-body dark:text-gray-400">
+        <div class="text-sm text-body dark:text-slate-400">
             @if ($activeLetter)
                 {{ $this->diseases->count() }} {{ __('messages.diseases.of') }} {{ $this->totalCount }} {{ __('messages.diseases.diseases_label') }}
                 {{ __('messages.diseases.starting_with', ['letter' => $activeLetter]) }}
@@ -184,25 +184,25 @@ new class extends Component
     @if ($this->diseases->isNotEmpty())
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach ($this->diseases as $disease)
-                <div class="group bg-white dark:bg-gray-800 rounded-xl border border-neutral-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
+                <div class="group bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
                     <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
 
                     <div class="p-5 pt-6 flex flex-col flex-1">
-                        <a href="{{ route('diseases.show', $disease) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-tight">
+                        <a href="{{ route('diseases.show', $disease) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-tight">
                             {{ $disease->name }}
                         </a>
 
                         @if ($disease->name_ar && app()->getLocale() === 'ar')
-                            <p class="text-sm text-body dark:text-gray-400 mt-1">{{ $disease->name_ar }}</p>
+                            <p class="text-sm text-body dark:text-slate-400 mt-1">{{ $disease->name_ar }}</p>
                         @endif
 
-                        <div class="mt-auto pt-4 flex items-center gap-1.5 text-sm text-body dark:text-gray-400">
+                        <div class="mt-auto pt-4 flex items-center gap-1.5 text-sm text-body dark:text-slate-400">
                             <x-lucide-activity class="w-4 h-4" />
                             <span>{{ $disease->products_count }} {{ __('messages.diseases.products_count') }}</span>
                         </div>
                     </div>
 
-                    <a href="{{ route('diseases.show', $disease) }}" class="border-t border-default-medium dark:border-gray-700 px-5 py-3 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-gray-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-gray-700/50 transition-colors">
+                    <a href="{{ route('diseases.show', $disease) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-slate-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-slate-700/50 transition-colors">
                         <span class="flex items-center gap-2">
                             <x-lucide-eye class="w-4 h-4" />
                             {{ __('messages.diseases.details') }}
@@ -215,8 +215,8 @@ new class extends Component
 
         {{-- Pagination --}}
         @if ($this->lastPage > 1)
-            <div class="flex items-center justify-between bg-neutral-primary-soft rounded-base shadow-xs px-5 py-3 dark:bg-gray-800">
-                <div class="text-sm text-body dark:text-gray-400">
+            <div class="flex items-center justify-between bg-neutral-primary-soft rounded-base shadow-xs px-5 py-3 dark:bg-slate-800">
+                <div class="text-sm text-body dark:text-slate-400">
                     {{ __('messages.diseases.showing') }}
                     {{ (($this->currentPage - 1) * self::PER_PAGE) + 1 }}–{{ min($this->currentPage * self::PER_PAGE, $this->totalCount) }}
                     {{ __('messages.diseases.of') }}
@@ -225,13 +225,13 @@ new class extends Component
 
                 <div class="flex items-center gap-2">
                     <button type="button" wire:click="goToPage({{ $this->currentPage - 1 }})" @if($this->currentPage === 1) disabled @endif
-                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors">
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                         <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
                         <span class="ms-1">{{ __('messages.diseases.previous_page') }}</span>
                     </button>
 
                     <button type="button" wire:click="goToPage({{ $this->currentPage + 1 }})" @if(!$this->hasMorePages) disabled @endif
-                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors">
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft disabled:opacity-40 disabled:cursor-not-allowed dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                         <span class="me-1">{{ __('messages.diseases.next_page') }}</span>
                         <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
                     </button>
@@ -239,10 +239,10 @@ new class extends Component
             </div>
         @endif
     @else
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 py-16 text-center">
-            <x-lucide-activity class="w-12 h-12 text-body mx-auto mb-4" />
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 py-16 text-center">
+            <x-lucide-activity class="w-12 h-12 text-body dark:text-slate-400 mx-auto mb-4" />
             <h3 class="text-lg font-semibold text-heading dark:text-white mb-1">{{ __('messages.diseases.no_diseases') }}</h3>
-            <p class="text-sm text-body dark:text-gray-400">{{ __('messages.diseases.try_another') }}</p>
+            <p class="text-sm text-body dark:text-slate-400">{{ __('messages.diseases.try_another') }}</p>
         </div>
     @endif
 </div>

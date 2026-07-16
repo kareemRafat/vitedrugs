@@ -21,7 +21,7 @@
 @section('content')
     {{-- Breadcrumb --}}
     <nav class="flex mb-4" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-base text-body dark:text-gray-400">
+        <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-base text-body dark:text-slate-400">
             <li class="inline-flex items-center">
                 <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.active_ingredients.home') }}</a>
             </li>
@@ -46,24 +46,24 @@
         <div class="lg:col-span-7 xl:col-span-8 space-y-4">
 
             {{-- Overview --}}
-            <div class="bg-neutral-primary-soft rounded-base shadow-sm p-4 sm:p-6 dark:bg-gray-800">
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm p-4 sm:p-6 dark:bg-slate-800">
                 <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-1">{{ $activeIngredient->name }}</h1>
                 @if ($activeIngredient->name_ar && app()->getLocale() === 'ar')
-                    <p class="text-body dark:text-gray-400 text-base mb-2">{{ $activeIngredient->name_ar }}</p>
+                    <p class="text-body dark:text-slate-400 text-base mb-2">{{ $activeIngredient->name_ar }}</p>
                 @endif
                 @if ($activeIngredient->description)
-                    <p class="text-base text-body dark:text-gray-400">{{ $activeIngredient->description }}</p>
+                    <p class="text-base text-body dark:text-slate-400">{{ $activeIngredient->description }}</p>
                 @else
-                    <p class="text-base text-body dark:text-gray-400">{{ __('messages.active_ingredients.no_description') }}</p>
+                    <p class="text-base text-body dark:text-slate-400">{{ __('messages.active_ingredients.no_description') }}</p>
                 @endif
 
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-gray-700 dark:border-gray-600">
-                        <span class="block text-base uppercase text-body dark:text-gray-400 mb-1">{{ __('messages.active_ingredients.products_using') }}</span>
+                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
+                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.active_ingredients.products_using') }}</span>
                         <span class="font-semibold text-heading dark:text-white text-base">{{ $activeIngredient->products->count() }}</span>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-gray-700 dark:border-gray-600">
-                        <span class="block text-base uppercase text-body dark:text-gray-400 mb-1">{{ __('messages.active_ingredients.drug_classes') }}</span>
+                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
+                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.active_ingredients.drug_classes') }}</span>
                         <span class="font-semibold text-heading dark:text-white text-base">{{ $activeIngredient->drugClasses->count() }}</span>
                     </div>
                 </div>
@@ -71,11 +71,11 @@
 
             {{-- Indications --}}
             @if ($activeIngredient->indications)
-                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium">
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.indications') }}</h2>
                     </div>
-                    <div class="p-5 text-base text-body dark:text-gray-400">
+                    <div class="p-5 text-base text-body dark:text-slate-400">
                         {!! nl2br(e($activeIngredient->indications)) !!}
                     </div>
                 </div>
@@ -83,11 +83,11 @@
 
             {{-- Contraindications --}}
             @if ($activeIngredient->contraindications)
-                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium">
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.contraindications') }}</h2>
                     </div>
-                    <div class="p-5 text-base text-body dark:text-gray-400">
+                    <div class="p-5 text-base text-body dark:text-slate-400">
                         {!! nl2br(e($activeIngredient->contraindications)) !!}
                     </div>
                 </div>
@@ -95,11 +95,11 @@
 
             {{-- Precautions --}}
             @if ($activeIngredient->precautions)
-                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium">
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.precautions') }}</h2>
                     </div>
-                    <div class="p-5 text-base text-body dark:text-gray-400">
+                    <div class="p-5 text-base text-body dark:text-slate-400">
                         {!! nl2br(e($activeIngredient->precautions)) !!}
                     </div>
                 </div>
@@ -107,28 +107,28 @@
 
             {{-- Side Effects --}}
             @if ($activeIngredient->side_effects)
-                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium">
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.side_effects') }}</h2>
                     </div>
-                    <div class="p-5 text-base text-body dark:text-gray-400">
+                    <div class="p-5 text-base text-body dark:text-slate-400">
                         {!! nl2br(e($activeIngredient->side_effects)) !!}
                     </div>
                 </div>
             @endif
 
             {{-- Related Products --}}
-            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800 overflow-hidden">
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800 overflow-hidden">
                 <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                     <x-lucide-package class="w-4 h-4 text-body" />
                     <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.related_products') }}</h2>
                 </div>
                 <div class="overflow-x-auto">
                     @if ($activeIngredient->products->isEmpty())
-                        <p class="text-base text-body dark:text-gray-400 text-center py-8">{{ __('messages.active_ingredients.no_products') }}</p>
+                        <p class="text-base text-body dark:text-slate-400 text-center py-8">{{ __('messages.active_ingredients.no_products') }}</p>
                     @else
                         <table class="w-full text-base text-left rtl:text-right text-heading dark:text-white">
-                            <thead class="text-base uppercase text-body bg-neutral-secondary-soft dark:bg-gray-700 dark:text-gray-400">
+                            <thead class="text-base uppercase text-body bg-neutral-secondary-soft dark:bg-slate-700 dark:text-slate-400">
                                 <tr>
                                     <th scope="col" class="px-5 py-3">{{ __('messages.active_ingredients.trade_name') }}</th>
                                     <th scope="col" class="px-5 py-3 hidden md:table-cell">{{ __('messages.active_ingredients.strength') }}</th>
@@ -138,13 +138,13 @@
                             </thead>
                             <tbody>
                                 @foreach ($activeIngredient->products as $product)
-                                    <tr class="border-b border-default-medium dark:border-gray-700">
+                                    <tr class="border-b border-default-medium dark:border-slate-700">
                                         <td class="px-5 py-4">
                                             <a href="{{ route('products.show', $product) }}" class="font-medium text-fg-brand hover:underline">
                                                 {{ $product->trade_name }}
                                             </a>
                                         </td>
-                                        <td class="px-5 py-4 hidden md:table-cell text-body dark:text-gray-400 text-base">
+                                        <td class="px-5 py-4 hidden md:table-cell text-body dark:text-slate-400 text-base">
                                             {{ $product->pivot->strength }} {{ $product->pivot->unit }}
                                         </td>
                                         <td class="px-5 py-4 hidden md:table-cell">
@@ -156,7 +156,7 @@
                                                     {{ $manufacturer->name }}
                                                 </a>
                                             @else
-                                                <span class="text-body dark:text-gray-400">{{ __('messages.active_ingredients.na') }}</span>
+                                                <span class="text-body dark:text-slate-400">{{ __('messages.active_ingredients.na') }}</span>
                                             @endif
                                         </td>
                                         <td class="px-5 py-4">
@@ -179,7 +179,7 @@
         <div class="lg:col-span-5 xl:col-span-4 space-y-4">
 
             {{-- Drug Classes --}}
-            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800">
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800">
                 <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                     <x-lucide-flask-conical class="w-4 h-4 text-body" />
                     <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.drug_classes') }}</h2>
@@ -192,13 +192,13 @@
                             @endforeach
                         </ul>
                     @else
-                        <p class="text-base text-body dark:text-gray-400">{{ __('messages.active_ingredients.no_drug_classes') }}</p>
+                        <p class="text-base text-body dark:text-slate-400">{{ __('messages.active_ingredients.no_drug_classes') }}</p>
                     @endif
                 </div>
             </div>
 
             {{-- Related Diseases --}}
-            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-gray-800">
+            <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800">
                 <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                     <x-lucide-activity class="w-4 h-4 text-body" />
                     <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.active_ingredients.related_diseases') }}</h2>
@@ -215,7 +215,7 @@
                             @endforeach
                         </ul>
                     @else
-                        <p class="text-base text-body dark:text-gray-400">{{ __('messages.active_ingredients.no_diseases') }}</p>
+                        <p class="text-base text-body dark:text-slate-400">{{ __('messages.active_ingredients.no_diseases') }}</p>
                     @endif
                 </div>
             </div>

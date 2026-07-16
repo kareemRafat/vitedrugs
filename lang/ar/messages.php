@@ -127,6 +127,9 @@ return [
         'success' => 'تم بنجاح',
         'loading' => 'جار التحميل...',
         'switch_language' => 'تغيير اللغة',
+        'toggle_theme' => 'تبديل السمة',
+        'light_mode' => 'الوضع النهاري',
+        'dark_mode' => 'الوضع الليلي',
     ],
 
     'blog' => [

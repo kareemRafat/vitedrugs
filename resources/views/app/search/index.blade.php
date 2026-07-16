@@ -6,17 +6,17 @@
     <div class="space-y-4">
 
         {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('messages.search.heading') }}</h1>
-                    <p class="text-body dark:text-gray-400 text-base font-semibold mt-1">{{ __('messages.search.subtitle') }}</p>
+                    <p class="text-body dark:text-slate-400 text-base font-semibold mt-1">{{ __('messages.search.subtitle') }}</p>
                 </div>
             </div>
         </div>
 
         {{-- Search --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
             <form method="GET">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="relative sm:col-span-2">
@@ -24,7 +24,7 @@
                             <x-lucide-search class="w-4 h-4 text-body" />
                         </div>
                         <input type="text" name="q" value="{{ $q }}"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                             placeholder="{{ __('messages.search.placeholder') }}">
                     </div>
                     <div class="flex justify-between gap-2">
@@ -40,14 +40,14 @@
         @if ($q)
 
             {{-- Results heading --}}
-            <div class="bg-neutral-primary-soft rounded-base shadow-xs px-5 py-4 dark:bg-gray-800">
+            <div class="bg-neutral-primary-soft rounded-base shadow-xs px-5 py-4 dark:bg-slate-800">
                 <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.search.results_for', ['q' => $q]) }}</h2>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
                 {{-- Products --}}
-                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-package class="w-4 h-4 text-body" />
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.search.products') }}</h2>
@@ -63,13 +63,13 @@
                                 </a>
                             </div>
                         @empty
-                            <p class="text-base text-body dark:text-gray-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
+                            <p class="text-base text-body dark:text-slate-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Companies --}}
-                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-building-2 class="w-4 h-4 text-body" />
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.search.companies') }}</h2>
@@ -85,13 +85,13 @@
                                 </a>
                             </div>
                         @empty
-                            <p class="text-base text-body dark:text-gray-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
+                            <p class="text-base text-body dark:text-slate-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Diseases --}}
-                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-activity class="w-4 h-4 text-body" />
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.search.diseases') }}</h2>
@@ -107,13 +107,13 @@
                                 </a>
                             </div>
                         @empty
-                            <p class="text-base text-body dark:text-gray-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
+                            <p class="text-base text-body dark:text-slate-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Active Ingredients --}}
-                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800 overflow-hidden">
+                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-flask-conical class="w-4 h-4 text-body" />
                         <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.search.ingredients') }}</h2>
@@ -129,7 +129,7 @@
                                 </a>
                             </div>
                         @empty
-                            <p class="text-base text-body dark:text-gray-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
+                            <p class="text-base text-body dark:text-slate-400 text-center py-4">{{ __('messages.search.no_results') }}</p>
                         @endforelse
                     </div>
                 </div>
@@ -139,10 +139,10 @@
         @else
 
             {{-- No query yet --}}
-            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-12 text-center dark:bg-gray-800">
+            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-12 text-center dark:bg-slate-800">
                 <x-lucide-search class="w-12 h-12 text-body mx-auto mb-4" />
                 <h2 class="text-base font-semibold text-heading dark:text-white mb-1">{{ __('messages.search.heading') }}</h2>
-                <p class="text-base text-body dark:text-gray-400">{{ __('messages.search.no_query') }}</p>
+                <p class="text-base text-body dark:text-slate-400">{{ __('messages.search.no_query') }}</p>
             </div>
 
         @endif

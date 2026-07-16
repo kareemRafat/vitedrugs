@@ -16,17 +16,17 @@
         />
 
         {{-- Search / Filters --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
             <form method="GET">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                     <div class="lg:col-span-1">
                         <input type="text" name="search" value="{{ request('search') }}"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-3 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-3 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                             placeholder="{{ __('messages.products.search_placeholder') }}">
                     </div>
 
                     <select name="company"
-                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                         <option value="">{{ __('messages.products.all_companies') }}</option>
                         @foreach ($companies as $company)
                             <option value="{{ $company->id }}" @selected(request('company') == $company->id)>{{ $company->name }}</option>
@@ -34,7 +34,7 @@
                     </select>
 
                     <select name="dosage_form"
-                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                         <option value="">{{ __('messages.products.all_forms') }}</option>
                         @foreach ($dosageForms as $form)
                             <option value="{{ $form->id }}" @selected(request('dosage_form') == $form->id)>{{ $form->name }}</option>
@@ -42,7 +42,7 @@
                     </select>
 
                     <select name="sort"
-                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                         <option value="latest" @selected(request('sort') == 'latest')>{{ __('messages.products.sort_latest') }}</option>
                         <option value="name" @selected(request('sort') == 'name')>{{ __('messages.products.sort_name') }}</option>
                         <option value="oldest" @selected(request('sort') == 'oldest')>{{ __('messages.products.sort_oldest') }}</option>
@@ -54,7 +54,7 @@
                             {{ __('messages.products.search_button') }}
                         </button>
                         <a href="{{ route('products.index') }}"
-                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600">
+                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
                             <x-lucide-x class="w-4 h-4" />
                         </a>
                     </div>
@@ -63,10 +63,10 @@
         </div>
 
         {{-- Products Grid --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-gray-800">
-            <div class="px-5 py-4 border-b border-default-medium flex items-center justify-between">
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800">
+            <div class="px-5 py-4 border-b border-default-medium dark:border-slate-700 flex items-center justify-between">
                 <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.products.directory_title') }}</h2>
-                <span class="text-sm text-body dark:text-gray-400">
+                <span class="text-sm text-body dark:text-slate-400">
                     {{ __('messages.products.showing') }}
                     {{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }}
                     {{ __('messages.products.of') }}
@@ -77,13 +77,13 @@
             <div class="p-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     @forelse($products as $product)
-                        <div class="group bg-white dark:bg-gray-800 rounded border border-neutral-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
+                        <div class="group bg-white dark:bg-slate-800 rounded border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
                             {{-- Top brand accent bar --}}
                             <div class="h-1 w-full bg-brand/40 group-hover:bg-brand absolute top-0 left-0 transition-all duration-300"></div>
 
                             <div class="p-5 pt-6 flex flex-col flex-1">
                                 {{-- Card header --}}
-                                <div class="bg-gray-100 dark:bg-gray-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
+                                <div class="bg-gray-100 dark:bg-slate-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
                                     {{-- Top row: product type + manufacturer --}}
                                     <div class="flex items-center justify-between gap-2 mb-3">
                                         <div class="flex items-center gap-2 min-w-0">
@@ -93,24 +93,24 @@
                                                 </span>
                                             @endif
                                         </div>
-                                        <span class="text-xs text-white truncate text-right bg-slate-600 py-1.5 px-2.5 rounded font-semibold tracking-wider rtl:tracking-normal">
+                                        <span class="text-xs text-white truncate text-right bg-slate-600 dark:bg-slate-700 py-1.5 px-2.5 rounded font-semibold tracking-wider rtl:tracking-normal">
                                             {{ $product->manufacturer->first()?->name ?? __('messages.products.unknown') }}
                                         </span>
                                     </div>
 
                                     {{-- Trade name --}}
-                                    <a href="{{ route('products.show', $product) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-brand transition-colors leading-tight">
+                                    <a href="{{ route('products.show', $product) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-tight">
                                         {{ $product->trade_name }}
                                     </a>
                                 </div>
 
                                 {{-- Divider line under header --}}
-                                <div class="border-t border-dashed border-neutral-200 dark:border-gray-700 mb-3"></div>
+                                <div class="border-t border-dashed border-neutral-200 dark:border-slate-700 mb-3"></div>
 
                                 {{-- Details section --}}
                                 <div class="flex-1 space-y-2">
                                     @if ($product->dosageForm)
-                                        <div class="flex items-center gap-2 text-sm text-body dark:text-gray-400">
+                                        <div class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
                                             <x-lucide-pill class="w-4 h-4 shrink-0" />
                                             <span>{{ $product->dosageForm->name }}</span>
                                         </div>
@@ -118,14 +118,14 @@
 
                                     @if ($product->activeIngredients->isNotEmpty())
                                         @php $firstIngredient = $product->activeIngredients->first(); @endphp
-                                        <div class="flex items-center gap-2 text-sm text-body dark:text-gray-400">
+                                        <div class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
                                             <x-lucide-flask-conical class="w-4 h-4 shrink-0" />
                                             <span>
                                                 <span class="font-medium text-heading dark:text-white">{{ $firstIngredient->name }}</span>
                                                 @if ($firstIngredient->pivot?->strength)
                                                     <span class="text-brand font-semibold">—{{ rtrim(rtrim($firstIngredient->pivot->strength, '0'), '.') }}</span>
                                                     @if ($firstIngredient->pivot?->unit)
-                                                        <span class="text-body">/{{ $firstIngredient->pivot->unit }}</span>
+                                                        <span class="text-body dark:text-slate-400">/{{ $firstIngredient->pivot->unit }}</span>
                                                     @endif
                                                 @endif
                                                 @if ($product->activeIngredients->count() > 1)
@@ -136,7 +136,7 @@
                                     @endif
 
                                     @if ($product->package_size)
-                                        <div class="flex items-center gap-2 text-sm text-body dark:text-gray-400">
+                                        <div class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
                                             <x-lucide-package class="w-4 h-4 shrink-0" />
                                             <span>{{ $product->package_size }}</span>
                                         </div>
@@ -145,7 +145,7 @@
                             </div>
 
                             {{-- Bottom action bar --}}
-                            <a href="{{ route('products.show', $product) }}" class="border-t border-default-medium dark:border-gray-700 px-5 py-3 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-gray-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-gray-700/50 transition-colors">
+                            <a href="{{ route('products.show', $product) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-slate-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-slate-700/50 transition-colors">
                                 <span class="flex items-center gap-2">
                                     <x-lucide-eye class="w-4 h-4" />
                                     {{ __('messages.products.details') }}
@@ -155,9 +155,9 @@
                         </div>
                     @empty
                         <div class="col-span-full py-16 text-center">
-                            <x-lucide-package class="w-12 h-12 text-body mx-auto mb-4" />
+                            <x-lucide-package class="w-12 h-12 text-body dark:text-slate-400 mx-auto mb-4" />
                             <h3 class="text-lg font-semibold text-heading dark:text-white mb-1">{{ __('messages.products.no_products') }}</h3>
-                            <p class="text-sm text-body dark:text-gray-400">{{ __('messages.products.try_another') }}</p>
+                            <p class="text-sm text-body dark:text-slate-400">{{ __('messages.products.try_another') }}</p>
                         </div>
                     @endforelse
                 </div>

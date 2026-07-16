@@ -14,7 +14,7 @@
         />
 
         {{-- Search & Filters --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-gray-800">
+        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
             <form method="GET">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="relative sm:col-span-2">
@@ -22,12 +22,12 @@
                             <x-lucide-search class="w-4 h-4 text-body" />
                         </div>
                         <input type="text" name="search" value="{{ request('search') }}"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                             placeholder="{{ __('messages.blog.search_placeholder') }}">
                     </div>
                     <div class="flex gap-2">
                         <select name="category"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ __('messages.blog.all_categories') }}</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}" @selected(request('category') == $category->id)>
@@ -41,7 +41,7 @@
                         </button>
                         @if (request('search') || request('category') || request('sort'))
                             <a href="{{ route('blog.index') }}"
-                                class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600">
+                                class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
                                 <x-lucide-x class="w-4 h-4" />
                             </a>
                         @endif
@@ -54,17 +54,17 @@
         @if ($blogs->count())
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($blogs as $blog)
-                    <article class="bg-neutral-primary-soft rounded-base shadow-xs overflow-hidden hover:shadow-md transition-all duration-300 border border-default-medium dark:bg-gray-800 dark:border-gray-700 group flex flex-col">
+                    <article class="bg-neutral-primary-soft rounded-base shadow-xs overflow-hidden hover:shadow-md transition-all duration-300 border border-default-medium dark:bg-slate-800 dark:border-slate-700 group flex flex-col">
                         <a href="{{ route('blog.show', $blog) }}" class="flex flex-col h-full">
                             {{-- Cover Image --}}
-                            <div class="relative h-48 bg-neutral-secondary-soft dark:bg-gray-700 overflow-hidden shrink-0">
+                            <div class="relative h-48 bg-neutral-secondary-soft dark:bg-slate-700 overflow-hidden shrink-0">
                                 @if ($blog->cover_image)
                                     <img src="{{ Storage::url($blog->cover_image) }}"
                                         alt="{{ app()->getLocale() === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <div class="flex items-center justify-center h-full">
-                                        <x-lucide-newspaper class="w-12 h-12 text-body dark:text-gray-500" />
+                                        <x-lucide-newspaper class="w-12 h-12 text-body dark:text-slate-500" />
                                     </div>
                                 @endif
                                 {{-- Category Badge --}}
@@ -78,7 +78,7 @@
                             {{-- Content --}}
                             <div class="p-5 flex flex-col flex-1">
                                 <div class="flex-1">
-                                    <div class="flex items-center gap-2 text-xs text-body dark:text-gray-400 mb-2">
+                                    <div class="flex items-center gap-2 text-xs text-body dark:text-slate-400 mb-2">
                                         @if ($blog->author)
                                             <span>{{ $blog->author->name }}</span>
                                             <span>·</span>
@@ -93,13 +93,13 @@
                                         </span>
                                     </div>
 
-                                    <h2 class="text-lg font-semibold text-heading dark:text-white mb-2 line-clamp-2 group-hover:text-fg-brand transition-colors duration-150">
+                                    <h2 class="text-lg font-semibold text-heading dark:text-white mb-2 line-clamp-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-150">
                                         {{ app()->getLocale() === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}
                                     </h2>
 
                                     @php $excerpt = app()->getLocale() === 'ar' && $blog->excerpt_ar ? $blog->excerpt_ar : $blog->excerpt; @endphp
                                     @if ($excerpt)
-                                        <p class="text-sm text-body dark:text-gray-400 line-clamp-3">
+                                        <p class="text-sm text-body dark:text-slate-400 line-clamp-3">
                                             {{ $excerpt }}
                                         </p>
                                     @endif
@@ -116,10 +116,10 @@
             </div>
         @else
             {{-- Empty State --}}
-            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-12 text-center dark:bg-gray-800">
-                <x-lucide-newspaper class="w-16 h-16 text-body mx-auto mb-4 dark:text-gray-500" />
+            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-12 text-center dark:bg-slate-800">
+                <x-lucide-newspaper class="w-16 h-16 text-body mx-auto mb-4 dark:text-slate-500" />
                 <h3 class="text-xl font-semibold text-heading dark:text-white mb-2">{{ __('messages.blog.no_posts') }}</h3>
-                <p class="text-body dark:text-gray-400 mb-6 max-w-md mx-auto">{{ __('messages.blog.no_posts_desc') }}</p>
+                <p class="text-body dark:text-slate-400 mb-6 max-w-md mx-auto">{{ __('messages.blog.no_posts_desc') }}</p>
                 <a href="{{ route('blog.index') }}"
                     class="inline-flex items-center gap-2 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-5 py-2.5">
                     <x-lucide-refresh-cw class="w-4 h-4" />

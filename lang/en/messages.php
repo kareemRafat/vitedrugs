@@ -127,6 +127,9 @@ return [
         'success' => 'Success',
         'loading' => 'Loading...',
         'switch_language' => 'Switch language',
+        'toggle_theme' => 'Toggle theme',
+        'light_mode' => 'Light Mode',
+        'dark_mode' => 'Dark Mode',
     ],
 
     'blog' => [
