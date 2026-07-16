@@ -13,11 +13,32 @@
             html { font-family: 'Readex Pro', sans-serif; }
         </style>
     @endif
+    {{-- Dark mode: apply before render to prevent flash --}}
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme');
+            if (!theme) {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('css')
 </head>
 <body class="bg-neutral-secondary-soft dark:bg-slate-900 antialiased" data-loading-text="{{ __('messages.common.loading') }}">
-    <div class="flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 min-h-screen">
+    <div class="relative flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 min-h-screen">
+        <div class="absolute top-4 end-4 sm:top-6 sm:end-6 flex items-center gap-1">
+            <button onclick="toggleTheme()"
+                class="text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white p-2 rounded-base"
+                title="{{ __('messages.common.toggle_theme') }}">
+                <x-lucide-sun class="w-5 h-5 dark:hidden" />
+                <x-lucide-moon class="w-5 h-5 hidden dark:block" />
+            </button>
+            <x-language-switcher />
+        </div>
         <a href="{{ route('home') }}" class="flex items-center mb-8 space-x-3 rtl:space-x-reverse">
             <x-lucide-shield-check class="w-8 h-8 text-fg-brand dark:text-brand" />
             <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{{ config('app.name', 'VetPedia') }}</span>
@@ -33,6 +54,19 @@
     @yield('js')
 
     <script>
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
+        }
+
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', function() {
                 const btn = this.querySelector('[type="submit"]');

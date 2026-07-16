@@ -5,7 +5,7 @@
 @section('content')
     <div class="w-full max-w-md p-6 bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 sm:p-8">
         <div class="flex flex-col items-center text-center mb-6">
-            <div class="w-14 h-14 bg-brand-soft rounded-full flex items-center justify-center mb-4">
+            <div class="w-14 h-14 bg-brand-soft dark:bg-brand/20 rounded-full flex items-center justify-center mb-4">
                 <x-lucide-mail class="w-7 h-7 text-fg-brand" />
             </div>
             <h2 class="text-2xl font-bold leading-tight tracking-tight text-heading dark:text-white">
@@ -30,7 +30,7 @@
         <form method="POST" action="{{ route('verification.resend') }}" class="space-y-3">
             @csrf
             <button type="submit"
-                class="w-full flex items-center justify-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none dark:bg-brand dark:hover:bg-brand-strong dark:focus:ring-brand-medium">
+                class="w-full flex items-center justify-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-300">
                 <span class="inline-flex items-center gap-2">
                     <x-lucide-refresh-cw class="w-4 h-4" />
                     {{ __('messages.verify_email.resend_button') }}
