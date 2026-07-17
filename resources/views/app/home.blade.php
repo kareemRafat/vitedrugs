@@ -7,7 +7,7 @@
             <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white dark:bg-sky-200"></div>
             <div class="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-white dark:bg-sky-200"></div>
         </div>
-        <div class="relative px-6 py-10 sm:py-14 text-center">
+        <div class="relative px-6 py-16 sm:py-20 text-center">
             <h1 class="text-4xl sm:text-5xl font-bold text-white mb-3 drop-shadow-sm">
                 VetPedia
             </h1>
