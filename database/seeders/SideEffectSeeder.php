@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductDocument;
+use App\Models\SideEffect;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 
-class ProductDocumentSeeder extends Seeder
+class SideEffectSeeder extends Seeder
 {
     public function run(): void
     {
         Product::all()->each(function (Product $product) {
-            ProductDocument::factory()
-                ->count(rand(0, 2))
+            SideEffect::factory()
+                ->count(rand(1, 4))
                 ->create(['product_id' => $product->id]);
         });
     }

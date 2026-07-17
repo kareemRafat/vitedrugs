@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductDocument;
+use App\Models\Precaution;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 
-class ProductDocumentSeeder extends Seeder
+class PrecautionSeeder extends Seeder
 {
     public function run(): void
     {
         Product::all()->each(function (Product $product) {
-            ProductDocument::factory()
-                ->count(rand(0, 2))
+            Precaution::factory()
+                ->count(rand(1, 3))
                 ->create(['product_id' => $product->id]);
         });
     }

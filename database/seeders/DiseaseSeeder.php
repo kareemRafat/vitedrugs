@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
+use App\Models\Disease;
 use Illuminate\Database\Seeder;
 
-class CompanySeeder extends Seeder
+class DiseaseSeeder extends Seeder
 {
     public function run(): void
     {
-        Company::factory()->count(15)->create();
+        Disease::factory()->count(30)->create();
     }
 }

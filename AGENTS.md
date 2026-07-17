@@ -2,13 +2,13 @@
 
 **Language:** All communication (questions, answers, code comments) must be in **English only**.
 
-A **Laravel 12 + Filament 5** veterinary drug database with public frontend and admin panel.
+A **Laravel 13 + Filament 5** veterinary drug database with public frontend and admin panel.
 
 ## Stack
 
 | Layer | Choice |
 |---|---|
-| Backend | Laravel 12 (PHP 8.2+) |
+| Backend | Laravel 13 (PHP 8.3+) |
 | Admin | Filament 5 at `/admin` |
 | DB dev | MySQL (`DB_CONNECTION=mysql`) |
 | DB test | SQLite `:memory:` (see `phpunit.xml`) |
@@ -140,15 +140,15 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 - php - 8.3
 - filament/filament (FILAMENT) - v5
-- laravel/framework (LARAVEL) - v12
-- laravel/prompts (PROMPTS) - v0
+- laravel/framework (LARAVEL) - v13
+- laravel/prompts (PROMPTS) - v0.3
 - livewire/livewire (LIVEWIRE) - v4
 - laravel/boost (BOOST) - v2
-- laravel/mcp (MCP) - v0
+- laravel/mcp (MCP) - v0.8
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
 - laravel/sail (SAIL) - v1
-- phpunit/phpunit (PHPUNIT) - v11
+- phpunit/phpunit (PHPUNIT) - v12
 - tailwindcss (TAILWINDCSS) - v4
 
 ## Skills Activation
@@ -267,16 +267,16 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
 
-=== laravel/v12 rules ===
+=== laravel/v13 rules ===
 
-# Laravel 12
+# Laravel 13
 
 - CRITICAL: ALWAYS use `search-docs` tool for version-specific Laravel documentation and updated code examples.
 - Since Laravel 11, Laravel has a new streamlined file structure which this project uses.
 
-## Laravel 12 Structure
+## Laravel 13 Structure
 
-- In Laravel 12, middleware are no longer registered in `app/Http/Kernel.php`.
+- In Laravel 13, middleware are no longer registered in `app/Http/Kernel.php`.
 - Middleware are configured declaratively in `bootstrap/app.php` using `Application::configure()->withMiddleware()`.
 - `bootstrap/app.php` is the file to register middleware, exceptions, and routing files.
 - `bootstrap/providers.php` contains application specific service providers.
@@ -286,7 +286,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 ## Database
 
 - When modifying a column, the migration must include all of the attributes that were previously defined on the column. Otherwise, they will be dropped and lost.
-- Laravel 12 allows limiting eagerly loaded records natively, without external packages: `$query->latest()->limit(10);`.
+- Laravel 13 allows limiting eagerly loaded records natively, without external packages: `$query->latest()->limit(10);`.
 
 ### Models
 

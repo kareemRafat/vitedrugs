@@ -9,6 +9,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
@@ -25,7 +26,8 @@ Route::group([
     'prefix' => LaravelLocalization::setLocale(),
     'middleware' => 'localeViewPath',
 ], function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/', LandingController::class)->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('app.home');
 
     Route::middleware('guest')->group(function () {
         Route::get('/login', [LoginController::class, 'create'])->name('login');
