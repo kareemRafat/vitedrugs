@@ -18,35 +18,37 @@
         {{-- Search / Filters --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
             <form method="GET">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-3">
                     <div class="lg:col-span-1">
                         <input type="text" name="search" value="{{ request('search') }}"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-3 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                             placeholder="{{ __('messages.products.search_placeholder') }}">
                     </div>
 
-                    <select name="company"
-                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                        <option value="">{{ __('messages.products.all_companies') }}</option>
-                        @foreach ($companies as $company)
-                            <option value="{{ $company->id }}" @selected(request('company') == $company->id)>{{ $company->name }}</option>
-                        @endforeach
-                    </select>
+                    <div id="advanced-filters" class="sm:contents max-sm:flex max-sm:flex-col max-sm:gap-4">
+                        <select name="company"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                            <option value="">{{ __('messages.products.all_companies') }}</option>
+                            @foreach ($companies as $company)
+                                <option value="{{ $company->id }}" @selected(request('company') == $company->id)>{{ $company->name }}</option>
+                            @endforeach
+                        </select>
 
-                    <select name="dosage_form"
-                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                        <option value="">{{ __('messages.products.all_forms') }}</option>
-                        @foreach ($dosageForms as $form)
-                            <option value="{{ $form->id }}" @selected(request('dosage_form') == $form->id)>{{ $form->name }}</option>
-                        @endforeach
-                    </select>
+                        <select name="dosage_form"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                            <option value="">{{ __('messages.products.all_forms') }}</option>
+                            @foreach ($dosageForms as $form)
+                                <option value="{{ $form->id }}" @selected(request('dosage_form') == $form->id)>{{ $form->name }}</option>
+                            @endforeach
+                        </select>
 
-                    <select name="sort"
-                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                        <option value="latest" @selected(request('sort') == 'latest')>{{ __('messages.products.sort_latest') }}</option>
-                        <option value="name" @selected(request('sort') == 'name')>{{ __('messages.products.sort_name') }}</option>
-                        <option value="oldest" @selected(request('sort') == 'oldest')>{{ __('messages.products.sort_oldest') }}</option>
-                    </select>
+                        <select name="sort"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                            <option value="latest" @selected(request('sort') == 'latest')>{{ __('messages.products.sort_latest') }}</option>
+                            <option value="name" @selected(request('sort') == 'name')>{{ __('messages.products.sort_name') }}</option>
+                            <option value="oldest" @selected(request('sort') == 'oldest')>{{ __('messages.products.sort_oldest') }}</option>
+                        </select>
+                    </div>
 
                     <div class="flex gap-2">
                         <button type="submit"
@@ -59,6 +61,12 @@
                         </a>
                     </div>
                 </div>
+
+                <button type="button" onclick="var f=document.getElementById('advanced-filters');var s=f.style;s.display=s.display==='none'?'':'none';this.querySelector('.chevron').classList.toggle('rotate-180')"
+                    class="max-sm:flex sm:hidden mt-3 w-full items-center justify-center gap-1.5 text-sm text-fg-brand hover:underline cursor-pointer">
+                    <span>{{ __('messages.products.advanced_search') }}</span>
+                    <x-lucide-chevron-down class="chevron w-4 h-4 transition-transform" />
+                </button>
             </form>
         </div>
 
@@ -173,3 +181,13 @@
 
     </div>
 @endsection
+
+@section('js')
+<script>
+if (window.innerWidth < 640) {
+    document.getElementById('advanced-filters').style.display = 'none';
+}
+</script>
+@endsection
+
+

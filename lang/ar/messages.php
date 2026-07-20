@@ -490,6 +490,7 @@ return [
         'sort_name' => 'الاسم أ-ي',
         'sort_oldest' => 'الأقدم',
         'search_button' => 'بحث',
+        'advanced_search' => 'بحث متقدم',
         'directory_title' => 'دليل المنتجات',
         'showing' => 'عرض',
         'of' => 'من',

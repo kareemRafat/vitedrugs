@@ -490,6 +490,7 @@ return [
         'sort_name' => 'Name A-Z',
         'sort_oldest' => 'Oldest',
         'search_button' => 'Search',
+        'advanced_search' => 'Advanced Search',
         'directory_title' => 'Products Directory',
         'showing' => 'Showing',
         'of' => 'of',
