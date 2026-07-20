@@ -27,7 +27,12 @@ new class extends Component
 <div x-data="{ active: @js(app(CompareAction::class)->has($productId)), full: @js(app(CompareAction::class)->isFull()) }"
      x-on:compare-count.window="full = $event.detail.count >= $event.detail.max"
      x-on:compare-toggle.window="if ($event.detail.id === '{{ $productId }}') { active = $event.detail.add; }"
-     x-on:compare-clear.window="active = false">
+     x-on:compare-clear.window="
+         if (active) {
+             active = false;
+             $wire.toggle();
+         }
+">
     <button
         x-on:click="
             if (!active) {

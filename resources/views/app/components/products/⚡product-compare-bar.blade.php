@@ -27,12 +27,6 @@ new class extends Component
         app(CompareAction::class)->remove($id);
         $this->dispatch('compare-updated');
     }
-
-    public function clear(): void
-    {
-        app(CompareAction::class)->clear();
-        $this->dispatch('compare-updated');
-    }
 };
 ?>
 
@@ -58,7 +52,6 @@ new class extends Component
             this.products = [];
             this.dispatchCount();
             window.dispatchEvent(new CustomEvent('compare-clear'));
-            $wire.clear();
         }
     }"
     x-on:compare-clear.window="products = []"
@@ -74,24 +67,22 @@ new class extends Component
     ">
     <template x-if="count > 0">
         <div
-            x-transition:enter="transform transition ease-out duration-300"
             x-transition:enter-start="translate-y-full"
             x-transition:enter-end="translate-y-0"
-            x-transition:leave="transform transition ease-in duration-200"
             x-transition:leave-start="translate-y-0"
             x-transition:leave-end="translate-y-full"
-            class="fixed bottom-0 inset-x-0 z-50 bg-neutral-primary-soft dark:bg-slate-800 border-t border-default-medium dark:border-slate-700 shadow-lg">
+            class="fixed bottom-0 inset-x-0 z-50 bg-blue-900 dark:bg-gray-300 border-t border-blue-950/30 dark:border-gray-400 shadow-xl">
             <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 {{-- Product names --}}
                 <div class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 overflow-x-auto">
                     <template x-for="product in products" :key="product.id">
-                        <div class="flex items-center gap-1.5 bg-neutral-secondary-soft dark:bg-slate-700 rounded-base px-2.5 sm:px-3 py-1.5 sm:py-2 border border-default-medium dark:border-slate-600 shrink-0 max-w-[180px] sm:max-w-[220px]">
-                            <x-lucide-check-circle class="w-3.5 h-3.5 text-brand shrink-0" />
-                            <span class="text-xs text-brand font-medium hidden sm:inline">{{ __('messages.compare.in_compare') }}</span>
-                            <span class="text-xs sm:text-sm font-medium text-heading dark:text-white truncate" x-text="product.name"></span>
+                        <div class="flex items-center gap-1.5 bg-white/15 dark:bg-white/60 rounded-base px-2.5 sm:px-3 py-1.5 sm:py-2 border border-white/20 dark:border-gray-300/50 shrink-0 max-w-[180px] sm:max-w-[220px]">
+                            <x-lucide-check-circle class="w-3.5 h-3.5 text-sky-300 dark:text-blue-900 shrink-0" />
+                            <span class="text-xs text-sky-200 dark:text-blue-900/80 font-medium hidden sm:inline">{{ __('messages.compare.in_compare') }}</span>
+                            <span class="text-xs sm:text-sm font-medium text-white dark:text-gray-800 truncate" x-text="product.name"></span>
                             <button
                                 x-on:click="removeItem(product.id)"
-                                class="text-body hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition-colors p-0.5 shrink-0"
+                                class="text-white/60 dark:text-gray-500 hover:text-red-300 dark:hover:text-red-500 transition-colors p-0.5 shrink-0"
                                 title="{{ __('messages.compare.remove_from_compare') }}">
                                 <x-lucide-x class="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             </button>
@@ -101,16 +92,16 @@ new class extends Component
 
                 {{-- Actions --}}
                 <div class="flex items-center gap-2 sm:gap-3 shrink-0 justify-between sm:justify-end">
-                    <span class="text-xs text-body dark:text-slate-400 whitespace-nowrap" x-text="count + '/' + max"></span>
+                    <span class="text-xs text-white/70 dark:text-gray-500 whitespace-nowrap" x-text="count + '/' + max"></span>
 
                     <a href="{{ route('products.compare') }}" wire:navigate
-                        class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-all">
+                        class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-blue-900 bg-white hover:bg-white/90 focus:ring-4 focus:ring-white/30 rounded-base transition-all dark:text-blue-900 dark:bg-gray-200 dark:hover:bg-gray-300">
                         <x-lucide-git-compare class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         <span>{{ __('messages.compare.compare') }}</span>
                     </a>
 
                     <button x-on:click="clearAll()"
-                        class="text-xs text-body hover:text-heading dark:text-slate-400 dark:hover:text-white underline transition-colors">
+                        class="text-xs text-white/70 dark:text-gray-500 hover:text-white dark:hover:text-gray-800 underline transition-colors">
                         {{ __('messages.compare.clear_all') }}
                     </button>
                 </div>
