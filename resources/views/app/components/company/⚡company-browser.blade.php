@@ -231,25 +231,12 @@ new class extends Component
 
     {{-- Letter navigation --}}
     @if ($this->availableLetters)
-        <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-slate-800">
-            <div class="flex flex-wrap items-center justify-center gap-1">
-                @php $letters = range('A', 'Z'); @endphp
-                @foreach ($letters as $letter)
-                    @if (in_array($letter, $this->availableLetters))
-                        @if ($activeLetter === $letter)
-                            <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-brand text-white text-sm font-bold cursor-default">{{ $letter }}</span>
-                        @else
-                            <button type="button" wire:click="filterByLetter('{{ $letter }}')"
-                                class="inline-flex items-center justify-center w-9 h-9 rounded-full text-sm font-medium text-heading bg-neutral-secondary-soft dark:bg-transparent hover:bg-brand/10 hover:text-brand dark:text-white dark:hover:text-brand transition-colors">
-                                {{ $letter }}
-                            </button>
-                        @endif
-                    @else
-                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-full text-sm text-body/30 dark:text-slate-600 cursor-default">{{ $letter }}</span>
-                    @endif
-                @endforeach
-            </div>
-        </div>
+        <x-letter-nav
+            :letters="$this->availableLetters"
+            :active="$activeLetter"
+            wireAction="filterByLetter"
+            rounded="full"
+        />
     @endif
 
     {{-- Results header --}}

@@ -13,11 +13,14 @@
             </div>
 
             {{-- Quick Links, Resources, Language --}}
-            <div class="grid grid-cols-1 gap-8 sm:grid-cols-3 lg:w-2/3">
+            <div class="px-4 sm:px-0 grid grid-cols-2 gap-1 sm:grid-cols-3 lg:w-2/3">
 
                 <div class="w-50">
-                    <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider mb-3">{{ __('messages.nav.quick_links') }}</h3>
-                    <ul class="space-y-2 text-sm">
+                    <button type="button" onclick="this.parentElement.classList.toggle('is-open')" class="lg:pointer-events-none lg:cursor-default flex items-center gap-1 w-full mb-3">
+                        <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider">{{ __('messages.nav.quick_links') }}</h3>
+                        <x-lucide-chevron-down class="w-4 h-4 text-body lg:hidden transition-transform [.is-open_&]:rotate-180" />
+                    </button>
+                    <ul class="max-lg:hidden lg:flex lg:flex-col space-y-2 text-sm [.is-open_&]:max-lg:block">
                         <li>
                             <a href="{{ route('products.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('products.*'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('products.*')])>{{ __('messages.nav.products') }}</a>
                         </li>
@@ -37,8 +40,11 @@
                 </div>
 
                 <div class="w-50">
-                    <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider mb-3">{{ __('messages.nav.resources') }}</h3>
-                    <ul class="space-y-2 text-sm">
+                    <button type="button" onclick="this.parentElement.classList.toggle('is-open')" class="lg:pointer-events-none lg:cursor-default flex items-center gap-1 w-full mb-3">
+                        <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider">{{ __('messages.nav.resources') }}</h3>
+                        <x-lucide-chevron-down class="w-4 h-4 text-body lg:hidden transition-transform [.is-open_&]:rotate-180" />
+                    </button>
+                    <ul class="max-lg:hidden lg:flex lg:flex-col space-y-2 text-sm [.is-open_&]:max-lg:block">
                         <li>
                             <a href="{{ route('about') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('about'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('about')])>{{ __('messages.nav.about') }}</a>
                         </li>
@@ -54,9 +60,12 @@
                     </ul>
                 </div>
 
-                <div class="w-50">
-                    <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider mb-3">{{ __('messages.nav.language') }}</h3>
-                    <ul class="space-y-2 text-sm">
+                <div class="w-50 max-sm:hidden">
+                    <button type="button" onclick="this.parentElement.classList.toggle('is-open')" class="lg:pointer-events-none lg:cursor-default flex items-center gap-1 w-full mb-3">
+                        <h3 class="text-sm font-semibold text-heading dark:text-white uppercase tracking-wider">{{ __('messages.nav.language') }}</h3>
+                        <x-lucide-chevron-down class="w-4 h-4 text-body lg:hidden transition-transform [.is-open_&]:rotate-180" />
+                    </button>
+                    <ul class="max-lg:hidden lg:flex lg:flex-col space-y-2 text-sm [.is-open_&]:max-lg:block">
                         @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                             <li>
                                 <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
