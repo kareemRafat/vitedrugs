@@ -593,13 +593,13 @@
             <div class="max-w-7xl mx-auto">
                 <div class="flex items-center justify-between mb-10 sm:mb-14">
                     <div>
-                        <span class="text-[10px] sm:text-xs font-semibold tracking-[.2em] uppercase text-indigo-400 dark:text-indigo-400">Blog</span>
+                        <span class="text-[10px] sm:text-xs font-semibold tracking-[.2em] uppercase text-brand dark:text-brand">Blog</span>
                         <h2 class="text-2xl sm:text-4xl font-bold text-heading dark:text-white mt-3 sm:mt-4 tracking-tight">
                             {{ __('messages.landing.latest_blog') }}
                         </h2>
                     </div>
                     <a href="{{ route('blog.index') }}"
-                        class="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium text-indigo-500 dark:text-indigo-400 border border-indigo-500/30 dark:border-indigo-400/30 rounded-full hover:bg-indigo-500/10 transition-all duration-200">
+                        class="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium text-brand dark:text-brand border border-brand/30 dark:border-brand/30 rounded-full hover:bg-brand/10 dark:hover:bg-brand/20 transition-all duration-200">
                         {{ __('messages.landing.view_all') }}
                         <x-lucide-arrow-right class="w-3.5 h-3.5 rtl:rotate-180" />
                     </a>
@@ -609,28 +609,31 @@
                     @foreach ($latestBlogs as $blog)
                         @php $locale = app()->getLocale(); @endphp
                         <a href="{{ route('blog.show', $blog) }}"
-                            class="group overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                            <div class="h-36 sm:h-48 bg-white/50 dark:bg-slate-900/50 overflow-hidden">
+                            class="group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                            <div class="h-1.5 w-full bg-gradient-to-r from-brand to-brand/70"></div>
+
+                            <div class="h-44 sm:h-48 bg-neutral-100 dark:bg-slate-700 overflow-hidden">
                                 @if ($blog->cover_image)
                                     <img src="{{ Storage::url($blog->cover_image) }}"
                                         alt="{{ $locale === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <div class="flex items-center justify-center h-full">
-                                        <x-lucide-newspaper class="w-8 h-8 sm:w-10 sm:h-10 text-body/50 dark:text-slate-500" />
+                                        <x-lucide-newspaper class="w-8 h-8 sm:w-10 sm:h-10 text-neutral-300 dark:text-slate-600" />
                                     </div>
                                 @endif
                             </div>
-                            <div class="p-4 sm:p-6">
+
+                            <div class="p-5 sm:p-6">
                                 @if ($blog->category)
-                                    <span class="inline-block px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400 mb-2 sm:mb-3">
+                                    <span class="inline-flex self-start px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand mb-3">
                                         {{ $locale === 'ar' && $blog->category->name_ar ? $blog->category->name_ar : $blog->category->name }}
                                     </span>
                                 @endif
-                                <h3 class="text-sm sm:text-base font-bold text-heading dark:text-white group-hover:text-indigo-500 dark:group-hover:text-indigo-400 line-clamp-2 transition-colors duration-150">
+                                <h3 class="text-sm sm:text-base font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-brand line-clamp-2 transition-colors duration-150">
                                     {{ $locale === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}
                                 </h3>
-                                <p class="text-[11px] sm:text-xs text-body dark:text-slate-400 mt-2 sm:mt-3 flex items-center gap-1.5">
+                                <p class="text-xs text-body dark:text-slate-400 mt-3 flex items-center gap-1.5">
                                     <x-lucide-calendar class="w-3 h-3" />
                                     {{ $blog->published_at->format('M d, Y') }}
                                 </p>
@@ -641,7 +644,7 @@
 
                 <div class="text-center mt-6 sm:hidden">
                     <a href="{{ route('blog.index') }}"
-                        class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium text-indigo-500 dark:text-indigo-400 border border-indigo-500/30 dark:border-indigo-400/30 rounded-full hover:bg-indigo-500/10 transition-all duration-200">
+                        class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium text-brand dark:text-brand border border-brand/30 dark:border-brand/30 rounded-full hover:bg-brand/10 dark:hover:bg-brand/20 transition-all duration-200">
                         {{ __('messages.landing.view_all') }}
                         <x-lucide-arrow-right class="w-3.5 h-3.5 rtl:rotate-180" />
                     </a>
@@ -655,7 +658,7 @@
     {{-- ============================================ --}}
     <section class="mb-6 mt-16 sm:mt-28 px-4 sm:px-0">
         <div class="max-w-7xl mx-auto">
-            <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#09090B] px-5 sm:px-8 py-12 sm:py-20 text-center">
+            <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-brand via-brand/90 to-brand-strong dark:from-blue-950 dark:via-slate-900 dark:to-slate-950 px-5 sm:px-8 py-12 sm:py-20 text-center">
                 <div class="grid-bg absolute inset-0 opacity-30 pointer-events-none"></div>
                 <div class="relative">
                     <h2 class="text-xl sm:text-4xl font-bold text-white mb-3 sm:mb-4 tracking-tight">
@@ -666,13 +669,13 @@
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                         <a href="{{ route('products.index') }}"
-                            class="inline-flex items-center gap-2 px-6 sm:px-7 py-2.5 sm:py-3 text-sm font-semibold text-white bg-indigo-500 hover:bg-indigo-400 rounded-full transition-all duration-200 shadow-lg shadow-indigo-500/25 active:scale-95">
+                            class="inline-flex items-center gap-2 px-6 sm:px-7 py-2.5 sm:py-3 text-sm font-semibold text-brand dark:text-blue-800 bg-white dark:bg-white/95 hover:bg-white/90 rounded-full transition-all duration-200 shadow-lg shadow-black/10 active:scale-95">
                             <x-lucide-package class="w-4 h-4" />
                             {{ __('messages.landing.cta_browse') }}
                         </a>
                         @guest
                             <a href="{{ route('register') }}"
-                                class="inline-flex items-center gap-2 px-6 sm:px-7 py-2.5 sm:py-3 text-sm font-semibold text-white/80 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-all duration-200 active:scale-95">
+                                class="inline-flex items-center gap-2 px-6 sm:px-7 py-2.5 sm:py-3 text-sm font-semibold text-white/90 bg-white/10 hover:bg-white/20 rounded-full border border-white/30 transition-all duration-200 active:scale-95">
                                 <x-lucide-user-plus class="w-4 h-4" />
                                 {{ __('messages.landing.cta_register') }}
                             </a>

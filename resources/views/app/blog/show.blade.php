@@ -13,20 +13,20 @@
 
         {{-- Breadcrumb --}}
         <nav class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
-            <a href="{{ route('home') }}" class="hover:text-fg-brand transition-colors">{{ __('messages.nav.home') }}</a>
+            <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.nav.home') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <a href="{{ route('blog.index') }}" class="hover:text-fg-brand transition-colors">{{ __('messages.blog.title') }}</a>
+            <a href="{{ route('blog.index') }}" class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.blog.title') }}</a>
             @if ($blog->category)
                 <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
                 <a href="{{ route('blog.index', ['category' => $blog->category->id]) }}"
-                    class="hover:text-fg-brand transition-colors">{{ $locale === 'ar' && $blog->category->name_ar ? $blog->category->name_ar : $blog->category->name }}</a>
+                    class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ $locale === 'ar' && $blog->category->name_ar ? $blog->category->name_ar : $blog->category->name }}</a>
             @endif
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <span class="text-heading dark:text-white font-medium truncate">{{ $locale === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}</span>
         </nav>
 
         {{-- Article Card --}}
-        <article class="bg-neutral-primary-soft rounded-base shadow-xs overflow-hidden dark:bg-slate-800">
+        <article class="bg-neutral-primary-soft rounded-base shadow-xs overflow-hidden dark:bg-slate-800 dark:border dark:border-slate-700">
 
             {{-- Cover Image --}}
             @if ($blog->cover_image)
@@ -81,16 +81,18 @@
                     @endif
 
                     {{-- Body Content --}}
-                    <div class="prose prose-lg max-w-none dark:prose-invert prose-headings:text-heading prose-p:text-body prose-a:text-fg-brand prose-a:no-underline hover:prose-a:underline prose-strong:text-heading prose-code:text-body prose-pre:bg-neutral-secondary-soft dark:prose-pre:bg-slate-700 prose-pre:border prose-pre:border-default-medium prose-pre:rounded-base prose-img:rounded-base prose-img:shadow-xs
-                        [&_h2]:text-heading [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4
-                        [&_h3]:text-heading [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3
-                        [&_p]:text-body [&_p]:leading-relaxed [&_p]:mb-4
-                        [&_ul]:text-body [&_ul]:space-y-2 [&_ul]:mb-4
-                        [&_ol]:text-body [&_ol]:space-y-2 [&_ol]:mb-4
-                        [&_li]:text-body
-                        [&_blockquote]:border-s-4 [&_blockquote]:border-brand [&_blockquote]:ps-4 [&_blockquote]:text-body [&_blockquote]:italic [&_blockquote]:my-6
-                        [&_a]:text-fg-brand [&_a]:no-underline hover:[&_a]:underline
-                        [&_hr]:border-default-medium [&_hr]:my-8">
+                    <div class="max-w-none text-body dark:text-slate-300 leading-relaxed
+                        [&_h2]:text-heading dark:[&_h2]:text-white [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4
+                        [&_h3]:text-heading dark:[&_h3]:text-white [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3
+                        [&_p]:mb-4 [&_p]:leading-relaxed
+                        [&_ul]:space-y-2 [&_ul]:mb-4
+                        [&_ol]:space-y-2 [&_ol]:mb-4
+                        [&_blockquote]:border-s-4 [&_blockquote]:border-brand [&_blockquote]:ps-4 [&_blockquote]:my-6 [&_blockquote]:italic
+                        [&_a]:text-fg-brand dark:[&_a]:text-brand [&_a]:no-underline hover:[&_a]:underline
+                        [&_hr]:border-default-medium dark:[&_hr]:border-slate-700 [&_hr]:my-8
+                        [&_pre]:bg-neutral-secondary-soft dark:[&_pre]:bg-slate-700 [&_pre]:border [&_pre]:border-default-medium dark:[&_pre]:border-slate-600 [&_pre]:rounded-base [&_pre]:p-4 [&_pre]:overflow-x-auto
+                        [&_code]:text-sm
+                        [&_img]:rounded-base [&_img]:shadow-xs">
                         {!! $locale === 'ar' && $blog->body_ar ? $blog->body_ar : $blog->body !!}
                     </div>
 
@@ -115,7 +117,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-heading dark:text-white">{{ __('messages.blog.related_posts') }}</h2>
                     <a href="{{ route('blog.index') }}"
-                        class="text-sm font-medium text-fg-brand hover:underline">
+                        class="text-sm font-medium text-fg-brand dark:text-brand hover:underline">
                         {{ __('messages.blog.view_all') }}
                     </a>
                 </div>
@@ -138,7 +140,7 @@
                                 <p class="text-xs text-body dark:text-slate-400 mb-1">
                                     {{ $relatedPost->published_at->format('M d, Y') }}
                                 </p>
-                                <h3 class="text-sm font-semibold text-heading dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 line-clamp-2 transition-colors duration-150">
+                                <h3 class="text-sm font-semibold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-brand line-clamp-2 transition-colors duration-150">
                                     {{ $locale === 'ar' && $relatedPost->title_ar ? $relatedPost->title_ar : $relatedPost->title }}
                                 </h3>
                             </div>
