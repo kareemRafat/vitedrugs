@@ -157,16 +157,14 @@
                             </div>
 
                             {{-- Bottom action bar --}}
-                            <a href="{{ route('products.show', $product) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
-                                <span class="flex items-center gap-2">
+                            <div class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between">
+                                <a href="{{ route('products.show', $product) }}" class="flex items-center gap-2 text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
                                     <x-lucide-eye class="w-4 h-4" />
                                     {{ __('messages.products.details') }}
-                                </span>
-                                <span class="flex items-center gap-1 group-hover/action:translate-x-1 transition-transform">
-                                    <span class="text-xs text-body dark:text-slate-400">{{ __('messages.nav.view') }}</span>
-                                    <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
-                                </span>
-                            </a>
+                                    <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180 group-hover/action:translate-x-1 transition-transform" />
+                                </a>
+                                @livewire('products.product-compare-toggle', ['productId' => $product->id, 'productName' => $product->trade_name], key('compare-'.$product->id))
+                            </div>
                         </div>
                     @empty
                         <div class="col-span-full py-16 text-center">

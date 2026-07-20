@@ -33,6 +33,7 @@
         })();
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>[x-cloak] { display: none !important; }</style>
     @yield('css')
 </head>
 <body class="bg-neutral-secondary-soft dark:bg-slate-900 min-h-screen flex flex-col overflow-x-hidden">
@@ -50,6 +51,42 @@
 
     <x-cookie-consent />
 
+    @livewire('products.product-compare-bar')
+
     @include('app.layouts.footer-scripts')
+
+    <script>
+        (function() {
+            const isInternal = (href) => {
+                if (!href) return false;
+                if (href.startsWith('#')) return false;
+                if (href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return false;
+                if (href.startsWith('http') && !href.startsWith(window.location.origin)) return false;
+                if (href.includes('/storage/')) return false;
+                return true;
+            };
+
+            const addNavigate = (root) => {
+                (root.querySelectorAll ? root.querySelectorAll('a[href]:not([wire\\:navigate]):not([download]):not([target="_blank"])') : [])
+                    .forEach(link => {
+                        if (isInternal(link.getAttribute('href'))) {
+                            link.setAttribute('wire:navigate', '');
+                        }
+                    });
+            };
+
+            document.addEventListener('DOMContentLoaded', () => addNavigate(document));
+
+            const observer = new MutationObserver(mutations => {
+                for (const m of mutations) {
+                    for (const node of m.addedNodes) {
+                        if (node.nodeType === 1) addNavigate(node);
+                    }
+                }
+            });
+
+            if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+        })();
+    </script>
 </body>
 </html>

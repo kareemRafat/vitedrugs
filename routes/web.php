@@ -58,6 +58,9 @@ Route::group([
     Route::view('/terms-of-service', 'app.pages.terms-of-service')->name('terms-of-service');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/compare', function () {
+        return view('app.products.compare');
+    })->name('products.compare');
     Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 
     Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');

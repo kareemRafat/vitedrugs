@@ -42,10 +42,15 @@
     <div class="bg-neutral-primary-soft rounded-base shadow-sm p-4 sm:p-6 mb-4 dark:bg-slate-800">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div class="lg:col-span-7 xl:col-span-8">
-                <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-1">{{ $product->trade_name }}</h1>
-                @if ($product->trade_name_ar)
-                    <p class="text-body dark:text-slate-400 text-sm mb-2">{{ $product->trade_name_ar }}</p>
-                @endif
+                <div class="flex items-start justify-between gap-4">
+                    <div class="min-w-0">
+                        <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-1">{{ $product->trade_name }}</h1>
+                        @if ($product->trade_name_ar)
+                            <p class="text-body dark:text-slate-400 text-sm mb-2">{{ $product->trade_name_ar }}</p>
+                        @endif
+                    </div>
+                    @livewire('products.product-compare-toggle', ['productId' => $product->id, 'productName' => $product->trade_name], key('compare-'.$product->id))
+                </div>
                 <div class="flex flex-wrap gap-2 mb-3">
                     @if ($product->product_type)
                         <span class="inline-flex items-center px-3 py-1 rounded-base text-base font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('messages.products.types.' . $product->product_type) }}</span>
