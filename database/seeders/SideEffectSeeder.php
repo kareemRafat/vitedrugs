@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\SideEffect;
 use App\Models\Product;
+use App\Models\SideEffect;
 use Illuminate\Database\Seeder;
 
 class SideEffectSeeder extends Seeder

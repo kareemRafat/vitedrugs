@@ -187,7 +187,7 @@ new class extends Component
     />
 
     {{-- Search --}}
-    <div class="bg-neutral-primary-soft rounded-lg md:rounded-full shadow-xs p-5 dark:bg-slate-800">
+    <div class="bg-neutral-primary-soft rounded-lg shadow-xs p-5 dark:bg-slate-800">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative sm:col-span-2">
                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
@@ -224,7 +224,7 @@ new class extends Component
 
     {{-- Desktop: segmented control --}}
     <div class="hidden md:block">
-        <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-slate-800">
+        <div class="bg-neutral-primary-soft rounded-lg shadow-xs p-4 dark:bg-slate-800">
             <div class="bg-neutral-secondary-soft dark:bg-slate-700 p-1 rounded-full border border-default-medium dark:border-slate-600 inline-flex flex-wrap gap-0.5">
                 <button type="button" wire:click="filterByType('all')"
                     class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if(!$activeType) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-slate-700 @endif">
@@ -252,7 +252,6 @@ new class extends Component
             :letters="$this->availableLetters"
             :active="$activeLetter"
             wireAction="filterByLetter"
-            rounded="full"
         />
     @endif
 
@@ -276,28 +275,28 @@ new class extends Component
                     $initial = strtoupper(substr($company->name, 0, 1));
                     $hasWebsite = $company->website !== null && $company->website !== '';
                 @endphp
-                <div class="group bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
-                    {{-- Accent bar --}}
-                    <div class="h-1 w-full bg-brand/40 group-hover:bg-brand dark:group-hover:bg-sky-500 absolute top-0 left-0 transition-all duration-300"></div>
+                <div class="group bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden">
+                    {{-- Gradient accent bar --}}
+                    <div class="h-1.5 w-full bg-gradient-to-r from-brand via-brand-strong to-sky-400 dark:from-sky-400 dark:via-brand dark:to-sky-300 absolute top-0 left-0 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                     <div class="p-5 pt-6 flex flex-col flex-1">
                         {{-- Card header --}}
-                        <div class="bg-gray-100 dark:bg-slate-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
+                        <div class="bg-gradient-to-br from-brand/5 to-sky-50 dark:from-brand/10 dark:to-slate-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4 border-b border-brand/10 dark:border-slate-600">
                             <div class="flex items-center gap-3">
-                                <div class="shrink-0 w-10 h-10 rounded-full bg-brand/10 dark:bg-brand/20 flex items-center justify-center text-brand font-bold text-base">
+                                <div class="shrink-0 w-10 h-10 rounded-full bg-brand/15 dark:bg-brand/25 flex items-center justify-center text-brand font-bold text-base shadow-sm">
                                     {{ $initial }}
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <a href="{{ route('companies.show', $company) }}" class="text-base font-semibold text-heading dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug block truncate">
+                                    <a href="{{ route('companies.show', $company) }}" class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block line-clamp-2">
                                         {{ $company->name }}
                                     </a>
                                     @if ($company->name_ar && app()->getLocale() === 'ar')
-                                        <p class="text-xs text-body dark:text-slate-400 truncate">{{ $company->name_ar }}</p>
+                                        <p class="text-xs text-body dark:text-slate-400 truncate mt-0.5">{{ $company->name_ar }}</p>
                                     @endif
                                 </div>
                             </div>
 
-                            {{-- Type badge --}}
+                            {{-- Type --}}
                             <div class="mt-2.5">
                                 @php
                                     $typeDotStyles = [
@@ -314,38 +313,47 @@ new class extends Component
                             </div>
                         </div>
 
-                        {{-- Metadata row --}}
-                        <div class="mt-auto pt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-body dark:text-slate-400">
+                        {{-- Details section with colored icons --}}
+                        <div class="flex-1 space-y-3">
                             @if ($company->country)
-                                <span class="inline-flex items-center gap-1">
-                                    <x-lucide-map-pin class="w-3.5 h-3.5 shrink-0" />
-                                    {{ $company->country }}
-                                </span>
-                                <span class="text-body/30 dark:text-slate-600">|</span>
+                                <div class="flex items-center gap-2.5 text-sm text-body dark:text-slate-300 group/detail">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center shrink-0 group-hover/detail:bg-amber-100 dark:group-hover/detail:bg-amber-900/50 transition-colors">
+                                        <x-lucide-map-pin class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                                    </span>
+                                    <span>{{ $company->country }}</span>
+                                </div>
                             @endif
-                            <span class="inline-flex items-center gap-1">
-                                <x-lucide-package class="w-3.5 h-3.5 shrink-0" />
-                                {{ $company->products_count }} {{ __('messages.companies.products_count') }}
-                            </span>
+
+                            <div class="flex items-center gap-2.5 text-sm text-body dark:text-slate-300 group/detail">
+                                <span class="w-7 h-7 rounded-lg bg-brand/10 dark:bg-brand/20 flex items-center justify-center shrink-0 group-hover/detail:bg-brand/20 dark:group-hover/detail:bg-brand/30 transition-colors">
+                                    <x-lucide-package class="w-3.5 h-3.5 text-brand" />
+                                </span>
+                                <span>{{ $company->products_count }} {{ __('messages.companies.products_count') }}</span>
+                            </div>
 
                             @if ($hasWebsite)
-                                <span class="text-body/30 dark:text-slate-600">|</span>
-                                <a href="{{ $company->website }}" target="_blank" rel="noopener noreferrer"
-                                    class="inline-flex items-center gap-1 text-fg-brand hover:underline">
-                                    <x-lucide-globe class="w-3.5 h-3.5 shrink-0" />
-                                    <span class="truncate max-w-[140px]">{{ parse_url($company->website, PHP_URL_HOST) ?: $company->website }}</span>
-                                </a>
+                                <div class="flex items-center gap-2.5 text-sm text-body dark:text-slate-300 group/detail">
+                                    <span class="w-7 h-7 rounded-lg bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center shrink-0 group-hover/detail:bg-sky-100 dark:group-hover/detail:bg-sky-900/50 transition-colors">
+                                        <x-lucide-globe class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                                    </span>
+                                    <a href="{{ $company->website }}" target="_blank" rel="noopener noreferrer" class="text-fg-brand hover:underline truncate">
+                                        {{ parse_url($company->website, PHP_URL_HOST) ?: $company->website }}
+                                    </a>
+                                </div>
                             @endif
                         </div>
                     </div>
 
-                    {{-- Action bar --}}
-                    <a href="{{ route('companies.show', $company) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-2.5 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-slate-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-slate-700/50 transition-colors">
+                    {{-- Bottom action bar --}}
+                    <a href="{{ route('companies.show', $company) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
                         <span class="flex items-center gap-2">
                             <x-lucide-eye class="w-4 h-4" />
                             {{ __('messages.companies.details') }}
                         </span>
-                        <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 transition-transform" />
+                        <span class="flex items-center gap-1 group-hover/action:translate-x-1 transition-transform">
+                            <span class="text-xs text-body dark:text-slate-400">{{ __('messages.nav.view') }}</span>
+                            <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
+                        </span>
                     </a>
                 </div>
             @endforeach

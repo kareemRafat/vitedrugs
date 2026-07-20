@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\ProductImage;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductImageFactory extends Factory
@@ -14,7 +14,7 @@ class ProductImageFactory extends Factory
     {
         return [
             'product_id' => Product::factory(),
-            'image' => 'products/' . fake()->uuid() . '.jpg',
+            'image' => 'products/'.fake()->uuid().'.jpg',
             'sort_order' => fake()->numberBetween(0, 10),
         ];
     }

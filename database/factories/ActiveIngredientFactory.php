@@ -32,8 +32,8 @@ class ActiveIngredientFactory extends Factory
                 'كيتوبروفين',
             ]),
             'slug' => fn (array $attrs) => Str::slug($attrs['name']),
-            'description' => 'A veterinary pharmaceutical compound. ' . fake()->paragraph(),
-            'description_ar' => 'مركب صيدلاني بيطري. ' . fake()->paragraph(),
+            'description' => 'A veterinary pharmaceutical compound. '.fake()->paragraph(),
+            'description_ar' => 'مركب صيدلاني بيطري. '.fake()->paragraph(),
             'is_active' => true,
         ];
     }

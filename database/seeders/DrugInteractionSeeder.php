@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\DrugInteraction;
 use App\Models\ActiveIngredient;
+use App\Models\DrugInteraction;
 use Illuminate\Database\Seeder;
 
 class DrugInteractionSeeder extends Seeder

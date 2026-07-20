@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductDocument;
 use App\Models\Product;
+use App\Models\ProductDocument;
 use Illuminate\Database\Seeder;
 
 class ProductDocumentSeeder extends Seeder

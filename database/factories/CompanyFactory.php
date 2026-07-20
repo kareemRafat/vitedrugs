@@ -30,7 +30,7 @@ class CompanyFactory extends Factory
             'google_maps_url' => null,
             'coverage_area' => fake()->randomElement(['Local', 'Regional', 'National', 'International']),
             'registration_number' => fake()->bothify('REG-####-??'),
-            'website' => 'https://' . fake()->domainName(),
+            'website' => 'https://'.fake()->domainName(),
             'email' => fake()->companyEmail(),
             'phone' => fake()->phoneNumber(),
             'mobile' => fake()->phoneNumber(),

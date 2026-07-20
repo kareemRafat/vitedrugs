@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\WithdrawalPeriod;
 use App\Models\Product;
 use App\Models\Species;
+use App\Models\WithdrawalPeriod;
 use Illuminate\Database\Seeder;
 
 class WithdrawalPeriodSeeder extends Seeder

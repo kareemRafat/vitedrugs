@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\DrugInteraction;
 use App\Models\ActiveIngredient;
+use App\Models\DrugInteraction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DrugInteractionFactory extends Factory

@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\WithdrawalPeriod;
 use App\Models\Product;
 use App\Models\Species;
+use App\Models\WithdrawalPeriod;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WithdrawalPeriodFactory extends Factory

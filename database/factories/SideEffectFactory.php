@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\SideEffect;
 use App\Models\Product;
+use App\Models\SideEffect;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SideEffectFactory extends Factory

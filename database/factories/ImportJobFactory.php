@@ -12,7 +12,7 @@ class ImportJobFactory extends Factory
     public function definition(): array
     {
         return [
-            'source_file' => 'imports/' . fake()->uuid() . '.pdf',
+            'source_file' => 'imports/'.fake()->uuid().'.pdf',
             'source_type' => fake()->randomElement(['pdf', 'docx', 'html', 'json', 'txt']),
             'status' => fake()->randomElement(['pending', 'processing', 'completed', 'failed']),
             'is_approved' => fake()->boolean(20),
