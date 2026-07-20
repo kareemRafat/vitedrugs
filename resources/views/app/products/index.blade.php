@@ -85,49 +85,51 @@
             <div class="p-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     @forelse($products as $product)
-                        <div class="group bg-white dark:bg-slate-800 rounded border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden">
-                            {{-- Top brand accent bar --}}
-                            <div class="h-1 w-full bg-brand/40 group-hover:bg-brand dark:group-hover:bg-sky-500 absolute top-0 left-0 transition-all duration-300"></div>
+                        <div class="group bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden">
+                            {{-- Gradient accent bar --}}
+                            <div class="h-1.5 w-full bg-gradient-to-r from-brand via-brand-strong to-sky-400 dark:from-sky-400 dark:via-brand dark:to-sky-300 absolute top-0 left-0 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                             <div class="p-5 pt-6 flex flex-col flex-1">
                                 {{-- Card header --}}
-                                <div class="bg-gray-100 dark:bg-slate-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4">
+                                <div class="bg-gradient-to-br from-brand/5 to-sky-50 dark:from-brand/10 dark:to-slate-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4 border-b border-brand/10 dark:border-slate-600">
                                     {{-- Top row: product type + manufacturer --}}
                                     <div class="flex items-center justify-between gap-2 mb-3">
                                         <div class="flex items-center gap-2 min-w-0">
                                             @if ($product->product_type)
-                                                <span class="inline-flex items-center px-2.5 py-1.5 rounded text-xs font-semibold tracking-wider rtl:tracking-normal bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand shrink-0">
+                                                <span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-xs font-semibold tracking-wider rtl:tracking-normal bg-brand/15 text-brand-strong dark:bg-brand/25 dark:text-brand shrink-0 shadow-sm">
                                                     {{ __('messages.products.types.' . $product->product_type) }}
                                                 </span>
                                             @endif
                                         </div>
-                                        <span class="text-xs text-white truncate text-right bg-slate-600 dark:bg-slate-700 py-1.5 px-2.5 rounded font-semibold tracking-wider rtl:tracking-normal">
+                                        <span class="text-xs truncate text-right bg-white/60 dark:bg-slate-600/80 text-brand-strong dark:text-sky-300 py-1.5 px-2.5 rounded-md font-semibold tracking-wider rtl:tracking-normal shadow-sm backdrop-blur-sm">
+                                            <x-lucide-building-2 class="w-3 h-3 inline -mt-0.5 me-1" />
                                             {{ $product->manufacturer->first()?->name ?? __('messages.products.unknown') }}
                                         </span>
                                     </div>
 
                                     {{-- Trade name --}}
-                                    <a href="{{ route('products.show', $product) }}" class="text-lg font-semibold text-heading dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-tight">
+                                    <a href="{{ route('products.show', $product) }}" class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block min-h-[3.5rem] line-clamp-2">
                                         {{ $product->trade_name }}
                                     </a>
                                 </div>
 
-                                {{-- Divider line under header --}}
-                                <div class="border-t border-dashed border-neutral-200 dark:border-slate-700 mb-3"></div>
-
-                                {{-- Details section --}}
-                                <div class="flex-1 space-y-2">
+                                {{-- Details section with colored icons --}}
+                                <div class="flex-1 space-y-3">
                                     @if ($product->dosageForm)
-                                        <div class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
-                                            <x-lucide-pill class="w-4 h-4 shrink-0" />
+                                        <div class="flex items-center gap-2.5 text-sm text-body dark:text-slate-300 group/detail">
+                                            <span class="w-7 h-7 rounded-lg bg-brand/10 dark:bg-brand/20 flex items-center justify-center shrink-0 group-hover/detail:bg-brand/20 dark:group-hover/detail:bg-brand/30 transition-colors">
+                                                <x-lucide-pill class="w-3.5 h-3.5 text-brand" />
+                                            </span>
                                             <span>{{ $product->dosageForm->name }}</span>
                                         </div>
                                     @endif
 
                                     @if ($product->activeIngredients->isNotEmpty())
                                         @php $firstIngredient = $product->activeIngredients->first(); @endphp
-                                        <div class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
-                                            <x-lucide-flask-conical class="w-4 h-4 shrink-0" />
+                                        <div class="flex items-center gap-2.5 text-sm text-body dark:text-slate-300 group/detail">
+                                            <span class="w-7 h-7 rounded-lg bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center shrink-0 group-hover/detail:bg-sky-100 dark:group-hover/detail:bg-sky-900/50 transition-colors">
+                                                <x-lucide-flask-conical class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                                            </span>
                                             <span>
                                                 <span class="font-medium text-heading dark:text-white">{{ $firstIngredient->name }}</span>
                                                 @if ($firstIngredient->pivot?->strength)
@@ -144,8 +146,10 @@
                                     @endif
 
                                     @if ($product->package_size)
-                                        <div class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
-                                            <x-lucide-package class="w-4 h-4 shrink-0" />
+                                        <div class="flex items-center gap-2.5 text-sm text-body dark:text-slate-300 group/detail">
+                                            <span class="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center shrink-0 group-hover/detail:bg-amber-100 dark:group-hover/detail:bg-amber-900/50 transition-colors">
+                                                <x-lucide-package class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                                            </span>
                                             <span>{{ $product->package_size }}</span>
                                         </div>
                                     @endif
@@ -153,12 +157,15 @@
                             </div>
 
                             {{-- Bottom action bar --}}
-                            <a href="{{ route('products.show', $product) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3 flex items-center justify-between text-sm font-medium text-body hover:text-brand dark:text-slate-400 dark:hover:text-brand hover:bg-neutral-secondary-soft dark:hover:bg-slate-700/50 transition-colors">
+                            <a href="{{ route('products.show', $product) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
                                 <span class="flex items-center gap-2">
                                     <x-lucide-eye class="w-4 h-4" />
                                     {{ __('messages.products.details') }}
                                 </span>
-                                <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 transition-transform" />
+                                <span class="flex items-center gap-1 group-hover/action:translate-x-1 transition-transform">
+                                    <span class="text-xs text-body dark:text-slate-400">{{ __('messages.nav.view') }}</span>
+                                    <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
+                                </span>
                             </a>
                         </div>
                     @empty

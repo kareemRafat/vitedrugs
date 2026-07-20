@@ -111,6 +111,8 @@ return [
         'why_item3_desc' => 'Information compiled from veterinary monographs, product inserts, and scientific publications.',
         'why_item4_title' => 'Bilingual Platform',
         'why_item4_desc' => 'Full English and Arabic support for the veterinary community across the region.',
+        'database' => 'Database',
+        'total_records' => 'Total Records',
     ],
 
     'home' => [
@@ -164,6 +166,7 @@ return [
         'language' => 'Language',
         'all_rights_reserved' => 'All rights reserved.',
         'footer_text' => 'Veterinary Drugs, Active Ingredients & Clinical Decision Support Platform. All rights reserved.',
+        'view' => 'View',
     ],
 
     'search' => [
