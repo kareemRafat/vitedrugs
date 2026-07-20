@@ -5,7 +5,7 @@
     'rounded' => 'base',
 ])
 
-<div class="md:bg-neutral-primary-soft md:shadow-xs md:p-4 dark:bg-slate-800 {{ $rounded === 'full' ? 'md:rounded-full' : 'md:rounded-base' }}">
+<div class="bg-neutral-primary-soft shadow-xs p-4 rounded-lg dark:bg-slate-800 {{ $rounded === 'full' ? 'md:rounded-full' : 'md:rounded-base' }}">
     <div class="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-4 md:gap-2 overflow-x-auto md:overflow-visible pb-1">
         @php $allLetters = range('A', 'Z'); @endphp
         @foreach ($allLetters as $letter)

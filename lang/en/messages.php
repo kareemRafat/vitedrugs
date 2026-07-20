@@ -294,6 +294,7 @@ return [
         'registration' => 'Registration',
         'description' => 'Description',
         'filter_all' => 'All',
+        'filter_by_type' => 'Filter by type',
         'starting_with' => 'starting with :letter',
         'clear_filter' => 'Clear',
         'previous_page' => 'Previous',

@@ -187,7 +187,7 @@ new class extends Component
     />
 
     {{-- Search --}}
-    <div class="bg-neutral-primary-soft rounded-full shadow-xs p-5 dark:bg-slate-800">
+    <div class="bg-neutral-primary-soft rounded-lg md:rounded-full shadow-xs p-5 dark:bg-slate-800">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative sm:col-span-2">
                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
@@ -207,25 +207,42 @@ new class extends Component
         </div>
     </div>
 
-    {{-- Type filter (segmented control) --}}
-    <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-slate-800">
-        <div class="bg-neutral-secondary-soft dark:bg-slate-700 p-1 rounded-full border border-default-medium dark:border-slate-600 inline-flex flex-wrap gap-0.5 w-full sm:w-auto">
-            <button type="button" wire:click="filterByType('all')"
-                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if(!$activeType) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-slate-700 @endif">
-                <x-lucide-layers class="w-4 h-4" />
-                {{ __('messages.companies.filter_all') }}
-                <span class="text-xs @if(!$activeType) text-white/80 @else text-body dark:text-slate-400 @endif">({{ number_format(array_sum($this->typeCounts)) }})</span>
-            </button>
+    {{-- Type filter --}}
+    {{-- Mobile: native select dropdown --}}
+    <div class="md:hidden bg-neutral-primary-soft rounded-base shadow-xs p-4 dark:bg-slate-800">
+        <label class="block text-sm font-medium text-heading dark:text-white mb-1.5">{{ __('messages.companies.filter_by_type') }}</label>
+        <div class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base block w-full">
+            <select wire:change="filterByType($event.target.value)"
+                class="bg-transparent border-none text-heading text-sm w-full px-3 py-2.5 rounded-base focus:ring-0 focus:outline-none dark:text-white dark:bg-slate-700">
+                <option value="all" @if(!$activeType) selected @endif>{{ __('messages.companies.filter_all') }} ({{ number_format(array_sum($this->typeCounts)) }})</option>
+                @foreach (['manufacturer', 'agent', 'distributor', 'marketing'] as $type)
+                    <option value="{{ $type }}" @if($activeType === $type) selected @endif>{{ __('messages.companies.types.' . $type) }} ({{ $this->typeCounts[$type] }})</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 
-            @foreach (['manufacturer', 'agent', 'distributor', 'marketing'] as $type)
-                <button type="button" wire:click="filterByType('{{ $type }}')"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if($activeType === $type) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-slate-700 @endif">
-                    @php $icon = $this->typeIcon($type); @endphp
-                    <x-dynamic-component :component="'lucide-' . $icon" class="w-4 h-4" />
-                    {{ __('messages.companies.types.' . $type) }}
-                    <span class="text-xs @if($activeType === $type) text-white/80 @else text-body dark:text-slate-400 @endif">({{ $this->typeCounts[$type] }})</span>
+    {{-- Desktop: segmented control --}}
+    <div class="hidden md:block">
+        <div class="bg-neutral-primary-soft rounded-full shadow-xs p-4 dark:bg-slate-800">
+            <div class="bg-neutral-secondary-soft dark:bg-slate-700 p-1 rounded-full border border-default-medium dark:border-slate-600 inline-flex flex-wrap gap-0.5">
+                <button type="button" wire:click="filterByType('all')"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if(!$activeType) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-slate-700 @endif">
+                    <x-lucide-layers class="w-4 h-4" />
+                    {{ __('messages.companies.filter_all') }}
+                    <span class="text-xs @if(!$activeType) text-white/80 @else text-body dark:text-slate-400 @endif">({{ number_format(array_sum($this->typeCounts)) }})</span>
                 </button>
-            @endforeach
+
+                @foreach (['manufacturer', 'agent', 'distributor', 'marketing'] as $type)
+                    <button type="button" wire:click="filterByType('{{ $type }}')"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-colors @if($activeType === $type) bg-brand text-white shadow-xs @else text-heading hover:bg-neutral-primary-soft dark:text-white dark:hover:bg-slate-700 @endif">
+                        @php $icon = $this->typeIcon($type); @endphp
+                        <x-dynamic-component :component="'lucide-' . $icon" class="w-4 h-4" />
+                        {{ __('messages.companies.types.' . $type) }}
+                        <span class="text-xs @if($activeType === $type) text-white/80 @else text-body dark:text-slate-400 @endif">({{ $this->typeCounts[$type] }})</span>
+                    </button>
+                @endforeach
+            </div>
         </div>
     </div>
 

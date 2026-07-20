@@ -294,6 +294,7 @@ return [
         'registration' => 'رقم التسجيل',
         'description' => 'الوصف',
         'filter_all' => 'الكل',
+        'filter_by_type' => 'تصفية حسب النوع',
         'starting_with' => 'تبدأ بحرف :letter',
         'clear_filter' => 'مسح',
         'previous_page' => 'السابق',
