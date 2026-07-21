@@ -3,7 +3,7 @@
 @section('title', __('messages.profile.title'))
 
 @section('content')
-    <div class="max-w-6xl mx-auto w-full mt-6">
+    <div class="max-w-7xl mx-auto w-full mt-6">
         <div class="flex flex-col lg:flex-row gap-6">
             {{-- Sidebar --}}
             <aside class="w-full lg:w-64 shrink-0">

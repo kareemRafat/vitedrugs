@@ -3,7 +3,7 @@
 @section('title', __('messages.profile.edit_heading'))
 
 @section('content')
-    <div class="max-w-6xl mx-auto w-full mt-6">
+    <div class="max-w-7xl mx-auto w-full mt-6">
         <div class="flex flex-col lg:flex-row gap-6">
             {{-- Sidebar --}}
             <aside class="w-full lg:w-64 shrink-0">
@@ -25,19 +25,6 @@
                         </div>
                     @endif
 
-                    @if ($errors->any())
-                        <div class="flex items-center p-4 mb-6 text-sm rounded-base bg-danger-soft border border-danger-subtle text-fg-danger-strong dark:bg-red-900/30 dark:border-red-700 dark:text-red-400" role="alert">
-                            <x-lucide-circle-alert class="shrink-0 inline w-4 h-4 me-3" />
-                            <div>
-                                <ul class="mb-0">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-
                     <form method="POST" action="{{ route('profile.update') }}" class="space-y-5">
                         @csrf
                         @method('PUT')
@@ -49,9 +36,15 @@
                                     <x-lucide-user class="w-4 h-4 text-body dark:text-slate-400" />
                                 </div>
                                 <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name"
-                                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white @error('name') border-danger-subtle dark:border-red-600 @enderror"
+                                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white @error('name') border-red-600 @enderror"
                                     placeholder="{{ __('messages.profile.name_placeholder') }}">
                             </div>
+                            @error('name')
+                                <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
+                                    <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
+                                    <span>{{ $message }}</span>
+                                </p>
+                            @enderror
                         </div>
 
                         <div>
@@ -61,9 +54,15 @@
                                     <x-lucide-mail class="w-4 h-4 text-body dark:text-slate-400" />
                                 </div>
                                 <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required autocomplete="email"
-                                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white @error('email') border-danger-subtle dark:border-red-600 @enderror"
+                                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white @error('email') border-red-600 @enderror"
                                     placeholder="{{ __('messages.profile.email_placeholder') }}">
                             </div>
+                            @error('email')
+                                <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
+                                    <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
+                                    <span>{{ $message }}</span>
+                                </p>
+                            @enderror
                         </div>
 
                         <div class="flex items-center gap-3 pt-2">
