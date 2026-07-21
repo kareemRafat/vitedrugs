@@ -13,11 +13,18 @@
                 ['count' => $companies->count(), 'label' => __('messages.products.companies_label'), 'icon' => 'building-2'],
                 ['count' => $dosageForms->count(), 'label' => __('messages.products.forms_label'), 'icon' => 'pill'],
             ]">
-            <a href="{{ route('products.compare') }}"
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-base text-sm font-semibold bg-white text-brand hover:bg-white/90 dark:bg-sky-700 dark:text-white dark:hover:bg-sky-600 transition-colors shadow-sm border border-white/20">
-                <x-lucide-git-compare class="w-4 h-4" />
-                {{ __('messages.compare.page_heading') }}
-            </a>
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('products.submission.create') }}" wire:navigate
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-base text-sm font-semibold bg-white/20 text-white hover:bg-white/30 transition-colors shadow-sm border border-white/30">
+                    <x-lucide-plus class="w-4 h-4" />
+                    {{ __('messages.products.submit_product') }}
+                </a>
+                <a href="{{ route('products.compare') }}"
+                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-base text-sm font-semibold bg-white text-brand hover:bg-white/90 dark:bg-sky-700 dark:text-white dark:hover:bg-sky-600 transition-colors shadow-sm border border-white/20">
+                    <x-lucide-git-compare class="w-4 h-4" />
+                    {{ __('messages.compare.page_heading') }}
+                </a>
+            </div>
         </x-page-hero>
 
         {{-- Search / Filters --}}

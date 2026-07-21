@@ -139,13 +139,19 @@ new class extends Component
             ['count' => $this->companies->count(), 'label' => __('messages.products.companies_label'), 'icon' => 'building-2'],
             ['count' => $this->dosageForms->count(), 'label' => __('messages.products.forms_label'), 'icon' => 'pill'],
         ]">
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="{{ route('products.submission.create') }}" wire:navigate
+                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-base text-sm font-medium bg-white/20 text-white hover:bg-white/30 transition-colors shadow-xs border border-white/30">
+                <x-lucide-plus class="w-3.5 h-3.5" />
+                {{ __('messages.products.submit_product') }}
+            </a>
+            <a href="{{ route('products.compare') }}" wire:navigate
+                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-base text-sm font-medium bg-white text-brand hover:bg-white/90 transition-colors shadow-xs border border-white/20">
+                <x-lucide-git-compare class="w-4 h-4" />
+                {{ __('messages.compare.compare') }}
+            </a>
+        </div>
     </x-page-hero>
-
-    <a href="{{ route('products.compare') }}" wire:navigate
-        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-base text-sm font-medium bg-white text-brand hover:bg-white/90 transition-colors shadow-xs -mt-3 mb-4 relative z-10">
-        <x-lucide-git-compare class="w-4 h-4" />
-        {{ __('messages.compare.compare') }}
-    </a>
 
     {{-- Search / Filters --}}
     <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">

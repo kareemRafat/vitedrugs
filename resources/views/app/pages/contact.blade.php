@@ -9,10 +9,10 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
 @section('content')
 <x-toast id="contactToast" type="success" title="Success" message="" />
 
-<div class="max-w-7xl mx-auto space-y-8 py-8 sm:py-12">
+<div class="max-w-7xl mx-auto space-y-8 pb-8 sm:pb-12">
 
   {{-- Hero --}}
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm mt-6">
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm mt-8">
 
     <div class="relative z-10 max-w-2xl">
       <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-200 dark:text-sky-200 border border-white/10 dark:border-sky-700 mb-5">

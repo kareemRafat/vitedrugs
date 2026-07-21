@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- Hero / Search Section --}}
-    <div class="relative overflow-hidden mb-6 rounded-base shadow-xs bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 mt-6">
+    <div class="relative overflow-hidden mb-6 rounded-base shadow-xs bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 mt-8">
         <div class="absolute inset-0 opacity-10 dark:opacity-20">
             <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white dark:bg-sky-200"></div>
             <div class="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-white dark:bg-sky-200"></div>
