@@ -61,7 +61,7 @@ Route::group([
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create-submission', [ProductSubmissionController::class, 'create'])->name('products.submission.create');
     Route::post('/products/create-submission', [ProductSubmissionController::class, 'store'])
-        // ->middleware('throttle:3,60')
+        ->middleware('throttle:3,60')
         ->name('products.submission.store');
     Route::get('/products/compare', function () {
         return view('app.products.compare');
