@@ -11,6 +11,7 @@ use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductSubmissionController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,10 @@ Route::group([
     Route::view('/terms-of-service', 'app.pages.terms-of-service')->name('terms-of-service');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create-submission', [ProductSubmissionController::class, 'create'])->name('products.submission.create');
+    Route::post('/products/create-submission', [ProductSubmissionController::class, 'store'])
+        ->middleware('throttle:3,60')
+        ->name('products.submission.store');
     Route::get('/products/compare', function () {
         return view('app.products.compare');
     })->name('products.compare');

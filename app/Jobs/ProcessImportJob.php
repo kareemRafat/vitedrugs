@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Actions\ImportProductsAction;
+use App\Actions\Products\ImportProductsAction;
 use App\Models\ImportJob;
 use App\Services\Imports\ProductImportService;
 use App\Services\Imports\ProductImportValidator;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Products;
 
 class CompareAction
 {
@@ -16,30 +16,29 @@ class CompareAction
             return;
         }
 
-        if (count($ids) >= self::MAX) {
+        if ($this->isFull()) {
             return;
         }
 
         $ids[] = $id;
 
-        session([self::SESSION_KEY => $ids]);
+        session()->put(self::SESSION_KEY, $ids);
     }
 
     public function remove(string $id): void
     {
         $ids = $this->all();
 
-        $ids = array_values(array_filter(
-            $ids,
-            fn (string $v): bool => $v !== $id
-        ));
+        $ids = array_values(
+            array_filter($ids, fn (string $i): bool => $i !== $id)
+        );
 
-        session([self::SESSION_KEY => $ids]);
+        session()->put(self::SESSION_KEY, $ids);
     }
 
     public function all(): array
     {
-        return session(self::SESSION_KEY, []);
+        return session()->get(self::SESSION_KEY, []);
     }
 
     public function count(): int

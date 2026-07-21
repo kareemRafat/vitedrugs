@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\CompareAction;
+use App\Actions\Products\CompareAction;
 use App\Models\Product;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
@@ -213,7 +213,7 @@ new class extends Component
                             </div>
 
                             {{-- Details --}}
-                            <div class="flex-1 min-w-0">
+                            <div class="flex-1 min-w-0 pe-6">
                                 <a href="{{ route('products.show', $product) }}"
                                     class="text-sm font-semibold text-heading dark:text-white hover:text-brand dark:hover:text-sky-400 transition-colors leading-tight line-clamp-2">
                                     {{ $product->trade_name }}

@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\CompareAction;
+use App\Actions\Products\CompareAction;
 use App\Models\Product;
 use Livewire\Component;
 
