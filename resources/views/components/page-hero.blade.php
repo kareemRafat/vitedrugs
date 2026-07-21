@@ -4,7 +4,7 @@
     'stats' => null,
 ])
 
-<div class="bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 rounded-base overflow-hidden mt-8">
+<div class="bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 rounded-base overflow-hidden mt-6">
         <div class="relative px-6 pt-16 pb-20 sm:pt-20 sm:pb-24">
             <div class="absolute inset-0 opacity-10 dark:opacity-20">
                 <div class="absolute -top-24 -end-24 w-96 h-96 rounded-full bg-white dark:bg-sky-200"></div>

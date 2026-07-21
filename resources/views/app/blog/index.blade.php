@@ -3,7 +3,7 @@
 @section('title', __('messages.blog.index_title'))
 
 @section('content')
-    <div class="space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
 
         <x-page-hero
             :heading="__('messages.blog.index_heading')"

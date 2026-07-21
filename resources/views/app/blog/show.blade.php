@@ -9,10 +9,10 @@
 @section('og_description', $blog->meta_description ?: strip_tags($locale === 'ar' && $blog->excerpt_ar ? $blog->excerpt_ar : ($blog->excerpt ?: '')))
 
 @section('content')
-    <div class="max-w-4xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
 
         {{-- Breadcrumb --}}
-        <nav class="flex items-center gap-2 text-sm text-body dark:text-slate-400">
+        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4">
             <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.nav.home') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <a href="{{ route('blog.index') }}" class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.blog.title') }}</a>
@@ -22,7 +22,7 @@
                     class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ $locale === 'ar' && $blog->category->name_ar ? $blog->category->name_ar : $blog->category->name }}</a>
             @endif
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <span class="text-heading dark:text-white font-medium truncate">{{ $locale === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}</span>
+            <span class="text-heading dark:text-white font-medium">{{ $locale === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}</span>
         </nav>
 
         {{-- Article Card --}}
@@ -92,7 +92,7 @@
                         [&_hr]:border-default-medium dark:[&_hr]:border-slate-700 [&_hr]:my-8
                         [&_pre]:bg-neutral-secondary-soft dark:[&_pre]:bg-slate-700 [&_pre]:border [&_pre]:border-default-medium dark:[&_pre]:border-slate-600 [&_pre]:rounded-base [&_pre]:p-4 [&_pre]:overflow-x-auto
                         [&_code]:text-sm
-                        [&_img]:rounded-base [&_img]:shadow-xs">
+                        [&_img]:rounded-base [&_img]:shadow-xs [&_img]:max-w-full [&_img]:h-auto">
                         {!! $locale === 'ar' && $blog->body_ar ? $blog->body_ar : $blog->body !!}
                     </div>
 
