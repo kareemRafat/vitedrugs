@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Enums\ProductStatus;
 use App\Models\Product;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -66,12 +67,32 @@ class ProductInfolist
                             ->placeholder('-'),
                     ]),
 
-                Section::make('Timestamps')
-                    ->columnSpanFull()
+                Section::make('Submitted')
+                    ->columnSpan(1)
                     ->schema([
+                        TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (ProductStatus $state): string => $state->color()),
+                        TextEntry::make('createdBy.name')
+                            ->label('Submitted By')
+                            ->placeholder('-'),
                         TextEntry::make('created_at')
+                            ->label('Submitted At')
                             ->dateTime()
                             ->placeholder('-'),
+                        TextEntry::make('reviewed_at')
+                            ->label('Reviewed At')
+                            ->dateTime()
+                            ->placeholder('-'),
+                        TextEntry::make('admin_notes')
+                            ->label('Admin Notes')
+                            ->placeholder('No notes')
+                            ->visible(fn (?Product $record): bool => filled($record?->admin_notes)),
+                    ]),
+
+                Section::make('Timestamps')
+                    ->columnSpan(1)
+                    ->schema([
                         TextEntry::make('updated_at')
                             ->dateTime()
                             ->placeholder('-'),

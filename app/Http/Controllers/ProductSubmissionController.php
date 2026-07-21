@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Products\CreateProductFromSubmissionDataAction;
 use App\Http\Requests\StoreProductSubmissionRequest;
-use App\Models\ProductSubmission;
 
 class ProductSubmissionController extends Controller
 {
@@ -16,29 +16,30 @@ class ProductSubmissionController extends Controller
     {
         $validated = $request->validated();
 
-        $submittedData = collect($validated)->except([
+        $productData = collect($validated)->except([
             'submitted_by_name',
             'submitted_by_email',
             'submitted_by_phone',
         ])->toArray();
 
-        ProductSubmission::create([
-            'user_id' => auth()->id(),
-            'submitted_data' => $submittedData,
-            'submitted_by_name' => $validated['submitted_by_name'],
-            'submitted_by_email' => $validated['submitted_by_email'],
-            'submitted_by_phone' => $validated['submitted_by_phone'] ?? null,
-            'status' => 'pending',
-        ]);
+        app(CreateProductFromSubmissionDataAction::class)
+            ->execute($productData, auth()->user());
+
+        $response = [
+            'message' => __('messages.pages.products.submission.success'),
+        ];
+
+        if ($request->hasDuplicatePending) {
+            $response['warning'] = __('messages.pages.products.submission.trade_name_pending_warning');
+        }
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'message' => __('messages.pages.products.submission.success'),
-            ]);
+            return response()->json($response);
         }
 
         return redirect()
             ->route('products.submission.create')
-            ->with('success', __('messages.pages.products.submission.success'));
+            ->with('success', $response['message'])
+            ->with('warning', $response['warning'] ?? null);
     }
 }

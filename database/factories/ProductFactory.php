@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\ProductStatus;
 use App\Models\DosageForm;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -33,6 +35,8 @@ class ProductFactory extends Factory
             'package_size' => fake()->randomElement(['10 ml', '50 ml', '100 ml', '250 ml', '500 ml', '1 L', '100 tabs', '500 tabs', '1 kg', '5 kg']),
             'storage_conditions' => fake()->randomElement(['Store below 25°C', 'Store at 2-8°C', 'Store at room temperature', 'Store in a cool dry place', 'Protect from light']),
             'is_active' => true,
+            'status' => ProductStatus::Approved,
+            'created_by' => User::factory(),
         ];
     }
 }

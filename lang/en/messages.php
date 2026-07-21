@@ -429,6 +429,7 @@ return [
                 'heading' => 'Submit a Product',
                 'subtitle' => 'Help us expand our database by submitting a veterinary product. Our team will review and publish it.',
                 'success' => 'Thank you! Your product submission has been received and will be reviewed by our team.',
+                'trade_name_pending_warning' => 'A product with this trade name has already been submitted and is pending review.',
                 'submitter_info' => 'Your Information',
                 'name_label' => 'Your Name',
                 'name_placeholder' => 'Enter your full name',

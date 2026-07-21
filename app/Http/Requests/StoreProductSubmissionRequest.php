@@ -2,10 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ProductStatus;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreProductSubmissionRequest extends FormRequest
 {
+    public bool $hasDuplicatePending = false;
+
     public function authorize(): bool
     {
         return true;
@@ -82,6 +87,21 @@ class StoreProductSubmissionRequest extends FormRequest
             'documents.*.url.url' => __('messages.pages.products.submission.validation.document_url_invalid'),
             'image_urls.*.url' => __('messages.pages.products.submission.validation.image_url_invalid'),
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $tradeName = $this->input('trade_name');
+            if (! $tradeName) {
+                return;
+            }
+
+            $this->hasDuplicatePending = Product::withoutGlobalScope('approved')
+                ->where('trade_name', $tradeName)
+                ->where('status', ProductStatus::Pending)
+                ->exists();
+        });
     }
 
     public function attributes(): array

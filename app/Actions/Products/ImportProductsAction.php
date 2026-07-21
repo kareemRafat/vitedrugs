@@ -2,17 +2,20 @@
 
 namespace App\Actions\Products;
 
+use App\Enums\ProductStatus;
 use App\Models\ImportJob;
-use App\Services\Imports\ProductImportService;
 use App\Services\Imports\ProductImportValidator;
 use App\Services\Imports\ProductNormalizer;
 use Illuminate\Support\Facades\Log;
 
 class ImportProductsAction
 {
+    public function __construct(
+        private CreateProductFromSubmissionDataAction $createProduct,
+    ) {}
+
     public function execute(
         ImportJob $job,
-        ProductImportService $service,
         ProductImportValidator $validator,
         ProductNormalizer $normalizer
     ): void {
@@ -47,7 +50,7 @@ class ImportProductsAction
 
                 $validator->validate($normalized);
 
-                $service->import($normalized);
+                $this->createProduct->execute($normalized, status: ProductStatus::Approved);
 
                 $imported++;
             } catch (\Throwable $e) {

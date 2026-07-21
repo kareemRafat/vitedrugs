@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\ProductStatus;
 use App\Models\ActiveIngredient;
 use App\Models\Company;
 use App\Models\Product;
@@ -43,7 +44,8 @@ class ImportDrugVetProducts extends Command
             $slug = Str::slug($tradeName);
 
             if (
-                Product::where('slug', $slug)
+                Product::withoutGlobalScope('approved')
+                    ->where('slug', $slug)
                     ->exists()
             ) {
 
@@ -83,14 +85,12 @@ class ImportDrugVetProducts extends Command
             |--------------------------------------------------------------------------
             */
 
-            $product = Product::create([
+            $product = Product::withoutGlobalScope('approved')->create([
                 'trade_name' => $tradeName,
-
                 'slug' => $slug,
-
                 'product_type' => 'pharmaceutical',
-
                 'is_active' => true,
+                'status' => ProductStatus::Approved,
             ]);
 
             $product->companies()->syncWithoutDetaching([

@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Actions\Products\ImportProductsAction;
 use App\Models\ImportJob;
-use App\Services\Imports\ProductImportService;
 use App\Services\Imports\ProductImportValidator;
 use App\Services\Imports\ProductNormalizer;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,7 +20,6 @@ class ProcessImportJob implements ShouldQueue
 
     public function handle(
         ImportProductsAction $action,
-        ProductImportService $service,
         ProductImportValidator $validator,
         ProductNormalizer $normalizer,
     ): void {
@@ -39,7 +37,6 @@ class ProcessImportJob implements ShouldQueue
 
             $action->execute(
                 $job,
-                $service,
                 $validator,
                 $normalizer,
             );

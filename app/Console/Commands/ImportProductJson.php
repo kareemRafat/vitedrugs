@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Imports\ProductImportService;
+use App\Actions\Products\CreateProductFromSubmissionDataAction;
+use App\Enums\ProductStatus;
 use Illuminate\Console\Command;
 
 class ImportProductJson extends Command
@@ -11,7 +12,7 @@ class ImportProductJson extends Command
 
     protected $description = 'Import products from JSON';
 
-    public function handle(ProductImportService $service): int
+    public function handle(CreateProductFromSubmissionDataAction $action): int
     {
         $json = file_get_contents(
             $this->argument('file')
@@ -20,7 +21,7 @@ class ImportProductJson extends Command
         $items = json_decode($json, true);
 
         foreach ($items as $item) {
-            $service->import($item);
+            $action->execute($item, status: ProductStatus::Approved);
         }
 
         $this->info('Import completed');

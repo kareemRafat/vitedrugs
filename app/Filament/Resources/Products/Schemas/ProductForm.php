@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Enums\ProductStatus;
 use App\Models\Company;
 use App\Models\DosageForm;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -73,6 +75,20 @@ class ProductForm
                 Toggle::make('is_active')
                     ->default(true),
 
+                Section::make('Submitted')
+                    ->schema([
+                        Select::make('status')
+                            ->options(ProductStatus::class)
+                            ->disabled()
+                            ->dehydrated(false),
+                        TextInput::make('createdBy.name')
+                            ->label('Submitted By')
+                            ->disabled()
+                            ->dehydrated(false),
+                        Textarea::make('admin_notes')
+                            ->disabled()
+                            ->dehydrated(false),
+                    ]),
             ]);
     }
 }
