@@ -68,14 +68,22 @@
                 </div>
 
                 @auth
-                    <div class="hidden sm:flex items-center">
-                        <button id="userDropdown" data-dropdown-toggle="userDropdownMenu" class="flex text-sm rounded-full focus:ring-4 focus:ring-neutral-secondary-soft dark:focus:ring-slate-600" type="button">
+                    <div x-data="{ open: false }" class="hidden sm:flex items-center relative">
+                        <button @click="open = !open" @click.outside="open = false" class="flex text-sm rounded-full focus:ring-4 focus:ring-neutral-secondary-soft dark:focus:ring-slate-600" type="button">
                             <span class="sr-only">{{ __('messages.nav.toggle_user_menu') }}</span>
                             <div class="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center text-sm font-medium">
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </div>
                         </button>
-                        <div id="userDropdownMenu" class="z-50 hidden my-2 w-56 bg-neutral-primary-soft rounded-base shadow-lg border border-default-medium dark:bg-slate-700 dark:border-slate-600">
+                        <div x-show="open" x-cloak
+                            @click.outside="open = false"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute end-0 top-full z-50 my-2 w-56 bg-neutral-primary-soft rounded-base shadow-lg border border-default-medium dark:bg-slate-700 dark:border-slate-600">
                             <div class="px-4 py-4 flex items-center gap-3 border-b border-default-medium dark:border-slate-600">
                                 <div class="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center text-sm font-semibold shrink-0">
                                     {{ substr(Auth::user()->name, 0, 1) }}
@@ -86,6 +94,12 @@
                                 </div>
                             </div>
                             <ul class="py-1 text-sm text-heading dark:text-slate-300">
+                                <li>
+                                    <a href="{{ route('profile.show') }}" wire:navigate @click="open = false" class="flex items-center gap-3 w-full text-start px-4 py-2.5 rounded-base transition-colors duration-150 hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 text-body hover:text-heading dark:hover:text-white">
+                                        <x-lucide-user class="w-4 h-4" />
+                                        {{ __('messages.profile.title') }}
+                                    </a>
+                                </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
@@ -190,6 +204,10 @@
                             <p class="text-xs text-body dark:text-slate-400 truncate">{{ Auth::user()->email }}</p>
                         </div>
                     </div>
+                    <a href="{{ route('profile.show') }}" onclick="toggleMobileMenu()" class="flex items-center gap-3 w-full text-start px-4 py-3 text-sm font-medium text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700 rounded-base transition-colors duration-150">
+                        <x-lucide-user class="w-5 h-5 text-body dark:text-slate-400" />
+                        {{ __('messages.profile.title') }}
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="flex items-center gap-3 w-full text-start px-4 py-3 text-sm font-medium text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700 rounded-base transition-colors duration-150">

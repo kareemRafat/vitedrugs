@@ -23,13 +23,19 @@
     {{-- Dark mode: apply before render to prevent flash --}}
     <script>
         (function() {
-            var theme = localStorage.getItem('theme');
-            if (!theme) {
-                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            function applyTheme() {
+                var theme = localStorage.getItem('theme');
+                if (!theme) {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
             }
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
+            applyTheme();
+            document.addEventListener('livewire:navigated', applyTheme);
         })();
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
