@@ -13,11 +13,11 @@
         <x-lucide-package-plus class="w-4 h-4" />
         <span>{{ __('messages.pages.products.submission.badge') }}</span>
       </div>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] tracking-tight">
         {{ __('messages.pages.products.submission.heading') }}
       </h1>
       <div class="w-16 h-1 bg-blue-400 dark:bg-sky-400 rounded-full mt-6 mb-6"></div>
-      <p class="text-lg sm:text-xl text-slate-300 dark:text-sky-200 max-w-xl leading-relaxed">
+      <p class="text-base sm:text-lg text-slate-300 dark:text-sky-200 max-w-xl leading-relaxed">
         {{ __('messages.pages.products.submission.subtitle') }}
       </p>
     </div>
@@ -80,17 +80,20 @@
             headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
             body: new FormData(this.$el)
           });
+          const json = await resp.json();
           if (resp.ok) {
-            window.location.reload();
+            this.submitting = false;
+            window.Toast.show('submissionToast', 'success', json.message || '');
+            setTimeout(() => { Livewire.navigate('{{ route('products.index') }}'); }, 2000);
           } else if (resp.status === 422) {
-            const json = await resp.json();
             this.errors = json.errors || {};
+            window.Toast.show('submissionToast', 'error', '{{ __('messages.pages.products.submission.error_toast') }}');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           } else {
-            const json = await resp.json();
-            if (json.message) alert(json.message);
+            if (json.message) window.Toast.show('submissionToast', 'error', json.message);
           }
         } catch (e) {
-          alert('{{ __('messages.pages.products.submission.network_error') }}');
+          window.Toast.show('submissionToast', 'error', '{{ __('messages.pages.products.submission.network_error') }}');
         } finally {
           this.submitting = false;
         }

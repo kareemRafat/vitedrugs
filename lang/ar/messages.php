@@ -424,10 +424,10 @@ return [
         ],
         'products' => [
             'submission' => [
-                'title' => 'إرسال منتج | VetPedia',
-                'badge' => 'إرسال منتج',
-                'heading' => 'إرسال منتج',
-                'subtitle' => 'ساعدنا في توسيع قاعدة بياناتنا بإرسال منتج بيطري. سيقوم فريقنا بمراجعته ونشره.',
+                'title' => 'إضافة منتجك | VetPedia',
+                'badge' => 'إضافة منتجك',
+                'heading' => 'إضافة منتجك',
+                'subtitle' => 'ساعدنا في توسيع قاعدة بياناتنا بإضافة منتج بيطري. سيقوم فريقنا بمراجعته ونشره.',
                 'success' => 'شكراً لك! تم استلام إرسالك وسيتم مراجعته من قبل فريقنا.',
                 'submitter_info' => 'معلومات المرسل',
                 'name_label' => 'الاسم',
@@ -490,6 +490,7 @@ return [
                 'document_url_placeholder' => 'https://example.com/document.pdf',
                 'add' => 'إضافة',
                 'section_required' => 'يرجى ملء جميع الحقول المطلوبة في هذا القسم.',
+                'error_toast' => 'يرجى ملء جميع الأقسام المطلوبة قبل الإرسال.',
                 'select_type' => 'اختر نوعاً',
                 'submitting' => 'جارٍ الإرسال…',
                 'network_error' => 'حدث خطأ في الشبكة. يرجى المحاولة مرة أخرى.',
@@ -653,7 +654,7 @@ return [
         'no_images' => 'لا توجد صور متاحة.',
         'documents' => 'المستندات',
         'no_documents' => 'لا توجد مستندات متاحة.',
-        'submit_product' => 'إرسال منتج',
+        'submit_product' => 'إضافة منتجك',
         'download' => 'تحميل',
         'alternative_types' => [
             'commercial' => 'تجاري',

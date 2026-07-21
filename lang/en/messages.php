@@ -490,6 +490,7 @@ return [
                 'document_url_placeholder' => 'https://example.com/document.pdf',
                 'add' => 'Add',
                 'section_required' => 'Please fill in all required fields in this section.',
+                'error_toast' => 'Please fill in all required sections before submitting.',
                 'select_type' => 'Select a type',
                 'submitting' => 'Submitting…',
                 'network_error' => 'A network error occurred. Please try again.',

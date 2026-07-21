@@ -95,35 +95,59 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
             <div>
-              <label for="name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ __('messages.pages.contact.name_label') }}</label>
+              <label for="name" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.name_label') }}</label>
               <input type="text" name="name" id="name" value="{{ old('name') }}"
-                class="block w-full px-3.5 py-2.5 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs placeholder:text-slate-400 dark:placeholder:text-slate-500 @error('name') border-red-400 @enderror"
+                class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                 placeholder="{{ __('messages.pages.contact.name_placeholder') }}">
+              @error('name')
+                <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
+                  <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
+                  <span>{{ $message }}</span>
+                </p>
+              @enderror
             </div>
             <div>
-              <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ __('messages.pages.contact.email_label') }}</label>
+              <label for="email" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.email_label') }}</label>
               <input type="email" name="email" id="email" value="{{ old('email') }}"
-                class="block w-full px-3.5 py-2.5 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs placeholder:text-slate-400 dark:placeholder:text-slate-500 @error('email') border-red-400 @enderror"
+                class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                 placeholder="{{ __('messages.pages.contact.email_placeholder') }}">
+              @error('email')
+                <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
+                  <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
+                  <span>{{ $message }}</span>
+                </p>
+              @enderror
             </div>
           </div>
 
           <div class="mb-5">
-            <label for="subject" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ __('messages.pages.contact.subject_label') }}</label>
+            <label for="subject" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.subject_label') }}</label>
             <input type="text" name="subject" id="subject" value="{{ old('subject') }}"
-              class="block w-full px-3.5 py-2.5 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs placeholder:text-slate-400 dark:placeholder:text-slate-500 @error('subject') border-red-400 @enderror"
+              class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
               placeholder="{{ __('messages.pages.contact.subject_placeholder') }}">
+            @error('subject')
+              <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
+                <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
+                <span>{{ $message }}</span>
+              </p>
+            @enderror
           </div>
 
           <div class="mb-6">
-            <label for="message" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ __('messages.pages.contact.message_label') }}</label>
+            <label for="message" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.message_label') }}</label>
             <textarea name="message" id="message" rows="5"
-              class="block w-full px-3.5 py-2.5 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-y @error('message') border-red-400 @enderror"
+              class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white resize-y"
               placeholder="{{ __('messages.pages.contact.message_placeholder') }}">{{ old('message') }}</textarea>
+            @error('message')
+              <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
+                <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
+                <span>{{ $message }}</span>
+              </p>
+            @enderror
           </div>
 
           <button type="submit"
-            class="inline-flex items-center gap-2 px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-semibold rounded-xl text-sm transition-colors shadow-sm">
+            class="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base shadow-xs transition-colors">
             <x-lucide-send class="w-4 h-4" />
             {{ __('messages.pages.contact.submit') }}
           </button>
