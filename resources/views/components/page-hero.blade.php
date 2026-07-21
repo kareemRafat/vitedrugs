@@ -24,7 +24,12 @@
                             </span>
                         @endforeach
                     </div>
-                @endif
-            </div>
+            @endif
+            @unless (empty(trim((string) $slot)))
+                <div class="mt-5">
+                    {{ $slot }}
+                </div>
+            @endunless
+        </div>
         </div>
 </div>
