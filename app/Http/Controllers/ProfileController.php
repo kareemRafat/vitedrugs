@@ -57,7 +57,7 @@ class ProfileController extends Controller
 
         if (! Hash::check($validated['current_password'], $user->password)) {
             return back()->withErrors([
-                'current_password' => __('messages.profile.wrong_password'),
+                'current_password' => __('validation.profile.wrong_password'),
             ]);
         }
 

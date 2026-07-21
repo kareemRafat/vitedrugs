@@ -68,24 +68,24 @@ class StoreProductSubmissionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'submitted_by_name.required' => __('messages.pages.products.submission.validation.name_required'),
-            'submitted_by_email.required' => __('messages.pages.products.submission.validation.email_required'),
-            'submitted_by_email.email' => __('messages.pages.products.submission.validation.email_invalid'),
-            'trade_name.required' => __('messages.pages.products.submission.validation.trade_name_required'),
-            'product_type.required' => __('messages.pages.products.submission.validation.product_type_required'),
-            'product_type.in' => __('messages.pages.products.submission.validation.product_type_invalid'),
-            'company.required' => __('messages.pages.products.submission.validation.company_required'),
-            'dosage_form.required' => __('messages.pages.products.submission.validation.dosage_form_required'),
-            'active_ingredients.required' => __('messages.pages.products.submission.validation.active_ingredients_required'),
-            'active_ingredients.*.name.required_with' => __('messages.pages.products.submission.validation.ingredient_name_required'),
-            'dosages.required' => __('messages.pages.products.submission.validation.dosages_required'),
-            'dosages.*.species.required_with' => __('messages.pages.products.submission.validation.dosage_species_required'),
-            'withdrawal_periods.required' => __('messages.pages.products.submission.validation.withdrawal_required'),
-            'withdrawal_periods.*.species.required_with' => __('messages.pages.products.submission.validation.withdrawal_species_required'),
-            'documents.*.title.required_with' => __('messages.pages.products.submission.validation.document_title_required'),
-            'documents.*.url.required_with' => __('messages.pages.products.submission.validation.document_url_required'),
-            'documents.*.url.url' => __('messages.pages.products.submission.validation.document_url_invalid'),
-            'image_urls.*.url' => __('messages.pages.products.submission.validation.image_url_invalid'),
+            'submitted_by_name.required' => __('validation.submission.name_required'),
+            'submitted_by_email.required' => __('validation.submission.email_required'),
+            'submitted_by_email.email' => __('validation.submission.email_invalid'),
+            'trade_name.required' => __('validation.submission.trade_name_required'),
+            'product_type.required' => __('validation.submission.product_type_required'),
+            'product_type.in' => __('validation.submission.product_type_invalid'),
+            'company.required' => __('validation.submission.company_required'),
+            'dosage_form.required' => __('validation.submission.dosage_form_required'),
+            'active_ingredients.required' => __('validation.submission.active_ingredients_required'),
+            'active_ingredients.*.name.required_with' => __('validation.submission.ingredient_name_required'),
+            'dosages.required' => __('validation.submission.dosages_required'),
+            'dosages.*.species.required_with' => __('validation.submission.dosage_species_required'),
+            'withdrawal_periods.required' => __('validation.submission.withdrawal_required'),
+            'withdrawal_periods.*.species.required_with' => __('validation.submission.withdrawal_species_required'),
+            'documents.*.title.required_with' => __('validation.submission.document_title_required'),
+            'documents.*.url.required_with' => __('validation.submission.document_url_required'),
+            'documents.*.url.url' => __('validation.submission.document_url_invalid'),
+            'image_urls.*.url' => __('validation.submission.image_url_invalid'),
         ];
     }
 
@@ -106,6 +106,6 @@ class StoreProductSubmissionRequest extends FormRequest
 
     public function attributes(): array
     {
-        return __('messages.pages.products.submission.attributes');
+        return __('validation.submission_attributes');
     }
 }

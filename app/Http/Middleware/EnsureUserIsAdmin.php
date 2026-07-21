@@ -19,7 +19,7 @@ class EnsureUserIsAdmin
             $request->session()->regenerateToken();
 
             return redirect()->route('login')->withErrors([
-                'email' => __('messages.login.admin_restricted'),
+                'email' => __('validation.login.admin_restricted'),
             ]);
         }
 

@@ -21,15 +21,15 @@ class ContactController extends Controller
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
         ], [
-            'name.required' => __('messages.pages.contact.validation.name_required'),
-            'name.max' => __('messages.pages.contact.validation.name_max'),
-            'email.required' => __('messages.pages.contact.validation.email_required'),
-            'email.email' => __('messages.pages.contact.validation.email_email'),
-            'email.max' => __('messages.pages.contact.validation.email_max'),
-            'subject.required' => __('messages.pages.contact.validation.subject_required'),
-            'subject.max' => __('messages.pages.contact.validation.subject_max'),
-            'message.required' => __('messages.pages.contact.validation.message_required'),
-            'message.max' => __('messages.pages.contact.validation.message_max'),
+            'name.required' => __('validation.contact.name_required'),
+            'name.max' => __('validation.contact.name_max'),
+            'email.required' => __('validation.contact.email_required'),
+            'email.email' => __('validation.contact.email_email'),
+            'email.max' => __('validation.contact.email_max'),
+            'subject.required' => __('validation.contact.subject_required'),
+            'subject.max' => __('validation.contact.subject_max'),
+            'message.required' => __('validation.contact.message_required'),
+            'message.max' => __('validation.contact.message_max'),
         ]);
 
         ContactSubmission::create($validated);

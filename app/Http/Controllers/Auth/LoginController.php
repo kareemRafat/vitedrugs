@@ -33,7 +33,7 @@ class LoginController extends Controller
                 $request->session()->regenerateToken();
 
                 return back()->withErrors([
-                    'email' => __('messages.login.admin_restricted'),
+                    'email' => __('validation.login.admin_restricted'),
                 ])->onlyInput('email');
             }
 
@@ -41,7 +41,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => __('The provided credentials do not match our records.'),
+            'email' => __('validation.login.credentials_mismatch'),
         ])->onlyInput('email');
     }
 

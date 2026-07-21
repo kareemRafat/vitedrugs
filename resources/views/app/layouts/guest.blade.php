@@ -37,7 +37,7 @@
                 <x-lucide-sun class="w-5 h-5 dark:hidden" />
                 <x-lucide-moon class="w-5 h-5 hidden dark:block" />
             </button>
-            <x-language-switcher />
+            <x-language-switcher-native />
         </div>
         <a href="{{ route('home') }}" class="flex items-center mb-8 space-x-3 rtl:space-x-reverse">
             <x-lucide-shield-check class="w-8 h-8 text-fg-brand dark:text-brand" />
