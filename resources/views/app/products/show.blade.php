@@ -49,7 +49,12 @@
                             <p class="text-body dark:text-slate-400 text-sm mb-2">{{ $product->trade_name_ar }}</p>
                         @endif
                     </div>
-                    @livewire('products.product-compare-toggle', ['productId' => $product->id, 'productName' => $product->trade_name], key('compare-'.$product->id))
+                    <a href="{{ route('products.compare') }}?product1={{ $product->id }}"
+                       wire:navigate
+                       class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-base transition-all duration-200 text-xs font-medium whitespace-nowrap text-body hover:text-brand hover:bg-brand/10 dark:text-slate-400 dark:hover:text-brand dark:hover:bg-brand/20">
+                        <x-lucide-git-compare class="w-4 h-4" />
+                        <span>{{ __('messages.compare.compare') }}</span>
+                    </a>
                 </div>
                 <div class="flex flex-wrap gap-2 mb-3">
                     @if ($product->product_type)
