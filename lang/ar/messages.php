@@ -577,6 +577,7 @@ return [
         'empty_title' => 'لم يتم تحديد منتجات',
         'empty_desc' => 'تصفح المنتجات وأضف حتى 3 منتجات للمقارنة بينها.',
         'browse_products' => 'تصفح المنتجات',
+        'search_to_add' => 'ابحث لإضافة منتج',
         'add_to_compare' => 'إضافة للمقارنة',
         'remove_from_compare' => 'إزالة من المقارنة',
         'compare_full' => 'تم الوصول للحد الأقصى (:max)',

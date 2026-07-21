@@ -51,7 +51,9 @@
 
     <x-cookie-consent />
 
-    @livewire('products.product-compare-bar')
+    @unless (request()->routeIs('products.compare'))
+        @livewire('products.product-compare-bar')
+    @endunless
 
     @include('app.layouts.footer-scripts')
 

@@ -32,8 +32,8 @@ new class extends Component
              active = false;
              $wire.toggle();
          }
-">
-    <button
+     ">
+    <button wire:ignore
         x-on:click="
             if (!active) {
                 if (full) return;
@@ -59,14 +59,14 @@ new class extends Component
             : (full
                 ? 'text-body/30 cursor-not-allowed dark:text-slate-600'
                 : 'text-body hover:text-brand hover:bg-brand/10 dark:text-slate-400 dark:hover:text-brand dark:hover:bg-brand/20')"
-        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-base transition-all duration-200 text-xs font-medium whitespace-nowrap">
-        <span x-show="active" x-cloak>
+        class="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-base transition-all duration-200 text-xs font-medium whitespace-nowrap">
+        <span x-show="active">
             <x-lucide-check-circle class="w-4 h-4" />
         </span>
-        <span x-show="!active" x-cloak>
+        <span x-show="!active">
             <x-lucide-scale class="w-4 h-4" />
         </span>
-        <span x-show="active" x-cloak>{{ __('messages.compare.in_compare') }}</span>
-        <span x-show="!active" x-cloak>{{ __('messages.compare.compare') }}</span>
+        <span x-show="active">{{ __('messages.compare.in_compare') }}</span>
+        <span x-show="!active">{{ __('messages.compare.compare') }}</span>
     </button>
 </div>

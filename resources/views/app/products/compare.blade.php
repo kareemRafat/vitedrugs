@@ -3,5 +3,5 @@
 @section('title', __('messages.compare.page_title'))
 
 @section('content')
-    @livewire('products.product-comparison')
+    @livewire('products.product-compare-builder')
 @endsection

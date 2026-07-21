@@ -94,14 +94,14 @@ new class extends Component
                 <div class="flex items-center gap-2 sm:gap-3 shrink-0 justify-between sm:justify-end">
                     <span class="text-xs text-white/70 dark:text-gray-500 whitespace-nowrap" x-text="count + '/' + max"></span>
 
-                    <a href="{{ route('products.compare') }}" wire:navigate
+                    <a x-bind:href="'{{ route('products.compare') }}?' + products.map((p, i) => 'product' + (i + 1) + '=' + encodeURIComponent(p.id)).join('&')" wire:navigate
                         class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-blue-900 bg-white hover:bg-white/90 focus:ring-4 focus:ring-white/30 rounded-base transition-all dark:text-blue-900 dark:bg-gray-200 dark:hover:bg-gray-300">
                         <x-lucide-git-compare class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         <span>{{ __('messages.compare.compare') }}</span>
                     </a>
 
                     <button x-on:click="clearAll()"
-                        class="text-xs text-white/70 dark:text-gray-500 hover:text-white dark:hover:text-gray-800 underline transition-colors">
+                        class="cursor-pointer text-xs text-white/70 dark:text-gray-500 hover:text-white dark:hover:text-gray-800 underline transition-colors">
                         {{ __('messages.compare.clear_all') }}
                     </button>
                 </div>

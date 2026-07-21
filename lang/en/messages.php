@@ -577,6 +577,7 @@ return [
         'empty_title' => 'No products selected',
         'empty_desc' => 'Browse products and add up to 3 to compare them side by side.',
         'browse_products' => 'Browse Products',
+        'search_to_add' => 'Search to add a product',
         'add_to_compare' => 'Add to compare',
         'remove_from_compare' => 'Remove from compare',
         'compare_full' => 'Compare limit reached (max :max)',

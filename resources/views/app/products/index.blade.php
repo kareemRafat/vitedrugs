@@ -12,8 +12,14 @@
                 ['count' => number_format($products->total()), 'label' => __('messages.products.products_label'), 'icon' => 'package'],
                 ['count' => $companies->count(), 'label' => __('messages.products.companies_label'), 'icon' => 'building-2'],
                 ['count' => $dosageForms->count(), 'label' => __('messages.products.forms_label'), 'icon' => 'pill'],
-            ]"
-        />
+            ]">
+        </x-page-hero>
+
+        <a href="{{ route('products.compare') }}"
+            class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-base text-sm font-medium text-white bg-brand hover:bg-brand-strong transition-colors shadow-xs">
+            <x-lucide-git-compare class="w-4 h-4" />
+            {{ __('messages.compare.compare') }}
+        </a>
 
         {{-- Search / Filters --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
