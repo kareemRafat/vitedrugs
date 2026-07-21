@@ -69,7 +69,8 @@ class ViewProductSubmission extends ViewRecord
                     }),
             ])
                 ->label('Review')
-                ->icon(Heroicon::OutlinedShieldCheck),
+                ->icon(Heroicon::OutlinedShieldCheck)
+                ->button(),
         ];
     }
 }

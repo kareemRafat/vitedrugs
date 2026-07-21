@@ -10,3 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initCookieConsent();
 });
+
+document.addEventListener('livewire:navigated', () => {
+    initContactForm();
+    initCookieConsent();
+});

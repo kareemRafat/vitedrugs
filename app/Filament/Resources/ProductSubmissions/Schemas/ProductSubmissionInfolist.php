@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductSubmissions\Schemas;
 
+use App\Enums\SubmissionStatus;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -34,12 +35,7 @@ class ProductSubmissionInfolist
                     ->schema([
                         TextEntry::make('status')
                             ->badge()
-                            ->color(fn (string $state): string => match ($state) {
-                                'pending' => 'warning',
-                                'approved' => 'success',
-                                'rejected' => 'danger',
-                                default => 'gray',
-                            }),
+                            ->color(fn (SubmissionStatus $state): string => $state->color()),
                         TextEntry::make('admin_notes')
                             ->label('Admin Notes')
                             ->placeholder('No notes')
@@ -73,51 +69,51 @@ class ProductSubmissionInfolist
                         TextEntry::make('submitted_data.active_ingredients')
                             ->label('Active Ingredients')
                             ->badge()
-                            ->state(fn ($record): ?string => $this->formatList($record, 'active_ingredients', 'name'))
+                            ->state(fn ($record): ?string => self::formatList($record, 'active_ingredients', 'name'))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.diseases')
                             ->label('Diseases')
                             ->badge()
-                            ->state(fn ($record): ?string => $this->formatSimpleList($record, 'diseases'))
+                            ->state(fn ($record): ?string => self::formatSimpleList($record, 'diseases'))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.indications')
                             ->label('Indications')
-                            ->state(fn ($record): ?string => $this->formatSimpleList($record, 'indications'))
+                            ->state(fn ($record): ?string => self::formatSimpleList($record, 'indications'))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.contraindications')
                             ->label('Contraindications')
-                            ->state(fn ($record): ?string => $this->formatSimpleList($record, 'contraindications'))
+                            ->state(fn ($record): ?string => self::formatSimpleList($record, 'contraindications'))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.precautions')
                             ->label('Precautions')
-                            ->state(fn ($record): ?string => $this->formatSimpleList($record, 'precautions'))
+                            ->state(fn ($record): ?string => self::formatSimpleList($record, 'precautions'))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.side_effects')
                             ->label('Side Effects')
-                            ->state(fn ($record): ?string => $this->formatSimpleList($record, 'side_effects'))
+                            ->state(fn ($record): ?string => self::formatSimpleList($record, 'side_effects'))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.dosages')
                             ->label('Dosages')
-                            ->state(fn ($record): ?string => $this->formatDosages($record))
+                            ->state(fn ($record): ?string => self::formatDosages($record))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.withdrawal_periods')
                             ->label('Withdrawal Periods')
-                            ->state(fn ($record): ?string => $this->formatWithdrawalPeriods($record))
+                            ->state(fn ($record): ?string => self::formatWithdrawalPeriods($record))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.image_urls')
                             ->label('Image URLs')
-                            ->state(fn ($record): ?string => $this->formatSimpleList($record, 'image_urls'))
+                            ->state(fn ($record): ?string => self::formatSimpleList($record, 'image_urls'))
                             ->placeholder('None'),
                         TextEntry::make('submitted_data.documents')
                             ->label('Documents')
-                            ->state(fn ($record): ?string => $this->formatDocuments($record))
+                            ->state(fn ($record): ?string => self::formatDocuments($record))
                             ->placeholder('None'),
                     ]),
 
             ]);
     }
 
-    private function formatList($record, string $key, string $displayKey): ?string
+    private static function formatList($record, string $key, string $displayKey): ?string
     {
         $data = $record?->submitted_data[$key] ?? null;
 
@@ -131,7 +127,7 @@ class ProductSubmissionInfolist
             ->implode(', ');
     }
 
-    private function formatSimpleList($record, string $key): ?string
+    private static function formatSimpleList($record, string $key): ?string
     {
         $data = $record?->submitted_data[$key] ?? null;
 
@@ -144,7 +140,7 @@ class ProductSubmissionInfolist
             ->implode("\n");
     }
 
-    private function formatDosages($record): ?string
+    private static function formatDosages($record): ?string
     {
         $data = $record?->submitted_data['dosages'] ?? null;
 
@@ -163,7 +159,7 @@ class ProductSubmissionInfolist
             ->implode("\n");
     }
 
-    private function formatWithdrawalPeriods($record): ?string
+    private static function formatWithdrawalPeriods($record): ?string
     {
         $data = $record?->submitted_data['withdrawal_periods'] ?? null;
 
@@ -182,7 +178,7 @@ class ProductSubmissionInfolist
             ->implode("\n");
     }
 
-    private function formatDocuments($record): ?string
+    private static function formatDocuments($record): ?string
     {
         $data = $record?->submitted_data['documents'] ?? null;
 
