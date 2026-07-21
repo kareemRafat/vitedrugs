@@ -140,7 +140,7 @@
                                 @foreach ($activeIngredient->products as $product)
                                     <tr class="border-b border-default-medium dark:border-slate-700">
                                         <td class="px-5 py-4">
-                                            <a href="{{ route('products.show', $product) }}" class="font-medium text-fg-brand hover:underline">
+                                            <a href="{{ route('products.show', $product) }}" wire:navigate class="font-medium text-fg-brand hover:underline">
                                                 {{ $product->trade_name }}
                                             </a>
                                         </td>
@@ -160,7 +160,7 @@
                                             @endif
                                         </td>
                                         <td class="px-5 py-4">
-                                            <a href="{{ route('products.show', $product) }}"
+                                            <a href="{{ route('products.show', $product) }}" wire:navigate
                                                 class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm">
                                                 <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
                                             </a>

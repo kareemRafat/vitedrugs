@@ -41,7 +41,7 @@
     @include('app.layouts.main-header')
 
     <div class="px-4 pb-4 flex-1 flex flex-col">
-        <div class="mt-20 flex-1 flex flex-col">
+        <div class="mt-10 flex-1 flex flex-col">
             @yield('page-header')
             @yield('content')
         </div>

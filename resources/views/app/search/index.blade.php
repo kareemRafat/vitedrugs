@@ -56,8 +56,8 @@
                     <div class="p-5">
                         @forelse($products as $item)
                             <div class="flex items-center justify-between py-2 border-b border-default-medium last:border-0">
-                                <a href="{{ route('products.show', $item) }}" class="text-base font-medium text-fg-brand hover:underline">{{ $item->trade_name }}</a>
-                                <a href="{{ route('products.show', $item) }}"
+                                <a href="{{ route('products.show', $item) }}" wire:navigate class="text-base font-medium text-fg-brand hover:underline">{{ $item->trade_name }}</a>
+                                <a href="{{ route('products.show', $item) }}" wire:navigate
                                     class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm shrink-0">
                                     <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
                                 </a>

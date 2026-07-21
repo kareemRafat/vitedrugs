@@ -19,26 +19,36 @@
                 <a href="{{ route('companies.index') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('companies.*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('companies.*')])>{{ __('messages.nav.companies') }}</a>
                 <a href="{{ route('blog.index') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('blog.*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('blog.*')])>{{ __('messages.nav.blog') }}</a>
 
-                <button id="moreDropdown" data-dropdown-toggle="moreDropdownMenu" class="text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white px-2 py-1 text-sm font-medium inline-flex items-center gap-1" type="button">
-                    {{ __('messages.nav.platform') }}
-                    <x-lucide-chevron-down class="w-4 h-4" />
-                </button>
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white px-2 py-1 text-sm font-medium inline-flex items-center gap-1" type="button">
+                        {{ __('messages.nav.platform') }}
+                        <x-lucide-chevron-down class="w-4 h-4 transition-transform duration-200" x-bind:class="open ? 'rotate-180' : ''" />
+                    </button>
 
-                <div id="moreDropdownMenu" class="z-50 hidden my-4 w-48 bg-neutral-primary-soft rounded-base shadow-lg dark:bg-slate-700">
-                    <ul class="py-1 text-sm text-heading dark:text-slate-300">
-                        <li>
-                            <a href="{{ route('about') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('about'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('about')])>{{ __('messages.nav.about') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('contact') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('contact'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('contact')])>{{ __('messages.nav.contact') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('privacy-policy') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('privacy-policy'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('privacy-policy')])>{{ __('messages.nav.privacy_policy') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('terms-of-service') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('terms-of-service'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('terms-of-service')])>{{ __('messages.nav.terms_of_service') }}</a>
-                        </li>
-                    </ul>
+                    <div x-show="open" x-cloak
+                        @click.outside="open = false"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute end-0 z-50 my-2 w-48 bg-neutral-primary-soft rounded-base shadow-lg dark:bg-slate-700">
+                        <ul class="py-1 text-sm text-heading dark:text-slate-300">
+                            <li>
+                                <a href="{{ route('about') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('about'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('about')])>{{ __('messages.nav.about') }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('contact') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('contact'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('contact')])>{{ __('messages.nav.contact') }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('privacy-policy') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('privacy-policy'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('privacy-policy')])>{{ __('messages.nav.privacy_policy') }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('terms-of-service') }}" @class(['block px-4 py-2 rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('terms-of-service'), 'hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 dark:hover:text-white' => !request()->routeIs('terms-of-service')])>{{ __('messages.nav.terms_of_service') }}</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 

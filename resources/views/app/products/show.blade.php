@@ -390,7 +390,7 @@
                         <ul class="space-y-2">
                             @foreach ($relatedProducts as $related)
                                 <li>
-                                    <a href="{{ route('products.show', $related) }}" class="text-sm font-medium text-fg-brand hover:underline">{{ $related->trade_name }}</a>
+                                    <a href="{{ route('products.show', $related) }}" wire:navigate class="text-sm font-medium text-fg-brand hover:underline">{{ $related->trade_name }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -414,7 +414,7 @@
                         <ul class="space-y-2">
                             @foreach ($relatedByIngredients as $related)
                                 <li>
-                                    <a href="{{ route('products.show', $related) }}" class="text-sm font-medium text-fg-brand hover:underline">{{ $related->trade_name }}</a>
+                                    <a href="{{ route('products.show', $related) }}" wire:navigate class="text-sm font-medium text-fg-brand hover:underline">{{ $related->trade_name }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -462,7 +462,7 @@
                         <ul class="space-y-3">
                             @foreach ($product->alternatives as $alternative)
                                 <li class="pb-3 border-b border-default-medium last:border-0 last:pb-0">
-                                    <a href="{{ route('products.show', $alternative->alternativeProduct) }}" class="text-sm font-medium text-fg-brand hover:underline">{{ $alternative->alternativeProduct->trade_name }}</a>
+                                    <a href="{{ route('products.show', $alternative->alternativeProduct) }}" wire:navigate class="text-sm font-medium text-fg-brand hover:underline">{{ $alternative->alternativeProduct->trade_name }}</a>
                                     <div class="flex items-center gap-2 mt-1">
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-base text-xs font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('messages.products.alternative_types.' . $alternative->type) }}</span>
                                         @if ($alternative->notes)

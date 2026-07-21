@@ -113,7 +113,7 @@
                                     </div>
 
                                     {{-- Trade name --}}
-                                    <a href="{{ route('products.show', $product) }}" class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block min-h-[3.5rem] line-clamp-2">
+                                    <a href="{{ route('products.show', $product) }}" wire:navigate class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block min-h-[3.5rem] line-clamp-2">
                                         {{ $product->trade_name }}
                                     </a>
                                 </div>
@@ -163,7 +163,7 @@
 
                             {{-- Bottom action bar --}}
                             <div class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between">
-                                <a href="{{ route('products.show', $product) }}" class="flex items-center gap-2 text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
+                                <a href="{{ route('products.show', $product) }}" wire:navigate class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all rounded-base group/action">
                                     <x-lucide-eye class="w-4 h-4" />
                                     {{ __('messages.products.details') }}
                                     <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180 group-hover/action:translate-x-1 transition-transform" />

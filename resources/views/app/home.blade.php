@@ -147,7 +147,7 @@
             </div>
             <div class="p-5 space-y-3">
                 @forelse($latestProducts as $product)
-                    <a href="{{ route('products.show', $product) }}"
+                    <a href="{{ route('products.show', $product) }}" wire:navigate
                         class="flex items-center gap-3 p-3 rounded-base border border-default-medium hover:bg-neutral-secondary-soft dark:border-slate-600 dark:hover:bg-slate-700  transition-all duration-200">
                         <div class="flex items-center justify-center w-10 h-10 rounded-base shrink-0 bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
                             <x-lucide-package class="w-5 h-5" />
