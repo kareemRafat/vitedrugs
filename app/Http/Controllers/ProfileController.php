@@ -13,20 +13,20 @@ class ProfileController extends Controller
     public function show(): View
     {
         return view('app.profile.show', [
-            'user' => Auth::user(),
+            'user' => Auth::guard('web')->user(),
         ]);
     }
 
     public function edit(): View
     {
         return view('app.profile.edit', [
-            'user' => Auth::user(),
+            'user' => Auth::guard('web')->user(),
         ]);
     }
 
     public function update(Request $request): RedirectResponse
     {
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -42,13 +42,13 @@ class ProfileController extends Controller
     public function security(): View
     {
         return view('app.profile.security', [
-            'user' => Auth::user(),
+            'user' => Auth::guard('web')->user(),
         ]);
     }
 
     public function updateSecurity(Request $request): RedirectResponse
     {
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
 
         $validated = $request->validate([
             'current_password' => ['required', 'string'],
@@ -71,7 +71,7 @@ class ProfileController extends Controller
 
     public function submissions(): View
     {
-        $products = Auth::user()
+        $products = Auth::guard('web')->user()
             ->products()
             ->withoutGlobalScope('approved')
             ->latest()

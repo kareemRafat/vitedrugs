@@ -12,10 +12,10 @@ class EnsureUserIsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role !== UserRole::Admin) {
-            Auth::logout();
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->role !== UserRole::Admin) {
+            Auth::guard('admin')->logout();
 
-            $request->session()->invalidate();
+            $request->session()->regenerate();
             $request->session()->regenerateToken();
 
             return redirect()->route('login')->withErrors([

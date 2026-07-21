@@ -39,10 +39,10 @@ Route::group([
     });
 
     Route::post('/logout', [LoginController::class, 'destroy'])
-        ->middleware('auth')
+        ->middleware('auth:web')
         ->name('logout');
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware('auth:web')->group(function () {
         Route::get('/email/verify', [VerificationController::class, 'notice'])
             ->name('verification.notice');
         Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
