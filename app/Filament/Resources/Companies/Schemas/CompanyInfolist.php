@@ -49,6 +49,16 @@ class CompanyInfolist
                             ->placeholder('-'),
                         TextEntry::make('linkedin')
                             ->placeholder('-'),
+                        TextEntry::make('contact_person')
+                            ->placeholder('-'),
+                        TextEntry::make('whatsapp')
+                            ->placeholder('-'),
+                        TextEntry::make('telegram')
+                            ->placeholder('-'),
+                        TextEntry::make('youtube')
+                            ->placeholder('-'),
+                        TextEntry::make('instagram')
+                            ->placeholder('-'),
                     ]),
 
                 Section::make('Location')

@@ -8,12 +8,6 @@ class CompanyController extends Controller
 {
     public function show(Company $company)
     {
-        $company->load([
-            'products.dosageForm',
-            'parentCompany',
-            'subsidiaries',
-        ]);
-
         return view(
             'app.companies.show',
             compact('company')

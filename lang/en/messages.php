@@ -296,6 +296,13 @@ return [
         'address' => 'Address',
         'registration' => 'Registration',
         'description' => 'Description',
+        'contact_person' => 'Contact Person',
+        'facebook' => 'Facebook',
+        'linkedin' => 'LinkedIn',
+        'telegram' => 'Telegram',
+        'youtube' => 'YouTube',
+        'instagram' => 'Instagram',
+        'location_map' => 'Location Map',
         'filter_all' => 'All',
         'filter_by_type' => 'Filter by type',
         'starting_with' => 'starting with :letter',
@@ -641,6 +648,8 @@ return [
             'disinfectant' => 'Disinfectant',
             'biological' => 'Biological',
         ],
+        'previous_page' => 'Previous',
+        'next_page' => 'Next',
     ],
 
     'compare' => [

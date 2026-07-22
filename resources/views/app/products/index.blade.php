@@ -191,8 +191,76 @@
 
         {{-- Pagination --}}
         @if ($products->hasPages())
-            <div class="w-full">
-                {{ $products->withQueryString()->links('pagination::tailwind') }}
+            @php
+                $currentPage = $products->currentPage();
+                $lastPage = $products->lastPage();
+                $window = 2;
+                $startPage = max(1, $currentPage - $window);
+                $endPage = min($lastPage, $currentPage + $window);
+                $showStartEllipsis = $startPage > 2;
+                $showEndEllipsis = $endPage < $lastPage - 1;
+            @endphp
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4">
+                <div class="hidden sm:block text-sm text-body dark:text-slate-400">
+                    {{ __('messages.products.showing') }}
+                    {{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }}
+                    {{ __('messages.products.of') }}
+                    {{ number_format($products->total()) }}
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="{{ $products->previousPageUrl() }}" rel="prev" @if($products->onFirstPage()) aria-disabled="true" @endif
+                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if($products->onFirstPage()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                        <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
+                        <span>{{ __('messages.products.previous_page') }}</span>
+                    </a>
+
+                    <div class="hidden sm:flex items-center gap-1">
+                        {{-- First page --}}
+                        @if ($startPage > 1)
+                            <a href="{{ $products->withQueryString()->url(1) }}"
+                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                                1
+                            </a>
+                        @endif
+
+                        {{-- Start ellipsis --}}
+                        @if ($showStartEllipsis)
+                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
+                        @endif
+
+                        {{-- Page window --}}
+                        @for ($i = $startPage; $i <= $endPage; $i++)
+                            <a href="{{ $products->withQueryString()->url($i) }}"
+                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-base transition-colors
+                                @if ($i === $currentPage)
+                                    text-white bg-brand shadow-xs
+                                @else
+                                    text-heading bg-neutral-primary-soft border border-default-medium hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600
+                                @endif">
+                                {{ $i }}
+                            </a>
+                        @endfor
+
+                        {{-- End ellipsis --}}
+                        @if ($showEndEllipsis)
+                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
+                        @endif
+
+                        {{-- Last page --}}
+                        @if ($endPage < $lastPage)
+                            <a href="{{ $products->withQueryString()->url($lastPage) }}"
+                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                                {{ $lastPage }}
+                            </a>
+                        @endif
+                    </div>
+
+                    <a href="{{ $products->nextPageUrl() }}" rel="next" @if(!$products->hasMorePages()) aria-disabled="true" @endif
+                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if(!$products->hasMorePages()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                        <span>{{ __('messages.products.next_page') }}</span>
+                        <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
+                    </a>
+                </div>
             </div>
         @endif
 

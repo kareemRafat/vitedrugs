@@ -86,6 +86,17 @@ class CompanyForm
                     ->default(null),
                 TextInput::make('linkedin')
                     ->default(null),
+                TextInput::make('contact_person')
+                    ->default(null),
+                TextInput::make('whatsapp')
+                    ->tel()
+                    ->default(null),
+                TextInput::make('telegram')
+                    ->default(null),
+                TextInput::make('youtube')
+                    ->default(null),
+                TextInput::make('instagram')
+                    ->default(null),
                 Toggle::make('is_active')
                     ->required(),
             ]);

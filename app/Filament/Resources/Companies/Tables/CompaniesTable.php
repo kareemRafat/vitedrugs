@@ -33,6 +33,14 @@ class CompaniesTable
                     ->badge(),
                 IconColumn::make('is_active')
                     ->boolean(),
+                TextColumn::make('email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('phone')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('country')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -47,6 +47,30 @@ class Company extends Model
         'is_active' => 'boolean',
     ];
 
+    public function getEmbedMapUrlAttribute(): ?string
+    {
+        if (! $this->google_maps_url) {
+            return null;
+        }
+
+        if (str_contains($this->google_maps_url, 'embed')) {
+            return $this->google_maps_url;
+        }
+
+        $patterns = [
+            '/@(-?\d+\.?\d*),(-?\d+\.?\d*)/',
+            '/[?&]q=(-?\d+\.?\d*),(-?\d+\.?\d*)/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $this->google_maps_url, $matches)) {
+                return 'https://www.google.com/maps?q='.$matches[1].','.$matches[2].'&output=embed';
+            }
+        }
+
+        return null;
+    }
+
     public function products()
     {
         return $this->belongsToMany(
