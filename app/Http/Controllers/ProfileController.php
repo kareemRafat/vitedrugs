@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,5 +81,29 @@ class ProfileController extends Controller
         return view('app.profile.submissions', [
             'products' => $products,
         ]);
+    }
+
+    public function showSubmission(string $product): View
+    {
+        $product = Product::withoutGlobalScope('approved')
+            ->where('created_by', Auth::guard('web')->id())
+            ->findOrFail($product);
+
+        $product->load([
+            'companies',
+            'dosageForm',
+            'activeIngredients',
+            'indications',
+            'contraindications',
+            'precautions',
+            'sideEffects',
+            'dosages.species',
+            'withdrawalPeriods.species',
+            'diseases',
+            'images',
+            'documents',
+        ]);
+
+        return view('app.profile.submission-show', compact('product'));
     }
 }

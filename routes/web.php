@@ -58,6 +58,12 @@ Route::group([
         Route::get('/profile/security', [ProfileController::class, 'security'])->name('profile.security');
         Route::put('/profile/security', [ProfileController::class, 'updateSecurity'])->name('profile.security.update');
         Route::get('/profile/submissions', [ProfileController::class, 'submissions'])->name('profile.submissions');
+        Route::get('/profile/submissions/{product}', [ProfileController::class, 'showSubmission'])
+            ->name('profile.submissions.show');
+        Route::get('/profile/submissions/{product}/edit', [ProductSubmissionController::class, 'edit'])
+            ->name('profile.submissions.edit');
+        Route::put('/profile/submissions/{product}', [ProductSubmissionController::class, 'update'])
+            ->name('profile.submissions.update');
     });
 
     Route::view('/about', 'app.pages.about')->name('about');

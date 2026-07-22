@@ -97,9 +97,12 @@ class StoreProductSubmissionRequest extends FormRequest
                 return;
             }
 
+            $currentId = $this->route('product');
+
             $this->hasDuplicatePending = Product::withoutGlobalScope('approved')
                 ->where('trade_name', $tradeName)
                 ->where('status', ProductStatus::Pending)
+                ->when($currentId, fn ($q) => $q->where('id', '!=', $currentId))
                 ->exists();
         });
     }

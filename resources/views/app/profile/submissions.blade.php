@@ -95,8 +95,8 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 text-end">
-                                                <a href="{{ route('products.show', $product) }}" wire:navigate
-                                                   class="text-fg-brand hover:underline text-sm font-medium">
+                                            <a href="{{ route('profile.submissions.show', $product) }}" wire:navigate
+                                               class="text-fg-brand hover:underline text-sm font-medium">
                                                     {{ __('messages.profile.submissions_view') }}
                                                 </a>
                                             </td>

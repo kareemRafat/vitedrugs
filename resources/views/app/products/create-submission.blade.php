@@ -3,6 +3,53 @@
 @section('title', __('messages.pages.products.submission.title'))
 
 @section('content')
+@php
+$editMode = isset($editProduct) && $editProduct;
+$productJson = null;
+if ($editMode) {
+    $productJson = [
+        'trade_name' => $editProduct->trade_name,
+        'trade_name_ar' => $editProduct->trade_name_ar,
+        'product_type' => $editProduct->product_type,
+        'package_size' => $editProduct->package_size,
+        'storage_conditions' => $editProduct->storage_conditions,
+        'description' => $editProduct->description,
+        'description_ar' => $editProduct->description_ar,
+        'company' => $editProduct->companies->first()?->name ?? '',
+        'dosage_form' => $editProduct->dosageForm?->name ?? '',
+        'activeIngredients' => $editProduct->activeIngredients->map(fn($i) => [
+            'name' => $i->name,
+            'strength' => $i->pivot->strength,
+            'unit' => $i->pivot->unit,
+        ])->values(),
+        'diseases' => $editProduct->diseases->pluck('name')->values(),
+        'indications' => $editProduct->indications->pluck('description')->values(),
+        'contraindications' => $editProduct->contraindications->pluck('description')->values(),
+        'precautions' => $editProduct->precautions->pluck('description')->values(),
+        'sideEffects' => $editProduct->sideEffects->pluck('description')->values(),
+        'dosages' => $editProduct->dosages->map(fn($d) => [
+            'species' => $d->species?->name ?? '',
+            'dosage' => $d->dosage,
+            'route' => $d->route,
+            'duration' => $d->duration,
+            'notes' => $d->notes,
+        ])->values(),
+        'withdrawalPeriods' => $editProduct->withdrawalPeriods->map(fn($w) => [
+            'species' => $w->species?->name ?? '',
+            'meat_days' => $w->meat_days,
+            'milk_days' => $w->milk_days,
+            'egg_days' => $w->egg_days,
+            'notes' => $w->notes,
+        ])->values(),
+        'imageUrls' => $editProduct->images->pluck('image')->values(),
+        'documents' => $editProduct->documents->map(fn($d) => [
+            'title' => $d->title,
+            'url' => $d->file_path,
+        ])->values(),
+    ];
+}
+@endphp
+
 <x-toast id="submissionToast" type="success" title="" message="" />
 
 <div class="space-y-8 pb-8 sm:pb-12">
@@ -11,14 +58,14 @@
     <div class="relative z-10 max-w-2xl">
       <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-200 dark:text-sky-200 border border-white/10 dark:border-sky-700 mb-5">
         <x-lucide-package-plus class="w-4 h-4" />
-        <span>{{ __('messages.pages.products.submission.badge') }}</span>
+        <span>{{ $editMode ? __('messages.pages.products.submission.edit_badge') : __('messages.pages.products.submission.badge') }}</span>
       </div>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] tracking-tight">
-        {{ __('messages.pages.products.submission.heading') }}
+        {{ $editMode ? __('messages.pages.products.submission.edit_heading') : __('messages.pages.products.submission.heading') }}
       </h1>
       <div class="w-16 h-1 bg-blue-400 dark:bg-sky-400 rounded-full mt-6 mb-6"></div>
       <p class="text-base sm:text-lg text-slate-300 dark:text-sky-200 max-w-xl leading-relaxed">
-        {{ __('messages.pages.products.submission.subtitle') }}
+        {{ $editMode ? __('messages.pages.products.submission.edit_subtitle') : __('messages.pages.products.submission.subtitle') }}
       </p>
     </div>
   </div>
@@ -31,23 +78,25 @@
 
   <form
     method="POST"
-    action="{{ route('products.submission.store') }}"
+    action="{{ $editMode ? route('profile.submissions.update', $editProduct) : route('products.submission.store') }}"
     class="space-y-6"
     x-data="{
+      editMode: @js($editMode),
+      editProduct: @js($productJson),
       errors: {},
       submitting: false,
-      submitted_by_name: '{{ old('submitted_by_name') }}',
-      submitted_by_email: '{{ old('submitted_by_email') }}',
-      submitted_by_phone: '{{ old('submitted_by_phone') }}',
-      trade_name: '{{ old('trade_name') }}',
-      trade_name_ar: '{{ old('trade_name_ar') }}',
-      product_type: '{{ old('product_type') }}',
-      package_size: '{{ old('package_size') }}',
-      storage_conditions: '{{ old('storage_conditions') }}',
-      description: '{{ old('description') }}',
-      description_ar: '{{ old('description_ar') }}',
-      company: '{{ old('company') }}',
-      dosage_form: '{{ old('dosage_form') }}',
+      submitted_by_name: @js(old('submitted_by_name')),
+      submitted_by_email: @js(old('submitted_by_email')),
+      submitted_by_phone: @js(old('submitted_by_phone')),
+      trade_name: @js(old('trade_name')),
+      trade_name_ar: @js(old('trade_name_ar')),
+      product_type: @js(old('product_type')),
+      package_size: @js(old('package_size')),
+      storage_conditions: @js(old('storage_conditions')),
+      description: @js(old('description')),
+      description_ar: @js(old('description_ar')),
+      company: @js(old('company')),
+      dosage_form: @js(old('dosage_form')),
       activeIngredients: [],
       diseases: [],
       indications: [],
@@ -58,6 +107,31 @@
       withdrawalPeriods: [],
       documents: [],
       imageUrls: [],
+      init() {
+        if (this.editProduct) {
+          this.$nextTick(() => {
+            this.trade_name = this.editProduct.trade_name ?? '';
+            this.trade_name_ar = this.editProduct.trade_name_ar ?? '';
+            this.product_type = this.editProduct.product_type ?? '';
+            this.package_size = this.editProduct.package_size ?? '';
+            this.storage_conditions = this.editProduct.storage_conditions ?? '';
+            this.description = this.editProduct.description ?? '';
+            this.description_ar = this.editProduct.description_ar ?? '';
+            this.company = this.editProduct.company ?? '';
+            this.dosage_form = this.editProduct.dosage_form ?? '';
+            this.activeIngredients = JSON.parse(JSON.stringify(this.editProduct.activeIngredients ?? []));
+            this.diseases = [...(this.editProduct.diseases ?? [])];
+            this.indications = [...(this.editProduct.indications ?? [])];
+            this.contraindications = [...(this.editProduct.contraindications ?? [])];
+            this.precautions = [...(this.editProduct.precautions ?? [])];
+            this.sideEffects = [...(this.editProduct.sideEffects ?? [])];
+            this.dosages = JSON.parse(JSON.stringify(this.editProduct.dosages ?? []));
+            this.withdrawalPeriods = JSON.parse(JSON.stringify(this.editProduct.withdrawalPeriods ?? []));
+            this.imageUrls = [...(this.editProduct.imageUrls ?? [])];
+            this.documents = JSON.parse(JSON.stringify(this.editProduct.documents ?? []));
+          });
+        }
+      },
       addItem(list, item) { this[list].push(item); },
       removeItem(list, index) { this[list].splice(index, 1); },
       addIngredient() { this.activeIngredients.push({ name: '', strength: '', unit: '' }); },
@@ -75,16 +149,19 @@
         this.submitting = true;
         this.errors = {};
         try {
+          const body = new FormData(this.$el);
+          if (this.editMode) body.append('_method', 'PUT');
           const resp = await fetch(this.$el.action, {
             method: 'POST',
             headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
-            body: new FormData(this.$el)
+            body: body
           });
           const json = await resp.json();
           if (resp.ok) {
             this.submitting = false;
             window.Toast.show('submissionToast', 'success', json.message || '');
-            setTimeout(() => { Livewire.navigate('{{ route('products.index') }}'); }, 2000);
+            const redirectUrl = this.editMode ? @js($editMode ? route('profile.submissions.show', $editProduct) : '') : '{{ route('products.index') }}';
+            setTimeout(() => { Livewire.navigate(redirectUrl); }, 2000);
           } else if (resp.status === 422) {
             this.errors = json.errors || {};
             window.Toast.show('submissionToast', 'error', '{{ __('messages.pages.products.submission.error_toast') }}');
@@ -102,6 +179,7 @@
     x-on:submit.prevent="submitForm"
   >
     @csrf
+    @if($editMode) @method('PUT') @endif
 
     {{-- Submitter Info --}}
     <div class="bg-neutral-primary-soft rounded-base shadow-xs p-6 space-y-5">
