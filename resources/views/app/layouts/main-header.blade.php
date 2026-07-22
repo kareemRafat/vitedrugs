@@ -124,7 +124,7 @@
 <div id="mobileBackdrop" onclick="toggleMobileMenu()" class="fixed inset-0 z-40 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 sm:hidden"></div>
 
 {{-- Mobile sidebar --}}
-<div id="mobileSidebar" class="fixed top-0 start-0 z-50 w-full h-screen bg-neutral-primary-soft dark:bg-slate-800 translate-x-[-100%] rtl:translate-x-[100%] invisible pointer-events-none transition-all duration-300 ease-in-out sm:hidden overflow-y-auto">
+<div id="mobileSidebar" class="fixed top-0 start-0 z-50 w-full h-screen bg-neutral-primary-soft dark:bg-slate-800 -translate-x-full rtl:translate-x-full transition-transform duration-300 ease-in-out sm:hidden overflow-y-auto hidden">
     <div class="flex items-center justify-between px-5 py-4 border-b border-default-medium dark:border-slate-700">
         <span class="text-lg font-semibold text-heading dark:text-white">VetPedia</span>
         <button onclick="toggleMobileMenu()" class="p-1.5 text-body hover:text-heading dark:text-slate-400 dark:hover:text-white rounded-base transition-colors duration-200">
@@ -237,18 +237,27 @@
 
         if (isOpen) {
             sidebar.classList.remove('open');
-            sidebar.classList.remove('translate-x-0', 'rtl:translate-x-0');
-            sidebar.classList.add('translate-x-[-100%]', 'rtl:translate-x-[100%]');
-            sidebar.classList.add('invisible', 'pointer-events-none');
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full', 'rtl:translate-x-full');
             backdrop.classList.remove('opacity-100', 'pointer-events-auto');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
             document.body.style.overflow = '';
             btn?.classList.remove('active');
+
+            const onEnd = () => {
+                if (!sidebar.classList.contains('open')) {
+                    sidebar.classList.add('hidden');
+                }
+                sidebar.removeEventListener('transitionend', onEnd);
+            };
+            sidebar.addEventListener('transitionend', onEnd);
         } else {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('-translate-x-full', 'rtl:translate-x-full');
+            void sidebar.offsetHeight;
             sidebar.classList.add('open');
-            sidebar.classList.remove('translate-x-[-100%]', 'rtl:translate-x-[100%]');
-            sidebar.classList.add('translate-x-0', 'rtl:translate-x-0');
-            sidebar.classList.remove('invisible', 'pointer-events-none');
+            sidebar.classList.remove('-translate-x-full', 'rtl:translate-x-full');
+            sidebar.classList.add('translate-x-0');
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100', 'pointer-events-auto');
             document.body.style.overflow = 'hidden';

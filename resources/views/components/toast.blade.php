@@ -15,7 +15,7 @@
     $iconBox = $iconColors[$type] ?? $iconColors['success'];
 @endphp
 
-<div id="{{ $id }}" role="alert" class="fixed top-4 end-4 z-[100] hidden flex items-center w-full max-w-sm p-4 text-body bg-neutral-primary-soft rounded-base shadow-xs border border-default transition-all duration-300">
+<div id="{{ $id }}" role="alert" class="fixed inset-x-4 top-4 z-[100] hidden flex items-center max-w-sm p-4 text-body bg-neutral-primary-soft rounded-base shadow-xs border border-default transition-all duration-300">
     <div class="inline-flex items-center justify-center shrink-0 w-7 h-7 {{ $iconBox }} rounded">
         @switch($type)
             @case('success')

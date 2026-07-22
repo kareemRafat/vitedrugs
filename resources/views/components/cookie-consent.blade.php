@@ -2,7 +2,7 @@
 
 <div id="cookieConsent"
      data-accepted="false"
-     class="fixed {{ $isRtl ? 'right-4' : 'left-4' }} bottom-4 z-50 w-full max-w-sm p-4 text-body bg-neutral-primary-soft rounded-base shadow-lg border border-default transition-all duration-500 ease-out translate-y-full opacity-0">
+     class="fixed inset-x-4 bottom-4 z-50 max-w-sm p-4 text-body bg-neutral-primary-soft rounded-base shadow-lg border border-default transition-all duration-500 ease-out translate-y-full opacity-0">
   <div class="flex items-start gap-3">
     <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-orange-600 bg-orange-50 rounded">
       <x-lucide-cookie class="w-5 h-5" />

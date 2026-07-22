@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if(app()->getLocale() === 'ar') dir="rtl" @endif class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if(app()->getLocale() === 'ar') dir="rtl" @endif class="overflow-x-hidden w-full relative">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +28,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('css')
 </head>
-<body class="bg-neutral-secondary-soft dark:bg-slate-900 antialiased" data-loading-text="{{ __('messages.common.loading') }}">
+<body class="bg-neutral-secondary-soft dark:bg-slate-900 antialiased w-full relative overflow-x-hidden" data-loading-text="{{ __('messages.common.loading') }}">
     <div class="relative flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 min-h-screen">
         <div class="absolute top-4 end-4 sm:top-6 sm:end-6 flex items-center gap-1">
             <button onclick="toggleTheme()"
