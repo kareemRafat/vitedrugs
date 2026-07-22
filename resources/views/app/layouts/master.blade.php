@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if(app()->getLocale() === 'ar') dir="rtl" @endif>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if(app()->getLocale() === 'ar') dir="rtl" @endif class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,7 +42,7 @@
     <style>[x-cloak] { display: none !important; }</style>
     @yield('css')
 </head>
-<body class="bg-neutral-secondary-soft dark:bg-slate-900 min-h-screen flex flex-col overflow-x-hidden">
+<body class="bg-neutral-secondary-soft dark:bg-slate-900 min-h-screen flex flex-col">
 
     @include('app.layouts.main-header')
 
