@@ -119,7 +119,7 @@
                                         {{ $product->trade_name }}
                                     </h3>
                                     @if (!empty($product->trade_name_ar))
-                                        <span class="block text-xs font-medium text-body/70 dark:text-slate-400 mt-1 line-clamp-1" dir="rtl">
+                                        <span class="block text-xs font-medium text-body/70 dark:text-slate-400 mt-1 line-clamp-1">
                                             {{ $product->trade_name_ar }}
                                         </span>
                                     @endif
