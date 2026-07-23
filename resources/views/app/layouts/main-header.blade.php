@@ -1,7 +1,7 @@
 <nav class="fixed top-0 z-50 w-full bg-neutral-primary-soft border-b border-default-medium dark:bg-slate-800 dark:border-slate-700">
     <div class="px-3 py-3 lg:px-5">
-        <div class="flex items-center justify-between sm:grid sm:grid-cols-3 sm:items-center">
-            <div class="flex justify-start items-center gap-2">
+        <div class="flex items-center justify-between sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:justify-items-center">
+            <div class="flex justify-start items-center gap-2 sm:justify-self-start">
                 <button id="hamburgerBtn" onclick="toggleMobileMenu()" class="sm:hidden flex flex-col items-center justify-center w-8 h-8 gap-1.5 p-1.5 text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white rounded-base transition-colors duration-200" aria-label="Toggle menu">
                     <span class="hamburger-line block w-full h-0.5 bg-current rounded-xs transition-all duration-300 ease-in-out origin-center"></span>
                     <span class="hamburger-line block w-full h-0.5 bg-current rounded-xs transition-all duration-300 ease-in-out origin-center"></span>
@@ -14,6 +14,8 @@
 
             <div class="hidden sm:flex items-center justify-center gap-1">
                 <a href="{{ route('products.index') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('products.*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('products.*')])>{{ __('messages.nav.products') }}</a>
+                <a href="{{ route('products.submission.create') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('products.submission.*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('products.submission.*')])>{{ __('messages.nav.add_product') }}</a>
+                <a href="{{ route('products.compare') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('products.compare'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('products.compare')])>{{ __('messages.nav.compare_products') }}</a>
                 <a href="{{ route('diseases.index') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('diseases.*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('diseases.*')])>{{ __('messages.nav.diseases') }}</a>
                 <a href="{{ route('active-ingredients.index') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('active-ingredients.*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('active-ingredients.*')])>{{ __('messages.nav.ingredients') }}</a>
                 <a href="{{ route('companies.index') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150', 'text-fg-brand font-semibold' => request()->routeIs('companies.*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('companies.*')])>{{ __('messages.nav.companies') }}</a>
@@ -52,9 +54,10 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-1 sm:gap-2">
-                <a href="{{ route('search') }}" class="text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white p-2 rounded-base" title="{{ __('messages.nav.search') }}">
-                    <x-lucide-search class="w-5 h-5" />
+            <div class="flex items-center justify-end gap-1 sm:gap-2 sm:justify-self-end">
+                <a href="{{ route('search') }}" class="inline-flex items-center gap-1.5 text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white bg-neutral-tertiary-soft dark:bg-slate-700 px-4 py-1.5 rounded-base text-sm" title="{{ __('messages.nav.search') }}">
+                    <x-lucide-search class="w-4 h-4" />
+                    <span class="hidden sm:inline">{{ __('messages.nav.search') }}</span>
                 </a>
 
                 <div class="hidden sm:flex items-center gap-1">
@@ -137,6 +140,14 @@
             <a href="{{ route('products.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.*')])>
                 <x-lucide-pill class="w-5 h-5" />
                 {{ __('messages.nav.products') }}
+            </a>
+            <a href="{{ route('products.submission.create') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.submission.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.submission.*')])>
+                <x-lucide-plus class="w-5 h-5" />
+                {{ __('messages.nav.add_product') }}
+            </a>
+            <a href="{{ route('products.compare') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.compare'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.compare')])>
+                <x-lucide-arrow-left-right class="w-5 h-5" />
+                {{ __('messages.nav.compare_products') }}
             </a>
             <a href="{{ route('diseases.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('diseases.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('diseases.*')])>
                 <x-lucide-stethoscope class="w-5 h-5" />

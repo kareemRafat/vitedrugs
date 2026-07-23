@@ -143,6 +143,8 @@ return [
         'sign_out' => 'تسجيل الخروج',
         'sign_in' => 'تسجيل الدخول',
         'products' => 'المنتجات',
+        'add_product' => 'إضافة منتج',
+        'compare_products' => 'مقارنة المنتجات',
         'diseases' => 'الأمراض',
         'ingredients' => 'المواد الفعالة',
         'companies' => 'الشركات',

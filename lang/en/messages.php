@@ -143,6 +143,8 @@ return [
         'sign_out' => 'Sign out',
         'sign_in' => 'Sign in',
         'products' => 'Products',
+        'add_product' => 'Add Product',
+        'compare_products' => 'Compare Products',
         'diseases' => 'Diseases',
         'ingredients' => 'Ingredients',
         'companies' => 'Companies',
