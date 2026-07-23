@@ -8,7 +8,35 @@ class ActiveIngredientController extends Controller
 {
     public function index()
     {
-        return view('app.active-ingredients.index');
+        $query = ActiveIngredient::query()->withCount('products');
+
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->whereFullText(['name', 'name_ar'], $search.'*', ['mode' => 'boolean']);
+
+                if (mb_strlen($search) < 3) {
+                    $q->orWhere('name', 'like', "%{$search}%")
+                        ->orWhere('name_ar', 'like', "%{$search}%");
+                }
+            });
+        }
+
+        if ($letter = request('letter')) {
+            $query->where('name', 'LIKE', $letter.'%');
+        }
+
+        $query->orderBy('name');
+
+        $ingredients = $query->paginate(21)->withQueryString();
+
+        $availableLetters = ActiveIngredient::query()
+            ->selectRaw('UPPER(LEFT(name, 1)) as letter')
+            ->distinct()
+            ->orderBy('letter')
+            ->pluck('letter')
+            ->toArray();
+
+        return view('app.active-ingredients.index', compact('ingredients', 'availableLetters'));
     }
 
     public function show(

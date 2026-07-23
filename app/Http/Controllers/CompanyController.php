@@ -26,6 +26,11 @@ class CompanyController extends Controller
             $query->where(function ($q) use ($booleanQuery, $search) {
                 $q->whereFullText(['name', 'name_ar'], $booleanQuery, ['mode' => 'boolean'])
                     ->orWhere('country', 'like', "%{$search}%");
+
+                if (mb_strlen($search) < 3) {
+                    $q->orWhere('name', 'like', "%{$search}%")
+                        ->orWhere('name_ar', 'like', "%{$search}%");
+                }
             });
         }
 

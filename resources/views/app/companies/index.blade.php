@@ -28,12 +28,12 @@
 
                     <div class="flex gap-2">
                         <button type="submit"
-                            class="text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-3 py-2 focus:outline-none">
-                            <x-lucide-search class="w-3.5 h-3.5 inline -mt-0.5 me-1" />
+                            class="text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-4 py-2 focus:outline-none">
+                            <x-lucide-search class="w-4 h-4 inline -mt-0.5 me-1" />
                             {{ __('messages.companies.search_button') }}
                         </button>
                         <a href="{{ route('companies.index') }}" wire:navigate
-                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
                             <x-lucide-x class="w-4 h-4" />
                         </a>
                     </div>

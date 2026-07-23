@@ -20,10 +20,15 @@ class ProductController extends Controller
         // Search
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
-                $q->whereFullText(['trade_name', 'trade_name_ar'], $search)
-                    ->orWhereHas('activeIngredients', fn ($q) => $q->whereFullText(['name', 'name_ar'], $search))
-                    ->orWhereHas('companies', fn ($q) => $q->whereFullText(['name', 'name_ar'], $search))
-                    ->orWhereHas('diseases', fn ($q) => $q->whereFullText(['name', 'name_ar'], $search));
+                $q->whereFullText(['trade_name', 'trade_name_ar'], $search.'*', ['mode' => 'boolean'])
+                    ->orWhereHas('activeIngredients', fn ($q) => $q->whereFullText(['name', 'name_ar'], $search.'*', ['mode' => 'boolean']))
+                    ->orWhereHas('companies', fn ($q) => $q->whereFullText(['name', 'name_ar'], $search.'*', ['mode' => 'boolean']))
+                    ->orWhereHas('diseases', fn ($q) => $q->whereFullText(['name', 'name_ar'], $search.'*', ['mode' => 'boolean']));
+
+                if (mb_strlen($search) < 3) {
+                    $q->orWhere('trade_name', 'like', "%{$search}%")
+                        ->orWhere('trade_name_ar', 'like', "%{$search}%");
+                }
             });
         }
 
