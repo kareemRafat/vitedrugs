@@ -115,7 +115,7 @@
 
                                 {{-- Product Trade Name --}}
                                 <a href="{{ route('products.show', $product) }}" wire:navigate class="block min-h-[3rem] group/title">
-                                    <h3 class="text-lg sm:text-xl font-extrabold text-heading dark:text-white group-hover/title:text-brand dark:group-hover/title:text-sky-400 transition-colors duration-200 leading-snug line-clamp-2">
+                                    <h3 class="text-lg sm:text-xl font-bold text-heading dark:text-white group-hover/title:text-brand dark:group-hover/title:text-sky-400 transition-colors duration-200 leading-snug line-clamp-2">
                                         {{ $product->trade_name }}
                                     </h3>
                                     @if (!empty($product->trade_name_ar))
