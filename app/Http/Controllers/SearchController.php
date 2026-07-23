@@ -21,23 +21,27 @@ class SearchController extends Controller
         if ($q) {
 
             $products = Product::where(function ($query) use ($q) {
-                $query->whereFullText(['trade_name', 'trade_name_ar'], $q)
-                    ->orWhereHas('activeIngredients', fn ($q2) => $q2->whereFullText(['name', 'name_ar'], $q))
-                    ->orWhereHas('companies', fn ($q2) => $q2->whereFullText(['name', 'name_ar'], $q))
-                    ->orWhereHas('diseases', fn ($q2) => $q2->whereFullText(['name', 'name_ar'], $q));
+                $query->where('trade_name', 'like', "%{$q}%")
+                    ->orWhere('trade_name_ar', 'like', "%{$q}%")
+                    ->orWhereHas('activeIngredients', fn ($q2) => $q2->where('name', 'like', "%{$q}%")->orWhere('name_ar', 'like', "%{$q}%"))
+                    ->orWhereHas('companies', fn ($q2) => $q2->where('name', 'like', "%{$q}%")->orWhere('name_ar', 'like', "%{$q}%"))
+                    ->orWhereHas('diseases', fn ($q2) => $q2->where('name', 'like', "%{$q}%")->orWhere('name_ar', 'like', "%{$q}%"));
             })
                 ->limit(20)
                 ->get();
 
-            $companies = Company::whereFullText(['name', 'name_ar'], $q)
+            $companies = Company::where('name', 'like', "%{$q}%")
+                ->orWhere('name_ar', 'like', "%{$q}%")
                 ->limit(20)
                 ->get();
 
-            $diseases = Disease::whereFullText(['name', 'name_ar'], $q)
+            $diseases = Disease::where('name', 'like', "%{$q}%")
+                ->orWhere('name_ar', 'like', "%{$q}%")
                 ->limit(20)
                 ->get();
 
-            $ingredients = ActiveIngredient::whereFullText(['name', 'name_ar'], $q)
+            $ingredients = ActiveIngredient::where('name', 'like', "%{$q}%")
+                ->orWhere('name_ar', 'like', "%{$q}%")
                 ->limit(20)
                 ->get();
         }

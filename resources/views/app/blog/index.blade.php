@@ -3,7 +3,7 @@
 @section('title', __('messages.blog.index_title'))
 
 @section('content')
-    <div class="max-w-7xl mx-auto space-y-6">
+    <div class="space-y-4">
 
         <x-page-hero
             :heading="__('messages.blog.index_heading')"
@@ -16,16 +16,17 @@
         {{-- Search & Filters --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
             <form method="GET">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="relative sm:col-span-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-3">
+                    <div class="lg:col-span-1 relative">
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                            <x-lucide-search class="w-4 h-4 text-body" />
+                            <x-lucide-search class="w-4 h-4 text-body dark:text-slate-400" />
                         </div>
                         <input type="text" name="search" value="{{ request('search') }}"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                             placeholder="{{ __('messages.blog.search_placeholder') }}">
                     </div>
-                    <div class="flex gap-2">
+
+                    <div id="advanced-filters" class="sm:contents max-sm:flex max-sm:flex-col max-sm:gap-4">
                         <select name="category"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ __('messages.blog.all_categories') }}</option>
@@ -35,18 +36,32 @@
                                 </option>
                             @endforeach
                         </select>
+
+                        <select name="sort"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                            <option value="latest" @selected(request('sort') == 'latest')>{{ __('messages.blog.sort_latest') }}</option>
+                            <option value="oldest" @selected(request('sort') == 'oldest')>{{ __('messages.blog.sort_oldest') }}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex gap-2">
                         <button type="submit"
-                            class="text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-5 py-2.5 focus:outline-none whitespace-nowrap">
+                            class="text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-4 py-2 focus:outline-none">
+                            <x-lucide-search class="w-3.5 h-3.5 inline -mt-0.5 me-1" />
                             {{ __('messages.blog.search_button') }}
                         </button>
-                        @if (request('search') || request('category') || request('sort'))
-                            <a href="{{ route('blog.index') }}" wire:navigate
-                                class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
-                                <x-lucide-x class="w-4 h-4" />
-                            </a>
-                        @endif
+                        <a href="{{ route('blog.index') }}" wire:navigate
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
+                            <x-lucide-x class="w-4 h-4" />
+                        </a>
                     </div>
                 </div>
+
+                <button type="button" onclick="var f=document.getElementById('advanced-filters');var s=f.style;s.display=s.display==='none'?'':'none';this.querySelector('.chevron').classList.toggle('rotate-180')"
+                    class="max-sm:flex sm:hidden mt-3 w-full items-center justify-center gap-1.5 text-sm text-fg-brand hover:underline cursor-pointer">
+                    <span>{{ __('messages.blog.filter_by') }}</span>
+                    <x-lucide-chevron-down class="chevron w-4 h-4 transition-transform" />
+                </button>
             </form>
         </div>
 
@@ -120,8 +135,8 @@
                 <x-lucide-newspaper class="w-16 h-16 text-body mx-auto mb-4 dark:text-slate-500" />
                 <h3 class="text-xl font-semibold text-heading dark:text-white mb-2">{{ __('messages.blog.no_posts') }}</h3>
                 <p class="text-body dark:text-slate-400 mb-6 max-w-md mx-auto">{{ __('messages.blog.no_posts_desc') }}</p>
-<a href="{{ route('blog.index') }}" wire:navigate
-                                    class="inline-flex items-center gap-2 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-5 py-2.5">
+                <a href="{{ route('blog.index') }}" wire:navigate
+                    class="inline-flex items-center gap-2 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-5 py-2.5">
                     <x-lucide-refresh-cw class="w-4 h-4" />
                     {{ __('messages.blog.clear_filters') }}
                 </a>
@@ -130,8 +145,71 @@
 
         {{-- Pagination --}}
         @if ($blogs->hasPages())
-            <div class="w-full">
-                {{ $blogs->withQueryString()->links('pagination::tailwind') }}
+            @php
+                $currentPage = $blogs->currentPage();
+                $lastPage = $blogs->lastPage();
+                $window = 2;
+                $startPage = max(1, $currentPage - $window);
+                $endPage = min($lastPage, $currentPage + $window);
+                $showStartEllipsis = $startPage > 2;
+                $showEndEllipsis = $endPage < $lastPage - 1;
+            @endphp
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4">
+                <div class="hidden sm:block text-sm text-body dark:text-slate-400">
+                    {{ __('messages.blog.showing') }}
+                    {{ $blogs->firstItem() ?? 0 }}–{{ $blogs->lastItem() ?? 0 }}
+                    {{ __('messages.blog.of') }}
+                    {{ number_format($blogs->total()) }}
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="{{ $blogs->previousPageUrl() }}" wire:navigate rel="prev" @if($blogs->onFirstPage()) aria-disabled="true" @endif
+                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if($blogs->onFirstPage()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                        <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
+                        <span>{{ __('messages.blog.previous_page') }}</span>
+                    </a>
+
+                    <div class="hidden sm:flex items-center gap-1">
+                        @if ($startPage > 1)
+                            <a href="{{ $blogs->withQueryString()->url(1) }}" wire:navigate
+                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                                1
+                            </a>
+                        @endif
+
+                        @if ($showStartEllipsis)
+                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
+                        @endif
+
+                        @for ($i = $startPage; $i <= $endPage; $i++)
+                            <a href="{{ $blogs->withQueryString()->url($i) }}" wire:navigate
+                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-base transition-colors
+                                @if ($i === $currentPage)
+                                    text-white bg-brand shadow-xs
+                                @else
+                                    text-heading bg-neutral-primary-soft border border-default-medium hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600
+                                @endif">
+                                {{ $i }}
+                            </a>
+                        @endfor
+
+                        @if ($showEndEllipsis)
+                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
+                        @endif
+
+                        @if ($endPage < $lastPage)
+                            <a href="{{ $blogs->withQueryString()->url($lastPage) }}" wire:navigate
+                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                                {{ $lastPage }}
+                            </a>
+                        @endif
+                    </div>
+
+                    <a href="{{ $blogs->nextPageUrl() }}" wire:navigate rel="next" @if(!$blogs->hasMorePages()) aria-disabled="true" @endif
+                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if(!$blogs->hasMorePages()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
+                        <span>{{ __('messages.blog.next_page') }}</span>
+                        <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
+                    </a>
+                </div>
             </div>
         @endif
 

@@ -215,6 +215,11 @@ return [
         'related_posts' => 'Related Articles',
         'view_all' => 'View All',
         'articles_label' => 'Articles',
+        'directory_title' => 'Blog Articles',
+        'sort_latest' => 'Latest',
+        'sort_oldest' => 'Oldest',
+        'previous_page' => 'Previous',
+        'next_page' => 'Next',
     ],
 
     'errors' => [

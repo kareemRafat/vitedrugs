@@ -215,6 +215,11 @@ return [
         'related_posts' => 'مقالات ذات صلة',
         'view_all' => 'عرض الكل',
         'articles_label' => 'مقالات',
+        'directory_title' => 'مقالات المدونة',
+        'sort_latest' => 'الأحدث',
+        'sort_oldest' => 'الأقدم',
+        'previous_page' => 'السابق',
+        'next_page' => 'التالي',
     ],
 
     'errors' => [
