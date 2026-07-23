@@ -183,6 +183,12 @@ return [
         'ingredients' => 'المواد الفعالة',
         'no_results' => 'لا توجد نتائج.',
         'view' => 'عرض',
+        'trade_name' => 'الاسم التجاري',
+        'manufacturer' => 'الشركة المصنعة',
+        'type' => 'النوع',
+        'action' => 'الإجراء',
+        'showing' => 'عرض',
+        'of' => 'من',
     ],
 
     'common' => [

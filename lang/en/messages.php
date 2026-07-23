@@ -183,6 +183,12 @@ return [
         'ingredients' => 'Active Ingredients',
         'no_results' => 'No results found.',
         'view' => 'View',
+        'trade_name' => 'Trade Name',
+        'manufacturer' => 'Manufacturer',
+        'type' => 'Type',
+        'action' => 'Action',
+        'showing' => 'Showing',
+        'of' => 'of',
     ],
 
     'common' => [
