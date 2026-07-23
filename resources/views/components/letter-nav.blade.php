@@ -10,10 +10,10 @@
         @foreach ($allLetters as $letter)
             @if (in_array($letter, $letters))
                 @if ($active === $letter)
-                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-brand md:bg-brand md:text-white text-sm font-bold cursor-default">{{ $letter }}</span>
+                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-brand dark:text-amber-400 text-base font-extrabold cursor-default">{{ $letter }}</span>
                 @else
                     <button type="button" wire:click="{{ $wireAction }}('{{ $letter }}')"
-                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium text-heading bg-neutral-secondary-soft dark:bg-transparent hover:bg-brand/10 hover:text-brand dark:text-white dark:hover:text-brand transition-colors">
+                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium text-heading bg-neutral-secondary-soft max-md:bg-transparent dark:bg-transparent hover:bg-brand/10 hover:text-brand dark:text-white dark:hover:text-brand transition-colors">
                         {{ $letter }}
                     </button>
                 @endif

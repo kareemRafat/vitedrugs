@@ -19,7 +19,7 @@
                     <x-lucide-plus class="w-4 h-4" />
                     {{ __('messages.products.submit_product') }}
                 </a>
-                <a href="{{ route('products.compare') }}"
+                <a href="{{ route('products.compare') }}" wire:navigate
                     class="inline-flex items-center gap-2 px-6 py-2.5 rounded-base text-sm font-semibold bg-white text-brand hover:bg-white/90 dark:bg-sky-700 dark:text-white dark:hover:bg-sky-600 transition-colors shadow-sm border border-white/20">
                     <x-lucide-git-compare class="w-4 h-4" />
                     {{ __('messages.compare.page_heading') }}
@@ -67,7 +67,7 @@
                             class="flex-1 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-4 py-2.5 focus:outline-none">
                             {{ __('messages.products.search_button') }}
                         </button>
-                        <a href="{{ route('products.index') }}"
+                        <a href="{{ route('products.index') }}" wire:navigate
                             class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
                             <x-lucide-x class="w-4 h-4" />
                         </a>
@@ -220,7 +220,7 @@
                     {{ number_format($products->total()) }}
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="{{ $products->previousPageUrl() }}" rel="prev" @if($products->onFirstPage()) aria-disabled="true" @endif
+                    <a href="{{ $products->previousPageUrl() }}" wire:navigate rel="prev" @if($products->onFirstPage()) aria-disabled="true" @endif
                         class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if($products->onFirstPage()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                         <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
                         <span>{{ __('messages.products.previous_page') }}</span>
@@ -229,7 +229,7 @@
                     <div class="hidden sm:flex items-center gap-1">
                         {{-- First page --}}
                         @if ($startPage > 1)
-                            <a href="{{ $products->withQueryString()->url(1) }}"
+                            <a href="{{ $products->withQueryString()->url(1) }}" wire:navigate
                                 class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                                 1
                             </a>
@@ -242,7 +242,7 @@
 
                         {{-- Page window --}}
                         @for ($i = $startPage; $i <= $endPage; $i++)
-                            <a href="{{ $products->withQueryString()->url($i) }}"
+                            <a href="{{ $products->withQueryString()->url($i) }}" wire:navigate
                                 class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-base transition-colors
                                 @if ($i === $currentPage)
                                     text-white bg-brand shadow-xs
@@ -260,14 +260,14 @@
 
                         {{-- Last page --}}
                         @if ($endPage < $lastPage)
-                            <a href="{{ $products->withQueryString()->url($lastPage) }}"
+                            <a href="{{ $products->withQueryString()->url($lastPage) }}" wire:navigate
                                 class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                                 {{ $lastPage }}
                             </a>
                         @endif
                     </div>
 
-                    <a href="{{ $products->nextPageUrl() }}" rel="next" @if(!$products->hasMorePages()) aria-disabled="true" @endif
+                    <a href="{{ $products->nextPageUrl() }}" wire:navigate rel="next" @if(!$products->hasMorePages()) aria-disabled="true" @endif
                         class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if(!$products->hasMorePages()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
                         <span>{{ __('messages.products.next_page') }}</span>
                         <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />

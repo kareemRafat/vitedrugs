@@ -23,12 +23,12 @@
     <nav class="flex mb-4 pt-4" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-base text-body dark:text-slate-400">
             <li class="inline-flex items-center">
-                <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.active_ingredients.home') }}</a>
+                <a href="{{ route('home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.active_ingredients.home') }}</a>
             </li>
             <li>
                 <div class="flex items-center gap-1">
                     <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
-                    <a href="{{ route('active-ingredients.index') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.active_ingredients.ingredients') }}</a>
+                    <a href="{{ route('active-ingredients.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.active_ingredients.ingredients') }}</a>
                 </div>
             </li>
             <li aria-current="page">
@@ -152,7 +152,7 @@
                                                 $manufacturer = $product->manufacturer()->first();
                                             @endphp
                                             @if ($manufacturer)
-                                                <a href="{{ route('companies.show', $manufacturer) }}" class="font-medium text-fg-brand hover:underline">
+                                                <a href="{{ route('companies.show', $manufacturer) }}" wire:navigate class="font-medium text-fg-brand hover:underline">
                                                     {{ $manufacturer->name }}
                                                 </a>
                                             @else
@@ -208,7 +208,7 @@
                         <ul class="space-y-2">
                             @foreach ($diseases as $disease)
                                 <li>
-                                    <a href="{{ route('diseases.show', $disease) }}" class="text-base font-medium text-fg-brand hover:underline">
+                                    <a href="{{ route('diseases.show', $disease) }}" wire:navigate class="text-base font-medium text-fg-brand hover:underline">
                                         {{ $disease->name }}
                                     </a>
                                 </li>

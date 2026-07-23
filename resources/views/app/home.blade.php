@@ -34,7 +34,7 @@
 
     {{-- Stats Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <a href="{{ route('products.index') }}"
+        <a href="{{ route('products.index') }}" wire:navigate
             class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
@@ -46,7 +46,7 @@
             <p class="text-sm text-body dark:text-slate-400">{{ __('messages.home.products_desc') }}</p>
         </a>
 
-        <a href="{{ route('companies.index') }}"
+        <a href="{{ route('companies.index') }}" wire:navigate
             class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
@@ -58,7 +58,7 @@
             <p class="text-sm text-body dark:text-slate-400">{{ __('messages.home.companies_desc') }}</p>
         </a>
 
-        <a href="{{ route('diseases.index') }}"
+        <a href="{{ route('diseases.index') }}" wire:navigate
             class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-danger-soft text-fg-danger-strong dark:bg-danger/20 dark:text-danger">
@@ -70,7 +70,7 @@
             <p class="text-sm text-body dark:text-slate-400">{{ __('messages.home.diseases_desc') }}</p>
         </a>
 
-        <a href="{{ route('active-ingredients.index') }}"
+        <a href="{{ route('active-ingredients.index') }}" wire:navigate
             class="block p-5 bg-neutral-primary-soft rounded-base shadow-xs hover:bg-neutral-secondary-soft transition-all duration-200 border border-transparent hover:border-default-medium dark:bg-slate-800 dark:hover:bg-slate-700  group">
             <div class="flex items-center gap-3 mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
@@ -92,14 +92,14 @@
                     <x-lucide-newspaper class="w-5 h-5 text-fg-brand" />
                     {{ __('messages.home.latest_blog') }}
                 </h4>
-                <a href="{{ route('blog.index') }}"
+                <a href="{{ route('blog.index') }}" wire:navigate
                     class="text-sm font-medium text-fg-brand hover:underline">
                     {{ __('messages.home.view_all') }}
                 </a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach ($latestBlogs as $blog)
-                    <a href="{{ route('blog.show', $blog) }}"
+                    <a href="{{ route('blog.show', $blog) }}" wire:navigate
                         class="group bg-neutral-primary-soft rounded-base border border-default-medium overflow-hidden hover:shadow-md transition-all duration-300 dark:bg-slate-800 dark:border-slate-700 ">
                         <div class="h-40 bg-neutral-secondary-soft dark:bg-slate-700 overflow-hidden">
                             @if ($blog->cover_image)
@@ -140,7 +140,7 @@
                     <x-lucide-package class="w-5 h-5 text-fg-brand" />
                     {{ __('messages.home.latest_products') }}
                 </h4>
-                <a href="{{ route('products.index') }}"
+                <a href="{{ route('products.index') }}" wire:navigate
                     class="text-sm font-medium text-fg-brand hover:underline">
                     {{ __('messages.home.view_all') }}
                 </a>
@@ -171,14 +171,14 @@
                     <x-lucide-building-2 class="w-5 h-5 text-fg-brand" />
                     {{ __('messages.home.featured_companies') }}
                 </h4>
-                <a href="{{ route('companies.index') }}"
+                <a href="{{ route('companies.index') }}" wire:navigate
                     class="text-sm font-medium text-fg-brand hover:underline">
                     {{ __('messages.home.view_all') }}
                 </a>
             </div>
             <div class="p-5 space-y-3">
                 @forelse($latestCompanies as $company)
-                    <a href="{{ route('companies.show', $company) }}"
+                    <a href="{{ route('companies.show', $company) }}" wire:navigate
                         class="flex items-center gap-3 p-3 rounded-base border border-default-medium hover:bg-neutral-secondary-soft dark:border-slate-600 dark:hover:bg-slate-700  transition-all duration-200">
                         <div class="flex items-center justify-center w-10 h-10 rounded-base shrink-0 bg-success-soft text-fg-success-strong dark:bg-success/20 dark:text-success">
                             <x-lucide-building-2 class="w-5 h-5" />

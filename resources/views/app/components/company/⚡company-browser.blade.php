@@ -287,7 +287,7 @@ new class extends Component
                                     {{ $initial }}
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <a href="{{ route('companies.show', $company) }}" class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block line-clamp-2">
+                                    <a href="{{ route('companies.show', $company) }}" wire:navigate class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block line-clamp-2">
                                         {{ $company->name }}
                                     </a>
                                     @if ($company->name_ar && app()->getLocale() === 'ar')
@@ -345,7 +345,7 @@ new class extends Component
                     </div>
 
                     {{-- Bottom action bar --}}
-                    <a href="{{ route('companies.show', $company) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
+                    <a href="{{ route('companies.show', $company) }}" wire:navigate class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
                         <span class="flex items-center gap-2">
                             <x-lucide-eye class="w-4 h-4" />
                             {{ __('messages.companies.details') }}
@@ -385,7 +385,7 @@ new class extends Component
             </div>
         @endif
     @else
-        <div class="bg-neutral-primary-soft rounded-full shadow-xs dark:bg-slate-800 py-16 text-center">
+        <div class="bg-neutral-primary-soft rounded shadow-xs dark:bg-slate-800 py-16 text-center">
             <x-lucide-building-2 class="w-12 h-12 text-body dark:text-slate-400 mx-auto mb-4" />
             <h3 class="text-lg font-semibold text-heading dark:text-white mb-1">{{ __('messages.companies.no_companies') }}</h3>
             <p class="text-sm text-body dark:text-slate-400">{{ __('messages.companies.try_another') }}</p>

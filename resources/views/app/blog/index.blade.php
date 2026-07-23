@@ -40,7 +40,7 @@
                             {{ __('messages.blog.search_button') }}
                         </button>
                         @if (request('search') || request('category') || request('sort'))
-                            <a href="{{ route('blog.index') }}"
+                            <a href="{{ route('blog.index') }}" wire:navigate
                                 class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft focus:ring-4 focus:ring-brand-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600">
                                 <x-lucide-x class="w-4 h-4" />
                             </a>
@@ -55,7 +55,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($blogs as $blog)
                     <article class="bg-neutral-primary-soft rounded-base shadow-xs overflow-hidden hover:shadow-md transition-all duration-300 border border-default-medium dark:bg-slate-800 dark:border-slate-700 group flex flex-col">
-                        <a href="{{ route('blog.show', $blog) }}" class="flex flex-col h-full">
+                        <a href="{{ route('blog.show', $blog) }}" wire:navigate class="flex flex-col h-full">
                             {{-- Cover Image --}}
                             <div class="relative h-48 bg-neutral-secondary-soft dark:bg-slate-700 overflow-hidden shrink-0">
                                 @if ($blog->cover_image)
@@ -120,8 +120,8 @@
                 <x-lucide-newspaper class="w-16 h-16 text-body mx-auto mb-4 dark:text-slate-500" />
                 <h3 class="text-xl font-semibold text-heading dark:text-white mb-2">{{ __('messages.blog.no_posts') }}</h3>
                 <p class="text-body dark:text-slate-400 mb-6 max-w-md mx-auto">{{ __('messages.blog.no_posts_desc') }}</p>
-                <a href="{{ route('blog.index') }}"
-                    class="inline-flex items-center gap-2 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-5 py-2.5">
+<a href="{{ route('blog.index') }}" wire:navigate
+                                    class="inline-flex items-center gap-2 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-5 py-2.5">
                     <x-lucide-refresh-cw class="w-4 h-4" />
                     {{ __('messages.blog.clear_filters') }}
                 </a>

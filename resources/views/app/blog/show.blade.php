@@ -13,12 +13,12 @@
 
         {{-- Breadcrumb --}}
         <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4">
-            <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.nav.home') }}</a>
+            <a href="{{ route('home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.nav.home') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <a href="{{ route('blog.index') }}" class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.blog.title') }}</a>
+            <a href="{{ route('blog.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.blog.title') }}</a>
             @if ($blog->category)
                 <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-                <a href="{{ route('blog.index', ['category' => $blog->category->id]) }}"
+                <a href="{{ route('blog.index', ['category' => $blog->category->id]) }}" wire:navigate
                     class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ $locale === 'ar' && $blog->category->name_ar ? $blog->category->name_ar : $blog->category->name }}</a>
             @endif
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
@@ -44,7 +44,7 @@
                     {{-- Meta --}}
                     <div class="flex flex-wrap items-center gap-3 text-sm text-body dark:text-slate-400 mb-4">
                         @if ($blog->category)
-                            <a href="{{ route('blog.index', ['category' => $blog->category->id]) }}"
+                            <a href="{{ route('blog.index', ['category' => $blog->category->id]) }}" wire:navigate
                                 class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand hover:bg-brand hover:text-white transition-colors duration-150">
                                 {{ $locale === 'ar' && $blog->category->name_ar ? $blog->category->name_ar : $blog->category->name }}
                             </a>
@@ -99,7 +99,7 @@
                     {{-- Share / Footer --}}
                     <div class="mt-10 pt-6 border-t border-default-medium dark:border-slate-700">
                         <div class="flex flex-wrap items-center justify-between gap-4">
-                            <a href="{{ route('blog.index') }}"
+                            <a href="{{ route('blog.index') }}" wire:navigate
                                 class="inline-flex items-center gap-2 text-sm font-medium text-body hover:text-heading dark:text-slate-400 dark:hover:text-white transition-colors">
                                 <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
                                 {{ __('messages.blog.back_to_blog') }}
@@ -116,14 +116,14 @@
             <section>
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-heading dark:text-white">{{ __('messages.blog.related_posts') }}</h2>
-                    <a href="{{ route('blog.index') }}"
+                    <a href="{{ route('blog.index') }}" wire:navigate
                         class="text-sm font-medium text-fg-brand dark:text-brand hover:underline">
                         {{ __('messages.blog.view_all') }}
                     </a>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach ($related as $relatedPost)
-                        <a href="{{ route('blog.show', $relatedPost) }}"
+                        <a href="{{ route('blog.show', $relatedPost) }}" wire:navigate
                             class="group bg-neutral-primary-soft rounded-base border border-default-medium overflow-hidden hover:shadow-md transition-all duration-300 dark:bg-slate-800 dark:border-slate-700">
                             <div class="h-36 bg-neutral-secondary-soft dark:bg-slate-700 overflow-hidden">
                                 @if ($relatedPost->cover_image)

@@ -21,12 +21,12 @@
     <nav class="flex mb-4 pt-4" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-base text-body dark:text-slate-400">
             <li class="inline-flex items-center">
-                <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.diseases.home') }}</a>
+                <a href="{{ route('home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.diseases.home') }}</a>
             </li>
             <li>
                 <div class="flex items-center gap-1">
                     <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
-                    <a href="{{ route('diseases.index') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.diseases.diseases') }}</a>
+                    <a href="{{ route('diseases.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.diseases.diseases') }}</a>
                 </div>
             </li>
             <li aria-current="page">
@@ -100,7 +100,7 @@
                                                 $manufacturer = $product->companies->first(fn($c) => $c->pivot?->role === 'manufacturer');
                                             @endphp
                                             @if ($manufacturer)
-                                                <a href="{{ route('companies.show', $manufacturer) }}" class="font-medium text-fg-brand hover:underline">
+                                                <a href="{{ route('companies.show', $manufacturer) }}" wire:navigate class="font-medium text-fg-brand hover:underline">
                                                     {{ $manufacturer->name }}
                                                 </a>
                                             @else
@@ -139,7 +139,7 @@
                         <ul class="space-y-2">
                             @foreach ($ingredients as $ingredient)
                                 <li>
-                                    <a href="{{ route('active-ingredients.show', $ingredient) }}" class="text-base font-medium text-fg-brand hover:underline">
+                                    <a href="{{ route('active-ingredients.show', $ingredient) }}" wire:navigate class="text-base font-medium text-fg-brand hover:underline">
                                         {{ $ingredient->name }}
                                     </a>
                                 </li>

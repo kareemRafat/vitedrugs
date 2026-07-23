@@ -177,7 +177,7 @@ new class extends Component
                     <div class="p-5 pt-6 flex flex-col flex-1">
                         {{-- Card header --}}
                         <div class="bg-gradient-to-br from-brand/5 to-sky-50 dark:from-brand/10 dark:to-slate-700 -mx-5 -mt-6 px-5 pt-5 pb-4 mb-4 border-b border-brand/10 dark:border-slate-600">
-                            <a href="{{ route('diseases.show', $disease) }}" class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block min-h-[3.5rem] line-clamp-2">
+                            <a href="{{ route('diseases.show', $disease) }}" wire:navigate class="text-lg font-bold text-heading dark:text-white group-hover:text-brand dark:group-hover:text-sky-400 transition-colors leading-tight block min-h-[3.5rem] line-clamp-2">
                                 {{ $disease->name }}
                             </a>
 
@@ -198,7 +198,7 @@ new class extends Component
                     </div>
 
                     {{-- Bottom action bar --}}
-                    <a href="{{ route('diseases.show', $disease) }}" class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
+                    <a href="{{ route('diseases.show', $disease) }}" wire:navigate class="border-t border-default-medium dark:border-slate-700 px-5 py-3.5 flex items-center justify-between text-sm font-medium text-brand hover:text-brand-strong dark:text-sky-400 dark:hover:text-sky-300 hover:bg-brand/5 dark:hover:bg-slate-700/50 transition-all group/action">
                         <span class="flex items-center gap-2">
                             <x-lucide-eye class="w-4 h-4" />
                             {{ __('messages.diseases.details') }}

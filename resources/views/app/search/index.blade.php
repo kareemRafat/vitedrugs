@@ -78,8 +78,8 @@
                     <div class="p-5">
                         @forelse($companies as $item)
                             <div class="flex items-center justify-between py-2 border-b border-default-medium last:border-0">
-                                <a href="{{ route('companies.show', $item) }}" class="text-base font-medium text-fg-brand hover:underline">{{ $item->name }}</a>
-                                <a href="{{ route('companies.show', $item) }}"
+                                <a href="{{ route('companies.show', $item) }}" wire:navigate class="text-base font-medium text-fg-brand hover:underline">{{ $item->name }}</a>
+                                <a href="{{ route('companies.show', $item) }}" wire:navigate
                                     class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm shrink-0">
                                     <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
                                 </a>
@@ -100,8 +100,8 @@
                     <div class="p-5">
                         @forelse($diseases as $item)
                             <div class="flex items-center justify-between py-2 border-b border-default-medium last:border-0">
-                                <a href="{{ route('diseases.show', $item) }}" class="text-base font-medium text-fg-brand hover:underline">{{ $item->name }}</a>
-                                <a href="{{ route('diseases.show', $item) }}"
+                                <a href="{{ route('diseases.show', $item) }}" wire:navigate class="text-base font-medium text-fg-brand hover:underline">{{ $item->name }}</a>
+                                <a href="{{ route('diseases.show', $item) }}" wire:navigate
                                     class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm shrink-0">
                                     <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
                                 </a>
@@ -122,8 +122,8 @@
                     <div class="p-5">
                         @forelse($ingredients as $item)
                             <div class="flex items-center justify-between py-2 border-b border-default-medium last:border-0">
-                                <a href="{{ route('active-ingredients.show', $item) }}" class="text-base font-medium text-fg-brand hover:underline">{{ $item->name }}</a>
-                                <a href="{{ route('active-ingredients.show', $item) }}"
+                                <a href="{{ route('active-ingredients.show', $item) }}" wire:navigate class="text-base font-medium text-fg-brand hover:underline">{{ $item->name }}</a>
+                                <a href="{{ route('active-ingredients.show', $item) }}" wire:navigate
                                     class="inline-flex items-center justify-center w-8 h-8 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base text-sm shrink-0">
                                     <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
                                 </a>
