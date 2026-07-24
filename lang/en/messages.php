@@ -319,6 +319,8 @@ return [
         'instagram' => 'Instagram',
         'location_map' => 'Location Map',
         'google_maps' => 'Google Maps',
+        'products' => 'Products',
+        'social' => 'Social Media',
         'filter_all' => 'All',
         'filter_by_type' => 'Filter by type',
         'starting_with' => 'starting with :letter',

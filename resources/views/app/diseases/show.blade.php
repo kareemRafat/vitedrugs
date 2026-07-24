@@ -19,7 +19,7 @@
 @section('content')
     {{-- Breadcrumb --}}
     <nav class="flex mb-4 pt-4" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-base text-body dark:text-slate-400">
+        <ol class="flex items-start flex-wrap gap-x-1 text-base text-body dark:text-slate-400">
             <li class="inline-flex items-center">
                 <a href="{{ route('home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.diseases.home') }}</a>
             </li>

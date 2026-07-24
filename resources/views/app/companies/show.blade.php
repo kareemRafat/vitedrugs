@@ -22,7 +22,7 @@
 <div class="space-y-4">
     {{-- Breadcrumb --}}
     <nav class="flex mb-4 pt-4" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 rtl:space-x-reverse text-base text-body dark:text-slate-400">
+        <ol class="flex items-start flex-wrap gap-x-1 text-base text-body dark:text-slate-400">
             <li class="inline-flex items-center">
                 <a href="{{ route('home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.companies.home') }}</a>
             </li>
@@ -42,20 +42,21 @@
     </nav>
 
     {{-- Company Hero --}}
-    <div class="bg-neutral-primary-soft rounded-base shadow-sm p-4 sm:p-6 mb-4 dark:bg-slate-800">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800 overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 p-5 sm:p-7">
             <div class="lg:col-span-7 xl:col-span-8">
                 <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-1">{{ $company->name }}</h1>
                 @if ($company->name_ar && $locale === 'ar')
                     <p class="text-body dark:text-slate-400 text-base mb-2">{{ $company->name_ar }}</p>
                 @endif
                 <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-base text-sm font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand capitalize">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-base text-sm font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand capitalize">
+                        <x-lucide-tag class="w-3.5 h-3.5" />
                         {{ __('messages.companies.types.' . $company->company_type) }}
                     </span>
                     @if ($company->country)
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-base text-sm font-medium bg-neutral-secondary-soft text-heading border border-default-medium dark:bg-slate-700 dark:text-white dark:border-slate-600">
-                            <x-lucide-map-pin class="w-3.5 h-3.5 me-1" />
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-base text-sm font-medium bg-neutral-secondary-soft text-heading border border-default-medium dark:bg-slate-700 dark:text-white dark:border-slate-600">
+                            <x-lucide-map-pin class="w-3.5 h-3.5" />
                             {{ $company->country }}
                         </span>
                     @endif
@@ -72,21 +73,33 @@
 
             <div class="lg:col-span-5 xl:col-span-4">
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.companies.type') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base capitalize">{{ __('messages.companies.types.' . $company->company_type) }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-package class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-blue-600 dark:text-blue-400 mb-1">{{ __('messages.companies.products_count') }}</p>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ $products->total() }}</p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.companies.country') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base">{{ $company->country ?? __('messages.companies.na') }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-file-text class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400 mb-1">{{ __('messages.companies.registration') }}</p>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ $company->registration_number ?? __('messages.companies.na') }}</p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.companies.products_count') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base">{{ $products->total() }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-globe class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-amber-600 dark:text-amber-400 mb-1">{{ __('messages.companies.country') }}</p>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ $company->country ?? __('messages.companies.na') }}</p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.companies.registration') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base">{{ $company->registration_number ?? __('messages.companies.na') }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-building class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-rose-600 dark:text-rose-400 mb-1">{{ __('messages.companies.type') }}</p>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white capitalize">{{ __('messages.companies.types.' . $company->company_type) }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,7 +201,7 @@
         {{-- Sidebar --}}
         <div class="lg:col-span-5 xl:col-span-4 space-y-4">
 
-            {{-- Contact Information --}}
+            {{-- Contact --}}
             <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800">
                 <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                     <x-lucide-phone class="w-4 h-4 text-body" />
@@ -203,11 +216,6 @@
                             'email' => ['icon' => 'mail', 'label' => __('messages.companies.email')],
                             'website' => ['icon' => 'globe', 'label' => __('messages.companies.website')],
                             'contact_person' => ['icon' => 'user', 'label' => __('messages.companies.contact_person')],
-                            'facebook' => ['icon' => 'globe', 'label' => __('messages.companies.facebook')],
-                            'linkedin' => ['icon' => 'briefcase', 'label' => __('messages.companies.linkedin')],
-                            'telegram' => ['icon' => 'send', 'label' => __('messages.companies.telegram')],
-                            'youtube' => ['icon' => 'video', 'label' => __('messages.companies.youtube')],
-                            'instagram' => ['icon' => 'camera', 'label' => __('messages.companies.instagram')],
                             'google_maps_url' => ['icon' => 'navigation', 'label' => __('messages.companies.google_maps')],
                             'governorate' => ['icon' => 'map-pin', 'label' => __('messages.companies.governorate')],
                             'coverage_area' => ['icon' => 'compass', 'label' => __('messages.companies.coverage_area')],
@@ -216,42 +224,80 @@
                     @foreach ($contactFields as $field => $meta)
                         @if ($company->$field)
                             <div class="flex items-start gap-3">
-                                <x-dynamic-component :component="'lucide-' . $meta['icon']" class="w-4 h-4 text-body mt-0.5 shrink-0" />
+                                <div class="flex items-center justify-center w-8 h-8 rounded-base bg-neutral-secondary-soft dark:bg-slate-700 shrink-0">
+                                    <x-dynamic-component :component="'lucide-' . $meta['icon']" class="w-4 h-4 text-body dark:text-slate-400" />
+                                </div>
                                 <div class="min-w-0">
-                                    <span class="block text-sm uppercase text-body dark:text-slate-400">{{ $meta['label'] }}</span>
+                                    <span class="block text-xs uppercase text-body dark:text-slate-400">{{ $meta['label'] }}</span>
                                     @if (in_array($field, ['email', 'website']))
                                         <a href="{{ $field === 'email' ? 'mailto:' . $company->$field : $company->$field }}"
-                                           target="_blank" class="text-base font-medium text-fg-brand hover:underline break-all">
+                                           target="_blank" class="text-sm font-medium text-fg-brand hover:underline break-all">
                                             {{ $company->$field }}
                                         </a>
                                     @elseif (in_array($field, ['facebook', 'linkedin', 'telegram', 'youtube', 'instagram', 'google_maps_url']))
                                         <a href="{{ $company->$field }}"
-                                           target="_blank" class="text-base font-medium text-fg-brand hover:underline break-all">
+                                           target="_blank" class="text-sm font-medium text-fg-brand hover:underline break-all">
                                             {{ $company->$field }}
                                         </a>
                                     @else
-                                        <span dir="ltr" class="text-base font-medium text-heading dark:text-white">{{ str_replace(' ', '', $company->$field) }}</span>
+                                        <span dir="ltr" class="text-sm font-medium text-heading dark:text-white">{{ str_replace(' ', '', $company->$field) }}</span>
                                     @endif
                                 </div>
                             </div>
                         @endif
                     @endforeach
+
                     @php
                         $displayAddress = $locale === 'ar' && $company->address_ar
                             ? $company->address_ar
                             : $company->address;
                     @endphp
                     @if ($displayAddress)
-                        <div class="flex items-start gap-3 pt-3 border-t border-default-medium">
-                            <x-lucide-map-pin class="w-4 h-4 text-body mt-0.5 shrink-0" />
+                        <div class="flex items-start gap-3 pt-3 border-t border-default-medium dark:border-slate-700">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-base bg-neutral-secondary-soft dark:bg-slate-700 shrink-0">
+                                <x-lucide-map-pin class="w-4 h-4 text-body dark:text-slate-400" />
+                            </div>
                             <div class="min-w-0">
-                                <span class="block text-sm uppercase text-body dark:text-slate-400">{{ __('messages.companies.address') }}</span>
-                                <span class="text-base font-medium text-heading dark:text-white">{{ $displayAddress }}</span>
+                                <span class="block text-xs uppercase text-body dark:text-slate-400">{{ __('messages.companies.address') }}</span>
+                                <span class="text-sm font-medium text-heading dark:text-white">{{ $displayAddress }}</span>
                             </div>
                         </div>
                     @endif
                 </div>
             </div>
+
+            {{-- Social Links --}}
+            @php
+                $socialFields = [
+                    'facebook' => 'globe',
+                    'linkedin' => 'briefcase',
+                    'telegram' => 'send',
+                    'youtube' => 'video',
+                    'instagram' => 'camera',
+                ];
+                $hasSocial = collect($socialFields)->keys()->first(fn($f) => $company->$f);
+            @endphp
+            @if ($hasSocial)
+                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800">
+                    <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                        <x-lucide-share-2 class="w-4 h-4 text-body" />
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.companies.social') }}</h2>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex flex-wrap gap-2">
+                            @foreach ($socialFields as $field => $icon)
+                                @if ($company->$field)
+                                    <a href="{{ $company->$field }}" target="_blank" rel="noopener noreferrer"
+                                       class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-base bg-neutral-secondary-soft text-heading border border-default-medium hover:bg-brand-soft hover:text-fg-brand hover:border-brand-medium dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-brand/20 dark:hover:text-brand transition-colors">
+                                        <x-dynamic-component :component="'lucide-' . $icon" class="w-4 h-4" />
+                                        <span class="capitalize">{{ $field }}</span>
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endif
 
         </div>
 

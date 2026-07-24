@@ -319,6 +319,8 @@ return [
         'instagram' => 'انستغرام',
         'location_map' => 'خريطة الموقع',
         'google_maps' => 'خرائط جوجل',
+        'products' => 'المنتجات',
+        'social' => 'وسائل التواصل',
         'filter_all' => 'الكل',
         'filter_by_type' => 'تصفية حسب النوع',
         'starting_with' => 'تبدأ بحرف :letter',
