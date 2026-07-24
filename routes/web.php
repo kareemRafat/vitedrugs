@@ -42,12 +42,13 @@ Route::group([
         ->middleware('auth:web')
         ->name('logout');
 
+    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+        ->middleware('signed')
+        ->name('verification.verify');
+
     Route::middleware('auth:web')->group(function () {
         Route::get('/email/verify', [VerificationController::class, 'notice'])
             ->name('verification.notice');
-        Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-            ->middleware('signed')
-            ->name('verification.verify');
         Route::post('/email/verification-notification', [VerificationController::class, 'resend'])
             ->middleware('throttle:6,1')
             ->name('verification.resend');

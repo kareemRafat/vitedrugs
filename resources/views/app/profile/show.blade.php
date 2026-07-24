@@ -18,7 +18,7 @@
                     {{-- Header --}}
                     <div class="relative h-32 bg-gradient-to-r from-brand to-brand-strong dark:from-sky-700 dark:to-sky-900">
                         <div class="absolute -bottom-10 start-6">
-                            <div class="w-20 h-20 rounded-full bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 flex items-center justify-center shadow-xs">
+                            <div class="w-20 h-20 rounded-full bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 flex items-center justify-center shadow-md">
                                 <span class="text-2xl font-bold text-brand dark:text-sky-400">{{ substr($user->name, 0, 1) }}</span>
                             </div>
                         </div>
