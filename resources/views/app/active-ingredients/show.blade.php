@@ -58,13 +58,19 @@
                 @endif
 
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.active_ingredients.products_using') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base">{{ $activeIngredient->products->count() }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-package class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-blue-600 dark:text-blue-400 mb-1">{{ __('messages.active_ingredients.products_using') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">{{ $activeIngredient->products->count() }}</p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.active_ingredients.drug_classes') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base">{{ $activeIngredient->drugClasses->count() }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-flask-conical class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-amber-600 dark:text-amber-400 mb-1">{{ __('messages.active_ingredients.drug_classes') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">{{ $activeIngredient->drugClasses->count() }}</p>
+                        </div>
                     </div>
                 </div>
             </div>

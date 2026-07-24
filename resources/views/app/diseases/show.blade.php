@@ -54,13 +54,19 @@
                 @endif
 
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.diseases.related_products') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base">{{ $disease->products->count() }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-package class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-blue-600 dark:text-blue-400 mb-1">{{ __('messages.diseases.related_products') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">{{ $disease->products->count() }}</p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-base uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.diseases.ingredients_count') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-base">{{ $ingredients->count() }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-flask-conical class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400 mb-1">{{ __('messages.diseases.ingredients_count') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">{{ $ingredients->count() }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
