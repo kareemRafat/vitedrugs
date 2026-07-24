@@ -318,6 +318,7 @@ return [
         'youtube' => 'YouTube',
         'instagram' => 'Instagram',
         'location_map' => 'Location Map',
+        'google_maps' => 'Google Maps',
         'filter_all' => 'All',
         'filter_by_type' => 'Filter by type',
         'starting_with' => 'starting with :letter',

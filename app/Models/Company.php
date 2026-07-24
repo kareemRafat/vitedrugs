@@ -50,7 +50,7 @@ class Company extends Model
     public function getEmbedMapUrlAttribute(): ?string
     {
         if (! $this->google_maps_url) {
-            return null;
+            return $this->google_maps_url;
         }
 
         if (str_contains($this->google_maps_url, 'embed')) {

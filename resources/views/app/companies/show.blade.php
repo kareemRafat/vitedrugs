@@ -183,27 +183,6 @@
                 </div>
             @endif
 
-            {{-- Map Section --}}
-            @if ($company->embed_map_url)
-                <div class="bg-neutral-primary-soft rounded-base shadow-sm dark:bg-slate-800 overflow-hidden">
-                    <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
-                        <x-lucide-map-pin class="w-4 h-4 text-body" />
-                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('messages.companies.location_map') }}</h2>
-                    </div>
-                    <div class="p-5">
-                        <div class="aspect-video w-full rounded-base overflow-hidden">
-                            <iframe
-                                src="{{ $company->embed_map_url }}"
-                                class="w-full h-full border-0"
-                                allowfullscreen
-                                loading="lazy"
-                                referrerpolicy="no-referrer-when-downgrade"
-                            ></iframe>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
         </div>
 
         {{-- Sidebar --}}
@@ -229,6 +208,7 @@
                             'telegram' => ['icon' => 'send', 'label' => __('messages.companies.telegram')],
                             'youtube' => ['icon' => 'video', 'label' => __('messages.companies.youtube')],
                             'instagram' => ['icon' => 'camera', 'label' => __('messages.companies.instagram')],
+                            'google_maps_url' => ['icon' => 'navigation', 'label' => __('messages.companies.google_maps')],
                             'governorate' => ['icon' => 'map-pin', 'label' => __('messages.companies.governorate')],
                             'coverage_area' => ['icon' => 'compass', 'label' => __('messages.companies.coverage_area')],
                         ];
@@ -244,7 +224,7 @@
                                            target="_blank" class="text-base font-medium text-fg-brand hover:underline break-all">
                                             {{ $company->$field }}
                                         </a>
-                                    @elseif (in_array($field, ['facebook', 'linkedin', 'telegram', 'youtube', 'instagram']))
+                                    @elseif (in_array($field, ['facebook', 'linkedin', 'telegram', 'youtube', 'instagram', 'google_maps_url']))
                                         <a href="{{ $company->$field }}"
                                            target="_blank" class="text-base font-medium text-fg-brand hover:underline break-all">
                                             {{ $company->$field }}
