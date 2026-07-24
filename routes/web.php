@@ -67,7 +67,6 @@ Route::group([
 
     Route::view('/about', 'app.pages.about')->name('about');
     Route::get('/contact', [ContactController::class, 'create'])->name('contact');
-    Route::post('/contact', [ContactController::class, 'store']);
     Route::view('/privacy-policy', 'app.pages.privacy-policy')->name('privacy-policy');
     Route::view('/terms-of-service', 'app.pages.terms-of-service')->name('terms-of-service');
 

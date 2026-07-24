@@ -7,8 +7,7 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
 @endsection
 
 @section('content')
-<x-toast id="contactToast" type="success" title="Success" message="" />
-
+<x-toast id="contactToast" type="success" title="" message="" />
 <div class="max-w-7xl mx-auto space-y-8 pb-8 sm:pb-12">
 
   {{-- Hero --}}
@@ -90,68 +89,7 @@ Contact VetPedia for support, feedback, partnerships, data contributions, and ve
       <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
         <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6">{{ __('messages.pages.contact.form_title') }}</h2>
 
-        <form id="contactForm" method="POST" action="{{ route('contact') }}">
-          @csrf
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
-            <div>
-              <label for="name" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.name_label') }}</label>
-              <input type="text" name="name" id="name" value="{{ old('name') }}"
-                class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                placeholder="{{ __('messages.pages.contact.name_placeholder') }}">
-              @error('name')
-                <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
-                  <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
-                  <span>{{ $message }}</span>
-                </p>
-              @enderror
-            </div>
-            <div>
-              <label for="email" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.email_label') }}</label>
-              <input type="email" name="email" id="email" value="{{ old('email') }}"
-                class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                placeholder="{{ __('messages.pages.contact.email_placeholder') }}">
-              @error('email')
-                <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
-                  <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
-                  <span>{{ $message }}</span>
-                </p>
-              @enderror
-            </div>
-          </div>
-
-          <div class="mb-5">
-            <label for="subject" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.subject_label') }}</label>
-            <input type="text" name="subject" id="subject" value="{{ old('subject') }}"
-              class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-              placeholder="{{ __('messages.pages.contact.subject_placeholder') }}">
-            @error('subject')
-              <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
-                <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
-                <span>{{ $message }}</span>
-              </p>
-            @enderror
-          </div>
-
-          <div class="mb-6">
-            <label for="message" class="block text-sm font-medium text-heading mb-1.5">{{ __('messages.pages.contact.message_label') }}</label>
-            <textarea name="message" id="message" rows="5"
-              class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white resize-y"
-              placeholder="{{ __('messages.pages.contact.message_placeholder') }}">{{ old('message') }}</textarea>
-            @error('message')
-              <p class="mt-1 text-xs sm:text-sm font-medium text-fg-danger-strong flex items-center gap-1">
-                <x-lucide-alert-circle class="w-3 h-3 shrink-0" />
-                <span>{{ $message }}</span>
-              </p>
-            @enderror
-          </div>
-
-          <button type="submit"
-            class="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base shadow-xs transition-colors">
-            <x-lucide-send class="w-4 h-4" />
-            {{ __('messages.pages.contact.submit') }}
-          </button>
-        </form>
+        @livewire('contact.contact-form', key('contact-form'))
       </div>
     </div>
 
