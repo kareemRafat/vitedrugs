@@ -125,75 +125,7 @@
             </div>
         </div>
 
-        {{-- Pagination --}}
-        @if ($ingredients->hasPages())
-            @php
-                $currentPage = $ingredients->currentPage();
-                $lastPage = $ingredients->lastPage();
-                $window = 2;
-                $startPage = max(1, $currentPage - $window);
-                $endPage = min($lastPage, $currentPage + $window);
-                $showStartEllipsis = $startPage > 2;
-                $showEndEllipsis = $endPage < $lastPage - 1;
-            @endphp
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4">
-                <div class="hidden sm:block text-sm text-body dark:text-slate-400">
-                    {{ __('messages.active_ingredients.showing') }}
-                    {{ $ingredients->firstItem() ?? 0 }}–{{ $ingredients->lastItem() ?? 0 }}
-                    {{ __('messages.active_ingredients.of') }}
-                    {{ number_format($ingredients->total()) }}
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ $ingredients->previousPageUrl() }}" wire:navigate rel="prev" @if($ingredients->onFirstPage()) aria-disabled="true" @endif
-                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if($ingredients->onFirstPage()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                        <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
-                        <span>{{ __('messages.active_ingredients.previous_page') }}</span>
-                    </a>
-
-                    <div class="hidden sm:flex items-center gap-1">
-                        @if ($startPage > 1)
-                            <a href="{{ $ingredients->withQueryString()->url(1) }}" wire:navigate
-                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                                1
-                            </a>
-                        @endif
-
-                        @if ($showStartEllipsis)
-                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
-                        @endif
-
-                        @for ($i = $startPage; $i <= $endPage; $i++)
-                            <a href="{{ $ingredients->withQueryString()->url($i) }}" wire:navigate
-                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-base transition-colors
-                                @if ($i === $currentPage)
-                                    text-white bg-brand shadow-xs
-                                @else
-                                    text-heading bg-neutral-primary-soft border border-default-medium hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600
-                                @endif">
-                                {{ $i }}
-                            </a>
-                        @endfor
-
-                        @if ($showEndEllipsis)
-                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
-                        @endif
-
-                        @if ($endPage < $lastPage)
-                            <a href="{{ $ingredients->withQueryString()->url($lastPage) }}" wire:navigate
-                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                                {{ $lastPage }}
-                            </a>
-                        @endif
-                    </div>
-
-                    <a href="{{ $ingredients->nextPageUrl() }}" wire:navigate rel="next" @if(!$ingredients->hasMorePages()) aria-disabled="true" @endif
-                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if(!$ingredients->hasMorePages()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                        <span>{{ __('messages.active_ingredients.next_page') }}</span>
-                        <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
-                    </a>
-                </div>
-            </div>
-        @endif
+        <x-pagination :paginator="$ingredients" translation-prefix="messages.active_ingredients" />
 
     </div>
 @endsection

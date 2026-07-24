@@ -8,10 +8,14 @@ class CompanyController extends Controller
 {
     public function show(Company $company)
     {
-        return view(
-            'app.companies.show',
-            compact('company')
-        );
+        $company->load(['parentCompany', 'subsidiaries']);
+
+        $products = $company
+            ->products()
+            ->with('dosageForm')
+            ->paginate(10);
+
+        return view('app.companies.show', compact('company', 'products'));
     }
 
     public function index()

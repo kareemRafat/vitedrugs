@@ -191,6 +191,8 @@ return [
         'action' => 'Action',
         'showing' => 'Showing',
         'of' => 'of',
+        'previous_page' => 'Previous',
+        'next_page' => 'Next',
     ],
 
     'common' => [

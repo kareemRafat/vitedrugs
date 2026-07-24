@@ -125,75 +125,7 @@
             </div>
         </div>
 
-        {{-- Pagination --}}
-        @if ($diseases->hasPages())
-            @php
-                $currentPage = $diseases->currentPage();
-                $lastPage = $diseases->lastPage();
-                $window = 2;
-                $startPage = max(1, $currentPage - $window);
-                $endPage = min($lastPage, $currentPage + $window);
-                $showStartEllipsis = $startPage > 2;
-                $showEndEllipsis = $endPage < $lastPage - 1;
-            @endphp
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4">
-                <div class="hidden sm:block text-sm text-body dark:text-slate-400">
-                    {{ __('messages.diseases.showing') }}
-                    {{ $diseases->firstItem() ?? 0 }}–{{ $diseases->lastItem() ?? 0 }}
-                    {{ __('messages.diseases.of') }}
-                    {{ number_format($diseases->total()) }}
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ $diseases->previousPageUrl() }}" wire:navigate rel="prev" @if($diseases->onFirstPage()) aria-disabled="true" @endif
-                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if($diseases->onFirstPage()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                        <x-lucide-chevron-left class="w-4 h-4 rtl:rotate-180" />
-                        <span>{{ __('messages.diseases.previous_page') }}</span>
-                    </a>
-
-                    <div class="hidden sm:flex items-center gap-1">
-                        @if ($startPage > 1)
-                            <a href="{{ $diseases->withQueryString()->url(1) }}" wire:navigate
-                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                                1
-                            </a>
-                        @endif
-
-                        @if ($showStartEllipsis)
-                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
-                        @endif
-
-                        @for ($i = $startPage; $i <= $endPage; $i++)
-                            <a href="{{ $diseases->withQueryString()->url($i) }}" wire:navigate
-                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-base transition-colors
-                                @if ($i === $currentPage)
-                                    text-white bg-brand shadow-xs
-                                @else
-                                    text-heading bg-neutral-primary-soft border border-default-medium hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600
-                                @endif">
-                                {{ $i }}
-                            </a>
-                        @endfor
-
-                        @if ($showEndEllipsis)
-                            <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-body dark:text-slate-400">...</span>
-                        @endif
-
-                        @if ($endPage < $lastPage)
-                            <a href="{{ $diseases->withQueryString()->url($lastPage) }}" wire:navigate
-                                class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                                {{ $lastPage }}
-                            </a>
-                        @endif
-                    </div>
-
-                    <a href="{{ $diseases->nextPageUrl() }}" wire:navigate rel="next" @if(!$diseases->hasMorePages()) aria-disabled="true" @endif
-                        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-heading bg-neutral-primary-soft border border-default-medium rounded-base hover:bg-neutral-secondary-soft @if(!$diseases->hasMorePages()) opacity-40 cursor-not-allowed pointer-events-none @else @endif dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:hover:bg-slate-600 transition-colors">
-                        <span>{{ __('messages.diseases.next_page') }}</span>
-                        <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180" />
-                    </a>
-                </div>
-            </div>
-        @endif
+        <x-pagination :paginator="$diseases" translation-prefix="messages.diseases" />
 
     </div>
 @endsection

@@ -191,6 +191,8 @@ return [
         'action' => 'الإجراء',
         'showing' => 'عرض',
         'of' => 'من',
+        'previous_page' => 'السابق',
+        'next_page' => 'التالي',
     ],
 
     'common' => [
