@@ -37,15 +37,15 @@
             @csrf
 
             <div>
-                <label for="email" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">{{ __('messages.login.email_label') }}</label>
+                <label for="login" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">{{ __('messages.login.login_label') }}</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                        <x-lucide-mail class="w-4 h-4 text-body dark:text-slate-400" />
+                        <x-lucide-id-card class="w-4 h-4 text-body dark:text-slate-400" />
                     </div>
-                    <input type="email" name="email" id="email"
-                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:ring-brand dark:focus:border-brand @error('email') border-danger-subtle dark:border-red-600 @enderror"
-                        placeholder="{{ __('messages.login.email_placeholder') }}"
-                        value="{{ old('email') }}"
+                    <input type="text" name="login" id="login"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:ring-brand dark:focus:border-brand @error('login') border-danger-subtle dark:border-red-600 @enderror"
+                        placeholder="{{ __('messages.login.login_placeholder') }}"
+                        value="{{ old('login') }}"
                         required
                         autofocus
                         autocomplete="username">

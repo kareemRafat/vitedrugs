@@ -56,6 +56,10 @@
                                     <dd class="text-sm font-medium text-heading dark:text-white">{{ $user->email }}</dd>
                                 </div>
                                 <div class="flex items-center gap-3">
+                                    <dt class="w-32 text-sm text-body dark:text-slate-400 shrink-0">{{ __('messages.profile.phone_label') }}</dt>
+                                    <dd class="text-sm font-medium text-heading dark:text-white">{{ $user->phone }}</dd>
+                                </div>
+                                <div class="flex items-center gap-3">
                                     <dt class="w-32 text-sm text-body dark:text-slate-400 shrink-0">{{ __('messages.profile.name_label') }}</dt>
                                     <dd class="text-sm font-medium text-heading dark:text-white">{{ $user->name }}</dd>
                                 </div>

@@ -60,6 +60,21 @@
             </div>
 
             <div>
+                <label for="phone" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">{{ __('messages.register.phone_label') }}</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                        <x-lucide-phone class="w-4 h-4 text-body dark:text-slate-400" />
+                    </div>
+                    <input type="tel" name="phone" id="phone"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:ring-brand dark:focus:border-brand @error('phone') border-danger-subtle dark:border-red-600 @enderror"
+                        placeholder="{{ __('messages.register.phone_placeholder') }}"
+                        value="{{ old('phone') }}"
+                        required
+                        autocomplete="tel">
+                </div>
+            </div>
+
+            <div>
                 <label for="password" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">{{ __('messages.register.password_label') }}</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">

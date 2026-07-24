@@ -30,6 +30,8 @@ return [
         'email_valid' => 'Please enter a valid email address.',
         'email_max' => 'Email must not exceed 255 characters.',
         'email_unique' => 'This email is already registered.',
+        'phone_required' => 'Please enter your phone number.',
+        'phone_unique' => 'This phone number is already registered.',
         'password_required' => 'Please enter a password.',
         'password_min' => 'Password must be at least 8 characters.',
         'password_confirmed' => 'Password confirmation does not match.',
@@ -87,6 +89,7 @@ return [
     'attributes' => [
         'name' => 'name',
         'email' => 'email address',
+        'phone' => 'phone number',
         'password' => 'password',
         'current_password' => 'current password',
         'subject' => 'subject',

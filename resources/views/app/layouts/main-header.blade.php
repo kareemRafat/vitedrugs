@@ -38,31 +38,31 @@
                         <ul class="py-1 text-sm text-heading dark:text-slate-300">
                             <li>
                                 <a href="{{ route('blog.index') }}" @class(['group flex items-center gap-3 px-4 py-2 transition-colors duration-150', 'text-fg-brand font-semibold dark:text-white' => request()->routeIs('blog.*'), 'text-heading dark:text-slate-300 hover:text-fg-brand' => !request()->routeIs('blog.*')])>
-                                    <span class="flex-1">{{ __('messages.nav.blog') }}</span>
+                                    <span class="flex-1 font-medium">{{ __('messages.nav.blog') }}</span>
                                     <x-lucide-check class="w-4 h-4 shrink-0 transition-opacity duration-150 text-fg-brand dark:text-white opacity-0 group-hover:opacity-100" />
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('about') }}" @class(['group flex items-center gap-3 px-4 py-2 transition-colors duration-150', 'text-fg-brand font-semibold dark:text-white' => request()->routeIs('about'), 'text-heading dark:text-slate-300 hover:text-fg-brand' => !request()->routeIs('about')])>
-                                    <span class="flex-1">{{ __('messages.nav.about') }}</span>
+                                    <span class="flex-1 font-medium">{{ __('messages.nav.about') }}</span>
                                     <x-lucide-check class="w-4 h-4 shrink-0 transition-opacity duration-150 text-fg-brand dark:text-white opacity-0 group-hover:opacity-100" />
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('contact') }}" @class(['group flex items-center gap-3 px-4 py-2 transition-colors duration-150', 'text-fg-brand font-semibold dark:text-white' => request()->routeIs('contact'), 'text-heading dark:text-slate-300 hover:text-fg-brand' => !request()->routeIs('contact')])>
-                                    <span class="flex-1">{{ __('messages.nav.contact') }}</span>
+                                    <span class="flex-1 font-medium">{{ __('messages.nav.contact') }}</span>
                                     <x-lucide-check class="w-4 h-4 shrink-0 transition-opacity duration-150 text-fg-brand dark:text-white opacity-0 group-hover:opacity-100" />
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('privacy-policy') }}" @class(['group flex items-center gap-3 px-4 py-2 transition-colors duration-150', 'text-fg-brand font-semibold dark:text-white' => request()->routeIs('privacy-policy'), 'text-heading dark:text-slate-300 hover:text-fg-brand' => !request()->routeIs('privacy-policy')])>
-                                    <span class="flex-1">{{ __('messages.nav.privacy_policy') }}</span>
+                                    <span class="flex-1 font-medium">{{ __('messages.nav.privacy_policy') }}</span>
                                     <x-lucide-check class="w-4 h-4 shrink-0 transition-opacity duration-150 text-fg-brand dark:text-white opacity-0 group-hover:opacity-100" />
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('terms-of-service') }}" @class(['group flex items-center gap-3 px-4 py-2 transition-colors duration-150', 'text-fg-brand font-semibold dark:text-white' => request()->routeIs('terms-of-service'), 'text-heading dark:text-slate-300 hover:text-fg-brand' => !request()->routeIs('terms-of-service')])>
-                                    <span class="flex-1">{{ __('messages.nav.terms_of_service') }}</span>
+                                    <span class="flex-1 font-medium">{{ __('messages.nav.terms_of_service') }}</span>
                                     <x-lucide-check class="w-4 h-4 shrink-0 transition-opacity duration-150 text-fg-brand dark:text-white opacity-0 group-hover:opacity-100" />
                                 </a>
                             </li>
@@ -74,7 +74,7 @@
             <div class="flex items-center justify-end gap-1 sm:gap-2">
                 <a href="{{ route('search') }}" class="inline-flex items-center gap-1.5 text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white bg-neutral-tertiary-soft dark:bg-slate-700 px-4 py-1.5 rounded-base text-sm" title="{{ __('messages.nav.search') }}">
                     <x-lucide-search class="w-4 h-4" />
-                    <span class="hidden sm:inline">{{ __('messages.nav.search') }}</span>
+                    <span class="hidden sm:inline font-bold">{{ __('messages.nav.search') }}</span>
                 </a>
 
                 <div class="hidden sm:flex items-center gap-1">
@@ -154,31 +154,31 @@
 
     <div class="px-5 py-5 space-y-6">
         <div class="space-y-1">
-            <a href="{{ route('products.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.*')])>
+            <a href="{{ route('products.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.*')])>
                 <x-lucide-pill class="w-5 h-5" />
                 {{ __('messages.nav.products') }}
             </a>
-            <a href="{{ route('products.submission.create') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.submission.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.submission.*')])>
+            <a href="{{ route('products.submission.create') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.submission.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.submission.*')])>
                 <x-lucide-plus class="w-5 h-5" />
                 {{ __('messages.nav.add_product') }}
             </a>
-            <a href="{{ route('products.compare') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.compare'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.compare')])>
+            <a href="{{ route('products.compare') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('products.compare'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('products.compare')])>
                 <x-lucide-arrow-left-right class="w-5 h-5" />
                 {{ __('messages.nav.compare_products') }}
             </a>
-            <a href="{{ route('diseases.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('diseases.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('diseases.*')])>
+            <a href="{{ route('diseases.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('diseases.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('diseases.*')])>
                 <x-lucide-stethoscope class="w-5 h-5" />
                 {{ __('messages.nav.diseases') }}
             </a>
-            <a href="{{ route('active-ingredients.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('active-ingredients.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('active-ingredients.*')])>
+            <a href="{{ route('active-ingredients.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('active-ingredients.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('active-ingredients.*')])>
                 <x-lucide-flask-conical class="w-5 h-5" />
                 {{ __('messages.nav.ingredients') }}
             </a>
-            <a href="{{ route('companies.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('companies.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('companies.*')])>
+            <a href="{{ route('companies.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('companies.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('companies.*')])>
                 <x-lucide-building-2 class="w-5 h-5" />
                 {{ __('messages.nav.companies') }}
             </a>
-            <a href="{{ route('blog.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('blog.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('blog.*')])>
+            <a href="{{ route('blog.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('blog.*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('blog.*')])>
                 <x-lucide-newspaper class="w-5 h-5" />
                 {{ __('messages.nav.blog') }}
             </a>
@@ -187,19 +187,19 @@
         <div class="border-t border-default-medium dark:border-slate-700 pt-5">
             <p class="px-4 pb-2 text-xs font-semibold text-body uppercase tracking-wider dark:text-slate-400">{{ __('messages.nav.platform') }}</p>
             <div class="space-y-1">
-                <a href="{{ route('about') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('about'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('about')])>
+                <a href="{{ route('about') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('about'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('about')])>
                     <x-lucide-info class="w-5 h-5" />
                     {{ __('messages.nav.about') }}
                 </a>
-                <a href="{{ route('contact') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('contact'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('contact')])>
+                <a href="{{ route('contact') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('contact'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('contact')])>
                     <x-lucide-mail class="w-5 h-5" />
                     {{ __('messages.nav.contact') }}
                 </a>
-                <a href="{{ route('privacy-policy') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('privacy-policy'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('privacy-policy')])>
+                <a href="{{ route('privacy-policy') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('privacy-policy'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('privacy-policy')])>
                     <x-lucide-shield class="w-5 h-5" />
                     {{ __('messages.nav.privacy_policy') }}
                 </a>
-                <a href="{{ route('terms-of-service') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-base transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('terms-of-service'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('terms-of-service')])>
+                <a href="{{ route('terms-of-service') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand-soft text-fg-brand dark:bg-brand/20' => request()->routeIs('terms-of-service'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('terms-of-service')])>
                     <x-lucide-file-text class="w-5 h-5" />
                     {{ __('messages.nav.terms_of_service') }}
                 </a>

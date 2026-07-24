@@ -25,6 +25,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'role',
     ];
@@ -65,5 +66,14 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'created_by');
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (User $user): void {
+            if ($user->isDirty('phone') && $user->phone !== null) {
+                $user->phone = preg_replace('/\D/', '', $user->phone);
+            }
+        });
     }
 }

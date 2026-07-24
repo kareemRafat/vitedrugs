@@ -19,11 +19,20 @@ class LoginController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'login' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
+        $field = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+        $attempt = [
+            $field => $field === 'phone'
+                ? preg_replace('/\D/', '', $credentials['login'])
+                : $credentials['login'],
+            'password' => $credentials['password'],
+        ];
+
+        if (Auth::guard('web')->attempt($attempt, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             if (Auth::guard('web')->user()->role === UserRole::Admin) {
@@ -33,16 +42,16 @@ class LoginController extends Controller
                 $request->session()->regenerateToken();
 
                 return back()->withErrors([
-                    'email' => __('validation.login.admin_restricted'),
-                ])->onlyInput('email');
+                    'login' => __('validation.login.admin_restricted'),
+                ])->onlyInput('login');
             }
 
             return redirect()->intended(route('home'));
         }
 
         return back()->withErrors([
-            'email' => __('validation.login.credentials_mismatch'),
-        ])->onlyInput('email');
+            'login' => __('validation.login.credentials_mismatch'),
+        ])->onlyInput('login');
     }
 
     public function destroy(Request $request): RedirectResponse
