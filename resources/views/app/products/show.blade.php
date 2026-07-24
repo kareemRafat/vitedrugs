@@ -69,27 +69,39 @@
 
             <div class="lg:col-span-5 xl:col-span-4">
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-sm uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.products.dosage_form') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-sm">{{ $product->dosageForm?->name ?? __('messages.products.na') }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-syringe class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-blue-600 dark:text-blue-400 mb-1">{{ __('messages.products.dosage_form') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">{{ $product->dosageForm?->name ?? __('messages.products.na') }}</p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-sm uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.products.product_type') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-sm">{{ $product->product_type ? __('messages.products.types.' . $product->product_type) : __('messages.products.na') }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-tag class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-amber-600 dark:text-amber-400 mb-1">{{ __('messages.products.product_type') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">{{ $product->product_type ? __('messages.products.types.' . $product->product_type) : __('messages.products.na') }}</p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-sm uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.products.manufacturer') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-sm">
-                            @if ($manufacturer = $product->companies->first(fn($company) => $company->pivot?->role === 'manufacturer'))
-                                <a href="{{ route('companies.show', $manufacturer) }}" class="text-fg-brand hover:underline">{{ $manufacturer->name }}</a>
-                            @else
-                                {{ __('messages.products.na') }}
-                            @endif
-                        </span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-building class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-rose-600 dark:text-rose-400 mb-1">{{ __('messages.products.manufacturer') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">
+                                @if ($manufacturer = $product->companies->first(fn($company) => $company->pivot?->role === 'manufacturer'))
+                                    <a href="{{ route('companies.show', $manufacturer) }}" class="text-fg-brand hover:underline">{{ $manufacturer->name }}</a>
+                                @else
+                                    {{ __('messages.products.na') }}
+                                @endif
+                            </p>
+                        </div>
                     </div>
-                    <div class="bg-neutral-secondary-soft rounded-base p-3 border border-default-medium shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                        <span class="block text-sm uppercase text-body dark:text-slate-400 mb-1">{{ __('messages.products.package') }}</span>
-                        <span class="font-semibold text-heading dark:text-white text-sm">{{ $product->package_size ?? __('messages.products.na') }}</span>
+                    <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <x-lucide-package class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                        <div class="relative">
+                            <p class="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400 mb-1">{{ __('messages.products.package') }}</p>
+                            <p class="text-base font-bold text-slate-900 dark:text-white">{{ $product->package_size ?? __('messages.products.na') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
