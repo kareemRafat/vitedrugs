@@ -52,23 +52,14 @@ if ($editMode) {
 
 <x-toast id="submissionToast" type="success" title="" message="" />
 
-<div class="space-y-8 pb-8 sm:pb-12">
+<div class="space-y-4">
 
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm mt-8">
-    <div class="relative z-10 max-w-2xl">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-200 dark:text-sky-200 border border-white/10 dark:border-sky-700 mb-5">
-        <x-lucide-package-plus class="w-4 h-4" />
-        <span>{{ $editMode ? __('messages.pages.products.submission.edit_badge') : __('messages.pages.products.submission.badge') }}</span>
-      </div>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] tracking-tight">
-        {{ $editMode ? __('messages.pages.products.submission.edit_heading') : __('messages.pages.products.submission.heading') }}
-      </h1>
-      <div class="w-16 h-1 bg-blue-400 dark:bg-sky-400 rounded-full mt-6 mb-6"></div>
-      <p class="text-base sm:text-lg text-slate-300 dark:text-sky-200 max-w-xl leading-relaxed">
-        {{ $editMode ? __('messages.pages.products.submission.edit_subtitle') : __('messages.pages.products.submission.subtitle') }}
-      </p>
-    </div>
-  </div>
+  <x-page-hero
+      :heading="$editMode ? __('messages.pages.products.submission.edit_heading') : __('messages.pages.products.submission.heading')"
+      :subtitle="$editMode ? __('messages.pages.products.submission.edit_subtitle') : __('messages.pages.products.submission.subtitle')"
+      badge-icon="package-plus"
+      :badge="$editMode ? __('messages.pages.products.submission.edit_badge') : __('messages.pages.products.submission.badge')">
+  </x-page-hero>
 
   @if (session('success'))
     <div class="bg-success-soft border border-success-subtle text-fg-success-strong rounded-base p-4 text-sm" role="alert">

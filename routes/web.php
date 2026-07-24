@@ -8,7 +8,6 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DiseaseController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSubmissionController;
@@ -29,7 +28,6 @@ Route::group([
     'middleware' => 'localeViewPath',
 ], function () {
     Route::get('/', LandingController::class)->name('home');
-    Route::get('/home', [HomeController::class, 'index'])->name('app.home');
 
     Route::middleware('guest')->group(function () {
         Route::get('/login', [LoginController::class, 'create'])->name('login');

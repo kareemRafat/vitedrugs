@@ -117,28 +117,6 @@ return [
         'total_records' => 'إجمالي السجلات',
     ],
 
-    'home' => [
-        'hero_subtitle' => 'الأمراض البيطرية، الأدوية، المواد الفعالة ومنصة المعرفة السريرية',
-        'search_placeholder' => 'ابحث عن الأمراض، الأدوية، المواد الفعالة...',
-        'search_button' => 'بحث',
-        'products_title' => 'المنتجات',
-        'products_desc' => 'تصفح المنتجات الصيدلانية البيطرية',
-        'companies_title' => 'الشركات',
-        'companies_desc' => 'المصنعون والموردون البيطريون',
-        'diseases_title' => 'الأمراض',
-        'diseases_desc' => 'قاعدة معارف الأمراض البيطرية',
-        'ingredients_title' => 'المواد الفعالة',
-        'ingredients_desc' => 'استكشف المواد الصيدلانية النشطة',
-        'latest_products' => 'أحدث المنتجات البيطرية',
-        'latest_blog' => 'أحدث المقالات',
-        'featured_companies' => 'شركات مميزة',
-        'view_all' => 'عرض الكل',
-        'no_products' => 'لا توجد منتجات متاحة.',
-        'no_companies' => 'لا توجد شركات متاحة.',
-        'dosage_form_na' => 'غير متوفر',
-        'company_type_fallback' => 'شركة بيطرية',
-    ],
-
     'nav' => [
         'open_sidebar' => 'فتح الشريط الجانبي',
         'toggle_user_menu' => 'تبديل قائمة المستخدم',
@@ -441,8 +419,8 @@ return [
         'products' => [
             'submission' => [
                 'title' => 'إضافة منتجك | VetPedia',
-                'badge' => 'إضافة منتجك',
-                'edit_badge' => 'تعديل الطلب',
+                'badge' => 'المنتجات',
+                'edit_badge' => 'المنتجات',
                 'heading' => 'إضافة منتجك',
                 'edit_heading' => 'تعديل الطلب',
                 'subtitle' => 'ساعدنا في توسيع قاعدة بياناتنا بإضافة منتج بيطري. سيقوم فريقنا بمراجعته ونشره.',
@@ -671,6 +649,7 @@ return [
     ],
 
     'compare' => [
+        'badge' => 'المنتجات',
         'page_title' => 'مقارنة المنتجات | VetPedia',
         'page_heading' => 'مقارنة المنتجات',
         'page_subtitle' => 'مقارنة جنباً إلى جنب للمنتجات البيطرية',

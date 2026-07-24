@@ -117,28 +117,6 @@ return [
         'total_records' => 'Total Records',
     ],
 
-    'home' => [
-        'hero_subtitle' => 'Veterinary Diseases, Drugs, Active Ingredients and Clinical Knowledge Platform',
-        'search_placeholder' => 'Search diseases, drugs, ingredients...',
-        'search_button' => 'Search',
-        'products_title' => 'Products',
-        'products_desc' => 'Browse veterinary pharmaceutical products',
-        'companies_title' => 'Companies',
-        'companies_desc' => 'Veterinary manufacturers and suppliers',
-        'diseases_title' => 'Diseases',
-        'diseases_desc' => 'Veterinary disease knowledge database',
-        'ingredients_title' => 'Active Ingredients',
-        'ingredients_desc' => 'Explore active pharmaceutical substances',
-        'latest_products' => 'Latest Veterinary Products',
-        'latest_blog' => 'Latest from Blog',
-        'featured_companies' => 'Featured Companies',
-        'view_all' => 'View All',
-        'no_products' => 'No products available.',
-        'no_companies' => 'No companies available.',
-        'dosage_form_na' => 'Dosage Form N/A',
-        'company_type_fallback' => 'Veterinary Company',
-    ],
-
     'nav' => [
         'open_sidebar' => 'Open sidebar',
         'toggle_user_menu' => 'Toggle user menu',
@@ -441,8 +419,8 @@ return [
         'products' => [
             'submission' => [
                 'title' => 'Submit a Product | VetPedia',
-                'badge' => 'Product Submission',
-                'edit_badge' => 'Edit Submission',
+                'badge' => 'Products',
+                'edit_badge' => 'Products',
                 'heading' => 'Submit a Product',
                 'edit_heading' => 'Edit Submission',
                 'subtitle' => 'Help us expand our database by submitting a veterinary product. Our team will review and publish it.',
@@ -673,6 +651,7 @@ return [
     ],
 
     'compare' => [
+        'badge' => 'Products',
         'page_title' => 'Compare Products | VetPedia',
         'page_heading' => 'Compare Products',
         'page_subtitle' => 'Side-by-side comparison of veterinary products',

@@ -142,6 +142,8 @@ new class extends Component
     <x-page-hero
         :heading="__('messages.compare.page_heading')"
         :subtitle="__('messages.compare.page_subtitle')"
+        :badge="__('messages.compare.badge')"
+        badge-icon="git-compare"
         :stats="[
             ['count' => $this->totalCount, 'label' => __('messages.compare.products_count'), 'icon' => 'git-compare'],
         ]"
