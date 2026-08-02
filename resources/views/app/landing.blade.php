@@ -134,6 +134,64 @@
     </section>
 
     {{-- ============================================ --}}
+    {{-- PARTS HUB --}}
+    {{-- ============================================ --}}
+    <section class="mt-16 sm:mt-28 mb-6 px-4 sm:px-0">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-10 sm:mb-14">
+                <span class="text-[10px] sm:text-xs font-semibold tracking-[.2em] uppercase text-indigo-400 dark:text-indigo-400">{{ __('messages.parts.browse') }}</span>
+                <h2 class="text-2xl sm:text-4xl font-bold text-heading dark:text-white mt-3 sm:mt-4 mb-3 sm:mb-4 tracking-tight">
+                    {{ __('messages.parts.large_animals') }} · {{ __('messages.parts.drugs') }} · {{ __('messages.parts.poultry') }}
+                </h2>
+                <p class="text-body dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto px-2 sm:px-0">
+                    {{ __('messages.parts.large_animals_desc') }}
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+                <a href="{{ route('large-animals.home') }}"
+                    class="group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 backdrop-blur-xl p-5 sm:p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-indigo-400/40">
+                    <div class="mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center mb-4 sm:mb-5 shadow-lg shadow-indigo-500/25 sm:group-hover:scale-110 sm:group-hover:-rotate-3 transition-all duration-300">
+                        <x-lucide-paw-print class="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                    </div>
+                    <h3 class="text-base sm:text-xl font-bold text-heading dark:text-white mb-1 sm:mb-2">{{ __('messages.parts.large_animals') }}</h3>
+                    <p class="text-[11px] sm:text-sm text-body dark:text-slate-400 leading-relaxed">{{ __('messages.parts.large_animals_desc') }}</p>
+                    <span class="hidden sm:inline-flex items-center gap-1.5 mt-5 text-sm font-medium text-indigo-500 dark:text-indigo-400 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        {{ __('messages.landing.cta_browse') }}
+                        <x-lucide-arrow-right class="w-3.5 h-3.5 rtl:rotate-180 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                    </span>
+                </a>
+
+                <a href="{{ route('drugs.home') }}"
+                    class="group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 backdrop-blur-xl p-5 sm:p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/40 hover:border-orange-400/40">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mx-auto mb-4 sm:mb-5 shadow-lg shadow-orange-500/25 sm:group-hover:scale-110 sm:group-hover:-rotate-3 transition-all duration-300">
+                        <x-lucide-pill class="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                    </div>
+                    <h3 class="text-base sm:text-xl font-bold text-heading dark:text-white mb-1 sm:mb-2">{{ __('messages.parts.drugs') }}</h3>
+                    <p class="text-[11px] sm:text-sm text-body dark:text-slate-400 leading-relaxed">{{ __('messages.parts.drugs_desc') }}</p>
+                    <span class="hidden sm:inline-flex items-center gap-1.5 mt-5 text-sm font-medium text-orange-500 dark:text-orange-400 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        {{ __('messages.landing.cta_browse') }}
+                        <x-lucide-arrow-right class="w-3.5 h-3.5 rtl:rotate-180 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                    </span>
+                </a>
+
+                <a href="{{ route('poultry.home') }}"
+                    class="group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 backdrop-blur-xl p-5 sm:p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/40 hover:border-emerald-400/40">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-4 sm:mb-5 shadow-lg shadow-emerald-500/25 sm:group-hover:scale-110 sm:group-hover:-rotate-3 transition-all duration-300">
+                        <x-lucide-egg class="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                    </div>
+                    <h3 class="text-base sm:text-xl font-bold text-heading dark:text-white mb-1 sm:mb-2">{{ __('messages.parts.poultry') }}</h3>
+                    <p class="text-[11px] sm:text-sm text-body dark:text-slate-400 leading-relaxed">{{ __('messages.parts.poultry_desc') }}</p>
+                    <span class="hidden sm:inline-flex items-center gap-1.5 mt-5 text-sm font-medium text-emerald-500 dark:text-emerald-400 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        {{ __('messages.landing.cta_browse') }}
+                        <x-lucide-arrow-right class="w-3.5 h-3.5 rtl:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180 transition-transform group-hover:translate-x-1" />
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {{-- ============================================ --}}
     {{-- FEATURES --}}
     {{-- ============================================ --}}
     <section class="mt-16 sm:mt-32 mb-6 px-4 sm:px-0">

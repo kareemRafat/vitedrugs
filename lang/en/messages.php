@@ -151,6 +151,25 @@ return [
         'view' => 'View',
     ],
 
+    'parts' => [
+        'large_animals' => 'Large Animals',
+        'drugs' => 'Drugs',
+        'poultry' => 'Poultry',
+        'browse' => 'Browse',
+        'large_animals_desc' => 'Products, diseases, companies and active ingredients for large animals.',
+        'drugs_desc' => 'Drugs and clinical knowledge base: clinical signs, findings, body systems and more.',
+        'poultry_desc' => 'Poultry health and veterinary resources.',
+    ],
+
+    'drugs' => [
+        'landing' => 'Drugs Home',
+        'knowledge_base' => 'Knowledge Base',
+    ],
+
+    'poultry' => [
+        'landing' => 'Poultry Home',
+    ],
+
     'search' => [
         'page_title' => 'Search Results | VetPedia',
         'heading' => 'Search',

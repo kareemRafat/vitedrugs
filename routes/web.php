@@ -70,29 +70,33 @@ Route::group([
     Route::view('/privacy-policy', 'app.pages.privacy-policy')->name('privacy-policy');
     Route::view('/terms-of-service', 'app.pages.terms-of-service')->name('terms-of-service');
 
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create-submission', [ProductSubmissionController::class, 'create'])->name('products.submission.create');
-    Route::post('/products/create-submission', [ProductSubmissionController::class, 'store'])
-        ->middleware('throttle:3,60')
-        ->name('products.submission.store');
-    Route::get('/products/compare', function () {
-        return view('app.products.compare');
-    })->name('products.compare');
-    Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
-
-    Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
-    Route::get('/companies/{company:slug}', [CompanyController::class, 'show'])->name('companies.show');
-
-    Route::get('/diseases', [DiseaseController::class, 'index'])->name('diseases.index');
-    Route::get('/diseases/{disease:slug}', [DiseaseController::class, 'show'])->name('diseases.show');
-
-    Route::get('/active-ingredients', [ActiveIngredientController::class, 'index'])->name('active-ingredients.index');
-    Route::get('/active-ingredients/{activeIngredient:slug}', [ActiveIngredientController::class, 'show'])->name('active-ingredients.show');
-
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.show');
 
-    Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::prefix('large-animals')->group(function () {
+        Route::get('/', LandingController::class)->name('large-animals.home');
+
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+        Route::get('/products/create-submission', [ProductSubmissionController::class, 'create'])->name('products.submission.create');
+        Route::post('/products/create-submission', [ProductSubmissionController::class, 'store'])
+            ->middleware('throttle:3,60')
+            ->name('products.submission.store');
+        Route::get('/products/compare', function () {
+            return view('app.products.compare');
+        })->name('products.compare');
+        Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+
+        Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
+        Route::get('/companies/{company:slug}', [CompanyController::class, 'show'])->name('companies.show');
+
+        Route::get('/diseases', [DiseaseController::class, 'index'])->name('diseases.index');
+        Route::get('/diseases/{disease:slug}', [DiseaseController::class, 'show'])->name('diseases.show');
+
+        Route::get('/active-ingredients', [ActiveIngredientController::class, 'index'])->name('active-ingredients.index');
+        Route::get('/active-ingredients/{activeIngredient:slug}', [ActiveIngredientController::class, 'show'])->name('active-ingredients.show');
+
+        Route::get('/search', [SearchController::class, 'index'])->name('search');
+    });
 });
 
 Route::fallback(function () {

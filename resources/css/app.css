@@ -32,6 +32,68 @@
     --color-fg-brand-subtle: var(--color-slate-400);
 }
 
+/* =========================================================== *
+ * Part theming — same design, different color per site part.   *
+ * Large Animals keeps the default (blue) brand; Drugs = orange,
+ * Poultry = green. selectors target <body data-part="...">.
+ * =========================================================== */
+
+/* ---- Drugs (orange) — light ---- */
+[data-part='drugs'] {
+    --color-brand: #ea580c;
+    --color-brand-strong: #c2410c;
+    --color-brand-medium: #f97316;
+    --color-brand-soft: #ffedd5;
+    --color-brand-softer: #fff7ed;
+    --color-brand-subtle: #fed7aa;
+    --color-brand-light: #fb923c;
+    --color-fg-brand: #ea580c;
+    --color-fg-brand-strong: #c2410c;
+    --color-fg-brand-subtle: #f97316;
+}
+
+/* ---- Drugs (orange) — dark ---- */
+html.dark [data-part='drugs'] {
+    --color-brand: #fb923c;
+    --color-brand-strong: #fdba74;
+    --color-brand-medium: #f97316;
+    --color-brand-soft: #431407;
+    --color-brand-softer: #431407;
+    --color-brand-subtle: #9a3412;
+    --color-brand-light: #fb923c;
+    --color-fg-brand: #fdba74;
+    --color-fg-brand-strong: #fed7aa;
+    --color-fg-brand-subtle: #fb923c;
+}
+
+/* ---- Poultry (green) — light ---- */
+[data-part='poultry'] {
+    --color-brand: #059669;
+    --color-brand-strong: #047857;
+    --color-brand-medium: #10b981;
+    --color-brand-soft: #d1fae5;
+    --color-brand-softer: #ecfdf5;
+    --color-brand-subtle: #a7f3d0;
+    --color-brand-light: #34d399;
+    --color-fg-brand: #059669;
+    --color-fg-brand-strong: #047857;
+    --color-fg-brand-subtle: #10b981;
+}
+
+/* ---- Poultry (green) — dark ---- */
+html.dark [data-part='poultry'] {
+    --color-brand: #34d399;
+    --color-brand-strong: #6ee7b7;
+    --color-brand-medium: #10b981;
+    --color-brand-soft: #022c22;
+    --color-brand-softer: #022c22;
+    --color-brand-subtle: #065f46;
+    --color-brand-light: #34d399;
+    --color-fg-brand: #6ee7b7;
+    --color-fg-brand-strong: #a7f3d0;
+    --color-fg-brand-subtle: #34d399;
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
