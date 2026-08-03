@@ -41,6 +41,9 @@ class DatabaseSeeder extends Seeder
 
             // Blog (depends on User + BlogCategory)
             BlogSeeder::class,
+
+            // Drugs knowledge base (ontology, pivots, microorganisms, articles, projects, payloads)
+            KnowledgeBaseSeeder::class,
         ]);
 
         User::factory()->create([

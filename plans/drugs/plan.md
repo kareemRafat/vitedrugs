@@ -2,68 +2,78 @@
 
 > Port the `new Controllers` reference implementation into the Drugs part, as **web UI only**, using the consolidated M1 knowledge migrations. No API layer. Everything lives under `App\Models\Drugs`, `App\Http\Controllers\Drugs`, `resources/views/drugs`, routes under `routes/drugs.php`.
 
+## Status
+
+- **M1 (Infra & models)** — DONE (2026-08-03)
+- **M2 (Factories)** — DONE (2026-08-03)
+- **M3 (Seeders)** — DONE (2026-08-03)
+- **M4 (Services)** — DONE (2026-08-03)
+- M5 onward not started yet.
+
+> **Schema note:** the pre-existing KB pivot tables (`disease_clinical_sign`, `disease_host_species`, `disease_classifications`, `medical_articles`) had `bigint` `disease_id` columns with orphaned integer IDs while `diseases.id` is ULID. Fixed via migration `2026_08_03_114057_fix_disease_relation_columns_to_ulid` (convert to `ulid` + real FKs, clear orphans). M3 seeders rebuilt the disease links.
+
 ## Assumptions / decisions
 
-- [ ] Web UI only — the `Api/*` controllers, `App\Http\Resources\*`, and their routes are NOT ported.
-- [ ] `Php artisan migrate` is run to create the knowledge tables, and seeders populate demo/interlinked data.
+- [x] Web UI only — the `Api/*` controllers, `App\Http\Resources\*`, and their routes are NOT ported.
+- [x] `Php artisan migrate` is run to create the knowledge tables, and seeders populate demo/interlinked data.
 - [ ] Old-schema references are remapped: `Drug` → `App\Models\Product`, `Article` → `App\Models\Blog`, `TherapeuticUse` is dropped. `OntologyLinkService` is dropped.
-- [ ] `Disease` is shared: extend the existing `App\Models\Disease` (new relationships + `knowledge_payload` cast) instead of duplicating it.
-- [ ] Feature 7 (veterinary specializations) and 8 (veterinary projects) ARE in scope: built fresh (not present in reference controllers) — specializations reuse `HostSpecies.taxonomy_group`; projects add a new `veterinary_projects` table.
-- [ ] Filament admin CRUD IS in scope: add admin resources for the new KB tables and group all of them (plus the drug-landing page) under a single **`Drugs`** sidebar group.
-- [ ] Porting source: `new Controllers/*` (web only) is the reference implementation, ported into `app/Http/Controllers/Drugs`. `Api/` is excluded; `DrugController.php` is excluded (depends on dropped `Drug`/`OntologyLinkService`); `Controller.php` is skipped (app already has `App\Http\Controllers\Controller`). Every `Disease::name_en` reference is remapped to the shared model's `name`. The `new Controllers/` directory is deleted after the port (M9).
+- [x] `Disease` is shared: extend the existing `App\Models\Disease` (new relationships + `knowledge_payload` cast) instead of duplicating it.
+- [x] Feature 7 (veterinary specializations) and 8 (veterinary projects) ARE in scope: built fresh (not present in reference controllers) — specializations reuse `HostSpecies.taxonomy_group`; projects add a new `veterinary_projects` table.
+- [x] Filament admin CRUD IS in scope: add admin resources for the new KB tables and group all of them (plus the drug-landing page) under a single **`Drugs`** sidebar group.
+- [x] Porting source: `new Controllers/*` (web only) is the reference implementation, ported into `app/Http/Controllers/Drugs`. `Api/` is excluded; `DrugController.php` is excluded (depends on dropped `Drug`/`OntologyLinkService`); `Controller.php` is skipped (app already has `App\Http\Controllers\Controller`). Every `Disease::name_en` reference is remapped to the shared model's `name`. The `new Controllers/` directory is deleted after the port (M9).
 
 ---
 
 ## Milestone 1: Infra & models
 
-- [ ] Run `php artisan migrate` to create the knowledge tables (already dry-run clean via `--pretend`).
-- [ ] **New migration** `create_disease_microorganism_table` — pivot between `diseases` (ULID FK) and `microorganisms`, with `role` (`cause`/`associated`) + timestamps.
-- [ ] **New migration** `create_veterinary_projects_table` — ULID id, `title`, `slug` (unique), `summary`, `content` (longText), `project_type` (enum `feasibility_study`/`investment_guide`/`guideline`), `sector`, `featured` (bool), `is_published` (bool), timestamps.
-- [ ] Extend `app/Models/Disease.php` with `knowledge_payload` cast and relationships: `belongsToMany(ClinicalSign)` (pivot `weight/is_specific/is_required/is_pathognomonic`), `belongsToMany(HostSpecies)` (pivot `role/susceptibility/is_primary_host/is_reservoir/is_vector/is_carrier/is_incidental_host/notes`), `hasOne(DiseaseClassification)`, `belongsToMany(Microorganism)` (pivot `role`).
-- [ ] Create `app/Models/Drugs/BodySystem` — hasMany `anatomicalStructures`; fillable `canonical_name`, `display_name`.
-- [ ] Create `app/Models/Drugs/AnatomicalStructure` — belongsTo `bodySystem`, belongsTo `parent`; fillable `body_system_id`, `parent_id`, `canonical_name`, `display_name`, `type`.
-- [ ] Create `app/Models/Drugs/Finding` — fillable `canonical_name`, `display_name`, `category`, `ontology_type`, `parent_id`, `is_noisy`, `is_general_sign`, `slug`.
-- [ ] Create `app/Models/Drugs/Modifier` — fillable `canonical_name`, `display_name`, `type`, `modifier_group`, `is_noisy`.
-- [ ] Create `app/Models/Drugs/ClinicalSign` — belongsTo `finding`, `anatomicalStructure`, `modifier`; belongsToMany `diseases`; fillable `anatomical_structure_id`, `finding_id`, `modifier_id`, `canonical_name`, `display_name`, `stage`, `severity_level_id`, `semantic_slug`.
-- [ ] Create `app/Models/Drugs/HostSpecies` — belongsToMany `diseases`; fillable `canonical_name`, `display_name`, `taxonomy_group`, `is_domestic`, `is_wildlife`, `is_human`.
-- [ ] Create `app/Models/Drugs/DiseaseClassification` — belongsTo `disease`; fillable `disease_id`, `infectiousness`, `transmissibility`, `etiology_type`, `occurrence_patterns`, `disease_courses`, `notifiable`, `zoonotic`, `oie_category`.
-- [ ] Create `app/Models/Drugs/Microorganism` — fillable taxonomy columns, `microorganism_type`, `is_pathogenic`, `json_data`, `tags`, `slug`; `belongsToMany(Disease)` via `disease_microorganism`.
-- [ ] Create `app/Models/Drugs/VeterinaryProject` — HasUlids, SoftDeletes; fillable `title`, `slug`, `summary`, `content`, `project_type`, `sector`, `featured`, `is_published`.
-- [ ] Create `app/Models/Drugs/MedicalArticle` — belongsTo `disease`; fillable `title`, `slug`, `content`, `disease_id`, `species`, `article_type`, `is_published`, `summary`.
-- [ ] Create `app/Models/Drugs/Synonym` — morphTo `synonymable`; fillable `term`, `normalized_term`.
-- [ ] Create `app/Models/Drugs/Abbreviation` — fillable `abbreviation`, `full_term`, `description`, `category`.
-- [ ] Create `app/Models/Drugs/DifferentialSyndrome` — belongsToMany `clinicalSigns`, `diseases`.
-- [ ] Confirm all `App\Models\Drugs\*` autoload (PSR-4 already covers `app/Models/Drugs`).
+- [x] Run `php artisan migrate` to create the knowledge tables (already dry-run clean via `--pretend`).
+- [x] **New migration** `create_disease_microorganism_table` — pivot between `diseases` (ULID FK) and `microorganisms`, with `role` (`cause`/`associated`) + timestamps.
+- [x] **New migration** `create_veterinary_projects_table` — ULID id, `title`, `slug` (unique), `summary`, `content` (longText), `project_type` (enum `feasibility_study`/`investment_guide`/`guideline`), `sector`, `featured` (bool), `is_published` (bool), timestamps.
+- [x] Extend `app/Models/Disease.php` with `knowledge_payload` cast and relationships: `belongsToMany(ClinicalSign)` (pivot `weight/is_specific/is_required/is_pathognomonic`), `belongsToMany(HostSpecies)` (pivot `role/susceptibility/is_primary_host/is_reservoir/is_vector/is_carrier/is_incidental_host/notes`), `hasOne(DiseaseClassification)`, `belongsToMany(Microorganism)` (pivot `role`).
+- [x] Create `app/Models/Drugs/BodySystem` — hasMany `anatomicalStructures`; fillable `canonical_name`, `display_name`.
+- [x] Create `app/Models/Drugs/AnatomicalStructure` — belongsTo `bodySystem`, belongsTo `parent`; fillable `body_system_id`, `parent_id`, `canonical_name`, `display_name`, `type`.
+- [x] Create `app/Models/Drugs/Finding` — fillable `canonical_name`, `display_name`, `category`, `ontology_type`, `parent_id`, `is_noisy`, `is_general_sign`, `slug`.
+- [x] Create `app/Models/Drugs/Modifier` — fillable `canonical_name`, `display_name`, `type`, `modifier_group`, `is_noisy`.
+- [x] Create `app/Models/Drugs/ClinicalSign` — belongsTo `finding`, `anatomicalStructure`, `modifier`; belongsToMany `diseases`; fillable `anatomical_structure_id`, `finding_id`, `modifier_id`, `canonical_name`, `display_name`, `stage`, `severity_level_id`, `semantic_slug`.
+- [x] Create `app/Models/Drugs/HostSpecies` — belongsToMany `diseases`; fillable `canonical_name`, `display_name`, `taxonomy_group`, `is_domestic`, `is_wildlife`, `is_human`.
+- [x] Create `app/Models/Drugs/DiseaseClassification` — belongsTo `disease`; fillable `disease_id`, `infectiousness`, `transmissibility`, `etiology_type`, `occurrence_patterns`, `disease_courses`, `notifiable`, `zoonotic`, `oie_category`.
+- [x] Create `app/Models/Drugs/Microorganism` — fillable taxonomy columns, `microorganism_type`, `is_pathogenic`, `json_data`, `tags`, `slug`; `belongsToMany(Disease)` via `disease_microorganism`.
+- [x] Create `app/Models/Drugs/VeterinaryProject` — HasUlids, SoftDeletes; fillable `title`, `slug`, `summary`, `content`, `project_type`, `sector`, `featured`, `is_published`.
+- [x] Create `app/Models/Drugs/MedicalArticle` — belongsTo `disease`; fillable `title`, `slug`, `content`, `disease_id`, `species`, `article_type`, `is_published`, `summary`.
+- [x] Create `app/Models/Drugs/Synonym` — morphTo `synonymable`; fillable `term`, `normalized_term`.
+- [x] Create `app/Models/Drugs/Abbreviation` — fillable `abbreviation`, `full_term`, `description`, `category`.
+- [x] Create `app/Models/Drugs/DifferentialSyndrome` — belongsToMany `clinicalSigns`, `diseases`.
+- [x] Confirm all `App\Models\Drugs\*` autoload (PSR-4 already covers `app/Models/Drugs`).
 
 ## Milestone 2: Factories
 
-- [ ] `BodySystemFactory`, `AnatomicalStructureFactory`, `FindingFactory`, `ModifierFactory`, `ClinicalSignFactory` (with correct FK wiring), `HostSpeciesFactory`, `DiseaseClassificationFactory`, `MicroorganismFactory`, `MedicalArticleFactory`, `SynonymFactory`, `AbbreviationFactory`, `DifferentialSyndromeFactory`, `VeterinaryProjectFactory`.
-- [ ] Each factory uses `fake()`/`$this->faker`, ULID-safe relations, and realistic defaults (e.g., `microorganism_type` from enum, `canonical_name`/`display_name`).
-- [ ] Factories reference real existing `Disease::factory()` for disease-linked models.
-- [ ] Run one factory-sanity check per model (tinker / test) to ensure no validation/FK issues.
+- [x] `BodySystemFactory`, `AnatomicalStructureFactory`, `FindingFactory`, `ModifierFactory`, `ClinicalSignFactory` (with correct FK wiring), `HostSpeciesFactory`, `DiseaseClassificationFactory`, `MicroorganismFactory`, `MedicalArticleFactory`, `SynonymFactory`, `AbbreviationFactory`, `DifferentialSyndromeFactory`, `VeterinaryProjectFactory`.
+- [x] Each factory uses `fake()`/`$this->faker`, ULID-safe relations, and realistic defaults (e.g., `microorganism_type` from enum, `canonical_name`/`display_name`).
+- [x] Factories reference real existing `Disease::factory()` for disease-linked models.
+- [x] Run one factory-sanity check per model (tinker / test) to ensure no validation/FK issues.
 
 ## Milestone 3: Seeders ("all data")
 
-- [ ] `BodySystemSeeder` (Respiratory, Digestive, Nervous, Reproductive, Musculoskeletal, ...) + `AnatomicalStructureSeeder`.
-- [ ] `FindingSeeder` + `ModifierSeeder`.
-- [ ] `ClinicalSignSeeder` — build signs combining finding + modifier + anatomy (canonical_name, display_name).
-- [ ] `HostSpeciesSeeder` — Cattle, Buffalo, Sheep, Goat, Camel, Equine, Dogs, Cats, Poultry, Turkey, Calf (preferred order from `FilterController`); populate `taxonomy_group` (`ruminant` for Cattle/Buffalo/Sheep/Goat/Camel, `poultry` for Poultry/Turkey, plus a `fish` species) to power Specializations (F7).
-- [ ] `DiseaseClassificationSeeder` — attach an existing Disease to each classification; set `etiology_type`, `zoonotic`, `notifiable`, etc.
-- [ ] `DiseaseHostSpeciesSeeder` — pivot records with role/susceptibility/ontology flags.
-- [ ] `DiseaseClinicalSignSeeder` — attach diseases to clinical signs with `weight`/`is_specific`/`is_required`/`is_pathognomonic`.
-- [ ] `MicroorganismSeeder` — bacteria/virus/fungi/parasite records.
-- [ ] `DiseaseMicroorganismSeeder` — link microorganisms to diseases via the `disease_microorganism` pivot (`role` cause/associated) so microorganism pages + specializations render.
-- [ ] `VeterinaryProjectSeeder` — a few `feasibility_study` + `investment_guide` + `guideline` records (F8).
-- [ ] `MedicalArticleSeeder` — a few published articles linked to a disease.
-- [ ] `SynonymSeeder` + `AbbreviationSeeder`.
-- [ ] `DiseaseKnowledgePayloadSeeder` — populate `knowledge_payload` JSON (`clinical_signs`, `postmortem_findings`, `diagnosis`, `treatment`, `prevention_control`, `references`) on existing diseases so encyclopedia/comparison/diagnosis render data (`references` = list of `{title, url/source}` for the encyclopedia page, F5).
-- [ ] Wire everything into `DatabaseSeeder` (or a single `KnowledgeBaseSeeder` called from it).
-- [ ] Run `php artisan db:seed` and verify counts + no FK errors.
+- [x] `BodySystemSeeder` (Respiratory, Digestive, Nervous, Reproductive, Musculoskeletal, ...) + `AnatomicalStructureSeeder`.
+- [x] `FindingSeeder` + `ModifierSeeder`.
+- [x] `ClinicalSignSeeder` — build signs combining finding + modifier + anatomy (canonical_name, display_name).
+- [x] `HostSpeciesSeeder` — Cattle, Buffalo, Sheep, Goat, Camel, Equine, Dogs, Cats, Poultry, Turkey, Calf (preferred order from `FilterController`); populate `taxonomy_group` (`ruminant` for Cattle/Buffalo/Sheep/Goat/Camel, `poultry` for Poultry/Turkey, plus a `fish` species) to power Specializations (F7).
+- [x] `DiseaseClassificationSeeder` — attach an existing Disease to each classification; set `etiology_type`, `zoonotic`, `notifiable`, etc.
+- [x] `DiseaseHostSpeciesSeeder` — pivot records with role/susceptibility/ontology flags.
+- [x] `DiseaseClinicalSignSeeder` — attach diseases to clinical signs with `weight`/`is_specific`/`is_required`/`is_pathognomonic`.
+- [x] `MicroorganismSeeder` — bacteria/virus/fungi/parasite records.
+- [x] `DiseaseMicroorganismSeeder` — link microorganisms to diseases via the `disease_microorganism` pivot (`role` cause/associated) so microorganism pages + specializations render.
+- [x] `VeterinaryProjectSeeder` — a few `feasibility_study` + `investment_guide` + `guideline` records (F8).
+- [x] `MedicalArticleSeeder` — a few published articles linked to a disease.
+- [x] `SynonymSeeder` + `AbbreviationSeeder`.
+- [x] `DiseaseKnowledgePayloadSeeder` — populate `knowledge_payload` JSON (`clinical_signs`, `postmortem_findings`, `diagnosis`, `treatment`, `prevention_control`, `references`) on existing diseases so encyclopedia/comparison/diagnosis render data (`references` = list of `{title, url/source}` for the encyclopedia page, F5).
+- [x] Wire everything into `DatabaseSeeder` (or a single `KnowledgeBaseSeeder` called from it).
+- [x] Run `php artisan db:seed` and verify counts + no FK errors.
 
 ## Milestone 4: Services
 
-- [ ] `app/Services/MedicalKnowledge/DiseaseDataLoader` (load a disease by slug from DB / article source).
-- [ ] `app/Services/Narrative/DiseaseArticleBuilder` (build a narrative article structure from a Disease + its knowledge payload, incl. a `references` section) used by `DiseaseArticleController`/`TestArticleController`.
+- [x] `app/Services/MedicalKnowledge/DiseaseDataLoader` (load a disease by slug from DB / article source).
+- [x] `app/Services/Narrative/DiseaseArticleBuilder` (build a narrative article structure from a Disease + its knowledge payload, incl. a `references` section) used by `DiseaseArticleController`/`TestArticleController`.
 
 ## Milestone 5: Controllers (adapted into `app/Http/Controllers/Drugs`)
 
