@@ -8,7 +8,7 @@
 - **M2 (Factories)** — DONE (2026-08-03)
 - **M3 (Seeders)** — DONE (2026-08-03)
 - **M4 (Services)** — DONE (2026-08-03)
-- M5 onward not started yet.
+- M5 onward not started yet. (M7.5 Localization added to scope; UI-only, en/ar.)
 
 > **Schema note:** the pre-existing KB pivot tables (`disease_clinical_sign`, `disease_host_species`, `disease_classifications`, `medical_articles`) had `bigint` `disease_id` columns with orphaned integer IDs while `diseases.id` is ULID. Fixed via migration `2026_08_03_114057_fix_disease_relation_columns_to_ulid` (convert to `ulid` + real FKs, clear orphans). M3 seeders rebuilt the disease links.
 
@@ -117,6 +117,25 @@
 - [ ] `resources/views/drugs/medical/article.blade.php`.
 - [ ] All views use only v4 semantic tokens/test classes (`bg-brand`, `text-heading`, `text-bold`, `bg-neutral-*`, `border-default-medium`, `rounded-base`, dark variants) and extend the shared master layout.
 - [ ] Wire the new `/drugs/*` links (incl. Specializations + Projects) into the part-aware navbar (`main-header.blade.php` `@switch($part)` drugs case, desktop + mobile).
+- [ ] All views reference their UI strings via `__('drugs.*')` (reusing `messages.common` where possible) so the new pages render in both en/ar.
+
+## Milestone 7.5 — Localization (UI only, en/ar)
+
+> **Scope:** UI chrome on all new `/drugs/*` views uses `__('drugs.*')` via dedicated lang files `lang/{en,ar}/drugs.php` (Laravel resolves the file name as the namespace; `messages.php` stays untouched). **No DB/migration/model/seeder changes** — content fields (`canonical_name`, `display_name`) stay English. Explicitly NOT translated (raw English): disease-article section titles (from `DiseaseArticleBuilder`), confidence labels `Low`/`Moderate`/`High` (English medical terms), canonical/display names, and all medical terminology.
+
+- [ ] Create `lang/en/drugs.php` with:
+  - `nav` — Search, Diagnosis, Filter, Comparison, Microorganisms, Specializations, Projects, Articles.
+  - `search.*` — heading, placeholder, section labels, empty state.
+  - `diagnosis.*` — picker title, species select, submit; results sections (matched signs, missing key findings, primary/secondary/low-support splits).
+  - `filter.*` — filter labels (species, etiology, body system, zoonotic), clear.
+  - `comparison.*` — selector, "up to 4", presence-matrix column headers.
+  - `disease.*` — page section headings (Clinical Signs, Postmortem Findings, Diagnosis, Treatment, Prevention & Control, References).
+  - `medical_articles.*` — index/show, TOC, empty states.
+  - `microorganisms.*` — type labels (bacteria/virus/fungus/parasite), cause/associated.
+  - `specializations.*` — group labels (ruminant/poultry/fish), section titles.
+  - `projects.*` — project types (`feasibility_study`/`investment_guide`/`guideline`), featured badge.
+- [ ] Create `lang/ar/drugs.php` mirroring all keys in Arabic.
+- [ ] Verify `/en/drugs/*` and `/ar/drugs/*` render 200 in both locales; language switcher flips drugs pages correctly.
 
 ## Milestone 8 — Filament admin (Drugs KB), grouped in sidebar
 
@@ -166,6 +185,7 @@
 - [ ] `php artisan db:seed` (idempotent, re-runnable).
 - [ ] `vendor/bin/pint --dirty` on changed PHP.
 - [ ] HTTP smoke test each `/drugs/*` page → 200 + `data-part="drugs"` (incl. `/drugs/microorganisms`, `/drugs/specializations`, `/drugs/projects`).
+- [ ] HTTP smoke test each `/drugs/*` page in **both locales** (`/en/drugs/*` and `/ar/drugs/*`) → 200, no missing `__()` keys.
 - [ ] Filament: boot `/admin` with all new resources in one `Drugs` sidebar group (no group-name/icon errors).
 - [ ] DELETE `new Controllers/` (web + Api) after all Drugs controllers are ported to `app/Http/Controllers/Drugs` — nothing references it anymore.
 - [ ] Optional: feature test for `DiagnosticController` scoring/confidence path.
