@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Drugs;
 
 use App\Http\Controllers\Controller;
 use App\Models\Drugs\Microorganism;
+use Illuminate\Support\Str;
 
 class MicroorganismController extends Controller
 {
@@ -30,8 +31,17 @@ class MicroorganismController extends Controller
     {
         $microorganism = Microorganism::query()
             ->where('slug', $slug)
-            ->with('diseases')
-            ->firstOrFail();
+            ->first();
+
+        if (! $microorganism) {
+            $microorganism = Microorganism::all()->first(fn ($m) => Str::slug($m->name) === $slug);
+        }
+
+        if (! $microorganism) {
+            abort(404);
+        }
+
+        $microorganism->load('diseases');
 
         return view('drugs.microorganisms.show', compact('microorganism'));
     }

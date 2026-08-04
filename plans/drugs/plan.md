@@ -8,7 +8,11 @@
 - **M2 (Factories)** — DONE (2026-08-03)
 - **M3 (Seeders)** — DONE (2026-08-03)
 - **M4 (Services)** — DONE (2026-08-03)
-- M5 (Controllers) + M6 (Routes) complete. M7+ not started yet. (M7.5 Localization added to scope; UI-only, en/ar.)
+- **M5 (Controllers)** — DONE (2026-08-04)
+- **M6 (Routes)** — DONE (2026-08-04)
+- **M7 (Views)** — DONE (2026-08-04)
+- **M7.5 (Localization)** — DONE (2026-08-04)
+- M8 (Filament admin) not started yet.
 
 > **Schema note:** the pre-existing KB pivot tables (`disease_clinical_sign`, `disease_host_species`, `disease_classifications`, `medical_articles`) had `bigint` `disease_id` columns with orphaned integer IDs while `diseases.id` is ULID. Fixed via migration `2026_08_03_114057_fix_disease_relation_columns_to_ulid` (convert to `ulid` + real FKs, clear orphans). M3 seeders rebuilt the disease links.
 
@@ -107,25 +111,25 @@
 
 ## Milestone 7 — Views (Flowbite v4 semantic tokens)
 
-- [ ] `resources/views/drugs/search/index.blade.php`.
-- [ ] `resources/views/drugs/diagnosis/index.blade.php` + `results.blade.php`.
-- [ ] `resources/views/drugs/filter/index.blade.php`.
-- [ ] `resources/views/drugs/comparison/index.blade.php` + `results.blade.php`.
-- [ ] `resources/views/drugs/diseases/show.blade.php`.
-- [ ] `resources/views/drugs/medical-articles/index.blade.php` + `show.blade.php`.
-- [ ] `resources/views/drugs/microorganisms/index.blade.php` + `show.blade.php`.
-- [ ] `resources/views/drugs/specializations/index.blade.php` + `show.blade.php` (F7).
-- [ ] `resources/views/drugs/projects/index.blade.php` + `show.blade.php` (F8).
-- [ ] `resources/views/drugs/medical/article.blade.php`.
-- [ ] All views use only v4 semantic tokens/test classes (`bg-brand`, `text-heading`, `text-bold`, `bg-neutral-*`, `border-default-medium`, `rounded-base`, dark variants) and extend the shared master layout.
-- [ ] Wire the new `/drugs/*` links (incl. Specializations + Projects) into the part-aware navbar (`main-header.blade.php` `@switch($part)` drugs case, desktop + mobile).
-- [ ] All views reference their UI strings via `__('drugs.*')` (reusing `messages.common` where possible) so the new pages render in both en/ar.
+- [x] `resources/views/drugs/search/index.blade.php`.
+- [x] `resources/views/drugs/diagnosis/index.blade.php` + `results.blade.php`.
+- [x] `resources/views/drugs/filter/index.blade.php`.
+- [x] `resources/views/drugs/comparison/index.blade.php` + `results.blade.php`.
+- [x] `resources/views/drugs/diseases/show.blade.php`.
+- [x] `resources/views/drugs/medical-articles/index.blade.php` + `show.blade.php`.
+- [x] `resources/views/drugs/microorganisms/index.blade.php` + `show.blade.php`.
+- [x] `resources/views/drugs/specializations/index.blade.php` + `show.blade.php` (F7).
+- [x] `resources/views/drugs/projects/index.blade.php` + `show.blade.php` (F8).
+- [x] `resources/views/drugs/medical/article.blade.php`.
+- [x] All views use only v4 semantic tokens/test classes (`bg-brand`, `text-heading`, `text-bold`, `bg-neutral-*`, `border-default-medium`, `rounded-base`, dark variants) and extend the shared master layout.
+- [x] Wire the new `/drugs/*` links (incl. Specializations + Projects) into the part-aware navbar (`main-header.blade.php` `@switch($part)` drugs case, desktop + mobile).
+- [x] All views reference their UI strings via `__('drugs.*')` (reusing `messages.common` where possible) so the new pages render in both en/ar.
 
 ## Milestone 7.5 — Localization (UI only, en/ar)
 
 > **Scope:** UI chrome on all new `/drugs/*` views uses `__('drugs.*')` via dedicated lang files `lang/{en,ar}/drugs.php` (Laravel resolves the file name as the namespace; `messages.php` stays untouched). **No DB/migration/model/seeder changes** — content fields (`canonical_name`, `display_name`) stay English. Explicitly NOT translated (raw English): disease-article section titles (from `DiseaseArticleBuilder`), confidence labels `Low`/`Moderate`/`High` (English medical terms), canonical/display names, and all medical terminology.
 
-- [ ] Create `lang/en/drugs.php` with:
+- [x] Create `lang/en/drugs.php` with:
   - `nav` — Search, Diagnosis, Filter, Comparison, Microorganisms, Specializations, Projects, Articles.
   - `search.*` — heading, placeholder, section labels, empty state.
   - `diagnosis.*` — picker title, species select, submit; results sections (matched signs, missing key findings, primary/secondary/low-support splits).
@@ -136,8 +140,8 @@
   - `microorganisms.*` — type labels (bacteria/virus/fungus/parasite), cause/associated.
   - `specializations.*` — group labels (ruminant/poultry/fish), section titles.
   - `projects.*` — project types (`feasibility_study`/`investment_guide`/`guideline`), featured badge.
-- [ ] Create `lang/ar/drugs.php` mirroring all keys in Arabic.
-- [ ] Verify `/en/drugs/*` and `/ar/drugs/*` render 200 in both locales; language switcher flips drugs pages correctly.
+- [x] Create `lang/ar/drugs.php` mirroring all keys in Arabic.
+- [x] Verify `/en/drugs/*` and `/ar/drugs/*` render 200 in both locales; language switcher flips drugs pages correctly.
 
 ## Milestone 8 — Filament admin (Drugs KB), grouped in sidebar
 
