@@ -21,6 +21,8 @@ class Synonym extends Model
         'term',
         'normalized_term',
         'source_type',
+        'synonymable_type',
+        'synonymable_id',
     ];
 
     public function synonymable(): MorphTo

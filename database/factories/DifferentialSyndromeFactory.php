@@ -12,7 +12,7 @@ class DifferentialSyndromeFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->randomElement([
+            'name' => fake()->randomElement([
                 'Respiratory Syndrome',
                 'Enteric Syndrome',
                 'Nervous Syndrome',

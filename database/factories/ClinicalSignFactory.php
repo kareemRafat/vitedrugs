@@ -19,7 +19,7 @@ class ClinicalSignFactory extends Factory
         return [
             'anatomical_structure_id' => AnatomicalStructure::factory(),
             'finding_id' => Finding::factory(),
-            'modifier_id' => Modifier::factory(),
+            'modifier_id' => fn () => Modifier::query()->inRandomOrder()->first()?->id ?? Modifier::factory(),
             'canonical_name' => strtolower(str_replace(' ', '_', $displayName)),
             'display_name' => $displayName,
             'stage' => fake()->randomElement(['clinical', 'subclinical', 'peracute', 'acute', 'chronic']),

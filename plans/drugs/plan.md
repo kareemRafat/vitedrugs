@@ -8,7 +8,7 @@
 - **M2 (Factories)** — DONE (2026-08-03)
 - **M3 (Seeders)** — DONE (2026-08-03)
 - **M4 (Services)** — DONE (2026-08-03)
-- M5 onward not started yet. (M7.5 Localization added to scope; UI-only, en/ar.)
+- M5 (Controllers) complete. M6+ not started yet. (M7.5 Localization added to scope; UI-only, en/ar.)
 
 > **Schema note:** the pre-existing KB pivot tables (`disease_clinical_sign`, `disease_host_species`, `disease_classifications`, `medical_articles`) had `bigint` `disease_id` columns with orphaned integer IDs while `diseases.id` is ULID. Fixed via migration `2026_08_03_114057_fix_disease_relation_columns_to_ulid` (convert to `ulid` + real FKs, clear orphans). M3 seeders rebuilt the disease links.
 
@@ -77,17 +77,17 @@
 
 ## Milestone 5: Controllers (adapted into `app/Http/Controllers/Drugs`)
 
-- [ ] `SearchController` — search `Disease`, `ClinicalSign`, `Product`, `Blog`, `Microorganism` (name/normalized_name/tags), `MedicalArticle` (title/summary) (remapped; no `Drug`/`TherapeuticUse`); view `drugs.search.index`. Covers comprehensive search across diseases, drugs, microorganisms, and articles (F1).
-- [ ] `DiagnosticController` — symptom-picker + results (score by `weight`, `is_specific`, `is_required`, `is_pathognomonic`; confidence Low/Moderate/High; missing key findings; primary/secondary/low-support splits); view `drugs.diagnosis.results`.
-- [ ] `FilterController` — filter by species, etiology, body system, zoonotic (clinical-sign tokens on index); view `drugs.filter.index`.
-- [ ] `DiseaseComparisonController` — index (selector of up to 4) + compare (presence matrix across clinical signs, postmortem findings, diagnostics, treatments, preventions); view `drugs.comparison.*`.
-- [ ] `DiseaseController::show` — rich disease page with clinical signs grouped (rich relationship load); view `drugs.diseases.show`.
-- [ ] `MedicalArticleController` — index (published, paginated 12) + show (with auto TOC from `<h2>`s); views `drugs.medical-articles.*`.
-- [ ] `MicroorganismController` — index (browse grouped by `microorganism_type` enum) + show page listing the diseases it causes (via `disease_microorganism`); views `drugs.microorganisms.*`.
-- [ ] `SpecializationController` — index (ruminant/poultry/fish cards) + show per group aggregating diseases (via `disease_host_species.taxonomy_group`), drugs/products (via `disease_product`), articles (via `medical_articles.species`), microorganisms (via `disease_microorganism`); views `drugs.specializations.*` (F7).
-- [ ] `VeterinaryProjectController` — index (published, paginated) + show; views `drugs.projects.*` (F8).
-- [ ] `DiseaseArticleController` + `TestArticleController` — generated narrative article page (dev/test path with a hardcoded slug); view `drugs.medical.article`.
-- [ ] Resolve collisions by keeping the new classes only in the `Drugs\` namespace (existing root `DiseaseController`/`SearchController` untouched).
+- [x] `SearchController` — search `Disease`, `ClinicalSign`, `Product`, `Blog`, `Microorganism` (name/normalized_name/tags), `MedicalArticle` (title/summary) (remapped; no `Drug`/`TherapeuticUse`); view `drugs.search.index`. Covers comprehensive search across diseases, drugs, microorganisms, and articles (F1).
+- [x] `DiagnosticController` — symptom-picker + results (score by `weight`, `is_specific`, `is_required`, `is_pathognomonic`; confidence Low/Moderate/High; missing key findings; primary/secondary/low-support splits); view `drugs.diagnosis.results`.
+- [x] `FilterController` — filter by species, etiology, body system, zoonotic (clinical-sign tokens on index); view `drugs.filter.index`.
+- [x] `DiseaseComparisonController` — index (selector of up to 4) + compare (presence matrix across clinical signs, postmortem findings, diagnostics, treatments, preventions); view `drugs.comparison.*`.
+- [x] `DiseaseController::show` — rich disease page with clinical signs grouped (rich relationship load); view `drugs.diseases.show`.
+- [x] `MedicalArticleController` — index (published, paginated 12) + show (with auto TOC from `<h2>`s); views `drugs.medical-articles.*`.
+- [x] `MicroorganismController` — index (browse grouped by `microorganism_type` enum) + show page listing the diseases it causes (via `disease_microorganism`); views `drugs.microorganisms.*`.
+- [x] `SpecializationController` — index (ruminant/poultry/fish cards) + show per group aggregating diseases (via `disease_host_species.taxonomy_group`), drugs/products (via `disease_product`), articles (via `medical_articles.species`), microorganisms (via `disease_microorganism`); views `drugs.specializations.*` (F7).
+- [x] `VeterinaryProjectController` — index (published, paginated) + show; views `drugs.projects.*` (F8).
+- [x] `DiseaseArticleController` + `TestArticleController` — generated narrative article page (dev/test path with a hardcoded slug); view `drugs.medical.article`.
+- [x] Resolve collisions by keeping the new classes only in the `Drugs\` namespace (existing root `DiseaseController`/`SearchController` untouched).
 
 ## Milestone 6: Routes (routes/drugs.php, under `drugs` part)
 

@@ -15,7 +15,7 @@ class AnatomicalStructureFactory extends Factory
         $displayName = fake()->unique()->words(2, true);
 
         return [
-            'body_system_id' => BodySystem::factory(),
+            'body_system_id' => fn () => BodySystem::query()->inRandomOrder()->first()?->id ?? BodySystem::factory(),
             'parent_id' => null,
             'canonical_name' => strtolower(str_replace(' ', '_', $displayName)),
             'display_name' => $displayName,
