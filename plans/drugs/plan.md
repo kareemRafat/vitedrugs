@@ -8,7 +8,7 @@
 - **M2 (Factories)** — DONE (2026-08-03)
 - **M3 (Seeders)** — DONE (2026-08-03)
 - **M4 (Services)** — DONE (2026-08-03)
-- M5 (Controllers) complete. M6+ not started yet. (M7.5 Localization added to scope; UI-only, en/ar.)
+- M5 (Controllers) + M6 (Routes) complete. M7+ not started yet. (M7.5 Localization added to scope; UI-only, en/ar.)
 
 > **Schema note:** the pre-existing KB pivot tables (`disease_clinical_sign`, `disease_host_species`, `disease_classifications`, `medical_articles`) had `bigint` `disease_id` columns with orphaned integer IDs while `diseases.id` is ULID. Fixed via migration `2026_08_03_114057_fix_disease_relation_columns_to_ulid` (convert to `ulid` + real FKs, clear orphans). M3 seeders rebuilt the disease links.
 
@@ -91,17 +91,19 @@
 
 ## Milestone 6: Routes (routes/drugs.php, under `drugs` part)
 
-- [ ] `GET /drugs/search` → `Drugs\SearchController@index`.
-- [ ] `GET /drugs/diagnosis` → `Drugs\DiagnosticController@index` (picker) and `POST /drugs/diagnosis` → `results`.
-- [ ] `GET /drugs/filter` → `Drugs\FilterController@index` (+ autocomplete endpoint for clinical signs).
-- [ ] `GET /drugs/diseases/{disease:slug}` → `Drugs\DiseaseController@show`.
-- [ ] `GET /drugs/compare` (selector) and `GET /drugs/compare/results` (or POST) → `Drugs\DiseaseComparisonController`.
-- [ ] `GET /drugs/articles` + `GET /drugs/articles/{article:slug}` → `Drugs\MedicalArticleController`.
-- [ ] `GET /drugs/microorganisms` + `GET /drugs/microorganisms/{microorganism:slug}` → `Drugs\MicroorganismController`.
-- [ ] `GET /drugs/specializations` + `GET /drugs/specializations/{group}` → `Drugs\SpecializationController` (F7).
-- [ ] `GET /drugs/projects` + `GET /drugs/projects/{project:slug}` → `Drugs\VeterinaryProjectController` (F8).
-- [ ] `GET /drugs/article-test` (dev) → `Drugs\TestArticleController@show` (guarded/local-only).
-- [ ] All routes inside the existing localized `drugs` prefix group in `routes/drugs.php`.
+- [x] `GET /drugs/search` → `Drugs\SearchController@index`.
+- [x] `GET /drugs/diagnosis` → `Drugs\DiagnosticController@index` (picker) and `POST /drugs/diagnosis` → `results`.
+- [x] `GET /drugs/filter` → `Drugs\FilterController@index` (+ autocomplete endpoint for clinical signs).
+- [x] `GET /drugs/diseases/{disease:slug}` → `Drugs\DiseaseController@show`.
+- [x] `GET /drugs/compare` (selector) and `GET /drugs/compare/results` (or POST) → `Drugs\DiseaseComparisonController`.
+- [x] `GET /drugs/articles` + `GET /drugs/articles/{article:slug}` → `Drugs\MedicalArticleController`.
+- [x] `GET /drugs/microorganisms` + `GET /drugs/microorganisms/{microorganism:slug}` → `Drugs\MicroorganismController`.
+- [x] `GET /drugs/specializations` + `GET /drugs/specializations/{group}` → `Drugs\SpecializationController` (F7).
+- [x] `GET /drugs/projects` + `GET /drugs/projects/{project:slug}` → `Drugs\VeterinaryProjectController` (F8).
+- [x] `GET /drugs/article-test` (dev) → `Drugs\TestArticleController@show` (guarded/local-only).
+- [x] All routes inside the existing localized `drugs` prefix group in `routes/drugs.php`.
+
+> **Notes (implementation):** slug params are `{slug}` (not `{disease:slug}`/etc.) because the ported controllers accept a plain `string $slug`, not model binding. Diagnosis is two-step: `POST drugs/diagnosis` → `diagnose()` (refinement) and `POST drugs/diagnosis/results` → `refinedResults()` (final results). `compare/results` allows GET+POST. Also added `GET drugs/diseases/{slug}/article` → `DiseaseArticleController@show` so the M5 controller is reachable. `article-test` is only registered in `local`/`testing` env.
 
 ## Milestone 7 — Views (Flowbite v4 semantic tokens)
 
