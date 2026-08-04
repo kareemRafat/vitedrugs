@@ -25,10 +25,18 @@ class ClinicalSign extends Model
         'modifier_id',
         'canonical_name',
         'display_name',
+        'display_name_ar',
         'stage',
         'severity_level_id',
         'semantic_slug',
     ];
+
+    public function getLocalizedDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && $this->display_name_ar
+            ? $this->display_name_ar
+            : $this->display_name;
+    }
 
     public function anatomicalStructure(): BelongsTo
     {

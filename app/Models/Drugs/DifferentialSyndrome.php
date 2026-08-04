@@ -20,8 +20,16 @@ class DifferentialSyndrome extends Model
 
     protected $fillable = [
         'name',
+        'name_ar',
         'description',
     ];
+
+    public function getLocalizedDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && $this->name_ar
+            ? $this->name_ar
+            : $this->name;
+    }
 
     public function clinicalSigns(): BelongsToMany
     {

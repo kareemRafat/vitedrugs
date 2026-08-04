@@ -21,7 +21,8 @@ class DiseaseController extends Controller
             ->firstOrFail();
 
         $clinicalSigns = $disease->clinicalSigns
-            ->groupBy(fn ($sign) => $sign->anatomicalStructure?->bodySystem?->display_name ?? 'General Systemic Signs');
+            ->groupBy(fn ($sign) => $sign->anatomicalStructure?->bodySystem?->localized_display_name
+                ?? __('drugs.diagnosis.general_systemic'));
 
         return view('drugs.diseases.show', compact('disease', 'clinicalSigns'));
     }

@@ -10,71 +10,73 @@ class AnatomicalStructureSeeder extends Seeder
 {
     public function run(): void
     {
-        if (AnatomicalStructure::exists()) {
-            return;
-        }
-
         $structures = [
-            'Respiratory System' => [
-                ['lungs', 'Lungs'],
-                ['trachea', 'Trachea'],
-                ['nasal_cavity', 'Nasal cavity'],
-                ['pharynx', 'Pharynx'],
+            'respiratory_system' => [
+                ['lungs', 'Lungs', 'الرئتان'],
+                ['trachea', 'Trachea', 'القصبة الهوائية'],
+                ['nasal_cavity', 'Nasal cavity', 'التجويف الأنفي'],
+                ['pharynx', 'Pharynx', 'البلعوم'],
             ],
-            'Digestive System' => [
-                ['rumen', 'Rumen'],
-                ['abomasum', 'Abomasum'],
-                ['intestines', 'Intestines'],
-                ['oral_cavity', 'Oral cavity'],
+            'digestive_system' => [
+                ['rumen', 'Rumen', 'الكرش'],
+                ['abomasum', 'Abomasum', 'المنفحة'],
+                ['intestines', 'Intestines', 'الأمعاء'],
+                ['oral_cavity', 'Oral cavity', 'تجويف الفم'],
             ],
-            'Nervous System' => [
-                ['brain', 'Brain'],
-                ['spinal_cord', 'Spinal cord'],
+            'nervous_system' => [
+                ['brain', 'Brain', 'الدماغ'],
+                ['spinal_cord', 'Spinal cord', 'النخاع الشوكي'],
             ],
-            'Reproductive System' => [
-                ['uterus', 'Uterus'],
-                ['testes', 'Testes'],
-                ['mammary_gland', 'Mammary gland'],
+            'reproductive_system' => [
+                ['uterus', 'Uterus', 'الرحم'],
+                ['testes', 'Testes', 'الخصيتان'],
+                ['mammary_gland', 'Mammary gland', 'الغدة الثديية'],
             ],
-            'Musculoskeletal System' => [
-                ['joints', 'Joints'],
-                ['hooves', 'Hooves'],
-                ['muscles', 'Muscles'],
+            'musculoskeletal_system' => [
+                ['joints', 'Joints', 'المفاصل'],
+                ['hooves', 'Hooves', 'الأظلاف'],
+                ['muscles', 'Muscles', 'العضلات'],
             ],
-            'Urinary System' => [
-                ['kidneys', 'Kidneys'],
-                ['bladder', 'Bladder'],
+            'urinary_system' => [
+                ['kidneys', 'Kidneys', 'الكليتان'],
+                ['bladder', 'Bladder', 'المثانة'],
             ],
-            'Integumentary System' => [
-                ['skin', 'Skin'],
-                ['muzzle', 'Muzzle'],
-                ['teats', 'Teats'],
+            'integumentary_system' => [
+                ['skin', 'Skin', 'الجلد'],
+                ['muzzle', 'Muzzle', 'المنخر'],
+                ['teats', 'Teats', 'الحلمات'],
             ],
-            'Cardiovascular System' => [
-                ['heart', 'Heart'],
-                ['blood_vessels', 'Blood vessels'],
+            'cardiovascular_system' => [
+                ['heart', 'Heart', 'القلب'],
+                ['blood_vessels', 'Blood vessels', 'الأوعية الدموية'],
             ],
-            'Endocrine System' => [
-                ['thyroid_gland', 'Thyroid gland'],
+            'endocrine_system' => [
+                ['thyroid_gland', 'Thyroid gland', 'الغدة الدرقية'],
             ],
-            'Lymphatic System' => [
-                ['lymph_nodes', 'Lymph nodes'],
+            'lymphatic_system' => [
+                ['lymph_nodes', 'Lymph nodes', 'العقد اللمفاوية'],
             ],
         ];
 
-        foreach ($structures as $systemName => $items) {
-            $system = BodySystem::where('display_name', $systemName)->first();
+        foreach ($structures as $systemCanonical => $items) {
+            $system = BodySystem::where('canonical_name', $systemCanonical)->first();
 
             if (! $system) {
                 continue;
             }
 
-            foreach ($items as [$canonical, $display]) {
-                AnatomicalStructure::create([
-                    'body_system_id' => $system->id,
-                    'canonical_name' => $canonical,
-                    'display_name' => $display,
-                    'type' => 'organ',
+            foreach ($items as [$canonical, $display, $displayAr]) {
+                $structure = AnatomicalStructure::firstOrCreate(
+                    ['canonical_name' => $canonical],
+                    [
+                        'body_system_id' => $system->id,
+                        'display_name' => $display,
+                        'type' => 'organ',
+                    ]
+                );
+
+                $structure->update([
+                    'display_name_ar' => $displayAr,
                 ]);
             }
         }

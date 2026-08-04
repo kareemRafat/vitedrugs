@@ -3,16 +3,20 @@
 @section('title', __('drugs.disease.title', ['name' => $disease->name]))
 
 @section('meta_description')
-    {{ \Illuminate\Support\Str::limit(strip_tags($disease->description ?? ''), 160) }}
+    {{ \Illuminate\Support\Str::limit(strip_tags(app()->getLocale() === 'ar' && $disease->description_ar ? $disease->description_ar : ($disease->description ?? '')), 160) }}
 @endsection
 
-@section('og_title', $disease->name)
+@section('og_title', app()->getLocale() === 'ar' && $disease->name_ar ? $disease->name_ar : $disease->name)
 
 @section('content')
     @php
         $payload = is_array($disease->knowledge_payload) ? $disease->knowledge_payload : [];
         $classification = $disease->diseaseClassification;
+        $isArabic = app()->getLocale() === 'ar';
         $payloadSigns = collect($payload['clinical_signs'] ?? []);
+        $localizedName = fn (string $field, array $item): string => $isArabic && filled($item[$field.'_ar'] ?? null)
+            ? $item[$field.'_ar']
+            : ($item[$field] ?? '');
         $payloadSections = [
             'postmortem_findings' => ['label' => __('drugs.disease.postmortem_findings'), 'icon' => 'microscope', 'items' => collect($payload['postmortem_findings'] ?? [])->filter(fn ($i) => filled($i['display_name'] ?? null))],
             'diagnosis' => ['label' => __('drugs.disease.diagnosis'), 'icon' => 'test-tube-2', 'items' => collect($payload['diagnosis'] ?? [])->filter(fn ($i) => filled($i['method'] ?? null))],
@@ -27,13 +31,13 @@
         <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
             <a href="{{ route('drugs.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('drugs.breadcrumb.drugs') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <span class="text-heading dark:text-white font-medium">{{ $disease->name }}</span>
+            <span class="text-heading dark:text-white font-medium">{{ $isArabic && $disease->name_ar ? $disease->name_ar : $disease->name }}</span>
         </nav>
 
         {{-- Hero --}}
         <x-drugs.page-hero
-            :heading="$disease->name"
-            :subtitle="\Illuminate\Support\Str::limit(strip_tags($disease->description ?? ''), 220)"
+            :heading="$isArabic && $disease->name_ar ? $disease->name_ar : $disease->name"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($isArabic && $disease->description_ar ? $disease->description_ar : ($disease->description ?? '')), 220)"
             :badge="__('drugs.hero.badge.disease')"
             badgeIcon="activity"
             :stats="[
@@ -99,7 +103,7 @@
                                     <div class="flex flex-wrap gap-1.5">
                                         @foreach ($signs as $sign)
                                             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-base bg-neutral-secondary-soft border border-default-medium text-heading dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                                                {{ $sign->display_name }}
+                                                {{ $sign->localized_display_name }}
                                                 @if ($sign->pivot?->is_pathognomonic)
                                                     <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand text-white">{{ __('drugs.disease.pathognomonic') }}</span>
                                                 @elseif ($sign->pivot?->is_required)
@@ -116,7 +120,7 @@
                             <div class="flex flex-wrap gap-1.5">
                                 @foreach ($payloadSigns as $sign)
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-base bg-neutral-secondary-soft border border-default-medium text-heading dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                                        {{ $sign['display_name'] ?? $sign['canonical_name'] }}
+                                        {{ $isArabic && filled($sign['display_name_ar'] ?? null) ? $sign['display_name_ar'] : ($sign['display_name'] ?? $sign['canonical_name']) }}
                                         @if (! empty($sign['is_pathognomonic']))
                                             <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand text-white">{{ __('drugs.disease.pathognomonic') }}</span>
                                         @elseif (! empty($sign['is_required']))
@@ -146,9 +150,14 @@
                                     <div class="flex items-start gap-3">
                                         <x-lucide-check-circle class="w-4 h-4 shrink-0 mt-0.5 text-brand dark:text-brand" />
                                         <div>
-                                            <h3 class="text-sm font-semibold text-heading dark:text-white">{{ $item[$key === 'diagnosis' ? 'method' : ($key === 'treatment' ? 'intervention' : ($key === 'prevention_control' ? 'measure' : 'display_name'))] }}</h3>
-                                            @if (filled($item['description'] ?? null))
-                                                <p class="text-sm text-body dark:text-slate-400 mt-0.5 leading-relaxed">{{ $item['description'] }}</p>
+                                            @php
+                                                $field = $key === 'diagnosis' ? 'method' : ($key === 'treatment' ? 'intervention' : ($key === 'prevention_control' ? 'measure' : 'display_name'));
+                                                $title = $localizedName($field, $item);
+                                                $description = $isArabic && filled($item['description_ar'] ?? null) ? $item['description_ar'] : ($item['description'] ?? null);
+                                            @endphp
+                                            <h3 class="text-sm font-semibold text-heading dark:text-white">{{ $title }}</h3>
+                                            @if (filled($description))
+                                                <p class="text-sm text-body dark:text-slate-400 mt-0.5 leading-relaxed">{{ $description }}</p>
                                             @endif
                                         </div>
                                     </div>
@@ -282,7 +291,7 @@
                             <div class="space-y-2">
                                 @foreach ($disease->hostSpecies as $species)
                                     <div class="flex flex-wrap items-center gap-2 p-3 rounded-base border border-default-medium bg-neutral-secondary-soft dark:bg-slate-700 dark:border-slate-600">
-                                        <span class="text-sm font-medium text-heading dark:text-white">{{ $species->display_name }}</span>
+                                        <span class="text-sm font-medium text-heading dark:text-white">{{ $species->localized_display_name }}</span>
                                         @php
                                             $tags = [];
                                             if ($species->pivot?->is_primary_host) { $tags[] = __('drugs.disease.primary_host'); }

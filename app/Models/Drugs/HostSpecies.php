@@ -21,11 +21,19 @@ class HostSpecies extends Model
     protected $fillable = [
         'canonical_name',
         'display_name',
+        'display_name_ar',
         'taxonomy_group',
         'is_domestic',
         'is_wildlife',
         'is_human',
     ];
+
+    public function getLocalizedDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && $this->display_name_ar
+            ? $this->display_name_ar
+            : $this->display_name;
+    }
 
     protected $casts = [
         'is_domestic' => 'boolean',

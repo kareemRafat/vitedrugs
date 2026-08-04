@@ -20,7 +20,15 @@ class BodySystem extends Model
     protected $fillable = [
         'canonical_name',
         'display_name',
+        'display_name_ar',
     ];
+
+    public function getLocalizedDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && $this->display_name_ar
+            ? $this->display_name_ar
+            : $this->display_name;
+    }
 
     public function anatomicalStructures(): HasMany
     {

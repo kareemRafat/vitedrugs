@@ -47,7 +47,7 @@
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ __('drugs.diagnosis.species_placeholder') }}</option>
                             @foreach ($hostSpecies as $species)
-                                <option value="{{ $species->id }}">{{ $species->display_name }}</option>
+                                <option value="{{ $species->id }}">{{ $species->localized_display_name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -80,14 +80,14 @@
             {{-- Sign checklist --}}
             <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
                 @forelse ($groupedSigns as $bodySystem => $signs)
-                    <div class="mb-5 last:mb-0" x-show='groupVisible({{ json_encode((string) $bodySystem) }}, {{ json_encode($signs->pluck('display_name')->merge($signs->pluck('canonical_name'))->unique()->map(fn ($n) => (string) $n)->values()->toArray()) }})'>
+                    <div class="mb-5 last:mb-0" x-show='groupVisible({{ json_encode((string) $bodySystem) }}, {{ json_encode($signs->pluck('display_name')->merge($signs->pluck('display_name_ar'))->merge($signs->pluck('canonical_name'))->unique()->map(fn ($n) => (string) $n)->values()->toArray()) }})'>
                         <div class="flex items-center gap-2 mb-2">
                             <h2 class="text-base font-semibold text-heading dark:text-white">{{ $bodySystem }}</h2>
                             <span class="inline-flex items-center px-2 py-0.5 text-xs font-semibold bg-brand-soft text-fg-brand rounded-base dark:bg-brand/20 dark:text-brand">{{ __('drugs.diagnosis.group_count', ['count' => $signs->count()]) }}</span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                             @foreach ($signs as $sign)
-                                <label x-show="signVisible({{ json_encode((string) $sign['display_name']) }}, {{ json_encode((string) $sign['canonical_name']) }})"
+                                <label x-show="signVisible({{ json_encode((string) $sign['display_name']) }}, {{ json_encode((string) $sign['display_name_ar']) }}, {{ json_encode((string) $sign['canonical_name']) }})"
                                     class="flex items-start gap-3 p-3 rounded-base border border-default-medium bg-neutral-secondary-soft cursor-pointer hover:border-brand transition-colors dark:bg-slate-700 dark:border-slate-600 dark:hover:border-brand" :class="{ 'border-brand bg-brand-soft dark:bg-brand/20': isChecked('{{ $sign['id'] }}') }">
                                     <input type="checkbox" name="clinical_signs[]" value="{{ $sign['id'] }}"
                                         x-model="selected"
@@ -148,10 +148,12 @@
                     if (!q) return true;
                     return names.some((n) => n && n.toLowerCase().includes(q));
                 },
-                signVisible(displayName, canonicalName) {
+                signVisible(displayName, displayNameAr, canonicalName) {
                     const q = this.search.trim().toLowerCase();
                     if (!q) return true;
-                    return (displayName && displayName.toLowerCase().includes(q)) || (canonicalName && canonicalName.toLowerCase().includes(q));
+                    return (displayName && displayName.toLowerCase().includes(q))
+                        || (displayNameAr && displayNameAr.toLowerCase().includes(q))
+                        || (canonicalName && canonicalName.toLowerCase().includes(q));
                 },
             };
         }

@@ -9,28 +9,30 @@ class ModifierSeeder extends Seeder
 {
     public function run(): void
     {
-        if (Modifier::exists()) {
-            return;
-        }
-
         $modifiers = [
-            ['Bilateral', 'laterality'],
-            ['Unilateral', 'laterality'],
-            ['Acute', 'course'],
-            ['Chronic', 'course'],
-            ['Progressive', 'course'],
-            ['Intermittent', 'temporal'],
-            ['Mild', 'severity'],
-            ['Severe', 'severity'],
+            ['Bilateral', 'laterality', 'ثنائي الجانب'],
+            ['Unilateral', 'laterality', 'أحادي الجانب'],
+            ['Acute', 'course', 'حاد'],
+            ['Chronic', 'course', 'مزمن'],
+            ['Progressive', 'course', 'تقدمي'],
+            ['Intermittent', 'temporal', 'متقطع'],
+            ['Mild', 'severity', 'خفيف'],
+            ['Severe', 'severity', 'شديد'],
         ];
 
-        foreach ($modifiers as [$display, $group]) {
-            Modifier::create([
-                'canonical_name' => str()->slug($display),
-                'display_name' => $display,
-                'modifier_group' => $group,
-                'type' => $group,
-                'is_noisy' => false,
+        foreach ($modifiers as [$display, $group, $displayAr]) {
+            $modifier = Modifier::firstOrCreate(
+                ['canonical_name' => str()->slug($display)],
+                [
+                    'display_name' => $display,
+                    'modifier_group' => $group,
+                    'type' => $group,
+                    'is_noisy' => false,
+                ]
+            );
+
+            $modifier->update([
+                'display_name_ar' => $displayAr,
             ]);
         }
     }

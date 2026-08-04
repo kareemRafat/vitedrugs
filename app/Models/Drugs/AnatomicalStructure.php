@@ -23,8 +23,16 @@ class AnatomicalStructure extends Model
         'parent_id',
         'canonical_name',
         'display_name',
+        'display_name_ar',
         'type',
     ];
+
+    public function getLocalizedDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && $this->display_name_ar
+            ? $this->display_name_ar
+            : $this->display_name;
+    }
 
     public function bodySystem(): BelongsTo
     {

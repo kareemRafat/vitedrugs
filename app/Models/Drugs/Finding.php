@@ -21,6 +21,7 @@ class Finding extends Model
     protected $fillable = [
         'canonical_name',
         'display_name',
+        'display_name_ar',
         'category',
         'ontology_type',
         'parent_id',
@@ -28,6 +29,13 @@ class Finding extends Model
         'is_general_sign',
         'slug',
     ];
+
+    public function getLocalizedDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && $this->display_name_ar
+            ? $this->display_name_ar
+            : $this->display_name;
+    }
 
     protected $casts = [
         'is_noisy' => 'boolean',

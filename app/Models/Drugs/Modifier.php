@@ -20,6 +20,7 @@ class Modifier extends Model
     protected $fillable = [
         'canonical_name',
         'display_name',
+        'display_name_ar',
         'type',
         'modifier_group',
         'is_noisy',
@@ -28,6 +29,13 @@ class Modifier extends Model
     protected $casts = [
         'is_noisy' => 'boolean',
     ];
+
+    public function getLocalizedDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && $this->display_name_ar
+            ? $this->display_name_ar
+            : $this->display_name;
+    }
 
     public function clinicalSigns(): HasMany
     {

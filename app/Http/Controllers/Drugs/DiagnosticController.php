@@ -9,6 +9,7 @@ use App\Models\Drugs\DifferentialSyndrome;
 use App\Models\Drugs\HostSpecies;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class DiagnosticController extends Controller
 {
@@ -56,10 +57,12 @@ class DiagnosticController extends Controller
             ->get()
             ->map(fn ($sign) => [
                 'id' => $sign->id,
-                'display_name' => $sign->display_name,
+                'display_name' => $sign->localized_display_name,
+                'display_name_ar' => $sign->display_name_ar,
                 'canonical_name' => $sign->canonical_name,
-                'body_system' => $sign->anatomicalStructure?->bodySystem?->display_name ?? 'General Systemic Signs',
-                'clinical_category' => $sign->finding?->category ?? 'General',
+                'body_system' => $sign->anatomicalStructure?->bodySystem?->localized_display_name
+                    ?? __('drugs.diagnosis.general_systemic'),
+                'clinical_category' => $this->localizedCategory($sign->finding?->category),
             ]);
 
         return view('drugs.diagnosis.index', compact('hostSpecies', 'allSigns'));
@@ -73,7 +76,7 @@ class DiagnosticController extends Controller
         if (empty($selectedSigns)) {
             return redirect()
                 ->back()
-                ->with('warning', 'Please select at least one abnormal clinical finding before running differential diagnosis.');
+                ->with('warning', __('drugs.diagnosis.warning'));
         }
 
         $selectedClinicalSigns = ClinicalSign::query()
@@ -141,7 +144,7 @@ class DiagnosticController extends Controller
                 if ($pivot->is_pathognomonic) {
                     $score += 50;
                     $priorityTier = 1;
-                    $reasons[] = 'Pathognomonic clinical sign strongly associated with this disease';
+                    $reasons[] = __('drugs.diagnosis.reasons.pathognomonic');
                     $matchedPathognomonicSigns++;
                 }
 
@@ -152,29 +155,29 @@ class DiagnosticController extends Controller
                     $score += min($weight, 1);
                     $score -= 2;
                     $score = max($score, 0);
-                    $reasons[] = 'General systemic sign with low diagnostic specificity';
+                    $reasons[] = __('drugs.diagnosis.reasons.general');
                 } else {
                     $score += $weight;
                 }
 
-                $matchedSigns[strtolower(trim($sign->canonical_name))] = $sign->display_name;
+                $matchedSigns[strtolower(trim($sign->canonical_name))] = $sign->localized_display_name;
 
                 if ($weight >= 7 && ! $isGeneralSign && ($pivot->is_specific || $pivot->is_required)) {
                     $matchedHighWeightSigns++;
                     $score += 10;
-                    $reasons[] = 'High-priority diagnostic sign: '.$sign->display_name;
+                    $reasons[] = __('drugs.diagnosis.reasons.high_priority', ['sign' => $sign->localized_display_name]);
                 }
 
                 if ($pivot->is_specific && ! in_array($canonicalName, self::GENERAL_SIGNS)) {
                     $matchedSpecificSigns++;
                     $score += 15;
-                    $reasons[] = 'Specific clinical sign: '.$sign->display_name;
+                    $reasons[] = __('drugs.diagnosis.reasons.specific', ['sign' => $sign->localized_display_name]);
                 }
 
                 if ($pivot->is_required && ! in_array($canonicalName, self::GENERAL_SIGNS)) {
                     $matchedRequiredSigns++;
                     $score += 12;
-                    $reasons[] = 'Required clinical sign: '.$sign->display_name;
+                    $reasons[] = __('drugs.diagnosis.reasons.required', ['sign' => $sign->localized_display_name]);
                 }
 
                 $system = $sign->anatomicalStructure?->bodySystem?->display_name;
@@ -205,8 +208,8 @@ class DiagnosticController extends Controller
                         $boostScore = $syndromeDisease->pivot->boost_score ?? 15;
 
                         $score += $boostScore;
-                        $matchedSyndromes[] = $syndrome->name;
-                        $reasons[] = 'Matched differential syndrome: '.$syndrome->name;
+                        $matchedSyndromes[] = $syndrome->localized_display_name;
+                        $reasons[] = __('drugs.diagnosis.reasons.syndrome', ['syndrome' => $syndrome->localized_display_name]);
                         $priorityTier = min($priorityTier, 2);
                     }
                 }
@@ -240,11 +243,11 @@ class DiagnosticController extends Controller
                 if (count($nonGeneralMatches) >= 3) {
                     $priorityTier = min($priorityTier, 2);
                     $score += 20;
-                    $reasons[] = 'Three or more associated clinical signs matched.';
+                    $reasons[] = __('drugs.diagnosis.reasons.three_or_more');
                 } elseif (count($nonGeneralMatches) >= 2) {
                     $priorityTier = min($priorityTier, 3);
                     $score += 10;
-                    $reasons[] = 'Two associated clinical signs matched.';
+                    $reasons[] = __('drugs.diagnosis.reasons.two');
                 } elseif (count($nonGeneralMatches) === 1) {
                     $priorityTier = 4;
                     $score += 2;
@@ -296,7 +299,9 @@ class DiagnosticController extends Controller
                 'score' => $score,
                 'priority_tier' => $priorityTier,
                 'confidence' => $confidence,
+                'confidence_key' => $this->confidenceKey($confidence),
                 'match_type' => $matchType,
+                'match_type_key' => $this->matchTypeKey($matchType),
                 'matched_signs' => array_values($matchedSigns),
                 'reasons' => collect($reasons)->unique()->filter()->values()->toArray(),
                 'missing_key_findings' => $this->missingKeyFindings($disease, $selectedSigns),
@@ -441,19 +446,19 @@ class DiagnosticController extends Controller
                     if ($pivot->is_pathognomonic) {
                         $score += 50;
                         $matchedPathognomonic++;
-                        $reasons[] = 'Pathognomonic clinical finding confirmed.';
+                        $reasons[] = __('drugs.diagnosis.reasons.pathognomonic_confirmed');
                     }
 
                     if ($pivot->is_required) {
                         $score += 30;
                         $matchedRequired++;
-                        $reasons[] = 'Core diagnostic feature identified.';
+                        $reasons[] = __('drugs.diagnosis.reasons.required_confirmed');
                     }
 
                     if ($pivot->is_specific) {
                         $score += 20;
                         $matchedSpecific++;
-                        $reasons[] = 'Disease-specific clinical evidence identified.';
+                        $reasons[] = __('drugs.diagnosis.reasons.specific_confirmed');
                     }
 
                     if ($weight >= 7) {
@@ -461,7 +466,7 @@ class DiagnosticController extends Controller
                     }
                 }
 
-                $matchedSigns[strtolower(trim($sign->canonical_name))] = $sign->display_name;
+                $matchedSigns[strtolower(trim($sign->canonical_name))] = $sign->localized_display_name;
             }
 
             if (count($matchedSigns) === 0) {
@@ -486,7 +491,9 @@ class DiagnosticController extends Controller
                 'disease' => $disease,
                 'score' => $score,
                 'confidence' => $confidence,
+                'confidence_key' => $this->confidenceKey($confidence),
                 'match_type' => $matchType,
+                'match_type_key' => $this->matchTypeKey($matchType),
                 'matched_signs' => array_values($matchedSigns),
                 'reasons' => collect($reasons)->unique()->filter()->values()->toArray(),
                 'missing_key_findings' => $this->missingKeyFindings($disease, $allSigns),
@@ -597,7 +604,7 @@ class DiagnosticController extends Controller
             $pivot = $diseaseSign->pivot;
 
             if ($pivot->is_pathognomonic || $pivot->is_required || ($pivot->is_specific && $pivot->weight >= 7)) {
-                $missingKeyFindings[] = $diseaseSign->display_name;
+                $missingKeyFindings[] = $diseaseSign->localized_display_name;
             }
         }
 
@@ -606,5 +613,37 @@ class DiagnosticController extends Controller
             ->take(5)
             ->values()
             ->toArray();
+    }
+
+    private function localizedCategory(?string $category): string
+    {
+        if (! $category) {
+            return __('drugs.diagnosis.general_category');
+        }
+
+        $key = 'drugs.diagnosis.categories.'.Str::slug($category, '_');
+        $translated = __($key);
+
+        return $translated === $key ? $category : $translated;
+    }
+
+    private function matchTypeKey(string $matchType): string
+    {
+        return match ($matchType) {
+            'Pathognomonic Match' => 'pathognomonic',
+            'Pathognomonic Reinforced Match' => 'pathognomonic_reinforced',
+            'Strong Match' => 'strong',
+            'Moderate Match' => 'moderate',
+            default => 'weak',
+        };
+    }
+
+    private function confidenceKey(string $confidence): string
+    {
+        return match ($confidence) {
+            'High' => 'high',
+            'Moderate' => 'moderate',
+            default => 'low',
+        };
     }
 }

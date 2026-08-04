@@ -65,13 +65,18 @@
                                     <div class="p-5">
                                         <div class="flex flex-wrap items-center gap-3">
                                             <a href="{{ route('drugs.diseases.show', $result['disease']->slug) }}" wire:navigate
-                                                class="text-lg font-bold text-heading dark:text-white hover:text-fg-brand dark:hover:text-brand transition-colors">{{ $result['disease']->name }}</a>
-                                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-base border {{ $confidenceBadge }}">{{ $confidence }}</span>
-                                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-base bg-neutral-secondary-soft text-body border border-default-medium dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600">{{ $result['match_type'] }}</span>
+                                                class="text-lg font-bold text-heading dark:text-white hover:text-fg-brand dark:hover:text-brand transition-colors">{{ app()->getLocale() === 'ar' && $result['disease']->name_ar ? $result['disease']->name_ar : $result['disease']->name }}</a>
+                                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-base border {{ $confidenceBadge }}">{{ __('drugs.diagnosis.confidences.'.$result['confidence_key']) }}</span>
+                                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-base bg-neutral-secondary-soft text-body border border-default-medium dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600">{{ __('drugs.diagnosis.match_types.'.$result['match_type_key']) }}</span>
                                         </div>
 
-                                        @if ($result['disease']->description)
-                                            <p class="mt-3 text-sm text-body dark:text-slate-400 leading-relaxed">{{ $result['disease']->description }}</p>
+                                        @php
+                                            $diseaseDescription = app()->getLocale() === 'ar' && $result['disease']->description_ar
+                                                ? $result['disease']->description_ar
+                                                : $result['disease']->description;
+                                        @endphp
+                                        @if ($diseaseDescription)
+                                            <p class="mt-3 text-sm text-body dark:text-slate-400 leading-relaxed">{{ $diseaseDescription }}</p>
                                         @endif
 
                                         {{-- Match strength --}}

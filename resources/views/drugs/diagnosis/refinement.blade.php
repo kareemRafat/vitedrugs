@@ -41,8 +41,8 @@
                     @forelse (collect($results)->take(5) as $result)
                         <div class="flex flex-wrap items-center gap-3 p-3 rounded-base border border-default-medium dark:border-slate-700">
                             <a href="{{ route('drugs.diseases.show', $result['disease']->slug) }}" wire:navigate
-                                class="text-sm font-medium text-fg-brand hover:underline">{{ $result['disease']->name }}</a>
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $result['match_type'] }}</span>
+                                class="text-sm font-medium text-fg-brand hover:underline">{{ app()->getLocale() === 'ar' && $result['disease']->name_ar ? $result['disease']->name_ar : $result['disease']->name }}</a>
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('drugs.diagnosis.match_types.'.$result['match_type_key']) }}</span>
                             <span class="ms-auto text-sm text-body dark:text-slate-400">{{ __('drugs.diagnosis.score') }}: {{ $result['score'] }}</span>
                         </div>
                     @empty
@@ -65,7 +65,7 @@
                                 <input type="checkbox" name="refinement_signs[]" value="{{ $sign->id }}"
                                     class="mt-0.5 w-4 h-4 rounded-xs text-brand focus:ring-2 focus:ring-brand-soft dark:bg-slate-600 dark:border-slate-500">
                                 <span>
-                                    <span class="block text-sm font-medium text-heading dark:text-white">{{ $sign->display_name }}</span>
+                                    <span class="block text-sm font-medium text-heading dark:text-white">{{ $sign->localized_display_name }}</span>
                                     @if ($sign->pivot?->weight)
                                         <span class="block text-xs text-body dark:text-slate-400 mt-0.5">{{ __('drugs.disease.clinical_sign_weight') }}: {{ $sign->pivot->weight }}</span>
                                     @endif
