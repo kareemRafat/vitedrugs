@@ -5,37 +5,29 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('messages.search.heading') }}</h1>
-                    <p class="text-body dark:text-slate-400 text-base font-semibold mt-1">{{ __('messages.search.subtitle') }}</p>
-                </div>
-            </div>
-        </div>
-
-        {{-- Search --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
+        {{-- Hero --}}
+        <x-page-hero
+            :heading="__('messages.search.heading')"
+            :subtitle="__('messages.search.subtitle')"
+            :badge="__('messages.nav.search')"
+            badgeIcon="search"
+        >
             <form method="GET">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="relative sm:col-span-2">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                            <x-lucide-search class="w-4 h-4 text-body" />
-                        </div>
-                        <input type="text" name="q" value="{{ $q }}"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                            placeholder="{{ __('messages.search.placeholder') }}">
+                <div class="relative w-full sm:w-1/2">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                        <x-lucide-search class="w-4 h-4 text-body dark:text-slate-400" />
                     </div>
-                    <div class="flex justify-between gap-2">
-                        <button type="submit"
-                            class="w-50 text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                            {{ __('messages.search.button') }}
-                        </button>
-                    </div>
+                    <input type="text" name="q" value="{{ $q }}"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 pe-32 px-3 py-3 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                        placeholder="{{ __('messages.search.placeholder') }}">
+                    <button type="submit"
+                        class="absolute inset-y-1 end-1 inline-flex items-center justify-center gap-1.5 px-4 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base focus:outline-none">
+                        <x-lucide-search class="w-4 h-4" />
+                        {{ __('messages.search.button') }}
+                    </button>
                 </div>
             </form>
-        </div>
+        </x-page-hero>
 
         @if ($q)
 

@@ -5,11 +5,17 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.specializations.heading') }}</h1>
-            <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.specializations.subtitle') }}</p>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.specializations.heading')"
+            :subtitle="__('drugs.specializations.subtitle')"
+            :badge="__('drugs.hero.badge.specializations')"
+            badgeIcon="paw-print"
+            :stats="[
+                ['count' => $groups->sum('disease_count'), 'label' => __('drugs.hero.stats.diseases'), 'icon' => 'activity'],
+                ['count' => $groups->sum(fn ($g) => $g['species']->count()), 'label' => __('drugs.hero.stats.species'), 'icon' => 'paw-print'],
+            ]"
+        />
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @foreach ($groups as $group)

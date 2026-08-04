@@ -5,20 +5,22 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.comparison.results_heading') }}</h1>
-                    <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.comparison.subtitle') }}</p>
-                </div>
-                <a href="{{ route('drugs.comparison') }}" wire:navigate
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-fg-brand border border-brand rounded-base hover:bg-brand-soft transition-colors dark:text-brand dark:hover:bg-brand/20">
-                    <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
-                    {{ __('drugs.comparison.back') }}
-                </a>
-            </div>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.comparison.results_heading')"
+            :subtitle="__('drugs.comparison.subtitle')"
+            :badge="__('drugs.hero.badge.comparison_results')"
+            badgeIcon="columns-3"
+            :stats="[
+                ['count' => $comparisonDiseases->count(), 'label' => __('drugs.hero.stats.compared'), 'icon' => 'columns-3'],
+            ]"
+        >
+            <a href="{{ route('drugs.comparison') }}" wire:navigate
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
+                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                {{ __('drugs.comparison.back') }}
+            </a>
+        </x-drugs.page-hero>
 
         @if ($comparisonDiseases->isEmpty())
 

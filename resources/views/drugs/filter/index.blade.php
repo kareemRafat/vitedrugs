@@ -5,11 +5,18 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.filter.heading') }}</h1>
-            <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.filter.subtitle') }}</p>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.filter.heading')"
+            :subtitle="__('drugs.filter.subtitle')"
+            :badge="__('drugs.hero.badge.filter')"
+            badgeIcon="sliders-horizontal"
+            :stats="[
+                ['count' => $species->count(), 'label' => __('drugs.hero.stats.species'), 'icon' => 'paw-print'],
+                ['count' => $bodySystems->count(), 'label' => __('drugs.hero.stats.body_systems'), 'icon' => 'stethoscope'],
+                ['count' => $etiologies->count(), 'label' => __('drugs.hero.stats.etiologies'), 'icon' => 'bug'],
+            ]"
+        />
 
         <form method="POST" action="{{ route('drugs.diagnosis.run') }}" x-data="filterPicker(@js(route('drugs.filter.suggestions')))">
             @csrf

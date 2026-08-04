@@ -14,6 +14,20 @@
             <span class="text-heading dark:text-white font-medium">{{ $article['title'] }}</span>
         </nav>
 
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="$article['title']"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($article['summary'] ?? ''), 220)"
+            :badge="__('drugs.hero.badge.article')"
+            badgeIcon="book-marked"
+        >
+            <a href="{{ route('drugs.diseases.show', $disease->slug) }}" wire:navigate
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
+                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                {{ __('drugs.medical.back_to_disease') }}
+            </a>
+        </x-drugs.page-hero>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
             {{-- Main --}}
@@ -31,14 +45,6 @@
                                     {{ $disease->name }}
                                 </a>
                             </div>
-
-                            <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-6">{{ $article['title'] }}</h1>
-
-                            @if (filled($article['summary']))
-                                <div class="text-base sm:text-lg text-body dark:text-slate-300 leading-relaxed mb-8 border-s-4 border-brand ps-4">
-                                    {{ $article['summary'] }}
-                                </div>
-                            @endif
 
                             {{-- Sections --}}
                             @forelse ($article['sections'] as $section)

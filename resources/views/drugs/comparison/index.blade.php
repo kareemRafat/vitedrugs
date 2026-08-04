@@ -5,11 +5,16 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.comparison.heading') }}</h1>
-            <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.comparison.subtitle') }}</p>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.comparison.heading')"
+            :subtitle="__('drugs.comparison.subtitle')"
+            :badge="__('drugs.hero.badge.comparison')"
+            badgeIcon="columns-3"
+            :stats="[
+                ['count' => $allDiseases->count(), 'label' => __('drugs.hero.stats.diseases'), 'icon' => 'activity'],
+            ]"
+        />
 
         <form method="GET" action="{{ route('drugs.comparison.results') }}" x-data="comparisonPicker(@js($selectedIds))">
             <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">

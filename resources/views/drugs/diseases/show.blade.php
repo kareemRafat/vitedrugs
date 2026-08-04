@@ -30,52 +30,55 @@
             <span class="text-heading dark:text-white font-medium">{{ $disease->name }}</span>
         </nav>
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 sm:p-6 dark:bg-slate-800">
-            <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white">{{ $disease->name }}</h1>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="$disease->name"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($disease->description ?? ''), 220)"
+            :badge="__('drugs.hero.badge.disease')"
+            badgeIcon="activity"
+            :stats="[
+                ['count' => $disease->clinicalSigns->count(), 'label' => __('drugs.hero.stats.clinical_signs'), 'icon' => 'stethoscope'],
+                ['count' => $disease->hostSpecies->count(), 'label' => __('drugs.hero.stats.species'), 'icon' => 'paw-print'],
+            ]"
+        >
             @if ($disease->name_ar && app()->getLocale() === 'ar')
-                <p class="text-body dark:text-slate-400 text-base mt-1">{{ $disease->name_ar }}</p>
+                <p class="text-white/85 text-base">{{ $disease->name_ar }}</p>
             @endif
-            @if ($disease->description)
-                <p class="mt-3 text-base text-body dark:text-slate-400 leading-relaxed max-w-3xl">{{ $disease->description }}</p>
-            @endif
+            <a href="{{ route('drugs.diseases.article', $disease->slug) }}" wire:navigate
+                class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-white/15 hover:bg-white/25 border border-white/30 rounded-base transition-colors">
+                <x-lucide-file-text class="w-4 h-4" />
+                {{ __('drugs.disease.read_article') }}
+            </a>
+        </x-drugs.page-hero>
 
-            @if ($classification)
-                <div class="mt-4 flex flex-wrap gap-2">
-                    @if ($classification->etiology_type)
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
-                            <x-lucide-bug class="w-3.5 h-3.5" />
-                            {{ $classification->etiology_type }}
-                        </span>
-                    @endif
-                    @if ($classification->zoonotic)
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-danger-soft border border-danger-subtle text-fg-danger-strong dark:bg-red-950 dark:border-red-900 dark:text-red-300">
-                            <x-lucide-users class="w-3.5 h-3.5" />
-                            {{ __('drugs.disease.zoonotic') }}
-                        </span>
-                    @endif
-                    @if ($classification->notifiable)
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-success-soft border border-success-subtle text-fg-success-strong dark:bg-green-950 dark:border-green-900 dark:text-green-300">
-                            <x-lucide-bell-ring class="w-3.5 h-3.5" />
-                            {{ __('drugs.disease.notifiable') }}
-                        </span>
-                    @endif
-                    @if ($classification->oie_category)
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-neutral-secondary-soft border border-default-medium text-body dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300">
-                            {{ __('drugs.disease.oie_category') }}: {{ $classification->oie_category }}
-                        </span>
-                    @endif
-                </div>
-            @endif
-
-            <div class="mt-5">
-                <a href="{{ route('drugs.diseases.article', $disease->slug) }}" wire:navigate
-                    class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors">
-                    <x-lucide-file-text class="w-4 h-4" />
-                    {{ __('drugs.disease.read_article') }}
-                </a>
+        {{-- Classification chips --}}
+        @if ($classification)
+            <div class="bg-neutral-primary-soft rounded-base shadow-xs px-5 py-3 flex flex-wrap gap-2 dark:bg-slate-800">
+                @if ($classification->etiology_type)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
+                        <x-lucide-bug class="w-3.5 h-3.5" />
+                        {{ $classification->etiology_type }}
+                    </span>
+                @endif
+                @if ($classification->zoonotic)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-danger-soft border border-danger-subtle text-fg-danger-strong dark:bg-red-950 dark:border-red-900 dark:text-red-300">
+                        <x-lucide-users class="w-3.5 h-3.5" />
+                        {{ __('drugs.disease.zoonotic') }}
+                    </span>
+                @endif
+                @if ($classification->notifiable)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-success-soft border border-success-subtle text-fg-success-strong dark:bg-green-950 dark:border-green-900 dark:text-green-300">
+                        <x-lucide-bell-ring class="w-3.5 h-3.5" />
+                        {{ __('drugs.disease.notifiable') }}
+                    </span>
+                @endif
+                @if ($classification->oie_category)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-neutral-secondary-soft border border-default-medium text-body dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300">
+                        {{ __('drugs.disease.oie_category') }}: {{ $classification->oie_category }}
+                    </span>
+                @endif
             </div>
-        </div>
+        @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 

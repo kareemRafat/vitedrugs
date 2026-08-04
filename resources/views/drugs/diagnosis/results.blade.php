@@ -5,20 +5,24 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.diagnosis.results_heading') }}</h1>
-                    <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.diagnosis.results_subtitle') }}</p>
-                </div>
-                <a href="{{ route('drugs.diagnosis') }}" wire:navigate
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-fg-brand border border-brand rounded-base hover:bg-brand-soft transition-colors dark:text-brand dark:hover:bg-brand/20">
-                    <x-lucide-rotate-ccw class="w-4 h-4" />
-                    {{ __('drugs.diagnosis.restart') }}
-                </a>
-            </div>
-        </div>
+        @php $totalResults = collect($primaryResults)->count() + collect($secondaryResults)->count() + collect($lowSupportResults)->count(); @endphp
+
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.diagnosis.results_heading')"
+            :subtitle="__('drugs.diagnosis.results_subtitle')"
+            :badge="__('drugs.hero.badge.results')"
+            badgeIcon="star"
+            :stats="[
+                ['count' => $totalResults, 'label' => __('drugs.hero.stats.diseases'), 'icon' => 'activity'],
+            ]"
+        >
+            <a href="{{ route('drugs.diagnosis') }}" wire:navigate
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
+                <x-lucide-rotate-ccw class="w-4 h-4" />
+                {{ __('drugs.diagnosis.restart') }}
+            </a>
+        </x-drugs.page-hero>
 
         @if (collect($primaryResults)->isEmpty() && collect($secondaryResults)->isEmpty() && collect($lowSupportResults)->isEmpty())
 

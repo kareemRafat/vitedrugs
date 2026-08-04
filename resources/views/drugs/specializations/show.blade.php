@@ -14,25 +14,25 @@
 
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 sm:p-6 dark:bg-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand flex items-center justify-center shrink-0">
-                        <x-dynamic-component :component="'lucide-' . $icon" class="w-6 h-6" />
-                    </div>
-                    <div>
-                        <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white">{{ __('drugs.specializations.groups.' . $group) }}</h1>
-                        <p class="text-sm text-body dark:text-slate-400 mt-0.5">{{ $species->pluck('display_name')->implode(', ') }}</p>
-                    </div>
-                </div>
-                <a href="{{ route('drugs.specializations.index') }}" wire:navigate
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-fg-brand border border-brand rounded-base hover:bg-brand-soft transition-colors dark:text-brand dark:hover:bg-brand/20">
-                    <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
-                    {{ __('drugs.specializations.back') }}
-                </a>
-            </div>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.specializations.groups.' . $group)"
+            :subtitle="$species->pluck('display_name')->implode(', ')"
+            :badge="__('drugs.hero.badge.specializations')"
+            :badgeIcon="$icon"
+            :stats="[
+                ['count' => $diseases->count(), 'label' => __('drugs.hero.stats.diseases'), 'icon' => 'activity'],
+                ['count' => $products->count(), 'label' => __('drugs.hero.stats.products'), 'icon' => 'package'],
+                ['count' => $articles->count(), 'label' => __('drugs.hero.stats.articles'), 'icon' => 'file-text'],
+                ['count' => $microorganisms->count(), 'label' => __('drugs.hero.stats.microorganisms'), 'icon' => 'bug'],
+            ]"
+        >
+            <a href="{{ route('drugs.specializations.index') }}" wire:navigate
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
+                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                {{ __('drugs.specializations.back') }}
+            </a>
+        </x-drugs.page-hero>
 
         {{-- Stat chips --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">

@@ -5,34 +5,29 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Search form --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.search.heading') }}</h1>
-                    <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.search.subtitle') }}</p>
-                </div>
-            </div>
-
-            <form method="GET" action="{{ route('drugs.search') }}" class="mt-4">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="relative sm:col-span-2">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                            <x-lucide-search class="w-4 h-4 text-body dark:text-slate-400" />
-                        </div>
-                        <input type="text" name="q" value="{{ $query }}"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                            placeholder="{{ __('drugs.search.placeholder') }}">
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.search.heading')"
+            :subtitle="__('drugs.search.subtitle')"
+            :badge="__('drugs.hero.badge.knowledge_base')"
+            badgeIcon="search"
+        >
+            <form method="GET" action="{{ route('drugs.search') }}">
+                <div class="relative w-full sm:w-1/2">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                        <x-lucide-search class="w-4 h-4 text-body dark:text-slate-400" />
                     </div>
-                    <div class="flex gap-2">
-                        <button type="submit"
-                            class="w-full text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                            {{ __('drugs.search.button') }}
-                        </button>
-                    </div>
+                    <input type="text" name="q" value="{{ $query }}"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 pe-32 px-3 py-3 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                        placeholder="{{ __('drugs.search.placeholder') }}">
+                    <button type="submit"
+                        class="absolute inset-y-1 end-1 inline-flex items-center justify-center gap-1.5 px-4 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base focus:outline-none">
+                        <x-lucide-search class="w-4 h-4" />
+                        {{ __('drugs.search.button') }}
+                    </button>
                 </div>
             </form>
-        </div>
+        </x-drugs.page-hero>
 
         @if (filled($query))
 

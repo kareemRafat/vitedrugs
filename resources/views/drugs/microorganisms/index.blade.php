@@ -5,11 +5,16 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.microorganisms.heading') }}</h1>
-            <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.microorganisms.subtitle') }}</p>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.microorganisms.heading')"
+            :subtitle="__('drugs.microorganisms.subtitle')"
+            :badge="__('drugs.hero.badge.microorganisms')"
+            badgeIcon="bug"
+            :stats="[
+                ['count' => $grouped->flatten()->count(), 'label' => __('drugs.hero.stats.microorganisms'), 'icon' => 'microscope'],
+            ]"
+        />
 
         @foreach ($grouped as $type => $items)
             <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">

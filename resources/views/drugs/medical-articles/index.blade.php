@@ -5,19 +5,16 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.medical_articles.heading') }}</h1>
-                    <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.medical_articles.subtitle') }}</p>
-                </div>
-                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-base bg-brand-soft text-fg-brand text-sm font-semibold dark:bg-brand/20 dark:text-brand">
-                    <x-lucide-file-text class="w-4 h-4" />
-                    {{ $articles->total() }} {{ __('drugs.medical_articles.count') }}
-                </span>
-            </div>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.medical_articles.heading')"
+            :subtitle="__('drugs.medical_articles.subtitle')"
+            :badge="__('drugs.hero.badge.articles')"
+            badgeIcon="book-marked"
+            :stats="[
+                ['count' => $articles->total(), 'label' => __('drugs.hero.stats.articles'), 'icon' => 'file-text'],
+            ]"
+        />
 
         @if ($articles->isEmpty())
 

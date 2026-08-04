@@ -18,6 +18,26 @@
             <span class="text-heading dark:text-white font-medium">{{ $project->title }}</span>
         </nav>
 
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="$project->title"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($project->summary ?? ''), 220)"
+            :badge="$project->project_type ? __('drugs.projects.types.' . $project->project_type) : __('drugs.hero.badge.projects')"
+            badgeIcon="folder-kanban"
+        >
+            @if ($project->featured)
+                <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-base bg-white/15 border border-white/30 text-white">
+                    <x-lucide-star class="w-3 h-3" />
+                    {{ __('drugs.projects.featured') }}
+                </span>
+            @endif
+            <a href="{{ route('drugs.projects.index') }}" wire:navigate
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
+                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                {{ __('drugs.projects.back') }}
+            </a>
+        </x-drugs.page-hero>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
             {{-- Main --}}
@@ -45,14 +65,6 @@
                                     </span>
                                 @endif
                             </div>
-
-                            <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-6">{{ $project->title }}</h1>
-
-                            @if ($project->summary)
-                                <div class="text-base sm:text-lg text-body dark:text-slate-300 leading-relaxed mb-8 border-s-4 border-brand ps-4">
-                                    {{ $project->summary }}
-                                </div>
-                            @endif
 
                             @if (filled($project->content))
                                 <div class="max-w-none prose-article text-body dark:text-slate-300 leading-relaxed

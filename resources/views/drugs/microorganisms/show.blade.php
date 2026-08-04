@@ -15,6 +15,13 @@
         ];
         $causes = $microorganism->diseases->filter(fn ($d) => ($d->pivot->role ?? null) === 'cause');
         $associated = $microorganism->diseases->filter(fn ($d) => ($d->pivot->role ?? null) !== 'cause');
+        $typeIcon = match ($microorganism->microorganism_type) {
+            'bacteria' => 'bug',
+            'virus' => 'dna',
+            'fungus' => 'sprout',
+            'parasite' => 'worm',
+            default => 'microscope',
+        };
     @endphp
 
     <div class="space-y-4">
@@ -28,38 +35,38 @@
             <span class="text-heading dark:text-white font-medium">{{ $microorganism->name }}</span>
         </nav>
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 sm:p-6 dark:bg-slate-800">
-            <div class="flex flex-wrap items-center gap-3">
-                <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white">{{ $microorganism->name }}</h1>
-                @if ($microorganism->microorganism_type)
-                    <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
-                        {{ __('drugs.microorganisms.types.' . $microorganism->microorganism_type) }}
-                    </span>
-                @endif
-                @if ($microorganism->is_pathogenic)
-                    <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-base bg-danger-soft border border-danger-subtle text-fg-danger-strong dark:bg-red-950 dark:border-red-900 dark:text-red-300">
-                        <x-lucide-alert-triangle class="w-3.5 h-3.5 me-1" />
-                        {{ __('drugs.microorganisms.pathogenic') }}
-                    </span>
-                @endif
-            </div>
-
-            @if ($microorganism->normalized_name && $microorganism->normalized_name !== $microorganism->name)
-                <p class="mt-1 text-sm text-body dark:text-slate-400">{{ $microorganism->normalized_name }}</p>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="$microorganism->name"
+            :subtitle="$microorganism->normalized_name && $microorganism->normalized_name !== $microorganism->name ? $microorganism->normalized_name : ''"
+            :badge="$microorganism->microorganism_type ? __('drugs.microorganisms.types.' . $microorganism->microorganism_type) : __('drugs.hero.badge.microorganisms')"
+            :badgeIcon="$typeIcon"
+            :stats="[
+                ['count' => $microorganism->diseases->count(), 'label' => __('drugs.hero.stats.linked_diseases'), 'icon' => 'activity'],
+            ]"
+        >
+            @if ($microorganism->is_pathogenic)
+                <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-base bg-red-500/25 border border-red-300/50 text-white">
+                    <x-lucide-alert-triangle class="w-3.5 h-3.5 me-1" />
+                    {{ __('drugs.microorganisms.pathogenic') }}
+                </span>
             @endif
-
             @if (filled($microorganism->tags))
-                <div class="mt-4 flex flex-wrap gap-1.5">
+                <div class="flex flex-wrap gap-1.5">
                     @foreach ((array) $microorganism->tags as $tag)
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-base bg-neutral-secondary-soft border border-default-medium text-body dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-base bg-white/15 border border-white/30 text-white/90">
                             <x-lucide-tag class="w-3 h-3" />
                             {{ $tag }}
                         </span>
                     @endforeach
                 </div>
             @endif
-        </div>
+            <a href="{{ route('drugs.microorganisms.index') }}" wire:navigate
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
+                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                {{ __('drugs.microorganisms.back') }}
+            </a>
+        </x-drugs.page-hero>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 

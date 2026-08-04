@@ -18,6 +18,14 @@
             <span class="text-heading dark:text-white font-medium">{{ $article->title }}</span>
         </nav>
 
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="$article->title"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($article->summary ?? ''), 220)"
+            :badge="__('drugs.hero.badge.article')"
+            badgeIcon="book-marked"
+        />
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
             {{-- Main --}}
@@ -44,14 +52,6 @@
                                     </span>
                                 @endif
                             </div>
-
-                            <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-6">{{ $article->title }}</h1>
-
-                            @if ($article->summary)
-                                <div class="text-base sm:text-lg text-body dark:text-slate-300 leading-relaxed mb-8 border-s-4 border-brand ps-4">
-                                    {{ $article->summary }}
-                                </div>
-                            @endif
 
                             {{-- Body --}}
                             <div class="max-w-none prose-article text-body dark:text-slate-300 leading-relaxed

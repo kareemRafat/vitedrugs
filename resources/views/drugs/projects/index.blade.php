@@ -5,15 +5,16 @@
 @section('content')
     <div class="space-y-4">
 
-        {{-- Header --}}
-        <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-heading dark:text-white">{{ __('drugs.projects.heading') }}</h1>
-                    <p class="text-body dark:text-slate-400 text-base mt-1">{{ __('drugs.projects.subtitle') }}</p>
-                </div>
-            </div>
-        </div>
+        {{-- Hero --}}
+        <x-drugs.page-hero
+            :heading="__('drugs.projects.heading')"
+            :subtitle="__('drugs.projects.subtitle')"
+            :badge="__('drugs.hero.badge.projects')"
+            badgeIcon="folder-kanban"
+            :stats="[
+                ['count' => $projects->total(), 'label' => __('drugs.hero.stats.projects'), 'icon' => 'folder-kanban'],
+            ]"
+        />
 
         @if ($projects->isEmpty())
 
