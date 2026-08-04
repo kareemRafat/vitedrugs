@@ -26,8 +26,10 @@ Route::group([
         Route::get('search', [SearchController::class, 'index'])->name('drugs.search');
 
         Route::get('diagnosis', [DiagnosticController::class, 'index'])->name('drugs.diagnosis');
+        Route::get('diagnosis/suggestions', [DiagnosticController::class, 'suggestions'])->name('drugs.diagnosis.suggestions');
         Route::post('diagnosis', [DiagnosticController::class, 'diagnose'])->name('drugs.diagnosis.run');
-        Route::post('diagnosis/results', [DiagnosticController::class, 'refinedResults'])->name('drugs.diagnosis.results');
+        Route::get('diagnosis/results', [DiagnosticController::class, 'showResults'])->name('drugs.diagnosis.results');
+        Route::post('diagnosis/results', [DiagnosticController::class, 'refinedResults'])->name('drugs.diagnosis.results.store');
 
         Route::get('filter', [FilterController::class, 'index'])->name('drugs.filter');
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('drugs.filter.suggestions');
