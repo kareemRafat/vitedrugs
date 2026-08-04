@@ -5,6 +5,7 @@
 @section('content')
     <div class="space-y-4">
         <x-drugs.page-hero :heading="__('drugs.diagnosis.refinement_heading')" :subtitle="__('drugs.diagnosis.refinement_subtitle')" :badge="__('drugs.hero.badge.step_2')" badgeIcon="list-checks" />
+        <x-drugs.stepper :current="2" />
         <form method="POST" action="{{ route('drugs.diagnosis.results.store') }}" class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
             @csrf
             <input type="hidden" name="host_species_id" value="{{ $hostSpeciesId }}">
@@ -24,7 +25,7 @@
                 </div>
             @endif
             <div class="mt-6 pt-5 border-t border-default-medium flex items-center justify-between gap-3">
-                <a href="{{ route('drugs.diagnosis') }}" class="text-sm font-semibold text-fg-brand hover:underline">{{ __('drugs.diagnosis.refinement_back') }}</a>
+                <a href="{{ route('drugs.diagnosis') }}" wire:navigate class="text-sm font-semibold text-fg-brand hover:underline">{{ __('drugs.diagnosis.refinement_back') }}</a>
                 <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base"><x-lucide-check-circle class="w-4 h-4" />{{ __('drugs.diagnosis.refinement_continue') }}</button>
             </div>
         </form>

@@ -8,6 +8,7 @@ return [
     ],
     'min' => [
         'string' => 'The :attribute must be at least :min characters.',
+        'array' => 'The :attribute must contain at least :min items.',
     ],
     'unique' => 'The :attribute has already been taken.',
     'confirmed' => 'The :attribute confirmation does not match.',
@@ -16,6 +17,8 @@ return [
     'integer' => 'The :attribute must be an integer.',
     'array' => 'The :attribute must be an array.',
     'in' => 'The selected :attribute is invalid.',
+    'exists' => 'The selected :attribute is invalid.',
+    'distinct' => 'The :attribute field has a duplicate value.',
     'required_with' => 'The :attribute field is required.',
 
     'login' => [
@@ -86,6 +89,15 @@ return [
         'active_ingredients.*.name' => 'ingredient name',
     ],
 
+    'diagnosis' => [
+        'species_required' => 'Please select an animal type.',
+        'species_invalid' => 'The selected animal type is invalid.',
+        'signs_required' => 'Please select at least three clinical signs.',
+        'signs_min' => 'Please select at least :min clinical signs.',
+        'sign_invalid' => 'One of the selected clinical signs is invalid. Please choose from the suggestions.',
+        'sign_duplicate' => 'Please remove duplicate clinical signs.',
+    ],
+
     'attributes' => [
         'name' => 'name',
         'email' => 'email address',
@@ -94,5 +106,8 @@ return [
         'current_password' => 'current password',
         'subject' => 'subject',
         'message' => 'message',
+        'host_species_id' => 'animal type',
+        'clinical_signs' => 'clinical signs',
+        'refinement_signs' => 'refinement signs',
     ],
 ];

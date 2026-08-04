@@ -195,6 +195,12 @@ return [
             'neonatal_disorders' => 'اضطرابات حديثي الولادة',
             'purulent_and_exudative_signs' => 'علامات صديدية وإفرازية',
         ],
+        'step_of' => 'الخطوة :current من :total',
+        'steps' => [
+            'signs' => 'اختيار العلامات',
+            'refine' => 'تأكيد التشخيص',
+            'results' => 'عرض النتائج',
+        ],
     ],
 
     'filter' => [

@@ -195,6 +195,12 @@ return [
             'neonatal_disorders' => 'Neonatal Disorders',
             'purulent_and_exudative_signs' => 'Purulent and Exudative Signs',
         ],
+        'step_of' => 'Step :current of :total',
+        'steps' => [
+            'signs' => 'Select Signs',
+            'refine' => 'Confirm Diagnosis',
+            'results' => 'View Results',
+        ],
     ],
 
     'filter' => [

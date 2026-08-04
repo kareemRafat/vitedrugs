@@ -22,4 +22,18 @@ class InitialDiagnosisRequest extends FormRequest
             'clinical_signs.*' => ['required', 'integer', 'distinct', Rule::exists(ClinicalSign::class, 'id')],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'host_species_id.required' => __('validation.diagnosis.species_required'),
+            'host_species_id.exists' => __('validation.diagnosis.species_invalid'),
+            'clinical_signs.required' => __('validation.diagnosis.signs_required'),
+            'clinical_signs.min' => __('validation.diagnosis.signs_min'),
+            'clinical_signs.*.required' => __('validation.diagnosis.sign_invalid'),
+            'clinical_signs.*.integer' => __('validation.diagnosis.sign_invalid'),
+            'clinical_signs.*.exists' => __('validation.diagnosis.sign_invalid'),
+            'clinical_signs.*.distinct' => __('validation.diagnosis.sign_duplicate'),
+        ];
+    }
 }

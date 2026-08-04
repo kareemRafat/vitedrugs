@@ -8,6 +8,7 @@ return [
     ],
     'min' => [
         'string' => 'يجب أن يكون :attribute على الأقل :min أحرف.',
+        'array' => 'يجب أن يحتوي :attribute على :min عناصر على الأقل.',
     ],
     'unique' => ':attribute مسجل بالفعل.',
     'confirmed' => 'تأكيد :attribute غير متطابق.',
@@ -16,6 +17,8 @@ return [
     'integer' => 'يجب أن يكون :attribute رقمًا صحيحًا.',
     'array' => 'يجب أن يكون :attribute مصفوفة.',
     'in' => ':attribute المحدد غير صحيح.',
+    'exists' => ':attribute المحدد غير صحيح.',
+    'distinct' => 'يحتوي حقل :attribute على قيمة مكررة.',
     'required_with' => 'حقل :attribute مطلوب.',
 
     'login' => [
@@ -84,6 +87,15 @@ return [
         'active_ingredients.*.name' => 'اسم المادة الفعالة',
     ],
 
+    'diagnosis' => [
+        'species_required' => 'يرجى اختيار النوع الحيواني.',
+        'species_invalid' => 'النوع الحيواني المحدد غير صحيح.',
+        'signs_required' => 'يرجى اختيار ثلاث علامات سريرية على الأقل.',
+        'signs_min' => 'يرجى اختيار :min علامات سريرية على الأقل.',
+        'sign_invalid' => 'إحدى العلامات السريرية المحددة غير صحيحة. يرجى الاختيار من الاقتراحات.',
+        'sign_duplicate' => 'يرجى إزالة العلامات السريرية المكررة.',
+    ],
+
     'attributes' => [
         'name' => 'الاسم',
         'email' => 'البريد الإلكتروني',
@@ -91,5 +103,8 @@ return [
         'current_password' => 'كلمة المرور الحالية',
         'subject' => 'الموضوع',
         'message' => 'الرسالة',
+        'host_species_id' => 'النوع الحيواني',
+        'clinical_signs' => 'العلامات السريرية',
+        'refinement_signs' => 'علامات التحسين',
     ],
 ];

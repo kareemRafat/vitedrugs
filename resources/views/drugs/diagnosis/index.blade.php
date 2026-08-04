@@ -10,6 +10,7 @@
             :badge="__('drugs.hero.badge.diagnosis')"
             badgeIcon="stethoscope"
         />
+        <x-drugs.stepper :current="1" />
 
         <form method="POST" action="{{ route('drugs.diagnosis.run') }}" class="bg-neutral-primary-soft rounded-base shadow-xs p-5 space-y-6 dark:bg-slate-800">
             @csrf
