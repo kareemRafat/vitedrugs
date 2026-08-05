@@ -27,13 +27,6 @@
 
     <div class="space-y-4">
 
-        {{-- Breadcrumb --}}
-        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
-            <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.drugs') }}</a>
-            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <span class="text-heading dark:text-white font-medium">{{ $isArabic && $disease->name_ar ? $disease->name_ar : $disease->name }}</span>
-        </nav>
-
         {{-- Hero --}}
         <x-large-animals.page-hero
             :heading="$isArabic && $disease->name_ar ? $disease->name_ar : $disease->name"
@@ -45,15 +38,24 @@
                 ['count' => $disease->hostSpecies->count(), 'label' => __('large-animals.hero.stats.species'), 'icon' => 'paw-print'],
             ]"
         >
-            @if ($disease->name_ar && app()->getLocale() === 'ar')
-                <p class="text-white/85 text-base">{{ $disease->name_ar }}</p>
-            @endif
-            <a href="{{ route('large-animals.diseases.article', $disease->slug) }}" wire:navigate
-                class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-white/15 hover:bg-white/25 border border-white/30 rounded-base transition-colors">
-                <x-lucide-file-text class="w-4 h-4" />
-                {{ __('large-animals.disease.read_article') }}
-            </a>
+            <div class="flex flex-col items-start gap-3">
+                @if ($disease->name_ar && app()->getLocale() === 'ar')
+                    <p class="text-white/85 text-base">{{ $disease->name_ar }}</p>
+                @endif
+                <a href="{{ route('large-animals.diseases.article', $disease->slug) }}" wire:navigate
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-white/15 text-white border border-white/30 hover:bg-white/25 transition-colors dark:bg-white/10 dark:border-white/25 dark:hover:bg-white/20">
+                    <x-lucide-file-text class="w-3.5 h-3.5" />
+                    {{ __('large-animals.disease.read_article') }}
+                </a>
+            </div>
         </x-large-animals.page-hero>
+
+        {{-- Breadcrumb --}}
+        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
+            <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.drugs') }}</a>
+            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
+            <span class="text-heading dark:text-white font-medium">{{ $isArabic && $disease->name_ar ? $disease->name_ar : $disease->name }}</span>
+        </nav>
 
         {{-- Classification chips --}}
         @if ($classification)

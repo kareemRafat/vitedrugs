@@ -27,6 +27,7 @@ class KnowledgeBaseSeeder extends Seeder
             // Microorganisms + their links
             MicroorganismSeeder::class,
             DiseaseMicroorganismSeeder::class,
+            MicroorganismActiveIngredientSeeder::class,
 
             // Content entities
             MedicalArticleSeeder::class,

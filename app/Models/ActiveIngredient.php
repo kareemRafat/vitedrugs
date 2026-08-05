@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\LargeAnimals\Microorganism;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActiveIngredient extends Model
@@ -55,5 +57,18 @@ class ActiveIngredient extends Model
     public function drugInteractions()
     {
         return $this->hasMany(DrugInteraction::class);
+    }
+
+    public function microorganisms(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Microorganism::class,
+            'microorganism_active_ingredient'
+        )
+            ->withPivot([
+                'sensitivity',
+                'notes',
+            ])
+            ->withTimestamps();
     }
 }

@@ -1,3 +1,4 @@
+﻿/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -17,7 +18,7 @@ CREATE TABLE `abbreviations` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `abbreviations_abbreviation_unique` (`abbreviation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `active_ingredient_drug_class`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -33,7 +34,7 @@ CREATE TABLE `active_ingredient_drug_class` (
   KEY `active_ingredient_drug_class_drug_class_id_foreign` (`drug_class_id`),
   CONSTRAINT `active_ingredient_drug_class_active_ingredient_id_foreign` FOREIGN KEY (`active_ingredient_id`) REFERENCES `active_ingredients` (`id`) ON DELETE CASCADE,
   CONSTRAINT `active_ingredient_drug_class_drug_class_id_foreign` FOREIGN KEY (`drug_class_id`) REFERENCES `drug_classes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `active_ingredients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -95,7 +96,7 @@ CREATE TABLE `anatomical_structures` (
   KEY `anatomical_structures_parent_id_foreign` (`parent_id`),
   CONSTRAINT `anatomical_structures_body_system_id_foreign` FOREIGN KEY (`body_system_id`) REFERENCES `body_systems` (`id`) ON DELETE CASCADE,
   CONSTRAINT `anatomical_structures_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `anatomical_structures` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=247 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `articles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -120,7 +121,7 @@ CREATE TABLE `articles` (
   UNIQUE KEY `articles_slug_unique` (`slug`),
   UNIQUE KEY `articles_unique_articleable` (`articleable_type`,`articleable_id`),
   KEY `articles_articleable_type_articleable_id_index` (`articleable_type`,`articleable_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=338 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `blog_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -178,7 +179,7 @@ CREATE TABLE `body_systems` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `body_systems_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `cache`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -221,7 +222,7 @@ CREATE TABLE `clinical_course_types` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `clinical_course_types_slug_unique` (`slug`),
   UNIQUE KEY `clinical_course_types_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `clinical_severity_levels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -242,7 +243,7 @@ CREATE TABLE `clinical_severity_levels` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `clinical_severity_levels_slug_unique` (`slug`),
   UNIQUE KEY `clinical_severity_levels_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `clinical_signs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -270,7 +271,7 @@ CREATE TABLE `clinical_signs` (
   CONSTRAINT `clinical_signs_finding_id_foreign` FOREIGN KEY (`finding_id`) REFERENCES `findings` (`id`) ON DELETE CASCADE,
   CONSTRAINT `clinical_signs_modifier_id_foreign` FOREIGN KEY (`modifier_id`) REFERENCES `modifiers` (`id`) ON DELETE SET NULL,
   CONSTRAINT `clinical_signs_severity_level_id_foreign` FOREIGN KEY (`severity_level_id`) REFERENCES `clinical_severity_levels` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1258 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `companies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -375,7 +376,7 @@ CREATE TABLE `differential_syndrome_clinical_sign` (
   KEY `dscs_sign_fk` (`clinical_sign_id`),
   CONSTRAINT `dscs_sign_fk` FOREIGN KEY (`clinical_sign_id`) REFERENCES `clinical_signs` (`id`) ON DELETE CASCADE,
   CONSTRAINT `dscs_syndrome_fk` FOREIGN KEY (`differential_syndrome_id`) REFERENCES `differential_syndromes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `differential_syndrome_disease`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -390,7 +391,7 @@ CREATE TABLE `differential_syndrome_disease` (
   PRIMARY KEY (`id`),
   KEY `dsd_syndrome_fk` (`differential_syndrome_id`),
   KEY `differential_syndrome_disease_disease_id_foreign` (`disease_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `differential_syndromes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -403,7 +404,7 @@ CREATE TABLE `differential_syndromes` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_classifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -426,7 +427,7 @@ CREATE TABLE `disease_classifications` (
   CONSTRAINT `disease_classifications_disease_id_foreign` FOREIGN KEY (`disease_id`) REFERENCES `diseases` (`id`) ON DELETE CASCADE,
   CONSTRAINT `disease_classifications_chk_1` CHECK (json_valid(`occurrence_patterns`)),
   CONSTRAINT `disease_classifications_chk_2` CHECK (json_valid(`disease_courses`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_clinical_course`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -442,7 +443,7 @@ CREATE TABLE `disease_clinical_course` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `dcc_unique` (`disease_id`,`clinical_course_type_id`),
   KEY `disease_clinical_course_clinical_course_type_id_foreign` (`clinical_course_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_clinical_sign`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -482,7 +483,7 @@ CREATE TABLE `disease_host_species` (
   KEY `disease_host_species_host_species_id_foreign` (`host_species_id`),
   CONSTRAINT `disease_host_species_disease_id_foreign` FOREIGN KEY (`disease_id`) REFERENCES `diseases` (`id`) ON DELETE CASCADE,
   CONSTRAINT `disease_host_species_host_species_id_foreign` FOREIGN KEY (`host_species_id`) REFERENCES `host_species` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_microorganism`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -512,7 +513,7 @@ CREATE TABLE `disease_product` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `disease_product_disease_id_product_id_unique` (`disease_id`,`product_id`),
   KEY `disease_product_product_id_foreign` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_reservoir`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -530,7 +531,7 @@ CREATE TABLE `disease_reservoir` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `disease_reservoir_disease_id_reservoir_id_unique` (`disease_id`,`reservoir_id`),
   KEY `disease_reservoir_reservoir_id_foreign` (`reservoir_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=363 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_severity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -546,7 +547,7 @@ CREATE TABLE `disease_severity` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `dsv_unique` (`disease_id`) USING BTREE,
   UNIQUE KEY `unique_disease_severity` (`disease_id`,`severity_level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_species`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -574,7 +575,7 @@ CREATE TABLE `disease_transmission_routes` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `disease_transmission_unique` (`disease_id`,`transmission_route_id`),
   KEY `disease_transmission_routes_transmission_route_id_foreign` (`transmission_route_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_transmission_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -592,7 +593,7 @@ CREATE TABLE `disease_transmission_type` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `disease_transmission_type_disease_id_transmission_type_id_unique` (`disease_id`,`transmission_type_id`),
   KEY `disease_transmission_type_transmission_type_id_foreign` (`transmission_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=279 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `disease_vector`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -610,7 +611,7 @@ CREATE TABLE `disease_vector` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `disease_vector_disease_id_vector_id_unique` (`disease_id`,`vector_id`),
   KEY `disease_vector_vector_id_foreign` (`vector_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `diseases`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -683,7 +684,7 @@ CREATE TABLE `drug_categories` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `drug_categories_name_en_unique` (`name_en`),
   UNIQUE KEY `drug_categories_slug_unique` (`slug`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `drug_classes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -733,7 +734,7 @@ CREATE TABLE `drug_therapeutic_use` (
   KEY `drug_therapeutic_use_therapeutic_use_id_foreign` (`therapeutic_use_id`),
   CONSTRAINT `drug_therapeutic_use_drug_id_foreign` FOREIGN KEY (`drug_id`) REFERENCES `drugs` (`id`) ON DELETE CASCADE,
   CONSTRAINT `drug_therapeutic_use_therapeutic_use_id_foreign` FOREIGN KEY (`therapeutic_use_id`) REFERENCES `therapeutic_uses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=504 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `drugs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -754,7 +755,7 @@ CREATE TABLE `drugs` (
   UNIQUE KEY `drugs_slug_unique` (`slug`),
   KEY `drugs_drug_category_id_foreign` (`drug_category_id`),
   CONSTRAINT `drugs_drug_category_id_foreign` FOREIGN KEY (`drug_category_id`) REFERENCES `drug_categories` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=337 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `failed_jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -769,7 +770,7 @@ CREATE TABLE `failed_jobs` (
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `findings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -792,7 +793,7 @@ CREATE TABLE `findings` (
   UNIQUE KEY `findings_slug_unique` (`slug`),
   KEY `findings_parent_id_foreign` (`parent_id`),
   CONSTRAINT `findings_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `findings` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=696 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `host_species`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -810,7 +811,7 @@ CREATE TABLE `host_species` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `host_species_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `import_jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -878,7 +879,7 @@ CREATE TABLE `jobs` (
   `created_at` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `jobs_queue_index` (`queue`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `medical_articles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -899,6 +900,22 @@ CREATE TABLE `medical_articles` (
   UNIQUE KEY `medical_articles_slug_unique` (`slug`),
   KEY `medical_articles_disease_id_foreign` (`disease_id`),
   CONSTRAINT `medical_articles_disease_id_foreign` FOREIGN KEY (`disease_id`) REFERENCES `diseases` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `microorganism_active_ingredient`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `microorganism_active_ingredient` (
+  `microorganism_id` bigint unsigned NOT NULL,
+  `active_ingredient_id` char(26) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sensitivity` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`microorganism_id`,`active_ingredient_id`),
+  KEY `microorganism_active_ingredient_active_ingredient_id_foreign` (`active_ingredient_id`),
+  CONSTRAINT `microorganism_active_ingredient_active_ingredient_id_foreign` FOREIGN KEY (`active_ingredient_id`) REFERENCES `active_ingredients` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `microorganism_active_ingredient_microorganism_id_foreign` FOREIGN KEY (`microorganism_id`) REFERENCES `microorganisms` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `microorganisms`;
@@ -924,6 +941,7 @@ CREATE TABLE `microorganisms` (
   `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `is_topic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `microorganisms_slug_unique` (`slug`),
   KEY `microorganisms_name_index` (`name`),
@@ -934,7 +952,7 @@ CREATE TABLE `microorganisms` (
   KEY `microorganisms_microorganism_type_index` (`microorganism_type`),
   CONSTRAINT `microorganisms_chk_1` CHECK (json_valid(`json_data`)),
   CONSTRAINT `microorganisms_chk_2` CHECK (json_valid(`tags`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -944,7 +962,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `modifiers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -961,7 +979,7 @@ CREATE TABLE `modifiers` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `modifiers_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=470 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `password_reset_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1022,7 +1040,7 @@ CREATE TABLE `product_active_ingredient` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `product_ai_unique` (`product_id`,`active_ingredient_id`),
   KEY `product_active_ingredient_active_ingredient_id_foreign` (`active_ingredient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6215 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `product_company`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1116,7 +1134,7 @@ CREATE TABLE `reservoirs` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `reservoirs_slug_unique` (`slug`),
   UNIQUE KEY `reservoirs_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=190 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1182,7 +1200,7 @@ CREATE TABLE `synonyms` (
   UNIQUE KEY `unique_synonym_mapping` (`normalized_term`,`synonymable_type`,`synonymable_id`),
   KEY `synonyms_synonymable_type_synonymable_id_index` (`synonymable_type`,`synonymable_id`),
   KEY `synonyms_normalized_term_index` (`normalized_term`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=272 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `therapeutic_uses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1198,7 +1216,7 @@ CREATE TABLE `therapeutic_uses` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `therapeutic_uses_name_en_unique` (`name_en`),
   UNIQUE KEY `therapeutic_uses_slug_unique` (`slug`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=334 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `transmission_routes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1214,7 +1232,7 @@ CREATE TABLE `transmission_routes` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `transmission_routes_slug_unique` (`slug`),
   UNIQUE KEY `transmission_routes_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `transmission_types`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1240,7 +1258,7 @@ CREATE TABLE `transmission_types` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `transmission_types_slug_unique` (`slug`),
   UNIQUE KEY `transmission_types_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1258,7 +1276,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_phone_unique` (`phone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `vectors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1280,7 +1298,7 @@ CREATE TABLE `vectors` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `vectors_slug_unique` (`slug`),
   UNIQUE KEY `vectors_canonical_name_unique` (`canonical_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `veterinary_projects`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1325,81 +1343,8 @@ CREATE TABLE `withdrawal_periods` (
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (1,'0001_01_01_000000_create_users_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (2,'0001_01_01_000001_create_cache_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (3,'0001_01_01_000002_create_jobs_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4,'2026_06_14_122147_create_species_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (5,'2026_06_14_124817_create_dosage_forms_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6,'2026_06_14_125803_create_drug_classes_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7,'2026_06_14_133257_create_companies_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8,'2026_06_14_140135_create_active_ingredients_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9,'2026_06_14_140754_create_active_ingredient_drug_class_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10,'2026_06_14_141103_create_products_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11,'2026_06_14_154505_create_product_active_ingredient_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12,'2026_06_14_154817_create_product_images_table',3);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13,'2026_06_14_155012_create_product_documents_table',4);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14,'2026_06_14_155257_create_dosages_table',5);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15,'2026_06_14_155345_create_withdrawal_periods_table',6);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16,'2026_06_14_155422_create_alternatives_table',7);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2026_06_15_060712_create_indications_table',8);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2026_06_15_060713_create_contraindications_table',8);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2026_06_15_060714_create_precautions_table',8);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2026_06_15_060715_create_side_effects_table',8);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2026_06_15_090524_create_drug_interactions_table',9);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2026_06_16_003649_create_diseases_table',10);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2026_06_16_003910_create_disease_product_table',10);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2026_06_16_011743_create_import_jobs_table',11);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2026_06_16_023150_add_is_approved_to_import_jobs_table',12);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2026_06_16_131228_create_product_company_table',13);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (28,'2026_07_11_221438_add_fulltext_indexes_to_search_tables',14);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2026_07_11_232220_create_contact_submissions_table',15);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2026_07_12_111729_create_blog_categories_table',16);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2026_07_12_111730_create_blogs_table',16);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2026_07_21_152308_add_status_and_review_fields_to_products_table',17);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2026_07_14_105812_drop_company_id_from_products_table',18);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2026_07_24_123843_add_phone_to_users_table',19);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (58,'2026_07_13_120540_add_role_to_users_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (59,'2026_08_01_000000_create_body_systems_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (60,'2026_08_01_000001_create_anatomical_structures_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (61,'2026_08_01_000002_create_findings_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (62,'2026_08_01_000003_create_modifiers_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (63,'2026_08_01_000004_create_clinical_signs_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (64,'2026_08_01_000005_create_disease_species_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (65,'2026_08_01_000006_create_disease_clinical_sign_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (66,'2026_08_01_000007_create_synonyms_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (67,'2026_08_01_000008_create_abbreviations_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (68,'2026_08_01_000009_create_disease_classifications_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (69,'2026_08_01_000010_create_transmission_ontology_tables',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (70,'2026_08_01_000011_create_host_species_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (71,'2026_08_01_000012_create_disease_host_species_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (72,'2026_08_01_000013_create_transmission_type_ontology_tables',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (73,'2026_08_01_000014_create_reservoir_and_vector_ontology_tables',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (74,'2026_08_01_000015_create_clinical_severity_ontology_tables',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (75,'2026_08_01_000016_add_slug_to_findings_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (76,'2026_08_01_000017_add_is_general_sign_to_findings_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (77,'2026_08_01_000018_add_is_pathognomonic_to_disease_clinical_sign_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (78,'2026_08_01_000019_create_differential_syndromes_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (79,'2026_08_01_000020_create_differential_syndrome_clinical_sign_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (80,'2026_08_01_000021_create_differential_syndrome_disease_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (81,'2026_08_01_000022_create_medical_articles_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (82,'2026_08_01_000024_create_microorganisms_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (83,'2026_08_01_000025_add_slug_to_microorganisms_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (84,'2026_08_01_000026_add_type_to_anatomical_structures_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (85,'2026_08_01_000027_add_ontology_type_to_findings_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (86,'2026_08_01_000028_add_modifier_group_to_modifiers_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (87,'2026_08_01_000029_add_severity_level_id_to_clinical_signs_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (88,'2026_08_01_000030_add_semantic_unique_index_to_clinical_signs_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (89,'2026_08_01_000031_add_source_type_to_synonyms_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (90,'2026_08_01_000032_add_parent_id_to_findings_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (91,'2026_08_01_000033_add_is_noisy_to_findings_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (92,'2026_08_01_000034_add_semantic_slug_to_clinical_signs_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (93,'2026_08_01_000035_add_index_to_semantic_slug_in_clinical_signs_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (94,'2026_08_01_000036_add_is_noisy_to_modifiers_table',20);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (95,'2026_08_01_000023_add_knowledge_payload_to_diseases_table',21);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (96,'2026_08_03_111709_create_disease_microorganism_table',21);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (97,'2026_08_03_111710_create_veterinary_projects_table',21);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (98,'2026_08_03_114057_fix_disease_relation_columns_to_ulid',21);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (99,'2026_08_05_000000_add_arabic_display_names_to_drugs_ontology_tables',21);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (100,'2026_08_05_000001_add_display_name_ar_to_modifiers_table',22);

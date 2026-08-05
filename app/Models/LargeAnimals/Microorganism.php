@@ -2,8 +2,10 @@
 
 namespace App\Models\LargeAnimals;
 
+use App\Models\ActiveIngredient;
 use App\Models\Disease;
 use Database\Factories\MicroorganismFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,18 +52,37 @@ class Microorganism extends Model
         'source_json_file',
         'tags',
         'slug',
+        'is_topic',
     ];
 
     protected $casts = [
         'is_pathogenic' => 'boolean',
+        'is_topic' => 'boolean',
         'json_data' => 'array',
         'tags' => 'array',
     ];
+
+    public function scopeCatalogue(Builder $query): Builder
+    {
+        return $query
+            ->where('is_topic', false)
+            ->whereNotNull('slug');
+    }
 
     public function diseases(): BelongsToMany
     {
         return $this->belongsToMany(Disease::class, 'disease_microorganism')
             ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function activeIngredients(): BelongsToMany
+    {
+        return $this->belongsToMany(ActiveIngredient::class, 'microorganism_active_ingredient')
+            ->withPivot([
+                'sensitivity',
+                'notes',
+            ])
             ->withTimestamps();
     }
 }

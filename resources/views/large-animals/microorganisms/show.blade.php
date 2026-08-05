@@ -26,15 +26,6 @@
 
     <div class="space-y-4">
 
-        {{-- Breadcrumb --}}
-        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
-            <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.drugs') }}</a>
-            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.microorganisms') }}</a>
-            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <span class="text-heading dark:text-white font-medium">{{ $microorganism->name }}</span>
-        </nav>
-
         {{-- Hero --}}
         <x-large-animals.page-hero
             :heading="$microorganism->name"
@@ -45,28 +36,41 @@
                 ['count' => $microorganism->diseases->count(), 'label' => __('large-animals.hero.stats.linked_diseases'), 'icon' => 'activity'],
             ]"
         >
-            @if ($microorganism->is_pathogenic)
-                <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-base bg-red-500/25 border border-red-300/50 text-white">
-                    <x-lucide-alert-triangle class="w-3.5 h-3.5 me-1" />
-                    {{ __('large-animals.microorganisms.pathogenic') }}
-                </span>
-            @endif
-            @if (filled($microorganism->tags))
-                <div class="flex flex-wrap gap-1.5">
-                    @foreach ((array) $microorganism->tags as $tag)
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-base bg-white/15 border border-white/30 text-white/90">
-                            <x-lucide-tag class="w-3 h-3" />
-                            {{ $tag }}
+            <div class="flex flex-col items-start gap-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    @if ($microorganism->is_pathogenic)
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-red-500/20 border border-red-400/40 text-white dark:bg-red-500/25 dark:border-red-400/50">
+                            <x-lucide-alert-triangle class="w-3.5 h-3.5" />
+                            {{ __('large-animals.microorganisms.pathogenic') }}
                         </span>
-                    @endforeach
+                    @endif
+                    @if (filled($microorganism->tags))
+                        @foreach ((array) $microorganism->tags as $tag)
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-white/15 border border-white/25 text-white dark:bg-brand-soft/40 dark:border-brand-subtle dark:text-brand-light">
+                                <x-lucide-tag class="w-3.5 h-3.5" />
+                                {{ $tag }}
+                            </span>
+                        @endforeach
+                    @endif
                 </div>
-            @endif
-            <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate
-                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
-                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
-                {{ __('large-animals.microorganisms.back') }}
-            </a>
+                <div class="flex flex-wrap items-center gap-2">
+                    <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-white/15 text-white border border-white/30 hover:bg-white/25 transition-colors dark:bg-white/10 dark:border-white/25 dark:hover:bg-white/20">
+                        <x-lucide-arrow-left class="w-3.5 h-3.5 rtl:rotate-180" />
+                        {{ __('large-animals.microorganisms.back') }}
+                    </a>
+                </div>
+            </div>
         </x-large-animals.page-hero>
+
+        {{-- Breadcrumb --}}
+        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
+            <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.drugs') }}</a>
+            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
+            <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.microorganisms') }}</a>
+            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
+            <span class="text-heading dark:text-white font-medium">{{ $microorganism->name }}</span>
+        </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
@@ -123,6 +127,38 @@
                         <p class="text-base text-body dark:text-slate-400">{{ __('large-animals.microorganisms.no_diseases') }}</p>
                     </div>
                 @endif
+
+                {{-- Antibiotics --}}
+                <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
+                        <x-lucide-pill class="w-4 h-4 text-body dark:text-slate-400" />
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.microorganisms.antibiotics') }}</h2>
+                        @if ($microorganism->activeIngredients->isNotEmpty())
+                            <span class="ms-auto inline-flex items-center justify-center min-w-[1.5rem] px-2 py-0.5 text-sm font-semibold bg-brand-soft text-fg-brand rounded-base dark:bg-brand/20 dark:text-brand">{{ $microorganism->activeIngredients->count() }}</span>
+                        @endif
+                    </div>
+                    <div class="p-5">
+                        @forelse ($microorganism->activeIngredients as $ingredient)
+                            <div class="flex items-center justify-between gap-3 py-2.5 border-b border-default-medium last:border-b-0">
+                                <span class="text-sm font-medium text-heading dark:text-white">{{ $ingredient->name }}</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-base
+                                    {{ $ingredient->pivot->sensitivity === 'sensitive' ? 'bg-success-soft text-fg-success-strong dark:bg-green-950 dark:text-green-300'
+                                        : ($ingredient->pivot->sensitivity === 'moderate' ? 'bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand'
+                                        : 'bg-danger-soft text-fg-danger-strong dark:bg-red-950 dark:text-red-300') }}">
+                                    {{ __('large-animals.microorganisms.sensitivity.' . $ingredient->pivot->sensitivity) }}
+                                </span>
+                            </div>
+                            @if (filled($ingredient->pivot->notes))
+                                <p class="text-sm text-body dark:text-slate-400 mt-1">{{ $ingredient->pivot->notes }}</p>
+                            @endif
+                        @empty
+                            <div class="text-center py-6">
+                                <x-lucide-pill class="w-10 h-10 text-body mx-auto mb-2 dark:text-slate-500" />
+                                <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.microorganisms.no_antibiotics') }}</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
 
             </div>
 

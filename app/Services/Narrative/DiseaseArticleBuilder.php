@@ -3,6 +3,7 @@
 namespace App\Services\Narrative;
 
 use App\Models\Disease;
+use App\Models\LargeAnimals\Microorganism;
 
 class DiseaseArticleBuilder
 {
@@ -13,6 +14,12 @@ class DiseaseArticleBuilder
         $sections = [
             $this->overviewSection($disease),
         ];
+
+        $microorganisms = $this->microorganismSection($disease);
+
+        if ($microorganisms) {
+            $sections[] = $microorganisms;
+        }
 
         $signs = $this->clinicalSigns($disease, $payload);
 
@@ -99,24 +106,33 @@ class DiseaseArticleBuilder
             ];
         }
 
-        $microorganisms = $disease->microorganisms
-            ->pluck('display_name')
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values();
-
-        if ($microorganisms->isNotEmpty()) {
-            $items[] = [
-                'label' => 'Associated microorganisms',
-                'description' => $microorganisms->implode(', '),
-            ];
-        }
-
         return [
             'id' => 'overview',
             'title' => 'Overview',
             'items' => $items,
+        ];
+    }
+
+    private function microorganismSection(Disease $disease): array
+    {
+        $microorganisms = $disease->microorganisms
+            ->map(fn (Microorganism $microorganism) => [
+                'name' => $microorganism->name,
+                'slug' => $microorganism->slug,
+                'role' => $microorganism->pivot->role ?? 'cause',
+            ])
+            ->filter(fn (array $item) => filled($item['name']))
+            ->values()
+            ->toArray();
+
+        if (! $microorganisms) {
+            return [];
+        }
+
+        return [
+            'id' => 'microorganisms',
+            'title' => 'Microorganisms',
+            'items' => $microorganisms,
         ];
     }
 

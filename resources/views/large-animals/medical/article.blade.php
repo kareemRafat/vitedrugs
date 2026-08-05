@@ -51,7 +51,21 @@
                                 <section id="section-{{ $section['id'] }}" class="scroll-mt-24 border-t border-default-medium dark:border-slate-700 first:border-t-0 py-6 first:pt-0">
                                     <h2 class="text-2xl font-bold text-heading dark:text-white mb-4">{{ $section['title'] }}</h2>
 
-                                    @if ($section['id'] === 'references')
+                                    @if ($section['id'] === 'microorganisms')
+                                        <div class="space-y-2">
+                                            @foreach ($section['items'] as $microorganism)
+                                                <a href="{{ route('large-animals.microorganisms.show', $microorganism['slug']) }}" wire:navigate
+                                                    class="flex items-center justify-between gap-3 p-3 rounded-base border border-default-medium bg-neutral-secondary-soft hover:border-brand transition-colors dark:bg-slate-700 dark:border-slate-600 dark:hover:border-brand">
+                                                    <span class="text-sm font-medium text-heading dark:text-white">{{ $microorganism['name'] }}</span>
+                                                    @if (($microorganism['role'] ?? 'cause') === 'cause')
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-base bg-danger-soft text-fg-danger-strong dark:bg-red-950 dark:text-red-300">{{ __('large-animals.microorganisms.cause') }}</span>
+                                                    @else
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('large-animals.microorganisms.associated_role') }}</span>
+                                                    @endif
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @elseif ($section['id'] === 'references')
                                         <ul class="space-y-2">
                                             @foreach ($section['items'] as $item)
                                                 <li>

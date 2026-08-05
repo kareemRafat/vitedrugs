@@ -354,6 +354,15 @@ return [
         'back' => 'Back to microorganisms',
         'name' => 'Name',
         'tags' => 'Tags',
+        'antibiotics' => 'Antibiotics',
+        'no_antibiotics' => 'No linked antibiotics.',
+        'disease_count' => 'Linked diseases',
+        'antibiotic_count' => 'Linked antibiotics',
+        'sensitivity' => [
+            'sensitive' => 'Sensitive',
+            'moderate' => 'Moderately sensitive',
+            'resistant' => 'Resistant',
+        ],
     ],
 
     'specializations' => [
