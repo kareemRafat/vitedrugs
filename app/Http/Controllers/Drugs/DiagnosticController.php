@@ -10,8 +10,8 @@ use App\Models\Drugs\HostSpecies;
 use App\Services\Drugs\DiagnosisService;
 use App\Services\Drugs\DiagnosisShareService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class DiagnosticController extends Controller
 {
@@ -38,6 +38,8 @@ class DiagnosticController extends Controller
             return response()->json([]);
         }
 
+        $isArabicQuery = (bool) preg_match('/\p{Arabic}/u', $query);
+
         $signs = ClinicalSign::query()
             ->where(function ($builder) use ($query): void {
                 $builder->where('display_name', 'like', "%{$query}%")
@@ -50,10 +52,18 @@ class DiagnosticController extends Controller
             ->map(fn (ClinicalSign $sign): array => [
                 'id' => $sign->id,
                 'name' => $sign->localized_display_name,
+                'label' => $this->suggestionLabel($sign, $isArabicQuery),
                 'canonical_name' => $sign->canonical_name,
             ]);
 
         return response()->json($signs);
+    }
+
+    private function suggestionLabel(ClinicalSign $sign, bool $isArabicQuery): string
+    {
+        return $isArabicQuery && $sign->display_name_ar
+            ? "{$sign->display_name_ar} ({$sign->display_name})"
+            : $sign->display_name;
     }
 
     public function diagnose(InitialDiagnosisRequest $request)

@@ -45,7 +45,7 @@
                                     <input type="text" :id="`clinical-sign-${sign.key}`" x-model="sign.text" @input.debounce.200ms="search(index)" @focus="search(index)" autocomplete="off" required class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="{{ __('drugs.diagnosis.search_placeholder') }}">
                                     <div x-show="sign.open && sign.suggestions.length" x-cloak class="absolute z-20 mt-1 w-full overflow-hidden rounded-base border border-default-medium bg-neutral-primary-soft shadow-xs dark:bg-slate-800">
                                         <template x-for="suggestion in sign.suggestions" :key="suggestion.id">
-                                            <button type="button" @click="select(index, suggestion)" class="block w-full px-3 py-2.5 text-start text-sm text-heading hover:bg-neutral-secondary-soft dark:text-white dark:hover:bg-slate-700" x-text="suggestion.name"></button>
+                                            <button type="button" @click="select(index, suggestion)" class="block w-full px-3 py-2.5 text-start text-sm text-heading hover:bg-neutral-secondary-soft dark:text-white dark:hover:bg-slate-700" x-text="suggestion.label"></button>
                                         </template>
                                     </div>
                                 </div>
@@ -81,7 +81,7 @@ function diagnosisForm() {
             sign.suggestions = await response.json();
             sign.open = true;
         },
-        select(index, suggestion) { Object.assign(this.signs[index], { id: suggestion.id, text: suggestion.name, open: false, suggestions: [] }); },
+        select(index, suggestion) { Object.assign(this.signs[index], { id: suggestion.id, text: suggestion.label, open: false, suggestions: [] }); },
     };
 }
 </script>
