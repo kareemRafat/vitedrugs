@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Drugs\DiagnosticController;
 use App\Http\Controllers\Drugs\DiseaseArticleController;
-use App\Http\Controllers\Drugs\DiseaseComparisonController;
 use App\Http\Controllers\Drugs\DiseaseController;
 use App\Http\Controllers\Drugs\DrugLandingController;
 use App\Http\Controllers\Drugs\FilterController;
@@ -34,8 +33,9 @@ Route::group([
         Route::get('filter', [FilterController::class, 'index'])->name('drugs.filter');
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('drugs.filter.suggestions');
 
-        Route::get('compare', [DiseaseComparisonController::class, 'index'])->name('drugs.comparison');
-        Route::match(['get', 'post'], 'compare/results', [DiseaseComparisonController::class, 'compare'])->name('drugs.comparison.results');
+        Route::get('compare', function () {
+            return view('drugs.comparison.index');
+        })->name('drugs.comparison');
 
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('drugs.diseases.show');
         Route::get('diseases/{slug}/article', [DiseaseArticleController::class, 'show'])->name('drugs.diseases.article');
