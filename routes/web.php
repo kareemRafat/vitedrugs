@@ -73,8 +73,8 @@ Route::group([
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.show');
 
-    Route::prefix('large-animals')->group(function () {
-        Route::get('/', LandingController::class)->name('large-animals.home');
+    Route::prefix('drugs')->group(function () {
+        Route::get('/', LandingController::class)->name('drugs.home');
 
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
         Route::get('/products/create-submission', [ProductSubmissionController::class, 'create'])->name('products.submission.create');

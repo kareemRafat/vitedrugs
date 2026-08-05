@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\DifferentialSyndrome;
+use App\Models\LargeAnimals\DifferentialSyndrome;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DifferentialSyndromeFactory extends Factory

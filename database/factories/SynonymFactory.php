@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\Finding;
-use App\Models\Drugs\Synonym;
+use App\Models\LargeAnimals\Finding;
+use App\Models\LargeAnimals\Synonym;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SynonymFactory extends Factory

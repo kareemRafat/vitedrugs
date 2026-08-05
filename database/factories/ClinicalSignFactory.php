@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\AnatomicalStructure;
-use App\Models\Drugs\ClinicalSign;
-use App\Models\Drugs\Finding;
-use App\Models\Drugs\Modifier;
+use App\Models\LargeAnimals\AnatomicalStructure;
+use App\Models\LargeAnimals\ClinicalSign;
+use App\Models\LargeAnimals\Finding;
+use App\Models\LargeAnimals\Modifier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ClinicalSignFactory extends Factory

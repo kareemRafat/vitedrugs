@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Drugs\ClinicalSign;
-use App\Models\Drugs\DiseaseClassification;
-use App\Models\Drugs\HostSpecies;
-use App\Models\Drugs\Microorganism;
+use App\Models\LargeAnimals\ClinicalSign;
+use App\Models\LargeAnimals\DiseaseClassification;
+use App\Models\LargeAnimals\HostSpecies;
+use App\Models\LargeAnimals\Microorganism;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: [
             __DIR__.'/../routes/web.php',
-            __DIR__.'/../routes/drugs.php',
+            __DIR__.'/../routes/large-animals.php',
             __DIR__.'/../routes/poultry.php',
         ],
         commands: __DIR__.'/../routes/console.php',

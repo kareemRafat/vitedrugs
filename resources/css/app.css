@@ -34,12 +34,12 @@
 
 /* =========================================================== *
  * Part theming — same design, different color per site part.   *
- * Large Animals keeps the default (blue) brand; Drugs = orange,
+ * Drugs keeps the default (blue) brand; Large-Animals = orange,
  * Poultry = green. selectors target <body data-part="...">.
  * =========================================================== */
 
-/* ---- Drugs (orange) — light ---- */
-[data-part='drugs'] {
+/* ---- Large-Animals (orange) — light ---- */
+[data-part='large-animals'] {
     --color-brand: #ea580c;
     --color-brand-strong: #c2410c;
     --color-brand-medium: #f97316;
@@ -52,8 +52,8 @@
     --color-fg-brand-subtle: #f97316;
 }
 
-/* ---- Drugs (orange) — dark ---- */
-html.dark [data-part='drugs'] {
+/* ---- Large-Animals (orange) — dark ---- */
+html.dark [data-part='large-animals'] {
     --color-brand: #fb923c;
     --color-brand-strong: #fdba74;
     --color-brand-medium: #f97316;

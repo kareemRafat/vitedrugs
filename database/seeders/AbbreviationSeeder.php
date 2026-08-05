@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\Abbreviation;
+use App\Models\LargeAnimals\Abbreviation;
 use Illuminate\Database\Seeder;
 
 class AbbreviationSeeder extends Seeder

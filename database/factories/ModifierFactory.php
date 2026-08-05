@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\Modifier;
+use App\Models\LargeAnimals\Modifier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ModifierFactory extends Factory

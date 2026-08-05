@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Disease;
-use App\Models\Drugs\MedicalArticle;
+use App\Models\LargeAnimals\MedicalArticle;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

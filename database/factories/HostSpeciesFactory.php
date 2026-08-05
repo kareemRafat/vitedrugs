@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\HostSpecies;
+use App\Models\LargeAnimals\HostSpecies;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HostSpeciesFactory extends Factory

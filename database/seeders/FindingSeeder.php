@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\Finding;
+use App\Models\LargeAnimals\Finding;
 use Illuminate\Database\Seeder;
 
 class FindingSeeder extends Seeder

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\Microorganism;
+use App\Models\LargeAnimals\Microorganism;
 use Illuminate\Database\Seeder;
 
 class MicroorganismSeeder extends Seeder

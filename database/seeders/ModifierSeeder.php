@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\Modifier;
+use App\Models\LargeAnimals\Modifier;
 use Illuminate\Database\Seeder;
 
 class ModifierSeeder extends Seeder

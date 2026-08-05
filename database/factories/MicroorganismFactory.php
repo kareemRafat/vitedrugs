@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\Microorganism;
+use App\Models\LargeAnimals\Microorganism;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

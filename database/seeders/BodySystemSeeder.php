@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\BodySystem;
+use App\Models\LargeAnimals\BodySystem;
 use Illuminate\Database\Seeder;
 
 class BodySystemSeeder extends Seeder

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\Finding;
+use App\Models\LargeAnimals\Finding;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

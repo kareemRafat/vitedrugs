@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\HostSpecies;
+use App\Models\LargeAnimals\HostSpecies;
 use Illuminate\Database\Seeder;
 
 class HostSpeciesSeeder extends Seeder

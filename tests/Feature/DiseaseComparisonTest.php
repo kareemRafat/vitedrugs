@@ -40,16 +40,16 @@ class DiseaseComparisonTest extends TestCase
     {
         Disease::factory()->create();
 
-        $this->get(route('drugs.comparison'))
+        $this->get(route('large-animals.comparison'))
             ->assertOk()
-            ->assertSee(__('drugs.comparison.heading'));
+            ->assertSee(__('large-animals.comparison.heading'));
     }
 
     public function test_component_selects_and_removes_diseases(): void
     {
         $disease = Disease::factory()->create(['knowledge_payload' => $this->payload()]);
 
-        Livewire::test('drugs.disease-compare-builder')
+        Livewire::test('large-animals.disease-compare-builder')
             ->set('search1', $disease->name)
             ->call('selectDisease', 1, $disease->id)
             ->assertSet('diseaseId1', $disease->id)
@@ -62,7 +62,7 @@ class DiseaseComparisonTest extends TestCase
     {
         $diseases = Disease::factory()->count(5)->create(['knowledge_payload' => $this->payload()]);
 
-        $component = Livewire::test('drugs.disease-compare-builder');
+        $component = Livewire::test('large-animals.disease-compare-builder');
 
         foreach ($diseases->take(4) as $index => $disease) {
             $component->call('selectDisease', $index + 1, $disease->id);
@@ -92,7 +92,7 @@ class DiseaseComparisonTest extends TestCase
             'knowledge_payload' => $this->payload(['clinical_signs' => [$common]]),
         ]);
 
-        $component = Livewire::test('drugs.disease-compare-builder')
+        $component = Livewire::test('large-animals.disease-compare-builder')
             ->call('selectDisease', 1, $first->id)
             ->call('selectDisease', 2, $second->id);
 
@@ -116,7 +116,7 @@ class DiseaseComparisonTest extends TestCase
         $disease = Disease::factory()->create(['knowledge_payload' => $this->payload()]);
 
         Livewire::withQueryParams(['disease1' => $disease->id])
-            ->test('drugs.disease-compare-builder')
+            ->test('large-animals.disease-compare-builder')
             ->assertSet('diseaseId1', $disease->id)
             ->assertSee($disease->name);
     }

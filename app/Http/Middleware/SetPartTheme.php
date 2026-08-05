@@ -12,7 +12,7 @@ class SetPartTheme
     /**
      * Ordered: the first entry is also the fallback part for shared routes.
      */
-    protected const PARTS = ['large-animals', 'drugs', 'poultry'];
+    protected const PARTS = ['drugs', 'large-animals', 'poultry'];
 
     public function handle(Request $request, Closure $next): Response
     {

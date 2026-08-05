@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\ClinicalSign;
-use App\Models\Drugs\Synonym;
+use App\Models\LargeAnimals\ClinicalSign;
+use App\Models\LargeAnimals\Synonym;
 use Illuminate\Database\Seeder;
 
 class SynonymSeeder extends Seeder

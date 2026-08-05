@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\VeterinaryProject;
+use App\Models\LargeAnimals\VeterinaryProject;
 use Illuminate\Database\Seeder;
 
 class VeterinaryProjectSeeder extends Seeder

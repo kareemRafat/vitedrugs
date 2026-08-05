@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drugs\AnatomicalStructure;
-use App\Models\Drugs\BodySystem;
+use App\Models\LargeAnimals\AnatomicalStructure;
+use App\Models\LargeAnimals\BodySystem;
 use Illuminate\Database\Seeder;
 
 class AnatomicalStructureSeeder extends Seeder

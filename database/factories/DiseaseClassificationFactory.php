@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Disease;
-use App\Models\Drugs\DiseaseClassification;
+use App\Models\LargeAnimals\DiseaseClassification;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DiseaseClassificationFactory extends Factory

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Disease;
-use App\Models\Drugs\MedicalArticle;
+use App\Models\LargeAnimals\MedicalArticle;
 use Illuminate\Database\Seeder;
 
 class MedicalArticleSeeder extends Seeder

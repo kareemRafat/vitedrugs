@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\BodySystem;
+use App\Models\LargeAnimals\BodySystem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BodySystemFactory extends Factory

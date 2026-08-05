@@ -1,7 +1,8 @@
 @php
     $logoRoute = match($part ?? 'large-animals') {
-        'drugs' => route('drugs.home'),
         'poultry' => route('poultry.home'),
+        'large-animals' => route('large-animals.home'),
+        'drugs' => route('drugs.home'),
         default => route('home'),
     };
 @endphp
@@ -21,14 +22,14 @@
 
             <div class="hidden sm:flex items-center justify-center gap-1">
                 @switch($part ?? 'large-animals')
-                    @case('drugs')
-                        <a href="{{ route('drugs.diagnosis') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('drugs.diagnosis*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('drugs.diagnosis*')])>{{ __('drugs.nav.diagnosis') }}</a>
-                        <a href="{{ route('drugs.filter') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('drugs.filter'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('drugs.filter')])>{{ __('drugs.nav.filter') }}</a>
-                        <a href="{{ route('drugs.comparison') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('drugs.comparison*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('drugs.comparison*')])>{{ __('drugs.nav.comparison') }}</a>
-                        <a href="{{ route('drugs.microorganisms.index') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('drugs.microorganisms*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('drugs.microorganisms*')])>{{ __('drugs.nav.microorganisms') }}</a>
-                        <a href="{{ route('drugs.medical-articles.index') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('drugs.medical-articles*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('drugs.medical-articles*')])>{{ __('drugs.nav.articles') }}</a>
-                        <a href="{{ route('drugs.specializations.index') }}" wire:navigate @class(['hidden xl:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('drugs.specializations*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('drugs.specializations*')])>{{ __('drugs.nav.specializations') }}</a>
-                        <a href="{{ route('drugs.projects.index') }}" wire:navigate @class(['hidden xl:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('drugs.projects*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('drugs.projects*')])>{{ __('drugs.nav.projects') }}</a>
+                    @case('large-animals')
+                        <a href="{{ route('large-animals.diagnosis') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('large-animals.diagnosis*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('large-animals.diagnosis*')])>{{ __('large-animals.nav.diagnosis') }}</a>
+                        <a href="{{ route('large-animals.filter') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('large-animals.filter'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('large-animals.filter')])>{{ __('large-animals.nav.filter') }}</a>
+                        <a href="{{ route('large-animals.comparison') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('large-animals.comparison*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('large-animals.comparison*')])>{{ __('large-animals.nav.comparison') }}</a>
+                        <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('large-animals.microorganisms*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('large-animals.microorganisms*')])>{{ __('large-animals.nav.microorganisms') }}</a>
+                        <a href="{{ route('large-animals.medical-articles.index') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('large-animals.medical-articles*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('large-animals.medical-articles*')])>{{ __('large-animals.nav.articles') }}</a>
+                        <a href="{{ route('large-animals.specializations.index') }}" wire:navigate @class(['hidden xl:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('large-animals.specializations*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('large-animals.specializations*')])>{{ __('large-animals.nav.specializations') }}</a>
+                        <a href="{{ route('large-animals.projects.index') }}" wire:navigate @class(['hidden xl:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('large-animals.projects*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('large-animals.projects*')])>{{ __('large-animals.nav.projects') }}</a>
                     @break
 
                     @case('poultry')
@@ -97,7 +98,7 @@
             <div class="flex items-center justify-end gap-1 sm:gap-2">
                 @php
                     $searchRoute = match($part ?? 'large-animals') {
-                        'drugs' => route('drugs.search'),
+                        'large-animals' => route('large-animals.search'),
                         default => route('search'),
                     };
                 @endphp
@@ -208,34 +209,34 @@
     <div class="px-5 py-5 space-y-6 overflow-y-auto">
         <div class="space-y-1">
             @switch($part ?? 'large-animals')
-                @case('drugs')
-                    <a href="{{ route('drugs.diagnosis') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('drugs.diagnosis*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('drugs.diagnosis*')])>
+                @case('large-animals')
+                    <a href="{{ route('large-animals.diagnosis') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('large-animals.diagnosis*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('large-animals.diagnosis*')])>
                         <x-lucide-stethoscope class="w-5 h-5" />
-                        {{ __('drugs.nav.diagnosis') }}
+                        {{ __('large-animals.nav.diagnosis') }}
                     </a>
-                    <a href="{{ route('drugs.filter') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('drugs.filter'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('drugs.filter')])>
+                    <a href="{{ route('large-animals.filter') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('large-animals.filter'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('large-animals.filter')])>
                         <x-lucide-sliders-horizontal class="w-5 h-5" />
-                        {{ __('drugs.nav.filter') }}
+                        {{ __('large-animals.nav.filter') }}
                     </a>
-                    <a href="{{ route('drugs.comparison') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('drugs.comparison*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('drugs.comparison*')])>
+                    <a href="{{ route('large-animals.comparison') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('large-animals.comparison*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('large-animals.comparison*')])>
                         <x-lucide-columns-3 class="w-5 h-5" />
-                        {{ __('drugs.nav.comparison') }}
+                        {{ __('large-animals.nav.comparison') }}
                     </a>
-                    <a href="{{ route('drugs.microorganisms.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('drugs.microorganisms*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('drugs.microorganisms*')])>
+                    <a href="{{ route('large-animals.microorganisms.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('large-animals.microorganisms*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('large-animals.microorganisms*')])>
                         <x-lucide-microscope class="w-5 h-5" />
-                        {{ __('drugs.nav.microorganisms') }}
+                        {{ __('large-animals.nav.microorganisms') }}
                     </a>
-                    <a href="{{ route('drugs.medical-articles.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('drugs.medical-articles*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('drugs.medical-articles*')])>
+                    <a href="{{ route('large-animals.medical-articles.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('large-animals.medical-articles*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('large-animals.medical-articles*')])>
                         <x-lucide-file-text class="w-5 h-5" />
-                        {{ __('drugs.nav.articles') }}
+                        {{ __('large-animals.nav.articles') }}
                     </a>
-                    <a href="{{ route('drugs.specializations.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('drugs.specializations*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('drugs.specializations*')])>
+                    <a href="{{ route('large-animals.specializations.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('large-animals.specializations*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('large-animals.specializations*')])>
                         <x-lucide-layers class="w-5 h-5" />
-                        {{ __('drugs.nav.specializations') }}
+                        {{ __('large-animals.nav.specializations') }}
                     </a>
-                    <a href="{{ route('drugs.projects.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('drugs.projects*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('drugs.projects*')])>
+                    <a href="{{ route('large-animals.projects.index') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('large-animals.projects*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('large-animals.projects*')])>
                         <x-lucide-folder-kanban class="w-5 h-5" />
-                        {{ __('drugs.nav.projects') }}
+                        {{ __('large-animals.nav.projects') }}
                     </a>
                 @break
 

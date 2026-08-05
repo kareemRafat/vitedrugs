@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Drugs\Abbreviation;
+use App\Models\LargeAnimals\Abbreviation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AbbreviationFactory extends Factory
