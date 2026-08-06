@@ -1,13 +1,21 @@
 @extends('app.layouts.master')
 
-@section('title', $article->title)
+@section('title', $article->localized_title)
 
 @section('meta_description')
-    {{ \Illuminate\Support\Str::limit(strip_tags($article->summary ?? ''), 160) }}
+    {{ \Illuminate\Support\Str::limit(strip_tags($article->localized_summary ?? ''), 160) }}
 @endsection
 
 @section('content')
     <div class="space-y-4">
+
+        {{-- Hero --}}
+        <x-large-animals.page-hero
+            :heading="$article->localized_title"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($article->localized_summary ?? ''), 220)"
+            :badge="__('large-animals.hero.badge.article')"
+            badgeIcon="book-marked"
+        />
 
         {{-- Breadcrumb --}}
         <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
@@ -15,16 +23,8 @@
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <a href="{{ route('large-animals.medical-articles.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.articles') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <span class="text-heading dark:text-white font-medium">{{ $article->title }}</span>
+            <span class="text-heading dark:text-white font-medium">{{ $article->localized_title }}</span>
         </nav>
-
-        {{-- Hero --}}
-        <x-large-animals.page-hero
-            :heading="$article->title"
-            :subtitle="\Illuminate\Support\Str::limit(strip_tags($article->summary ?? ''), 220)"
-            :badge="__('large-animals.hero.badge.article')"
-            badgeIcon="book-marked"
-        />
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
@@ -42,13 +42,13 @@
                                     <a href="{{ route('large-animals.diseases.show', $article->disease->slug) }}" wire:navigate
                                         class="inline-flex items-center gap-1.5 text-fg-brand hover:underline dark:text-brand">
                                         <x-lucide-activity class="w-3.5 h-3.5" />
-                                        {{ $article->disease->name }}
+                                        {{ app()->getLocale() === 'ar' && $article->disease->name_ar ? $article->disease->name_ar : $article->disease->name }}
                                     </a>
                                 @endif
                                 @if ($article->species)
                                     <span class="inline-flex items-center gap-1.5">
                                         <x-lucide-paw-print class="w-3.5 h-3.5" />
-                                        {{ $article->species }}
+                                        {{ $article->localized_species }}
                                     </span>
                                 @endif
                             </div>
@@ -58,6 +58,7 @@
                                 [&_h2]:text-heading dark:[&_h2]:text-white [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4
                                 [&_h3]:text-heading dark:[&_h3]:text-white [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3
                                 [&_p]:mb-4 [&_p]:leading-relaxed
+                                [&_h2]:scroll-mt-24
                                 [&_ul]:space-y-2 [&_ul]:mb-4
                                 [&_ol]:space-y-2 [&_ol]:mb-4
                                 [&_blockquote]:border-s-4 [&_blockquote]:border-brand [&_blockquote]:ps-4 [&_blockquote]:my-6 [&_blockquote]:italic
@@ -66,7 +67,7 @@
                                 [&_pre]:bg-neutral-secondary-soft dark:[&_pre]:bg-slate-700 [&_pre]:border [&_pre]:border-default-medium dark:[&_pre]:border-slate-600 [&_pre]:rounded-base [&_pre]:p-4 [&_pre]:overflow-x-auto
                                 [&_code]:text-sm
                                 [&_img]:rounded-base [&_img]:shadow-xs [&_img]:max-w-full [&_img]:h-auto">
-                                {!! $article->content ?? '' !!}
+                                {!! $content ?? '' !!}
                             </div>
 
                             <div class="mt-10 pt-6 border-t border-default-medium dark:border-slate-700">
@@ -106,19 +107,7 @@
 @endsection
 
 @section('css')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const tocLinks = document.querySelectorAll('a[href^="#section-"]');
-            tocLinks.forEach(function (link) {
-                link.addEventListener('click', function (e) {
-                    const idx = parseInt(link.getAttribute('href').replace('#section-', ''), 10);
-                    const headings = document.querySelectorAll('.prose-article h2');
-                    if (!Number.isNaN(idx) && headings[idx]) {
-                        e.preventDefault();
-                        headings[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
-        });
-    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+    </style>
 @endsection

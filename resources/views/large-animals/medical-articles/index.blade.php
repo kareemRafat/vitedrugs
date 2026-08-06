@@ -50,12 +50,12 @@
                                 <h2 class="text-lg font-semibold text-heading dark:text-white mb-2 line-clamp-2 group-hover:text-fg-brand dark:group-hover:text-brand transition-colors duration-150">{{ $article->title }}</h2>
 
                                 @if ($article->summary)
-                                    <p class="text-sm text-body dark:text-slate-400 line-clamp-3">{{ $article->summary }}</p>
+                                    <p class="text-sm text-body dark:text-slate-400 line-clamp-3">{{ $article->localized_summary }}</p>
                                 @endif
 
                                 @if ($article->species)
                                     <p class="mt-3 text-xs text-body dark:text-slate-400">
-                                        <span class="font-semibold">{{ __('large-animals.medical_articles.species') }}:</span> {{ $article->species }}
+                                        <span class="font-semibold">{{ __('large-animals.medical_articles.species') }}:</span> {{ $article->localized_species }}
                                     </p>
                                 @endif
 

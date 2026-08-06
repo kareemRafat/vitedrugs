@@ -25,9 +25,27 @@ class MedicalArticleController extends Controller
             ->with('disease')
             ->firstOrFail();
 
-        $tableOfContents = $this->extractTableOfContents($article->content);
+        $content = $this->injectSectionIds($article->localized_content);
+        $tableOfContents = $this->extractTableOfContents($content);
 
-        return view('large-animals.medical-articles.show', compact('article', 'tableOfContents'));
+        return view('large-animals.medical-articles.show', compact('article', 'tableOfContents', 'content'));
+    }
+
+    protected function injectSectionIds(?string $content): string
+    {
+        $index = 0;
+
+        return preg_replace_callback('/<h2([^>]*)>/i', function (array $match) use (&$index) {
+            $attrs = $match[1];
+            $id = 'section-'.$index;
+            $index++;
+
+            if (preg_match('/\bid\s*=\s*["\']/i', $attrs)) {
+                return $match[0];
+            }
+
+            return '<h2'.$attrs.' id="'.$id.'">';
+        }, $content ?? '');
     }
 
     protected function extractTableOfContents(?string $content): array

@@ -17,13 +17,17 @@ class MedicalArticleFactory extends Factory
 
         return [
             'title' => $title,
+            'title_ar' => $title,
             'slug' => Str::slug($title),
             'content' => fake()->paragraphs(6, true),
+            'content_ar' => fake()->paragraphs(6, true),
             'disease_id' => Disease::factory(),
             'species' => fake()->randomElement(['Cattle', 'Sheep', 'Goat', 'Poultry', 'Fish', 'Equine']),
+            'species_ar' => 'الأنواع المستهدفة',
             'article_type' => fake()->randomElement(['disease_reference', 'overview', 'guideline']),
             'is_published' => true,
             'summary' => fake()->sentence(),
+            'summary_ar' => fake()->sentence(),
         ];
     }
 }
