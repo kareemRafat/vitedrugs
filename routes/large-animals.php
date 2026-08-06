@@ -31,6 +31,8 @@ Route::group([
         Route::post('diagnosis/results', [DiagnosticController::class, 'refinedResults'])->name('large-animals.diagnosis.results.store');
 
         Route::get('filter', [FilterController::class, 'index'])->name('large-animals.filter');
+        Route::get('filter/results', [FilterController::class, 'showResults'])->name('large-animals.filter.results');
+        Route::post('filter/results', [FilterController::class, 'store'])->name('large-animals.filter.results.store');
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('large-animals.filter.suggestions');
 
         Route::get('compare', function () {

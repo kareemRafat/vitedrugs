@@ -18,7 +18,14 @@
             ]"
         />
 
-        <form method="POST" action="{{ route('large-animals.diagnosis.run') }}" x-data="filterPicker(@js(route('large-animals.filter.suggestions')))">
+        @if (session('warning'))
+            <div class="flex items-center gap-3 bg-danger-soft border border-danger-subtle text-fg-danger-strong text-sm rounded-base px-4 py-3 dark:bg-danger/20 dark:border-danger-subtle dark:text-red-400">
+                <x-lucide-alert-triangle class="w-5 h-5 shrink-0" />
+                <span>{{ session('warning') }}</span>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('large-animals.filter.results.store') }}" x-data="filterPicker(@js(route('large-animals.filter.suggestions')))">
             @csrf
 
             {{-- Criteria --}}
@@ -30,36 +37,45 @@
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ __('large-animals.filter.species_placeholder') }}</option>
                             @foreach ($species as $item)
-                                <option value="{{ $item->id }}">{{ $item->display_name }}</option>
+                                <option value="{{ $item->id }}" @selected(old('host_species_id') == $item->id)>{{ $item->display_name }}</option>
                             @endforeach
                         </select>
+                        @error('host_species_id')
+                            <p class="mt-1 text-xs text-fg-danger-strong">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="etiology_type" class="block text-sm font-semibold text-heading dark:text-white mb-2">{{ __('large-animals.filter.etiology_label') }}</label>
-                        <select id="etiology_type" x-model="etiology"
+                        <select id="etiology_type" name="etiology_type"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ __('large-animals.filter.etiology_placeholder') }}</option>
                             @foreach ($etiologies as $item)
-                                <option value="{{ $item->etiology_type }}">{{ $item->etiology_type }}</option>
+                                <option value="{{ $item->etiology_type }}" @selected(old('etiology_type') === $item->etiology_type)>{{ $item->etiology_type }}</option>
                             @endforeach
                         </select>
+                        @error('etiology_type')
+                            <p class="mt-1 text-xs text-fg-danger-strong">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="body_system_id" class="block text-sm font-semibold text-heading dark:text-white mb-2">{{ __('large-animals.filter.body_system_label') }}</label>
-                        <select id="body_system_id" x-model="bodySystem"
+                        <select id="body_system_id" name="body_system_id"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ __('large-animals.filter.body_system_placeholder') }}</option>
                             @foreach ($bodySystems as $item)
-                                <option value="{{ $item->display_name }}">{{ $item->display_name }}</option>
+                                <option value="{{ $item->id }}" @selected(old('body_system_id') == $item->id)>{{ $item->localized_display_name }}</option>
                             @endforeach
                         </select>
+                        @error('body_system_id')
+                            <p class="mt-1 text-xs text-fg-danger-strong">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
                 <label class="mt-4 inline-flex items-center gap-2.5 cursor-pointer">
-                    <input type="checkbox" x-model="zoonotic"
+                    <input type="checkbox" name="zoonotic" value="1" @checked(old('zoonotic'))
                         class="w-4 h-4 rounded-xs text-brand focus:ring-2 focus:ring-brand-soft dark:bg-slate-600 dark:border-slate-500">
                     <span class="text-sm font-medium text-heading dark:text-white">{{ __('large-animals.filter.zoonotic_label') }}</span>
                 </label>
@@ -119,7 +135,7 @@
                     <button type="submit"
                         class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors">
                         <x-lucide-activity class="w-4 h-4" />
-                        {{ __('large-animals.filter.run_diagnosis') }}
+                        {{ __('large-animals.filter.submit') }}
                     </button>
                 </div>
             </div>
@@ -136,9 +152,6 @@
                 suggestions: [],
                 tokens: [],
                 open: false,
-                etiology: '',
-                bodySystem: '',
-                zoonotic: false,
                 async search() {
                     const q = this.query.trim();
                     if (q.length < 2) {

@@ -218,8 +218,19 @@ return [
         'add' => 'Add',
         'tokens_label' => 'Selected clinical signs',
         'no_tokens' => 'No clinical signs selected yet. Type a name and add signs.',
-        'run_diagnosis' => 'Run Differential Diagnosis',
+        'submit' => 'Filter Diseases',
         'clear' => 'Clear',
+        'results_title' => 'Filter Results',
+        'results_heading' => 'Filtered diseases',
+        'results_subtitle' => 'Diseases that match the species, etiology, body system, zoonotic and clinical signs you selected.',
+        'selected_criteria' => 'Applied criteria',
+        'results_summary' => ':count diseases match your criteria.',
+        'matched_signs' => 'Matched signs',
+        'no_results' => 'No matching diseases found.',
+        'no_results_desc' => 'Try adjusting one or more of your filter criteria.',
+        'back' => 'Back to filter',
+        'invalid_link' => 'This filter link is invalid or has expired. Please try again.',
+        'disclaimer' => 'This tool is a clinical filter for reference only and does not replace clinical examination or confirmatory testing.',
     ],
 
     'comparison' => [
@@ -271,6 +282,7 @@ return [
 
     'disease' => [
         'title' => ':name | VetPedia Drugs',
+        'disease' => 'Disease',
         'overview' => 'Overview',
         'clinical_signs' => 'Clinical Signs',
         'postmortem_findings' => 'Postmortem Findings',
