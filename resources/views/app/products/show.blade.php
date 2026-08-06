@@ -21,7 +21,7 @@
     <nav class="flex mb-4 pt-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
         <ol class="flex items-start flex-wrap gap-x-1 text-sm text-body dark:text-slate-400">
             <li class="inline-flex items-center">
-                <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.products.home') }}</a>
+                <a href="{{ route('home') }}" class="hover:text-fg-brand dark:hover:text-white">{{ __('messages.parts.drugs') }}</a>
             </li>
             <li>
                 <div class="flex items-center gap-1">
