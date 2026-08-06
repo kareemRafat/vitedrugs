@@ -325,6 +325,11 @@ return [
         'species' => 'الأنواع',
         'type' => 'النوع',
         'no_toc' => 'لا توجد أقسام بعد.',
+        'types' => [
+            'disease_reference' => 'مرجع المرض',
+            'overview' => 'نظرة عامة',
+            'guideline' => 'إرشادات',
+        ],
     ],
 
     'microorganisms' => [

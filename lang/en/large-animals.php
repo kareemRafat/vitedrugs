@@ -325,6 +325,11 @@ return [
         'species' => 'Species',
         'type' => 'Type',
         'no_toc' => 'No sections yet.',
+        'types' => [
+            'disease_reference' => 'Disease Reference',
+            'overview' => 'Overview',
+            'guideline' => 'Guideline',
+        ],
     ],
 
     'microorganisms' => [

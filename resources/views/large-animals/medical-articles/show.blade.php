@@ -36,7 +36,7 @@
                             {{-- Meta --}}
                             <div class="flex flex-wrap items-center gap-2 text-sm text-body dark:text-slate-400 mb-4">
                                 @if ($article->article_type)
-                                    <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $article->article_type }}</span>
+                                    <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('large-animals.medical_articles.types.' . $article->article_type) }}</span>
                                 @endif
                                 @if ($article->disease)
                                     <a href="{{ route('large-animals.diseases.show', $article->disease->slug) }}" wire:navigate
