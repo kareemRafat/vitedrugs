@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DrugInteractions;
 
+use App\Filament\Clusters\Ingredients\IngredientsCluster;
 use App\Filament\Resources\DrugInteractions\Pages\CreateDrugInteraction;
 use App\Filament\Resources\DrugInteractions\Pages\EditDrugInteraction;
 use App\Filament\Resources\DrugInteractions\Pages\ListDrugInteractions;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class DrugInteractionResource extends Resource
 {
     protected static ?string $model = DrugInteraction::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;
+    protected static ?string $cluster = IngredientsCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Catalog';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;
 
     public static function form(Schema $schema): Schema
     {

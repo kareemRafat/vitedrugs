@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\DiseaseClassifications;
 
+use App\Filament\Clusters\Diseases\DiseasesCluster;
 use App\Filament\Resources\LargeAnimals\DiseaseClassifications\Pages\CreateDiseaseClassification;
 use App\Filament\Resources\LargeAnimals\DiseaseClassifications\Pages\EditDiseaseClassification;
 use App\Filament\Resources\LargeAnimals\DiseaseClassifications\Pages\ListDiseaseClassifications;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class DiseaseClassificationResource extends Resource
 {
     protected static ?string $model = DiseaseClassification::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
+    protected static ?string $cluster = DiseasesCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $recordTitleAttribute = 'id';
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ActiveIngredients;
 
+use App\Filament\Clusters\Ingredients\IngredientsCluster;
 use App\Filament\Resources\ActiveIngredients\Pages\CreateActiveIngredient;
 use App\Filament\Resources\ActiveIngredients\Pages\EditActiveIngredient;
 use App\Filament\Resources\ActiveIngredients\Pages\ListActiveIngredients;
@@ -17,15 +18,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class ActiveIngredientResource extends Resource
 {
     protected static ?string $model = ActiveIngredient::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
+    protected static ?string $cluster = IngredientsCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Catalog';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
 
     protected static ?string $recordTitleAttribute = 'name';
 

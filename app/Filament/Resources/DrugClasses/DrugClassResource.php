@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DrugClasses;
 
+use App\Filament\Clusters\Ingredients\IngredientsCluster;
 use App\Filament\Resources\DrugClasses\Pages\CreateDrugClass;
 use App\Filament\Resources\DrugClasses\Pages\EditDrugClass;
 use App\Filament\Resources\DrugClasses\Pages\ListDrugClasses;
@@ -16,15 +17,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class DrugClassResource extends Resource
 {
     protected static ?string $model = DrugClass::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
+    protected static ?string $cluster = IngredientsCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Catalog';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $recordTitleAttribute = 'name';
 

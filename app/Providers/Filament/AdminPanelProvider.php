@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
 use App\Filament\Widgets\DashboardStatsWidget;
+use App\Filament\Widgets\KnowledgeCoverageWidget;
 use App\Filament\Widgets\TopActiveIngredientsTableWidget;
 use App\Filament\Widgets\TopCompaniesTableWidget;
 use App\Filament\Widgets\TopDiseasesTableWidget;
@@ -56,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 DashboardStatsWidget::class,
+                KnowledgeCoverageWidget::class,
                 TopCompaniesTableWidget::class,
                 TopDiseasesTableWidget::class,
                 TopActiveIngredientsTableWidget::class,

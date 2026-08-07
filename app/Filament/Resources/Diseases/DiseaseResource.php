@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Diseases;
 
+use App\Filament\Clusters\Diseases\DiseasesCluster;
 use App\Filament\Resources\Diseases\Pages\CreateDisease;
 use App\Filament\Resources\Diseases\Pages\EditDisease;
 use App\Filament\Resources\Diseases\Pages\ListDiseases;
@@ -19,15 +20,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class DiseaseResource extends Resource
 {
     protected static ?string $model = Disease::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBugAnt;
+    protected static ?string $cluster = DiseasesCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Catalog';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBugAnt;
 
     protected static ?string $recordTitleAttribute = 'name';
 

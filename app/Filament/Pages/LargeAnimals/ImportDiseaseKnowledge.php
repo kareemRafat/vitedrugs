@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages\LargeAnimals;
 
-use App\Filament\Clusters\Knowledge\KnowledgeCluster;
+use App\Filament\Clusters\Diseases\DiseasesCluster;
 use App\Models\Disease;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -17,7 +17,7 @@ use JsonException;
 
 class ImportDiseaseKnowledge extends Page
 {
-    protected static ?string $cluster = KnowledgeCluster::class;
+    protected static ?string $cluster = DiseasesCluster::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowUpTray;
 

@@ -1,39 +1,19 @@
 <?php
 
-namespace App\Filament\Pages\LargeAnimals;
+namespace App\Filament\Widgets;
 
-use App\Filament\Clusters\Knowledge\KnowledgeCluster;
 use App\Models\Disease;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\HostSpecies;
 use App\Models\LargeAnimals\MedicalArticle;
 use App\Models\LargeAnimals\Microorganism;
-use BackedEnum;
-use Filament\Pages\Page;
-use Filament\Support\Enums\Width;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Filament\Widgets\TableWidget;
 
-class KnowledgeOverview extends Page implements HasTable
+class KnowledgeCoverageWidget extends TableWidget
 {
-    use InteractsWithTable;
-
-    protected static ?string $cluster = KnowledgeCluster::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
-
-    protected Width|string|null $maxContentWidth = 'full';
-
-    protected static ?string $navigationLabel = 'Knowledge Overview';
-
-    protected string $view = 'filament.pages.large-animals.knowledge-overview';
-
-    protected ?string $heading = 'Knowledge Coverage';
-
-    protected ?string $subheading = 'Large Animals knowledge base coverage';
+    protected int|string|array $columnSpan = 1;
 
     public function table(Table $table): Table
     {
@@ -41,6 +21,7 @@ class KnowledgeOverview extends Page implements HasTable
         $knowledgeCount = Disease::whereNotNull('knowledge_payload')->count();
 
         return $table
+            ->heading('Knowledge Coverage')
             ->records(fn (): array => [
                 ['icon' => 'heroicon-o-heart', 'label' => 'Clinical Signs', 'count' => ClinicalSign::count()],
                 ['icon' => 'heroicon-o-beaker', 'label' => 'Microorganisms', 'count' => Microorganism::count()],
