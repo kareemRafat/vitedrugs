@@ -45,15 +45,23 @@ class DiseaseController extends Controller
             'products.dosageForm',
             'products.activeIngredients',
             'products.companies',
+            'clinicalSigns.anatomicalStructure.bodySystem',
+            'hostSpecies',
+            'microorganisms',
+            'diseaseClassification',
         ]);
 
         $ingredients = $disease->products
             ->flatMap(fn ($product) => $product->activeIngredients)
             ->unique('id');
 
+        $clinicalSigns = $disease->clinicalSigns
+            ->groupBy(fn ($sign) => $sign->anatomicalStructure?->bodySystem?->localized_display_name
+                ?? __('messages.diseases.general_systemic'));
+
         return view(
             'app.diseases.show',
-            compact('disease', 'ingredients')
+            compact('disease', 'ingredients', 'clinicalSigns')
         );
     }
 }
