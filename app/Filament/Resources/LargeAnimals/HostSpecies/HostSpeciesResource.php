@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\HostSpecies;
 
+use App\Filament\Clusters\Filter\FilterCluster;
 use App\Filament\Resources\LargeAnimals\HostSpecies\Pages\CreateHostSpecies;
 use App\Filament\Resources\LargeAnimals\HostSpecies\Pages\EditHostSpecies;
 use App\Filament\Resources\LargeAnimals\HostSpecies\Pages\ListHostSpecies;
@@ -16,15 +17,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class HostSpeciesResource extends Resource
 {
     protected static ?string $model = HostSpecies::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
+    protected static ?string $cluster = FilterCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
 
     protected static ?string $recordTitleAttribute = 'display_name';
 

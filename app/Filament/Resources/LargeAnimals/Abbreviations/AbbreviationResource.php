@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\Abbreviations;
 
+use App\Filament\Clusters\Search\SearchCluster;
 use App\Filament\Resources\LargeAnimals\Abbreviations\Pages\CreateAbbreviation;
 use App\Filament\Resources\LargeAnimals\Abbreviations\Pages\EditAbbreviation;
 use App\Filament\Resources\LargeAnimals\Abbreviations\Pages\ListAbbreviations;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class AbbreviationResource extends Resource
 {
     protected static ?string $model = Abbreviation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedListBullet;
+    protected static ?string $cluster = SearchCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedListBullet;
 
     protected static ?string $recordTitleAttribute = 'abbreviation';
 

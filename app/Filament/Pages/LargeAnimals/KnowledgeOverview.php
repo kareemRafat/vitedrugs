@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\LargeAnimals;
 
+use App\Filament\Clusters\Knowledge\KnowledgeCluster;
 use App\Models\Disease;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\HostSpecies;
@@ -15,15 +16,14 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class KnowledgeOverview extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
+    protected static ?string $cluster = KnowledgeCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
     protected Width|string|null $maxContentWidth = 'full';
 

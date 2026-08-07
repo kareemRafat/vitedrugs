@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\BodySystems;
 
+use App\Filament\Clusters\Filter\FilterCluster;
 use App\Filament\Resources\LargeAnimals\BodySystems\Pages\CreateBodySystem;
 use App\Filament\Resources\LargeAnimals\BodySystems\Pages\EditBodySystem;
 use App\Filament\Resources\LargeAnimals\BodySystems\Pages\ListBodySystems;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class BodySystemResource extends Resource
 {
     protected static ?string $model = BodySystem::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $cluster = FilterCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'display_name';
 

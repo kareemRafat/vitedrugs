@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\Synonyms;
 
+use App\Filament\Clusters\Search\SearchCluster;
 use App\Filament\Resources\LargeAnimals\Synonyms\Pages\CreateSynonym;
 use App\Filament\Resources\LargeAnimals\Synonyms\Pages\EditSynonym;
 use App\Filament\Resources\LargeAnimals\Synonyms\Pages\ListSynonyms;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class SynonymResource extends Resource
 {
     protected static ?string $model = Synonym::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;
+    protected static ?string $cluster = SearchCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;
 
     protected static ?string $recordTitleAttribute = 'term';
 
