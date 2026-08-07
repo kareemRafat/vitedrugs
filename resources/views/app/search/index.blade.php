@@ -21,7 +21,7 @@
                         class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 pe-32 px-3 py-3 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                         placeholder="{{ __('messages.search.placeholder') }}">
                     <button type="submit"
-                        class="absolute inset-y-1 end-1 inline-flex items-center justify-center gap-1.5 px-4 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base focus:outline-none">
+                        class="absolute inset-y-1 end-1 inline-flex items-center justify-center gap-1.5 px-4 text-sm font-semibold text-white bg-brand hover:bg-brand-strong rounded-base focus:outline-none">
                         <x-lucide-search class="w-4 h-4" />
                         {{ __('messages.search.button') }}
                     </button>
