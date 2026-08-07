@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\Microorganisms\Schemas;
 
+use App\Models\LargeAnimals\Microorganism;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -55,11 +56,15 @@ class MicroorganismInfolist
                         TextEntry::make('searchable_text')
                             ->placeholder('-'),
                         TextEntry::make('json_data')
+                            ->state(fn (Microorganism $record): string => json_encode(
+                                $record->json_data,
+                                JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+                            ))
                             ->placeholder('-'),
                         TextEntry::make('source_json_file')
                             ->placeholder('-'),
                         TextEntry::make('tags')
-                            ->badge()
+                            ->listWithLineBreaks()
                             ->placeholder('-'),
                     ]),
 
