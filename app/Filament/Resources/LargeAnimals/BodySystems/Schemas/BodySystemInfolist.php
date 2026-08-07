@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\LargeAnimals\BodySystems\Schemas;
 
-use App\Models\LargeAnimals\BodySystem;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -33,9 +32,6 @@ class BodySystemInfolist
                         TextEntry::make('updated_at')
                             ->dateTime()
                             ->placeholder('-'),
-                        TextEntry::make('deleted_at')
-                            ->dateTime()
-                            ->visible(fn (BodySystem $record): bool => $record->trashed()),
                     ]),
 
             ]);
