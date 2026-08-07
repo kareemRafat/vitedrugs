@@ -15,62 +15,93 @@
         ];
         $causes = $microorganism->diseases->filter(fn ($d) => ($d->pivot->role ?? null) === 'cause');
         $associated = $microorganism->diseases->filter(fn ($d) => ($d->pivot->role ?? null) !== 'cause');
-        $typeIcon = match ($microorganism->microorganism_type) {
-            'bacteria' => 'bug',
-            'virus' => 'dna',
-            'fungus' => 'sprout',
-            'parasite' => 'worm',
-            default => 'microscope',
-        };
     @endphp
 
     <div class="space-y-4">
 
-        {{-- Hero --}}
-        <x-large-animals.page-hero
-            :heading="$microorganism->name"
-            :subtitle="$microorganism->normalized_name && $microorganism->normalized_name !== $microorganism->name ? $microorganism->normalized_name : ''"
-            :badge="$microorganism->microorganism_type ? __('large-animals.microorganisms.types.' . $microorganism->microorganism_type) : __('large-animals.hero.badge.microorganisms')"
-            :badgeIcon="$typeIcon"
-            :stats="[
-                ['count' => $microorganism->diseases->count(), 'label' => __('large-animals.hero.stats.linked_diseases'), 'icon' => 'activity'],
-            ]"
-        >
-            <div class="flex flex-col items-start gap-3">
-                <div class="flex flex-wrap items-center gap-2">
-                    @if ($microorganism->is_pathogenic)
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-red-500/20 border border-red-400/40 text-white dark:bg-red-500/25 dark:border-red-400/50">
-                            <x-lucide-alert-triangle class="w-3.5 h-3.5" />
-                            {{ __('large-animals.microorganisms.pathogenic') }}
-                        </span>
-                    @endif
-                    @if (filled($microorganism->tags))
-                        @foreach ((array) $microorganism->tags as $tag)
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-white/15 border border-white/25 text-white dark:bg-brand-soft/40 dark:border-brand-subtle dark:text-brand-light">
-                                <x-lucide-tag class="w-3.5 h-3.5" />
-                                {{ $tag }}
-                            </span>
-                        @endforeach
-                    @endif
-                </div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-white/15 text-white border border-white/30 hover:bg-white/25 transition-colors dark:bg-white/10 dark:border-white/25 dark:hover:bg-white/20">
-                        <x-lucide-arrow-left class="w-3.5 h-3.5 rtl:rotate-180" />
-                        {{ __('large-animals.microorganisms.back') }}
-                    </a>
-                </div>
-            </div>
-        </x-large-animals.page-hero>
-
         {{-- Breadcrumb --}}
-        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
+        <nav class="flex mb-4 pt-4 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
             <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.parts.large_animals') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.microorganisms') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <span class="text-heading dark:text-white font-medium">{{ $microorganism->name }}</span>
         </nav>
+
+        {{-- Hero --}}
+        <div class="bg-neutral-primary-soft rounded-base shadow-sm p-4 sm:p-6 dark:bg-slate-800">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-7 xl:col-span-8">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="min-w-0">
+                            <h1 class="text-2xl sm:text-3xl font-bold text-heading dark:text-white mb-1">{{ $microorganism->display_name ?? $microorganism->name }}</h1>
+                            @if ($microorganism->normalized_name && $microorganism->normalized_name !== $microorganism->name)
+                                <p class="text-body dark:text-slate-400 text-sm mb-2">{{ $microorganism->normalized_name }}</p>
+                            @endif
+                        </div>
+                        <a href="{{ route('large-animals.microorganisms.index') }}" wire:navigate
+                            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-base transition-all duration-200 text-xs font-medium whitespace-nowrap text-body hover:text-brand hover:bg-brand/10 dark:text-slate-400 dark:hover:text-brand dark:hover:bg-brand/20">
+                            <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                            <span>{{ __('large-animals.microorganisms.back') }}</span>
+                        </a>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        @if ($microorganism->microorganism_type)
+                            <span class="inline-flex items-center px-3 py-1 rounded-base text-base font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('large-animals.microorganisms.types.' . $microorganism->microorganism_type) }}</span>
+                        @endif
+                        @if ($microorganism->is_pathogenic)
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-base text-sm font-medium bg-danger-soft text-fg-danger-strong dark:bg-red-950 dark:text-red-300">
+                                <x-lucide-alert-triangle class="w-3.5 h-3.5" />
+                                {{ __('large-animals.microorganisms.pathogenic') }}
+                            </span>
+                        @endif
+                    </div>
+                    @if (filled($microorganism->tags))
+                        <div class="flex flex-wrap gap-1.5">
+                            @foreach ((array) $microorganism->tags as $tag)
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-base text-sm font-medium bg-neutral-secondary-soft text-heading border border-default-medium dark:bg-slate-700 dark:text-white dark:border-slate-600">
+                                    <x-lucide-tag class="w-3.5 h-3.5" />
+                                    {{ $tag }}
+                                </span>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                <div class="lg:col-span-5 xl:col-span-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                            <x-lucide-activity class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                            <div class="relative">
+                                <p class="text-xs font-semibold uppercase text-blue-600 dark:text-blue-400 mb-1">{{ __('large-animals.microorganisms.disease_count') }}</p>
+                                <p class="text-base font-bold text-slate-900 dark:text-white">{{ $microorganism->diseases->count() }}</p>
+                            </div>
+                        </div>
+                        <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                            <x-lucide-pill class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                            <div class="relative">
+                                <p class="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400 mb-1">{{ __('large-animals.microorganisms.antibiotic_count') }}</p>
+                                <p class="text-base font-bold text-slate-900 dark:text-white">{{ $microorganism->activeIngredients->count() }}</p>
+                            </div>
+                        </div>
+                        <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                            <x-lucide-microscope class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                            <div class="relative">
+                                <p class="text-xs font-semibold uppercase text-amber-600 dark:text-amber-400 mb-1">{{ __('large-animals.microorganisms.type') }}</p>
+                                <p class="text-base font-bold text-slate-900 dark:text-white">{{ $microorganism->microorganism_type ? __('large-animals.microorganisms.types.' . $microorganism->microorganism_type) : __('large-animals.microorganisms.no') }}</p>
+                            </div>
+                        </div>
+                        <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+                            <x-lucide-alert-triangle class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
+                            <div class="relative">
+                                <p class="text-xs font-semibold uppercase text-rose-600 dark:text-rose-400 mb-1">{{ __('large-animals.microorganisms.pathogenic') }}</p>
+                                <p class="text-base font-bold text-slate-900 dark:text-white">{{ $microorganism->is_pathogenic ? __('large-animals.microorganisms.yes') : __('large-animals.microorganisms.no') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
