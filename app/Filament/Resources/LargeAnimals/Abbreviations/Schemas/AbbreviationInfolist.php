@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\LargeAnimals\Abbreviations\Schemas;
 
-use App\Models\LargeAnimals\Abbreviation;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -40,9 +39,6 @@ class AbbreviationInfolist
                         TextEntry::make('updated_at')
                             ->dateTime()
                             ->placeholder('-'),
-                        TextEntry::make('deleted_at')
-                            ->dateTime()
-                            ->visible(fn (Abbreviation $record): bool => $record->trashed()),
                     ]),
 
             ]);

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\LargeAnimals\Synonyms\Schemas;
 
-use App\Models\LargeAnimals\Synonym;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -38,9 +37,6 @@ class SynonymInfolist
                         TextEntry::make('updated_at')
                             ->dateTime()
                             ->placeholder('-'),
-                        TextEntry::make('deleted_at')
-                            ->dateTime()
-                            ->visible(fn (Synonym $record): bool => $record->trashed()),
                     ]),
 
             ]);

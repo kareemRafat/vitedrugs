@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\LargeAnimals\AnatomicalStructures\Schemas;
 
-use App\Models\LargeAnimals\AnatomicalStructure;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -39,9 +38,6 @@ class AnatomicalStructureInfolist
                         TextEntry::make('updated_at')
                             ->dateTime()
                             ->placeholder('-'),
-                        TextEntry::make('deleted_at')
-                            ->dateTime()
-                            ->visible(fn (AnatomicalStructure $record): bool => $record->trashed()),
                     ]),
 
             ]);

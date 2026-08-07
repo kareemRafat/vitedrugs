@@ -41,4 +41,9 @@ class DiseaseClassification extends Model
     {
         return $this->belongsTo(Disease::class);
     }
+
+    public function getTitleAttribute(): string
+    {
+        return $this->disease?->name ?? "Disease #{$this->id}";
+    }
 }
