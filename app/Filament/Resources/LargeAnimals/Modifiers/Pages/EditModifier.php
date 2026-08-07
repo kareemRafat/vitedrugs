@@ -18,4 +18,9 @@ class EditModifier extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    public function getHeading(): string
+    {
+        return $this->getRecord()->display_label;
+    }
 }

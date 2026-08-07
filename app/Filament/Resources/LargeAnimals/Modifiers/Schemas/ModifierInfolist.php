@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\LargeAnimals\Modifiers\Schemas;
 
-use App\Models\LargeAnimals\Modifier;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -40,9 +39,6 @@ class ModifierInfolist
                         TextEntry::make('updated_at')
                             ->dateTime()
                             ->placeholder('-'),
-                        TextEntry::make('deleted_at')
-                            ->dateTime()
-                            ->visible(fn (Modifier $record): bool => $record->trashed()),
                     ]),
 
             ]);

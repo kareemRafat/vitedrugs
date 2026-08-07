@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\LargeAnimals\Findings\Schemas;
 
-use App\Models\LargeAnimals\Finding;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -46,9 +45,6 @@ class FindingInfolist
                         TextEntry::make('updated_at')
                             ->dateTime()
                             ->placeholder('-'),
-                        TextEntry::make('deleted_at')
-                            ->dateTime()
-                            ->visible(fn (Finding $record): bool => $record->trashed()),
                     ]),
 
             ]);

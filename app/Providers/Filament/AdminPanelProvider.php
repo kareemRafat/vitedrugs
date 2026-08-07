@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->authGuard('admin')
             ->readOnlyRelationManagersOnResourceViewPagesByDefault(false)
+            ->globalSearch(false)
             ->navigationGroups([
                 'Catalog',
                 'Content',

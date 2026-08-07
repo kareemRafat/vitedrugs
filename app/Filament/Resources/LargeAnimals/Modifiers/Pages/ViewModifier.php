@@ -16,4 +16,9 @@ class ViewModifier extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    public function getHeading(): string
+    {
+        return $this->getRecord()->display_label;
+    }
 }
