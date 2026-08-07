@@ -8,6 +8,7 @@ use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -30,14 +31,11 @@ class ClinicalSignsRelationManager extends RelationManager
                     ->numeric()
                     ->label('Weight')
                     ->sortable(),
-                TextColumn::make('pivot.is_specific')
-                    ->boolean()
+                BooleanColumn::make('pivot.is_specific')
                     ->label('Specific'),
-                TextColumn::make('pivot.is_required')
-                    ->boolean()
+                BooleanColumn::make('pivot.is_required')
                     ->label('Required'),
-                TextColumn::make('pivot.is_pathognomonic')
-                    ->boolean()
+                BooleanColumn::make('pivot.is_pathognomonic')
                     ->label('Pathognomonic'),
             ])
             ->headerActions([

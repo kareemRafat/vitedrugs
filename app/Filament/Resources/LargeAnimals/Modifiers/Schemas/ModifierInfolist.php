@@ -20,7 +20,7 @@ class ModifierInfolist
                     ->columnSpan(1)
                     ->schema([
                         TextEntry::make('canonical_name'),
-                        TextEntry::make('display_name'),
+                        TextEntry::make('display_label'),
                         TextEntry::make('display_name_ar')
                             ->placeholder('-'),
                         TextEntry::make('type')

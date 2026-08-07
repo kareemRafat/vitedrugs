@@ -28,7 +28,6 @@ class ClinicalSign extends Model
         'display_name_ar',
         'stage',
         'severity_level_id',
-        'semantic_slug',
     ];
 
     public function getLocalizedDisplayNameAttribute(): string

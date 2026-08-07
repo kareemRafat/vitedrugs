@@ -37,6 +37,47 @@ class Modifier extends Model
             : $this->display_name;
     }
 
+    public function getDisplayLabelAttribute(): string
+    {
+        $name = $this->display_name;
+
+        if (! str_starts_with($name, '{')) {
+            return $name;
+        }
+
+        $data = json_decode($name, true);
+
+        if (! is_array($data) || $data === []) {
+            return $name;
+        }
+
+        return collect($data)
+            ->map(function ($value, string $key): string {
+                $label = $this->humanize($key);
+
+                if (is_bool($value)) {
+                    return $value ? $label : $this->negate($label);
+                }
+
+                if (is_array($value)) {
+                    return collect($value)->map(fn (mixed $item): string => $this->humanize((string) $item))->implode(', ');
+                }
+
+                return $label.': '.$this->humanize((string) $value);
+            })
+            ->implode(', ');
+    }
+
+    private function humanize(string $value): string
+    {
+        return ucfirst(str_replace('_', ' ', $value));
+    }
+
+    private function negate(string $label): string
+    {
+        return 'not '.strtolower($label);
+    }
+
     public function clinicalSigns(): HasMany
     {
         return $this->hasMany(ClinicalSign::class);

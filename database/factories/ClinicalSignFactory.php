@@ -24,7 +24,6 @@ class ClinicalSignFactory extends Factory
             'display_name' => $displayName,
             'stage' => fake()->randomElement(['clinical', 'subclinical', 'peracute', 'acute', 'chronic']),
             'severity_level_id' => null,
-            'semantic_slug' => strtolower(str_replace(' ', '-', $displayName)),
         ];
     }
 }

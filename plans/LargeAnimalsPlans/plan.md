@@ -40,7 +40,7 @@
 - [x] Create `app/Models/LargeAnimals/AnatomicalStructure` — belongsTo `bodySystem`, belongsTo `parent`; fillable `body_system_id`, `parent_id`, `canonical_name`, `display_name`, `display_name_ar`, `type`.
 - [x] Create `app/Models/LargeAnimals/Finding` — fillable `canonical_name`, `display_name`, `display_name_ar`, `category`, `ontology_type`, `parent_id`, `is_noisy`, `is_general_sign`, `slug`.
 - [x] Create `app/Models/LargeAnimals/Modifier` — fillable `canonical_name`, `display_name`, `display_name_ar`, `type`, `modifier_group`, `is_noisy`.
-- [x] Create `app/Models/LargeAnimals/ClinicalSign` — belongsTo `finding`, `anatomicalStructure`, `modifier`; belongsToMany `diseases`; fillable `anatomical_structure_id`, `finding_id`, `modifier_id`, `canonical_name`, `display_name`, `display_name_ar`, `stage`, `severity_level_id`, `semantic_slug`.
+- [x] Create `app/Models/LargeAnimals/ClinicalSign` — belongsTo `finding`, `anatomicalStructure`, `modifier`; belongsToMany `diseases`; fillable `anatomical_structure_id`, `finding_id`, `modifier_id`, `canonical_name`, `display_name`, `display_name_ar`, `stage`, `severity_level_id`.
 - [x] Create `app/Models/LargeAnimals/HostSpecies` — belongsToMany `diseases`; fillable `canonical_name`, `display_name`, `display_name_ar`, `taxonomy_group`, `is_domestic`, `is_wildlife`, `is_human`.
 - [x] Create `app/Models/LargeAnimals/DiseaseClassification` — belongsTo `disease`; fillable `disease_id`, `infectiousness`, `transmissibility`, `etiology_type`, `occurrence_patterns`, `disease_courses`, `notifiable`, `zoonotic`, `oie_category`.
 - [x] Create `app/Models/LargeAnimals/Microorganism` — fillable taxonomy columns (`normalized_name`, `kingdom`, `phylum`, `class`, `order`, `family`, `genus`, `species`), `microorganism_type`, `is_pathogenic`, `searchable_text`, `json_data`, `source_json_file`, `tags`, `slug`, `is_topic`; `belongsToMany(Disease)` via `disease_microorganism`, `belongsToMany(ActiveIngredient)` via `microorganism_active_ingredient` (pivot `sensitivity`/`notes`).
@@ -169,7 +169,7 @@
 - [x] `AnatomicalStructureResource` — `body_system_id`, `parent_id`, names (`display_name_ar`), `type`.
 - [x] `FindingResource` — `canonical_name`, `display_name`, `display_name_ar`, `category`, `ontology_type`, `parent_id`, `is_noisy`, `is_general_sign`, `slug`.
 - [x] `ModifierResource` — names (`display_name_ar`), `type`, `modifier_group`, `is_noisy`.
-- [x] `ClinicalSignResource` — finding/anatomy/modifier selects, names (`display_name_ar`), `stage`, `severity_level_id`, `semantic_slug`; `DiseasesRelationManager` (reverse pivot).
+- [x] `ClinicalSignResource` — finding/anatomy/modifier selects, names (`display_name_ar`), `stage`, `severity_level_id`; `DiseasesRelationManager` (reverse pivot).
 - [x] `HostSpeciesResource` — names (`display_name_ar`), `taxonomy_group` select (`ruminant`/`poultry`/`fish`) so Specializations are admin-editable (F7), `is_domestic`, `is_wildlife`, `is_human`; `DiseasesRelationManager`.
 - [x] `DiseaseClassificationResource` — inline/hasOne on Disease (infectiousness, transmissibility, `etiology_type`, `zoonotic`, `notifiable`, `oie_category`, `occurrence_patterns`, `disease_courses`).
 - [x] `MicroorganismResource` — full taxonomy columns, `microorganism_type` select, `is_pathogenic`, `is_topic`, `searchable_text`, `tags`, `slug`, `json_data`; `DiseasesRelationManager` (pivot `role`) + `ActiveIngredientsRelationManager` (pivot `sensitivity` via `App\Enums\AntibioticSensitivity`, `notes`).

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\ClinicalSigns\Schemas;
 
+use App\Models\LargeAnimals\Modifier;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -25,7 +26,9 @@ class ClinicalSignForm
                     ->required(),
 
                 Select::make('modifier_id')
-                    ->relationship('modifier', 'display_name')
+                    ->options(fn (): array => Modifier::query()->orderBy('canonical_name')->get()
+                        ->mapWithKeys(fn (Modifier $modifier): array => [$modifier->id => $modifier->display_label])
+                        ->all())
                     ->searchable()
                     ->preload(),
 
@@ -40,8 +43,6 @@ class ClinicalSignForm
                 TextInput::make('stage'),
 
                 TextInput::make('severity_level_id'),
-
-                TextInput::make('semantic_slug'),
 
             ]);
     }

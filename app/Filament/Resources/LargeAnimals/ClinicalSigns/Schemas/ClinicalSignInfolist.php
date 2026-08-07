@@ -25,8 +25,6 @@ class ClinicalSignInfolist
                             ->placeholder('-'),
                         TextEntry::make('severity_level_id')
                             ->placeholder('-'),
-                        TextEntry::make('semantic_slug')
-                            ->placeholder('-'),
                     ]),
 
                 Section::make('Relationships')
@@ -36,7 +34,7 @@ class ClinicalSignInfolist
                             ->placeholder('-'),
                         TextEntry::make('finding.display_name')
                             ->placeholder('-'),
-                        TextEntry::make('modifier.display_name')
+                        TextEntry::make('modifier.display_label')
                             ->placeholder('-'),
                     ]),
 

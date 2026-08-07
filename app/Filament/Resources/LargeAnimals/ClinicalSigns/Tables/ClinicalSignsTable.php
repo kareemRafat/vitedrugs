@@ -24,8 +24,6 @@ class ClinicalSignsTable
                     ->searchable(),
                 TextColumn::make('display_name_ar')
                     ->searchable(),
-                TextColumn::make('semantic_slug')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

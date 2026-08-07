@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use stdClass;
 
 class ModifiersTable
@@ -19,9 +20,8 @@ class ModifiersTable
             ->columns([
                 TextColumn::make('#')
                     ->state(fn (stdClass $rowLoop, $livewire): string => (string) ($livewire->getTableRecords()->firstItem() + $rowLoop->iteration - 1)),
-                TextColumn::make('display_name')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('display_label')
+                    ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('display_name', $direction)),
                 TextColumn::make('type')
                     ->searchable(),
                 TextColumn::make('modifier_group')

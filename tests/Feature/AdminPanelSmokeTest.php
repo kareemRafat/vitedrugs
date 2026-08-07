@@ -33,6 +33,7 @@ class AdminPanelSmokeTest extends TestCase
             '/admin/knowledge-overview' => 200,
             '/admin/import-disease-knowledge' => 200,
             '/admin/diseases' => 200,
+            '/admin/large-animals/clinical-signs/1' => 200,
         ];
 
         foreach ($routes as $uri => $expected) {
