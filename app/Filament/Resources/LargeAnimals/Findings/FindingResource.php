@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\Findings;
 
+use App\Filament\Clusters\Diagnosis\DiagnosisCluster;
 use App\Filament\Resources\LargeAnimals\Findings\Pages\CreateFinding;
 use App\Filament\Resources\LargeAnimals\Findings\Pages\EditFinding;
 use App\Filament\Resources\LargeAnimals\Findings\Pages\ListFindings;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class FindingResource extends Resource
 {
     protected static ?string $model = Finding::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
+    protected static ?string $cluster = DiagnosisCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
 
     protected static ?string $recordTitleAttribute = 'display_name';
 

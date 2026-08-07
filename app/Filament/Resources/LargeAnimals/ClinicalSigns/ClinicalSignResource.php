@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\ClinicalSigns;
 
+use App\Filament\Clusters\Diagnosis\DiagnosisCluster;
 use App\Filament\Resources\LargeAnimals\ClinicalSigns\Pages\CreateClinicalSign;
 use App\Filament\Resources\LargeAnimals\ClinicalSigns\Pages\EditClinicalSign;
 use App\Filament\Resources\LargeAnimals\ClinicalSigns\Pages\ListClinicalSigns;
@@ -16,15 +17,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class ClinicalSignResource extends Resource
 {
     protected static ?string $model = ClinicalSign::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
+    protected static ?string $cluster = DiagnosisCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
 
     protected static ?string $recordTitleAttribute = 'display_name';
 

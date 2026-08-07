@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\AnatomicalStructures;
 
+use App\Filament\Clusters\Diagnosis\DiagnosisCluster;
 use App\Filament\Resources\LargeAnimals\AnatomicalStructures\Pages\CreateAnatomicalStructure;
 use App\Filament\Resources\LargeAnimals\AnatomicalStructures\Pages\EditAnatomicalStructure;
 use App\Filament\Resources\LargeAnimals\AnatomicalStructures\Pages\ListAnatomicalStructures;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class AnatomicalStructureResource extends Resource
 {
     protected static ?string $model = AnatomicalStructure::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
+    protected static ?string $cluster = DiagnosisCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
     protected static ?string $recordTitleAttribute = 'display_name';
 

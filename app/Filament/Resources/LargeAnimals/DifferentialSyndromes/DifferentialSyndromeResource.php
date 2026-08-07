@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\DifferentialSyndromes;
 
+use App\Filament\Clusters\Diagnosis\DiagnosisCluster;
 use App\Filament\Resources\LargeAnimals\DifferentialSyndromes\Pages\CreateDifferentialSyndrome;
 use App\Filament\Resources\LargeAnimals\DifferentialSyndromes\Pages\EditDifferentialSyndrome;
 use App\Filament\Resources\LargeAnimals\DifferentialSyndromes\Pages\ListDifferentialSyndromes;
@@ -17,15 +18,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class DifferentialSyndromeResource extends Resource
 {
     protected static ?string $model = DifferentialSyndrome::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
+    protected static ?string $cluster = DiagnosisCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
     protected static ?string $recordTitleAttribute = 'name';
 

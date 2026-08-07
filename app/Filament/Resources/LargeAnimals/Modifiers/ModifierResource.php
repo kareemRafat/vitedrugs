@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\Modifiers;
 
+use App\Filament\Clusters\Diagnosis\DiagnosisCluster;
 use App\Filament\Resources\LargeAnimals\Modifiers\Pages\CreateModifier;
 use App\Filament\Resources\LargeAnimals\Modifiers\Pages\EditModifier;
 use App\Filament\Resources\LargeAnimals\Modifiers\Pages\ListModifiers;
@@ -15,15 +16,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class ModifierResource extends Resource
 {
     protected static ?string $model = Modifier::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsHorizontal;
+    protected static ?string $cluster = DiagnosisCluster::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Large Animals';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsHorizontal;
 
     protected static ?string $recordTitleAttribute = 'display_name';
 
