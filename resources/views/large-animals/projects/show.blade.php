@@ -10,7 +10,7 @@
     <div class="space-y-4">
 
         {{-- Breadcrumb --}}
-        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
+        <nav class="flex mb-4 pt-4 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
             <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.drugs') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <a href="{{ route('large-animals.projects.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.projects') }}</a>
@@ -19,24 +19,24 @@
         </nav>
 
         {{-- Hero --}}
-        <x-large-animals.page-hero
+        <x-large-animals.card-hero
             :heading="$project->title"
             :subtitle="\Illuminate\Support\Str::limit(strip_tags($project->summary ?? ''), 220)"
-            :badge="$project->project_type ? __('large-animals.projects.types.' . $project->project_type) : __('large-animals.hero.badge.projects')"
-            badgeIcon="folder-kanban"
         >
+            <x-slot name="action">
+                <a href="{{ route('large-animals.projects.index') }}" wire:navigate
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-base transition-all duration-200 text-xs font-medium whitespace-nowrap text-body hover:text-brand hover:bg-brand/10 dark:text-slate-400 dark:hover:text-brand dark:hover:bg-brand/20">
+                    <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                    <span>{{ __('large-animals.projects.back') }}</span>
+                </a>
+            </x-slot>
             @if ($project->featured)
-                <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-base bg-white/15 border border-white/30 text-white">
-                    <x-lucide-star class="w-3 h-3" />
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
+                    <x-lucide-star class="w-3.5 h-3.5" />
                     {{ __('large-animals.projects.featured') }}
                 </span>
             @endif
-            <a href="{{ route('large-animals.projects.index') }}" wire:navigate
-                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
-                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
-                {{ __('large-animals.projects.back') }}
-            </a>
-        </x-large-animals.page-hero>
+        </x-large-animals.card-hero>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 

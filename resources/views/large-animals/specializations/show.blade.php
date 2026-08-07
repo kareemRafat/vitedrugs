@@ -3,76 +3,37 @@
 @section('title', __('large-animals.specializations.groups.' . $group) . ' — ' . __('large-animals.specializations.title'))
 
 @section('content')
-    @php
-        $icon = match ($group) {
-            'ruminant' => 'beef',
-            'poultry' => 'egg',
-            'fish' => 'fish',
-            default => 'paw-print',
-        };
-    @endphp
 
     <div class="space-y-4">
 
+        {{-- Breadcrumb --}}
+        <nav class="flex mb-4 pt-4 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
+            <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.parts.large_animals') }}</a>
+            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
+            <a href="{{ route('large-animals.specializations.index') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.specializations') }}</a>
+            <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
+            <span class="text-heading dark:text-white font-medium">{{ __('large-animals.specializations.groups.' . $group) }}</span>
+        </nav>
+
         {{-- Hero --}}
-        <x-large-animals.page-hero
+        <x-large-animals.card-hero
             :heading="__('large-animals.specializations.groups.' . $group)"
             :subtitle="$species->pluck('display_name')->implode(', ')"
-            :badge="__('large-animals.hero.badge.specializations')"
-            :badgeIcon="$icon"
             :stats="[
-                ['count' => $diseases->count(), 'label' => __('large-animals.hero.stats.diseases'), 'icon' => 'activity'],
-                ['count' => $products->count(), 'label' => __('large-animals.hero.stats.products'), 'icon' => 'package'],
-                ['count' => $articles->count(), 'label' => __('large-animals.hero.stats.articles'), 'icon' => 'file-text'],
-                ['count' => $microorganisms->count(), 'label' => __('large-animals.hero.stats.microorganisms'), 'icon' => 'bug'],
+                ['value' => $diseases->count(), 'label' => __('large-animals.specializations.diseases'), 'icon' => 'activity'],
+                ['value' => $products->count(), 'label' => __('large-animals.specializations.products'), 'icon' => 'package', 'labelClass' => 'text-amber-600 dark:text-amber-400'],
+                ['value' => $articles->count(), 'label' => __('large-animals.specializations.articles'), 'icon' => 'file-text', 'labelClass' => 'text-rose-600 dark:text-rose-400'],
+                ['value' => $microorganisms->count(), 'label' => __('large-animals.specializations.microorganisms'), 'icon' => 'microscope', 'labelClass' => 'text-emerald-600 dark:text-emerald-400'],
             ]"
         >
-            <a href="{{ route('large-animals.specializations.index') }}" wire:navigate
-                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
-                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
-                {{ __('large-animals.specializations.back') }}
-            </a>
-        </x-large-animals.page-hero>
-
-        {{-- Stat chips --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-4 dark:bg-slate-800 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand flex items-center justify-center shrink-0">
-                    <x-lucide-activity class="w-5 h-5" />
-                </div>
-                <div>
-                    <p class="text-lg font-bold text-heading dark:text-white">{{ $diseases->count() }}</p>
-                    <p class="text-xs text-body dark:text-slate-400">{{ __('large-animals.specializations.diseases') }}</p>
-                </div>
-            </div>
-            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-4 dark:bg-slate-800 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand flex items-center justify-center shrink-0">
-                    <x-lucide-package class="w-5 h-5" />
-                </div>
-                <div>
-                    <p class="text-lg font-bold text-heading dark:text-white">{{ $products->count() }}</p>
-                    <p class="text-xs text-body dark:text-slate-400">{{ __('large-animals.specializations.products') }}</p>
-                </div>
-            </div>
-            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-4 dark:bg-slate-800 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand flex items-center justify-center shrink-0">
-                    <x-lucide-file-text class="w-5 h-5" />
-                </div>
-                <div>
-                    <p class="text-lg font-bold text-heading dark:text-white">{{ $articles->count() }}</p>
-                    <p class="text-xs text-body dark:text-slate-400">{{ __('large-animals.specializations.articles') }}</p>
-                </div>
-            </div>
-            <div class="bg-neutral-primary-soft rounded-base shadow-xs p-4 dark:bg-slate-800 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand flex items-center justify-center shrink-0">
-                    <x-lucide-microscope class="w-5 h-5" />
-                </div>
-                <div>
-                    <p class="text-lg font-bold text-heading dark:text-white">{{ $microorganisms->count() }}</p>
-                    <p class="text-xs text-body dark:text-slate-400">{{ __('large-animals.specializations.microorganisms') }}</p>
-                </div>
-            </div>
-        </div>
+            <x-slot name="action">
+                <a href="{{ route('large-animals.specializations.index') }}" wire:navigate
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-base transition-all duration-200 text-xs font-medium whitespace-nowrap text-body hover:text-brand hover:bg-brand/10 dark:text-slate-400 dark:hover:text-brand dark:hover:bg-brand/20">
+                    <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                    <span>{{ __('large-animals.specializations.back') }}</span>
+                </a>
+            </x-slot>
+        </x-large-animals.card-hero>
 
         {{-- Diseases --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">

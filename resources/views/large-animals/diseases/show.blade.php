@@ -27,37 +27,30 @@
 
     <div class="space-y-4">
 
-        {{-- Hero --}}
-        <x-large-animals.page-hero
-            :heading="$isArabic && $disease->name_ar ? $disease->name_ar : $disease->name"
-            :subtitle="\Illuminate\Support\Str::limit(strip_tags($isArabic && $disease->description_ar ? $disease->description_ar : ($disease->description ?? '')), 220)"
-            :badge="__('large-animals.hero.badge.disease')"
-            badgeIcon="activity"
-            :stats="[
-                ['count' => $disease->clinicalSigns->count(), 'label' => __('large-animals.hero.stats.clinical_signs'), 'icon' => 'stethoscope'],
-                ['count' => $disease->hostSpecies->count(), 'label' => __('large-animals.hero.stats.species'), 'icon' => 'paw-print'],
-            ]"
-        >
-            <div class="flex flex-col items-start gap-3">
-                @if ($disease->name_ar && app()->getLocale() === 'ar')
-                    <p class="text-white/85 text-base">{{ $disease->name_ar }}</p>
-                @endif
-                <a href="{{ route('large-animals.diseases.article', $disease->slug) }}" wire:navigate
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-white/15 text-white border border-white/30 hover:bg-white/25 transition-colors dark:bg-white/10 dark:border-white/25 dark:hover:bg-white/20">
-                    <x-lucide-file-text class="w-3.5 h-3.5" />
-                    {{ __('large-animals.disease.read_article') }}
-                </a>
-            </div>
-        </x-large-animals.page-hero>
-
         {{-- Breadcrumb --}}
-        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
+        <nav class="flex mb-4 pt-4 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
             <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.parts.large_animals') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <span>{{ __('large-animals.breadcrumb.diseases') }}</span>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <span class="text-heading dark:text-white font-medium">{{ $isArabic && $disease->name_ar ? $disease->name_ar : $disease->name }}</span>
         </nav>
+
+        {{-- Hero --}}
+        <x-large-animals.card-hero
+            :heading="$isArabic && $disease->name_ar ? $disease->name_ar : $disease->name"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($isArabic && $disease->description_ar ? $disease->description_ar : ($disease->description ?? '')), 220)"
+            :stats="[
+                ['value' => $disease->clinicalSigns->count(), 'label' => __('large-animals.hero.stats.clinical_signs'), 'icon' => 'stethoscope'],
+                ['value' => $disease->hostSpecies->count(), 'label' => __('large-animals.hero.stats.species'), 'icon' => 'paw-print', 'labelClass' => 'text-emerald-600 dark:text-emerald-400'],
+            ]"
+        >
+            <a href="{{ route('large-animals.diseases.article', $disease->slug) }}" wire:navigate
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-base bg-brand text-white hover:bg-brand-strong transition-colors">
+                <x-lucide-file-text class="w-3.5 h-3.5" />
+                {{ __('large-animals.disease.read_article') }}
+            </a>
+        </x-large-animals.card-hero>
 
         {{-- Classification chips --}}
         @if ($classification)

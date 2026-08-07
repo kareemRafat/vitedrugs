@@ -6,7 +6,7 @@
     <div class="space-y-4">
 
         {{-- Breadcrumb --}}
-        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400 pt-4" aria-label="{{ __('messages.nav.breadcrumb') }}">
+        <nav class="flex mb-4 pt-4 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
             <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.drugs') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <a href="{{ route('large-animals.diseases.show', $disease->slug) }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('large-animals.breadcrumb.diseases') }}</a>
@@ -15,18 +15,21 @@
         </nav>
 
         {{-- Hero --}}
-        <x-large-animals.page-hero
+        <x-large-animals.card-hero
             :heading="$article['title']"
             :subtitle="\Illuminate\Support\Str::limit(strip_tags($article['summary'] ?? ''), 220)"
-            :badge="__('large-animals.hero.badge.article')"
-            badgeIcon="book-marked"
         >
-            <a href="{{ route('large-animals.diseases.show', $disease->slug) }}" wire:navigate
-                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25 transition-colors">
-                <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
-                {{ __('large-animals.medical.back_to_disease') }}
-            </a>
-        </x-large-animals.page-hero>
+            <x-slot name="action">
+                <a href="{{ route('large-animals.diseases.show', $disease->slug) }}" wire:navigate
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-base transition-all duration-200 text-xs font-medium whitespace-nowrap text-body hover:text-brand hover:bg-brand/10 dark:text-slate-400 dark:hover:text-brand dark:hover:bg-brand/20">
+                    <x-lucide-arrow-left class="w-4 h-4 rtl:rotate-180" />
+                    <span>{{ __('large-animals.medical.back_to_disease') }}</span>
+                </a>
+            </x-slot>
+            @if ($article['etiology_type'] ?? null)
+                <span class="inline-flex items-center px-3 py-1 rounded-base text-base font-medium bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $article['etiology_type'] }}</span>
+            @endif
+        </x-large-animals.card-hero>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
