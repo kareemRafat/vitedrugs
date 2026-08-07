@@ -35,6 +35,12 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->authGuard('admin')
             ->readOnlyRelationManagersOnResourceViewPagesByDefault(false)
+            ->navigationGroups([
+                'Catalog',
+                'Content',
+                'Large Animals',
+                'System',
+            ])
             ->favicon(asset('images/favicon.png'))
             ->colors([
                 'primary' => Color::Amber,

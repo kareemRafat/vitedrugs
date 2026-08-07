@@ -6,6 +6,9 @@ use App\Filament\Resources\Diseases\Pages\CreateDisease;
 use App\Filament\Resources\Diseases\Pages\EditDisease;
 use App\Filament\Resources\Diseases\Pages\ListDiseases;
 use App\Filament\Resources\Diseases\Pages\ViewDisease;
+use App\Filament\Resources\Diseases\RelationManagers\ClinicalSignsRelationManager;
+use App\Filament\Resources\Diseases\RelationManagers\HostSpeciesRelationManager;
+use App\Filament\Resources\Diseases\RelationManagers\MicroorganismsRelationManager;
 use App\Filament\Resources\Diseases\RelationManagers\ProductsRelationManager;
 use App\Filament\Resources\Diseases\Schemas\DiseaseForm;
 use App\Filament\Resources\Diseases\Schemas\DiseaseInfolist;
@@ -46,6 +49,9 @@ class DiseaseResource extends Resource
     public static function getRelations(): array
     {
         return [
+            ClinicalSignsRelationManager::class,
+            HostSpeciesRelationManager::class,
+            MicroorganismsRelationManager::class,
             ProductsRelationManager::class,
         ];
     }

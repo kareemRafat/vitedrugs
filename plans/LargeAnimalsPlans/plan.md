@@ -12,7 +12,7 @@
 - **M6 (Routes)** — DONE (2026-08-04)
 - **M7 (Views)** — DONE (2026-08-04)
 - **M7.5 (Localization)** — DONE (2026-08-04)
-- M8 (Filament admin) not started yet.
+- M8 (Filament admin) — DONE (2026-08-07). Milestone 9 (verify) not started.
 
 > **Schema note:** the pre-existing KB pivot tables (`disease_clinical_sign`, `disease_host_species`, `disease_classifications`, `medical_articles`) had `bigint` `disease_id` columns with orphaned integer IDs while `diseases.id` is ULID. Fixed via migration `2026_08_03_114057_fix_disease_relation_columns_to_ulid` (convert to `ulid` + real FKs, clear orphans). M3 seeders rebuilt the disease links.
 >
@@ -156,45 +156,46 @@
 
 ### 8.1 Sidebar grouping
 
-- [ ] Register the `Large Animals` navigation group and set group ordering in `app/Providers/Filament/AdminPanelProvider.php` (via `->navigationGroups(['Catalog', 'Content', 'Large Animals', 'System'])`), so all KB resources appear together below the existing `Catalog` / `Content` / `System` groups.
-- [ ] Set `$navigationGroup = 'Large Animals'` on every new Large Animals resource + the two new custom pages.
-- [ ] Keep the shared `Diseases` resource (in `Catalog`) visible; add to it the `ClinicalSignsRelationManager`, `HostSpeciesRelationManager`, and `MicroorganismsRelationManager`.
-- [ ] **`knowledge_payload` import editing (JSON-driven):** add a `LargeAnimals\ImportDiseaseKnowledge` custom page that validates a JSON payload (`clinical_signs`, `postmortem_findings`, `diagnosis`, `treatment`, `prevention_control`, `references`) onto `diseases.knowledge_payload` (already a nullable JSON column, array-cast — **NO migration needed**). Link it under `Large Animals`.
+- [x] Register the `Large Animals` navigation group and set group ordering in `app/Providers/Filament/AdminPanelProvider.php` (via `->navigationGroups(['Catalog', 'Content', 'Large Animals', 'System'])`), so all KB resources appear together below the existing `Catalog` / `Content` / `System` groups.
+- [x] Set `$navigationGroup = 'Large Animals'` on every new Large Animals resource + the two new custom pages.
+- [x] Keep the shared `Diseases` resource (in `Catalog`) visible; add to it the `ClinicalSignsRelationManager`, `HostSpeciesRelationManager`, and `MicroorganismsRelationManager`.
+- [x] **`knowledge_payload` import editing (JSON-driven):** add a `LargeAnimals\ImportDiseaseKnowledge` custom page that validates a JSON payload (`clinical_signs`, `postmortem_findings`, `diagnosis`, `treatment`, `prevention_control`, `references`) onto `diseases.knowledge_payload` (already a nullable JSON column, array-cast — **NO migration needed**). Link it under `Large Animals`.
 
 > **Approach (agreed):** hand-write every PHP Filament file to match the existing `Schemas/` + `Tables/` + `Pages/` convention (mirror `Diseases`/`ActiveIngredients`/`DataQuality`); do NOT use `make:filament-resource --generate` output. No migrations, no diff of models (the enums stay plain strings — see 8.2).
 
 ### 8.2 CRUD resources (`app/Filament/Resources/LargeAnimals/`)
 
-- [ ] `BodySystemResource` (list/create/edit/view) — `canonical_name`, `display_name`, `display_name_ar`.
-- [ ] `AnatomicalStructureResource` — `body_system_id`, `parent_id`, names (`display_name_ar`), `type`.
-- [ ] `FindingResource` — `canonical_name`, `display_name`, `display_name_ar`, `category`, `ontology_type`, `parent_id`, `is_noisy`, `is_general_sign`, `slug`.
-- [ ] `ModifierResource` — names (`display_name_ar`), `type`, `modifier_group`, `is_noisy`.
-- [ ] `ClinicalSignResource` — finding/anatomy/modifier selects, names (`display_name_ar`), `stage`, `severity_level_id`, `semantic_slug`; `DiseasesRelationManager` (reverse pivot).
-- [ ] `HostSpeciesResource` — names (`display_name_ar`), `taxonomy_group` select (`ruminant`/`poultry`/`fish`) so Specializations are admin-editable (F7), `is_domestic`, `is_wildlife`, `is_human`; `DiseasesRelationManager`.
-- [ ] `DiseaseClassificationResource` — inline/hasOne on Disease (infectiousness, transmissibility, `etiology_type`, `zoonotic`, `notifiable`, `oie_category`, `occurrence_patterns`, `disease_courses`).
-- [ ] `MicroorganismResource` — full taxonomy columns, `microorganism_type` select, `is_pathogenic`, `is_topic`, `searchable_text`, `tags`, `slug`, `json_data`; `DiseasesRelationManager` (pivot `role`) + `ActiveIngredientsRelationManager` (pivot `sensitivity` via `App\Enums\AntibioticSensitivity`, `notes`).
-- [ ] `MedicalArticleResource` — `title`, `slug`, `summary`, rich `content` (RichEditor), `disease_id`, `species`, `article_type`, `is_published` (+ `_ar` fields).
-- [ ] `SynonymResource` — `term`, `normalized_term`, `source_type`, morph `synonymable`.
-- [ ] `AbbreviationResource` — `abbreviation`, `full_term`, `description`, `category`.
-- [ ] `DifferentialSyndromeResource` — `name`/`name_ar`, `description`; `ClinicalSignsRelationManager` + `DiseasesRelationManager` (pivot `boost_score`).
-- [ ] `VeterinaryProjectResource` — `title`/`slug`/`summary`/`sector`, `project_type` select, `featured`, `is_published`, rich `content` (RichEditor) (F8).
-- [ ] Each resource uses the existing `Schemas/` + `Tables/` folder convention (Form/Infolist/Table classes) and `Heroicon::Outlined*` navigation icons.
-- [ ] **Select fields are plain strings + `Select->options()`** (no BackedEnum classes, no DB/cast changes): `microorganism_type` (bacteria/virus/fungus/parasite), `taxonomy_group` (ruminant/poultry/fish), `project_type` (feasibility_study/investment_guide/guideline), `article_type`, `role` pivots (cause/associated), `etiology_type`, `notifiable`, `zoonotic`, `oie_category`. Only the existing `App\Enums\AntibioticSensitivity` is used (pivot `sensitivity`).
+- [x] `BodySystemResource` (list/create/edit/view) — `canonical_name`, `display_name`, `display_name_ar`.
+- [x] `AnatomicalStructureResource` — `body_system_id`, `parent_id`, names (`display_name_ar`), `type`.
+- [x] `FindingResource` — `canonical_name`, `display_name`, `display_name_ar`, `category`, `ontology_type`, `parent_id`, `is_noisy`, `is_general_sign`, `slug`.
+- [x] `ModifierResource` — names (`display_name_ar`), `type`, `modifier_group`, `is_noisy`.
+- [x] `ClinicalSignResource` — finding/anatomy/modifier selects, names (`display_name_ar`), `stage`, `severity_level_id`, `semantic_slug`; `DiseasesRelationManager` (reverse pivot).
+- [x] `HostSpeciesResource` — names (`display_name_ar`), `taxonomy_group` select (`ruminant`/`poultry`/`fish`) so Specializations are admin-editable (F7), `is_domestic`, `is_wildlife`, `is_human`; `DiseasesRelationManager`.
+- [x] `DiseaseClassificationResource` — inline/hasOne on Disease (infectiousness, transmissibility, `etiology_type`, `zoonotic`, `notifiable`, `oie_category`, `occurrence_patterns`, `disease_courses`).
+- [x] `MicroorganismResource` — full taxonomy columns, `microorganism_type` select, `is_pathogenic`, `is_topic`, `searchable_text`, `tags`, `slug`, `json_data`; `DiseasesRelationManager` (pivot `role`) + `ActiveIngredientsRelationManager` (pivot `sensitivity` via `App\Enums\AntibioticSensitivity`, `notes`).
+- [x] `MedicalArticleResource` — `title`, `slug`, `summary`, rich `content` (RichEditor), `disease_id`, `species`, `article_type`, `is_published` (+ `_ar` fields).
+- [x] `SynonymResource` — `term`, `normalized_term`, `source_type`, morph `synonymable`.
+- [x] `AbbreviationResource` — `abbreviation`, `full_term`, `description`, `category`.
+- [x] `DifferentialSyndromeResource` — `name`/`name_ar`, `description`; `ClinicalSignsRelationManager` + `DiseasesRelationManager` (pivot `boost_score`).
+- [x] `VeterinaryProjectResource` — `title`/`slug`/`summary`/`sector`, `project_type` select, `featured`, `is_published`, rich `content` (RichEditor) (F8).
+- [x] Each resource uses the existing `Schemas/` + `Tables/` folder convention (Form/Infolist/Table classes) and `Heroicon::Outlined*` navigation icons.
+- [x] **Select fields are plain strings + `Select->options()`** (no BackedEnum classes, no DB/cast changes): `microorganism_type` (bacteria/virus/fungus/parasite), `taxonomy_group` (ruminant/poultry/fish), `project_type` (feasibility_study/investment_guide/guideline), `article_type`, `role` pivots (cause/associated), `etiology_type`, `notifiable`, `zoonotic`, `oie_category`. Only the existing `App\Enums\AntibioticSensitivity` is used (pivot `sensitivity`).
 
 ### 8.3 Relation managers on shared & Large Animals resources
 
-- [ ] `Diseases\RelationManagers\ClinicalSignsRelationManager` — attach signs with pivot `weight`, `is_specific`, `is_required`, `is_pathognomonic`.
-- [ ] `Diseases\RelationManagers\MicroorganismsRelationManager` — attach microorganisms via `disease_microorganism` pivot `role` (cause/associated).
-- [ ] `Diseases\RelationManagers\HostSpeciesRelationManager` — pivot `role`/`susceptibility`/`is_primary_host`/`is_reservoir`/`is_vector`/`is_carrier`/`is_incidental_host`/`notes`.
-- [ ] `ClinicalSignResource` `DiseasesRelationManager` (reverse pivot).
-- [ ] `HostSpeciesResource` `DiseasesRelationManager` (reverse pivot).
-- [ ] `MicroorganismResource` `DiseasesRelationManager` (reverse pivot `role`) + `ActiveIngredientsRelationManager` (sensitivity/notes).
+- [x] `Diseases\RelationManagers\ClinicalSignsRelationManager` — attach signs with pivot `weight`, `is_specific`, `is_required`, `is_pathognomonic`.
+- [x] `Diseases\RelationManagers\MicroorganismsRelationManager` — attach microorganisms via `disease_microorganism` pivot `role` (cause/associated).
+- [x] `Diseases\RelationManagers\HostSpeciesRelationManager` — pivot `role`/`susceptibility`/`is_primary_host`/`is_reservoir`/`is_vector`/`is_carrier`/`is_incidental_host`/`notes`.
+- [x] `ClinicalSignResource` `DiseasesRelationManager` (reverse pivot).
+- [x] `HostSpeciesResource` `DiseasesRelationManager` (reverse pivot).
+- [x] `MicroorganismResource` `DiseasesRelationManager` (reverse pivot `role`) + `ActiveIngredientsRelationManager` (sensitivity/notes).
+- [x] `DifferentialSyndromeResource` `ClinicalSignsRelationManager` + `DiseasesRelationManager` (pivot `boost_score`).
 
 ### 8.4 Custom admin pages
 
-- [ ] `LargeAnimals\ImportDiseaseKnowledge` page — **both input modes, with hints** to the admin: (a) a file-upload field accepting a JSON file and (b) a JSON textarea fallback. Both validate the same payload shape (`clinical_signs`, `postmortem_findings`, `diagnosis`, `treatment`, `prevention_control`, `references`) and store it on a selected Disease's `knowledge_payload`. Visible `helperText`/hints explain the expected JSON keys.
-- [ ] `LargeAnimals\KnowledgeOverview` page (dashboard-ish): counts for clinical signs, microorganisms, host species, articles, diseases **with `knowledge_payload` set** ("Knowledge Coverage").
-- [ ] Group both pages under `Large Animals`.
+- [x] `LargeAnimals\ImportDiseaseKnowledge` page — **both input modes, with hints** to the admin: (a) a file-upload field accepting a JSON file and (b) a JSON textarea fallback. Both validate the same payload shape (`clinical_signs`, `postmortem_findings`, `diagnosis`, `treatment`, `prevention_control`, `references`) and store it on a selected Disease's `knowledge_payload`. Visible `helperText`/hints explain the expected JSON keys.
+- [x] `LargeAnimals\KnowledgeOverview` page (dashboard-ish): counts for clinical signs, microorganisms, host species, articles, diseases **with `knowledge_payload` set** ("Knowledge Coverage").
+- [x] Group both pages under `Large Animals`.
 
 > **Excluded from M8:** orphaned ontology tables `clinical_severity_levels`, `clinical_course_types`, `transmission_types`, `transmission_routes`, `reservoirs`, `vectors` (M1 migrations `2026_08_01_000010`–`000015`) — no models, out of scope.
 
