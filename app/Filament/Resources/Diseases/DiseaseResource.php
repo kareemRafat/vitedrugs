@@ -8,6 +8,7 @@ use App\Filament\Resources\Diseases\Pages\EditDisease;
 use App\Filament\Resources\Diseases\Pages\ListDiseases;
 use App\Filament\Resources\Diseases\Pages\ViewDisease;
 use App\Filament\Resources\Diseases\RelationManagers\ClinicalSignsRelationManager;
+use App\Filament\Resources\Diseases\RelationManagers\DiseaseClassificationsRelationManager;
 use App\Filament\Resources\Diseases\RelationManagers\HostSpeciesRelationManager;
 use App\Filament\Resources\Diseases\RelationManagers\MicroorganismsRelationManager;
 use App\Filament\Resources\Diseases\RelationManagers\ProductsRelationManager;
@@ -50,6 +51,7 @@ class DiseaseResource extends Resource
     {
         return [
             ClinicalSignsRelationManager::class,
+            DiseaseClassificationsRelationManager::class,
             HostSpeciesRelationManager::class,
             MicroorganismsRelationManager::class,
             ProductsRelationManager::class,

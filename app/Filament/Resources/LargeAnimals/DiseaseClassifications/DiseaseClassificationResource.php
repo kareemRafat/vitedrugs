@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\LargeAnimals\DiseaseClassifications;
 
 use App\Filament\Clusters\Diseases\DiseasesCluster;
-use App\Filament\Resources\LargeAnimals\DiseaseClassifications\Pages\CreateDiseaseClassification;
 use App\Filament\Resources\LargeAnimals\DiseaseClassifications\Pages\EditDiseaseClassification;
 use App\Filament\Resources\LargeAnimals\DiseaseClassifications\Pages\ListDiseaseClassifications;
 use App\Filament\Resources\LargeAnimals\DiseaseClassifications\Pages\ViewDiseaseClassification;
@@ -26,6 +25,11 @@ class DiseaseClassificationResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -53,7 +57,6 @@ class DiseaseClassificationResource extends Resource
     {
         return [
             'index' => ListDiseaseClassifications::route('/'),
-            'create' => CreateDiseaseClassification::route('/create'),
             'view' => ViewDiseaseClassification::route('/{record}'),
             'edit' => EditDiseaseClassification::route('/{record}/edit'),
         ];
