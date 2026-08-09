@@ -26,21 +26,21 @@ class DiseaseArticleBuilder
         if ($signs) {
             $sections[] = [
                 'id' => 'clinical-signs',
-                'title' => 'Clinical Signs',
+                'title' => __('large-animals.disease.clinical_signs'),
                 'items' => $signs,
             ];
         }
 
         foreach ([
-            'postmortem' => ['key' => 'postmortem_findings', 'title' => 'Postmortem Findings', 'label' => 'display_name'],
-            'diagnosis' => ['key' => 'diagnosis', 'title' => 'Diagnosis', 'label' => 'method'],
-            'treatment' => ['key' => 'treatment', 'title' => 'Treatment', 'label' => 'intervention'],
-            'prevention' => ['key' => 'prevention_control', 'title' => 'Prevention & Control', 'label' => 'measure'],
+            'postmortem' => ['key' => 'postmortem_findings', 'title' => 'postmortem_findings', 'label' => 'display_name'],
+            'diagnosis' => ['key' => 'diagnosis', 'title' => 'diagnosis', 'label' => 'method'],
+            'treatment' => ['key' => 'treatment', 'title' => 'treatment', 'label' => 'intervention'],
+            'prevention' => ['key' => 'prevention_control', 'title' => 'prevention_control', 'label' => 'measure'],
         ] as $id => $config) {
             $items = collect($payload[$config['key']] ?? [])
                 ->map(fn (array $item) => [
-                    'label' => $item[$config['label']] ?? null,
-                    'description' => $item['description'] ?? null,
+                    'label' => $this->localized($item, $config['label']),
+                    'description' => $this->localized($item, 'description'),
                 ])
                 ->filter(fn (array $item) => filled($item['label']))
                 ->values()
@@ -49,7 +49,7 @@ class DiseaseArticleBuilder
             if ($items) {
                 $sections[] = [
                     'id' => $id,
-                    'title' => $config['title'],
+                    'title' => __('large-animals.disease.'.$config['title']),
                     'items' => $items,
                 ];
             }
@@ -60,7 +60,7 @@ class DiseaseArticleBuilder
         if ($references) {
             $sections[] = [
                 'id' => 'references',
-                'title' => 'References',
+                'title' => __('large-animals.disease.references'),
                 'items' => collect($references)
                     ->map(fn (array $item) => [
                         'label' => $item['title'] ?? null,
@@ -73,12 +73,26 @@ class DiseaseArticleBuilder
         }
 
         return [
-            'title' => $disease->name,
+            'title' => $this->localizedString($disease->name_ar, $disease->name),
             'slug' => $disease->slug,
-            'summary' => $disease->description,
+            'summary' => $this->localizedString($disease->description_ar, $disease->description),
             'etiology_type' => $disease->diseaseClassification?->etiology_type,
             'sections' => $sections,
         ];
+    }
+
+    private function localized(array $item, string $field): mixed
+    {
+        if (app()->getLocale() === 'ar' && filled($item[$field.'_ar'] ?? null)) {
+            return $item[$field.'_ar'];
+        }
+
+        return $item[$field] ?? null;
+    }
+
+    private function localizedString(mixed $arabic, mixed $english): mixed
+    {
+        return app()->getLocale() === 'ar' && filled($arabic) ? $arabic : $english;
     }
 
     private function overviewSection(Disease $disease): array
@@ -87,13 +101,13 @@ class DiseaseArticleBuilder
 
         if ($etiology = $disease->diseaseClassification?->etiology_type) {
             $items[] = [
-                'label' => 'Etiology',
+                'label' => __('large-animals.disease.etiology_type'),
                 'description' => $etiology,
             ];
         }
 
         $species = $disease->hostSpecies
-            ->pluck('display_name')
+            ->pluck('localized_display_name')
             ->filter()
             ->unique()
             ->sort()
@@ -101,14 +115,14 @@ class DiseaseArticleBuilder
 
         if ($species->isNotEmpty()) {
             $items[] = [
-                'label' => 'Affected species',
+                'label' => __('large-animals.disease.host_species'),
                 'description' => $species->implode(', '),
             ];
         }
 
         return [
             'id' => 'overview',
-            'title' => 'Overview',
+            'title' => __('large-animals.disease.overview'),
             'items' => $items,
         ];
     }
@@ -131,7 +145,7 @@ class DiseaseArticleBuilder
 
         return [
             'id' => 'microorganisms',
-            'title' => 'Microorganisms',
+            'title' => __('large-animals.disease.microorganisms'),
             'items' => $microorganisms,
         ];
     }
@@ -145,6 +159,7 @@ class DiseaseArticleBuilder
                 ->map(fn ($sign) => [
                     'canonical_name' => $sign->canonical_name,
                     'display_name' => $sign->display_name,
+                    'display_name_ar' => $sign->display_name_ar,
                     'weight' => $sign->pivot->weight,
                     'is_specific' => (bool) $sign->pivot->is_specific,
                     'is_required' => (bool) $sign->pivot->is_required,
@@ -156,7 +171,7 @@ class DiseaseArticleBuilder
 
         return collect($signs)
             ->map(fn (array $item) => [
-                'label' => $item['display_name'] ?? $item['canonical_name'] ?? null,
+                'label' => $this->localized($item, 'display_name') ?? $item['canonical_name'] ?? null,
                 'description' => null,
                 'meta' => [
                     'weight' => $item['weight'] ?? null,

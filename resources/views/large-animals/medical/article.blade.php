@@ -45,7 +45,7 @@
                                 <a href="{{ route('large-animals.diseases.show', $disease->slug) }}" wire:navigate
                                     class="inline-flex items-center gap-1.5 text-fg-brand hover:underline dark:text-brand">
                                     <x-lucide-activity class="w-3.5 h-3.5" />
-                                    {{ $disease->name }}
+                                    {{ $article['title'] }}
                                 </a>
                             </div>
 
