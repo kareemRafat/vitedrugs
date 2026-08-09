@@ -52,6 +52,14 @@ class ClinicalSign extends Model
         return $this->belongsTo(Modifier::class);
     }
 
+    public function differentialSyndromes(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            DifferentialSyndrome::class,
+            'differential_syndrome_clinical_sign'
+        );
+    }
+
     public function diseases(): BelongsToMany
     {
         return $this->belongsToMany(Disease::class, 'disease_clinical_sign')

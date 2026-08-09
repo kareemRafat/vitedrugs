@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\LargeAnimals\ClinicalSign;
+use App\Models\LargeAnimals\DifferentialSyndrome;
 use App\Models\LargeAnimals\DiseaseClassification;
 use App\Models\LargeAnimals\HostSpecies;
 use App\Models\LargeAnimals\Microorganism;
@@ -92,5 +93,14 @@ class Disease extends Model
     public function diseaseClassification(): HasOne
     {
         return $this->hasOne(DiseaseClassification::class);
+    }
+
+    public function differentialSyndromes(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            DifferentialSyndrome::class,
+            'differential_syndrome_disease'
+        )
+            ->withPivot('boost_score');
     }
 }
