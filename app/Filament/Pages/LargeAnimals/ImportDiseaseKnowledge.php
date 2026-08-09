@@ -4,6 +4,7 @@ namespace App\Filament\Pages\LargeAnimals;
 
 use App\Filament\Clusters\Diseases\DiseasesCluster;
 use App\Models\Disease;
+use App\Services\Knowledge\DiseaseKnowledgePayloadTransformer;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
@@ -55,7 +56,7 @@ class ImportDiseaseKnowledge extends Page
                     Textarea::make('json')
                         ->label('JSON Payload')
                         ->rows(12)
-                        ->helperText('Expected keys: clinical_signs, postmortem_findings, diagnosis, treatment, prevention_control, references. Provide either a file or pasted text.'),
+                        ->helperText('Expected keys: clinical_signs, postmortem_findings, diagnosis, treatment, prevention_control, references. A rich disease document wrapped in a "disease" key (clinical_manifestations, diagnostic_methods, ...) is also accepted and mapped automatically. Provide either a file or pasted text.'),
                 ])
                 ->action(function (array $data): void {
                     $payload = $this->resolvePayload($data['json'] ?? null, $data['json_file'] ?? null);
@@ -87,7 +88,9 @@ class ImportDiseaseKnowledge extends Page
     {
         $raw = null;
 
-        if (is_array($jsonFile) && isset($jsonFile[0]['path'])) {
+        if (is_string($jsonFile) && filled($jsonFile)) {
+            $raw = Storage::disk('local')->get($jsonFile);
+        } elseif (is_array($jsonFile) && isset($jsonFile[0]['path'])) {
             $raw = Storage::disk('local')->get($jsonFile[0]['path']);
         }
 
@@ -105,6 +108,10 @@ class ImportDiseaseKnowledge extends Page
             return null;
         }
 
-        return is_array($decoded) ? $decoded : null;
+        if (! is_array($decoded)) {
+            return null;
+        }
+
+        return DiseaseKnowledgePayloadTransformer::transform($decoded);
     }
 }
