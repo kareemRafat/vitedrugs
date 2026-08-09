@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\Synonyms\Tables;
 
+use App\Models\Disease;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -9,6 +10,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use stdClass;
+use Str;
 
 class SynonymsTable
 {
@@ -25,9 +27,21 @@ class SynonymsTable
                     ->searchable(),
                 TextColumn::make('source_type')
                     ->searchable(),
-                TextColumn::make('synonymable_type')
-                    ->searchable(),
-                TextColumn::make('synonymable_id')
+                TextColumn::make('synonymable')
+                    ->label('Linked To')
+                    ->state(function ($record): string {
+                        $related = $record->synonymable;
+
+                        if (! $related) {
+                            return Str::afterLast($record->synonymable_type, '\\').' #'.$record->synonymable_id;
+                        }
+
+                        $title = $related instanceof Disease
+                            ? $related->name
+                            : $related->display_name ?? $related->getKey();
+
+                        return Str::afterLast($record->synonymable_type, '\\').' — '.$title;
+                    })
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

@@ -3,7 +3,10 @@
 namespace App\Filament\Resources\LargeAnimals\Synonyms\Schemas;
 
 use App\Models\Disease;
-use Filament\Forms\Components\Select;
+use App\Models\LargeAnimals\ClinicalSign;
+use App\Models\LargeAnimals\Finding;
+use App\Models\LargeAnimals\Modifier;
+use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -24,13 +27,18 @@ class SynonymForm
                 TextInput::make('source_type')
                     ->maxLength(255),
 
-                Select::make('synonymable_type')
-                    ->options([
-                        Disease::class => 'Disease',
+                MorphToSelect::make('synonymable')
+                    ->types([
+                        MorphToSelect\Type::make(Disease::class)
+                            ->titleAttribute('name'),
+                        MorphToSelect\Type::make(ClinicalSign::class)
+                            ->titleAttribute('display_name'),
+                        MorphToSelect\Type::make(Finding::class)
+                            ->titleAttribute('display_name'),
+                        MorphToSelect\Type::make(Modifier::class)
+                            ->titleAttribute('display_name'),
                     ])
-                    ->required(),
-
-                TextInput::make('synonymable_id')
+                    ->searchable()
                     ->required(),
 
             ]);

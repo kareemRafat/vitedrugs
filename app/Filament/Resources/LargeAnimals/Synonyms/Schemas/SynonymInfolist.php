@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\LargeAnimals\Synonyms\Schemas;
 
+use App\Models\Disease;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Str;
 
 class SynonymInfolist
 {
@@ -23,9 +25,14 @@ class SynonymInfolist
                         TextEntry::make('source_type')
                             ->placeholder('-'),
                         TextEntry::make('synonymable_type')
-                            ->placeholder('-'),
-                        TextEntry::make('synonymable_id')
-                            ->placeholder('-'),
+                            ->state(fn ($record): string => Str::afterLast($record->synonymable_type, '\\')),
+                        TextEntry::make('synonymable')
+                            ->label('Linked To')
+                            ->state(fn ($record): string => (string) ($record->synonymable
+                                ? (Str::afterLast($record->synonymable_type, '\\').' — '.(($record->synonymable instanceof Disease)
+                                    ? $record->synonymable->name
+                                    : ($record->synonymable->display_name ?? $record->synonymable->getKey())))
+                                : '-')),
                     ]),
 
                 Section::make('Timestamps')
