@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class MedicalArticle extends Model
 {
@@ -46,9 +47,28 @@ class MedicalArticle extends Model
 
     public function getLocalizedSummaryAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' && $this->summary_ar
-            ? $this->summary_ar
-            : $this->summary;
+        if (app()->getLocale() === 'ar' && $this->summary_ar) {
+            return $this->summary_ar;
+        }
+
+        return $this->summary;
+    }
+
+    public function getLocalizedSummaryOrContentAttribute(): ?string
+    {
+        if (app()->getLocale() === 'ar') {
+            if ($this->summary_ar) {
+                return $this->summary_ar;
+            }
+
+            return Str::limit(strip_tags($this->content_ar ?? ''), 220);
+        }
+
+        if ($this->summary) {
+            return $this->summary;
+        }
+
+        return Str::limit(strip_tags($this->content ?? ''), 220);
     }
 
     public function getLocalizedContentAttribute(): string

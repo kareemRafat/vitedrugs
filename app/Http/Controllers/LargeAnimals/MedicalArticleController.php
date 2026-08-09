@@ -35,23 +35,41 @@ class MedicalArticleController extends Controller
     {
         $index = 0;
 
-        return preg_replace_callback('/<h2([^>]*)>/i', function (array $match) use (&$index) {
-            $attrs = $match[1];
+        $pattern = '/<h2([^>]*)>(.*?)<\/h2>|<p([^>]*)>\s*<strong([^>]*)>((?:(?!<\/strong>).)*?)<\/strong>\s*<\/p>/is';
+
+        return preg_replace_callback($pattern, function (array $match) use (&$index) {
             $id = 'section-'.$index;
             $index++;
 
-            if (preg_match('/\bid\s*=\s*["\']/i', $attrs)) {
+            if (str_starts_with(strtolower($match[0]), '<h2')) {
+                $attrs = $match[1];
+
+                if (preg_match('/\bid\s*=\s*["\']/i', $attrs)) {
+                    return $match[0];
+                }
+
+                return '<h2'.$attrs.' id="'.$id.'">'.$match[2].'</h2>';
+            }
+
+            $pAttrs = $match[3];
+
+            if (preg_match('/\bid\s*=\s*["\']/i', $pAttrs)) {
                 return $match[0];
             }
 
-            return '<h2'.$attrs.' id="'.$id.'">';
+            return '<p'.$pAttrs.' id="'.$id.'"><strong'.$match[4].'>'.$match[5].'</strong></p>';
         }, $content ?? '');
     }
 
     protected function extractTableOfContents(?string $content): array
     {
-        preg_match_all('/<h2.*?>(.*?)<\/h2>/i', $content ?? '', $matches);
+        $pattern = '/<h2[^>]*>(.*?)<\/h2>|<p[^>]*>\s*<strong[^>]*>((?:(?!<\/strong>).)*?)<\/strong>\s*<\/p>/is';
 
-        return $matches[1] ?? [];
+        preg_match_all($pattern, $content ?? '', $matches, PREG_SET_ORDER);
+
+        return array_map(
+            fn (array $match): string => $match[1] !== '' ? $match[1] : $match[2],
+            $matches,
+        );
     }
 }

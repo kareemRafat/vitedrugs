@@ -6,6 +6,7 @@ use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class MedicalArticleInfolist
 {
@@ -51,6 +52,23 @@ class MedicalArticleInfolist
                         TextEntry::make('summary')
                             ->placeholder('-'),
                         TextEntry::make('summary_ar')
+                            ->placeholder('-'),
+                    ]),
+
+                Section::make('Content')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('content')
+                            ->html()
+                            ->placeholder('-'),
+                    ]),
+
+                Section::make('Content (Arabic)')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('content_ar')
+                            ->formatStateUsing(fn (?string $state): HtmlString => new HtmlString('<div dir="rtl">'.($state ?? '').'</div>'))
+                            ->html()
                             ->placeholder('-'),
                     ]),
 

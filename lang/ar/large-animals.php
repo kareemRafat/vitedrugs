@@ -338,8 +338,9 @@ return [
         'type' => 'النوع',
         'no_toc' => 'لا توجد أقسام بعد.',
         'types' => [
-            'disease_reference' => 'مرجع المرض',
-            'overview' => 'نظرة عامة',
+            'review' => 'مراجعة',
+            'research' => 'بحث',
+            'case_study' => 'دراسة حالة',
             'guideline' => 'إرشادات',
         ],
     ],

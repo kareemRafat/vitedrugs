@@ -3,7 +3,7 @@
 @section('title', $article->localized_title)
 
 @section('meta_description')
-    {{ \Illuminate\Support\Str::limit(strip_tags($article->localized_summary ?? ''), 160) }}
+    {{ \Illuminate\Support\Str::limit(strip_tags($article->localized_summary_or_content ?? ''), 160) }}
 @endsection
 
 @section('content')
@@ -12,7 +12,7 @@
         {{-- Hero --}}
         <x-large-animals.page-hero
             :heading="$article->localized_title"
-            :subtitle="\Illuminate\Support\Str::limit(strip_tags($article->localized_summary ?? ''), 220)"
+            :subtitle="\Illuminate\Support\Str::limit(strip_tags($article->localized_summary_or_content ?? ''), 220)"
             :badge="__('large-animals.hero.badge.article')"
             badgeIcon="book-marked"
         />
@@ -59,6 +59,7 @@
                                 [&_h3]:text-heading dark:[&_h3]:text-white [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3
                                 [&_p]:mb-4 [&_p]:leading-relaxed
                                 [&_h2]:scroll-mt-24
+                                [&_p[id]]:scroll-mt-24
                                 [&_ul]:space-y-2 [&_ul]:mb-4
                                 [&_ol]:space-y-2 [&_ol]:mb-4
                                 [&_blockquote]:border-s-4 [&_blockquote]:border-brand [&_blockquote]:ps-4 [&_blockquote]:my-6 [&_blockquote]:italic

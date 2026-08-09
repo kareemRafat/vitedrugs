@@ -54,8 +54,8 @@
 
                                     <h2 class="text-lg font-semibold text-heading dark:text-white line-clamp-2 group-hover:text-fg-brand dark:group-hover:text-brand transition-colors duration-150">{{ $article->localized_title }}</h2>
 
-                                    @if ($article->localized_summary)
-                                        <p class="text-sm text-body dark:text-slate-400 line-clamp-3">{{ $article->localized_summary }}</p>
+                                    @if ($article->localized_summary_or_content)
+                                        <p class="text-sm text-body dark:text-slate-400 line-clamp-3">{{ $article->localized_summary_or_content }}</p>
                                     @endif
 
                                     @if ($article->species)

@@ -38,11 +38,13 @@ class MedicalArticleForm
 
                 RichEditor::make('content')
                     ->columnSpanFull()
+                    ->hint('Write each section title on its own line — titles are used for the "On this page" sidebar.')
                     ->fileAttachmentsDisk('public')
                     ->fileAttachmentsDirectory('medical-articles'),
 
                 RichEditor::make('content_ar')
                     ->columnSpanFull()
+                    ->hint('اكتب عنوان كل قسم في سطر منفصل — تُستخدم العناوين في قائمة "في هذه الصفحة".')
                     ->fileAttachmentsDisk('public')
                     ->fileAttachmentsDirectory('medical-articles'),
 
