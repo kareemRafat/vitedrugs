@@ -338,10 +338,12 @@ return [
         'type' => 'Type',
         'no_toc' => 'No sections yet.',
         'types' => [
+            'disease_reference' => 'Disease Reference',
             'review' => 'Review',
             'research' => 'Research',
             'case_study' => 'Case Study',
             'guideline' => 'Guideline',
+            'overview' => 'Overview',
         ],
     ],
 

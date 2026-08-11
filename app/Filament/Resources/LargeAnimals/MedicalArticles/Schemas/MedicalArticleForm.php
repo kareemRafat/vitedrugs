@@ -60,10 +60,12 @@ class MedicalArticleForm
 
                 Select::make('article_type')
                     ->options([
+                        'disease_reference' => 'Disease Reference',
                         'review' => 'Review',
                         'research' => 'Research',
                         'case_study' => 'Case Study',
                         'guideline' => 'Guideline',
+                        'overview' => 'Overview',
                     ]),
 
                 Toggle::make('is_published')
