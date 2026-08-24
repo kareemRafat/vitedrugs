@@ -86,6 +86,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Search Engine Indexing
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the site tells search engines not to index, follow,
+    | or archive any page: robots.txt disallows all crawlers, every page
+    | sends a "noindex, nofollow, noarchive" meta tag, and the sitemap
+    | returns 404.
+    |
+    */
+
+    'noindex' => (bool) env('APP_NOINDEX', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

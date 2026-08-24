@@ -12,6 +12,8 @@ class SitemapController extends Controller
 {
     public function index()
     {
+        abort_if(config('app.noindex'), 404);
+
         $locales = ['en', 'ar'];
 
         return response()
