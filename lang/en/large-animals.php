@@ -387,6 +387,63 @@ return [
         ],
     ],
 
+    'landing' => [
+        'badge' => 'Large Animals',
+        'heading' => 'The Large Animal Knowledge Hub',
+        'subtitle' => 'A clinical knowledge base for large animal veterinary practice — differential diagnosis, disease filtering, microorganism references and curated veterinary content.',
+        'cta_primary' => 'Start Diagnosis',
+        'cta_secondary' => 'Explore Specializations',
+        'services_heading' => 'Everything you need in one place',
+        'services_subtitle' => 'Clinical tools and libraries built around large animal practice.',
+        'open' => 'Open',
+        'services' => [
+            'diagnosis' => [
+                'title' => 'Differential Diagnosis',
+                'description' => 'Enter the observed clinical signs and instantly rank probable diseases with a guided refinement step.',
+            ],
+            'filter' => [
+                'title' => 'Disease Filter',
+                'description' => 'Narrow diseases down by species, etiology, body system and zoonotic risk using selected clinical signs.',
+            ],
+            'comparison' => [
+                'title' => 'Disease Comparison',
+                'description' => 'Compare up to four diseases side by side: clinical presentation, hosts and etiology.',
+            ],
+            'microorganisms' => [
+                'title' => 'Microorganisms',
+                'description' => 'Taxonomic profiles of pathogens with linked diseases and drug sensitivity data.',
+            ],
+            'articles' => [
+                'title' => 'Medical Articles',
+                'description' => 'Curated veterinary articles covering diagnosis, treatment and control of major conditions.',
+            ],
+            'specializations' => [
+                'title' => 'Specializations',
+                'description' => 'Browse diseases by clinical category: infectious diseases, internal medicine and zoonotic diseases.',
+            ],
+            'projects' => [
+                'title' => 'Veterinary Projects',
+                'description' => 'Feasibility studies, investment guides and practice guidelines for the large animal sector.',
+            ],
+            'search' => [
+                'title' => 'Smart Search',
+                'description' => 'Search across diseases, signs and microorganisms — including synonyms and abbreviations.',
+            ],
+        ],
+        'stats_heading' => 'Knowledge base at a glance',
+        'stats' => [
+            'diseases' => 'Active diseases',
+            'clinical_signs' => 'Clinical signs',
+            'microorganisms' => 'Microorganisms',
+            'articles' => 'Articles',
+            'projects' => 'Projects',
+            'species' => 'Host species',
+        ],
+        'cta_title' => 'Explore diseases by specialty',
+        'cta_subtitle' => 'Infectious diseases, internal medicine and zoonotic conditions — curated and cross-linked.',
+        'cta_button' => 'Browse specializations',
+    ],
+
     'specializations' => [
         'title' => 'Specializations',
         'heading' => 'Veterinary Specializations',

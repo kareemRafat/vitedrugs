@@ -4,7 +4,7 @@
 
 ## Status
 
-- **In progress** (2026-08-24). Milestones 1–5 complete. Milestone 5 verified: "Antibiotics" → "Drugs" on microorganism show/index pages, fully bilingual (EN + AR). Pint clean; 25 related tests passing. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
+- **In progress** (2026-08-24). Milestones 1–6 complete. Milestone 6 verified: redesigned landing with hero, 6 live stat counters, 8 service cards and CTA strip — fully bilingual. Pint clean; related tests passing. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
 
 ## Decisions
 
@@ -71,13 +71,14 @@
 
 ## Milestone 6 — Landing redesign (`/large-animals`)
 
-- [ ] **Edit** `app/Http/Controllers/LargeAnimals/DrugLandingController.php`: gather live counts (active diseases, clinical signs, microorganisms, published articles, projects, host species).
-- [ ] **Rewrite** `resources/views/large-animals/landing.blade.php`:
-  - Hero (badge + heading + subtitle) using existing gradient pattern.
-  - Services/features grid linking Diagnosis, Filter, Comparison, Microorganisms, Articles, Specializations, Projects (Lucide icons + short English copy).
-  - Stats band with live counts.
-  - Compact CTA strip.
-  - All copy via new `large-animals.landing.*` lang keys (English only).
+- [x] **Edit** `app/Http/Controllers/LargeAnimals/DrugLandingController.php`: passes live counts — active diseases, clinical signs, catalogue microorganisms, published articles/projects, host species.
+- [x] **Rewrite** `resources/views/large-animals/landing.blade.php`:
+  - Gradient hero (badge + heading + subtitle + dual CTAs: Start Diagnosis / Explore Specializations).
+  - Live stats band: 6 counter cards (diseases, signs, microorganisms, articles, projects, species) with icons.
+  - Services grid: **8 cards** (Diagnosis, Filter, Comparison, Microorganisms, Articles, Specializations, Projects, Smart Search) — icon, title, description, "Open →" footer, hover lift + border-brand.
+  - CTA strip linking Specializations ("Explore diseases by specialty").
+  - All copy via new `large-animals.landing.*` lang keys — full EN + AR translations.
+- [x] Verified locally: EN+AR pages 200, hero/8 cards/6 stats/CTA rendered, AR copy present. Pint clean; related tests passing (17).
 
 ## Milestone 7 — Footer redesign + part-awareness
 
