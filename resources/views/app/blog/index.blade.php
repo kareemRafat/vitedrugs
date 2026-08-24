@@ -108,7 +108,7 @@
                                         </span>
                                     </div>
 
-                                    <h2 class="text-lg font-semibold text-heading dark:text-white mb-2 line-clamp-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-150">
+                                    <h2 class="text-lg font-semibold text-heading dark:text-white mb-2 line-clamp-2 group-hover:text-brand transition-colors duration-150">
                                         {{ app()->getLocale() === 'ar' && $blog->title_ar ? $blog->title_ar : $blog->title }}
                                     </h2>
 

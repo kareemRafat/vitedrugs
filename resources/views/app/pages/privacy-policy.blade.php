@@ -10,17 +10,17 @@ Privacy Policy for VetPedia veterinary medical knowledge platform.
 <div id="privacy-page" class="max-w-7xl mx-auto space-y-12 pb-8 sm:pb-12">
 
   {{-- Hero --}}
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm mt-4">
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-brand-subtle dark:to-slate-900 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm mt-4">
     <div class="relative z-10 max-w-2xl">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-100 dark:text-sky-200 border border-white/10 dark:border-sky-700 mb-5">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white/80 border border-white/10 mb-5">
         <x-lucide-shield class="w-4 h-4" />
         <span>{{ __('messages.pages.privacy.heading') }}</span>
       </div>
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
         {{ __('messages.pages.privacy.heading') }}
       </h1>
-      <div class="w-16 h-1 bg-cyan-300 dark:bg-sky-400 rounded-full mt-6 mb-6"></div>
-      <p class="text-lg sm:text-xl text-blue-50 dark:text-sky-100 max-w-xl leading-relaxed">
+      <div class="w-16 h-1 bg-white/60 rounded-full mt-6 mb-6"></div>
+      <p class="text-lg sm:text-xl text-white/90 max-w-xl leading-relaxed">
         {{ __('messages.pages.privacy.last_updated') }}: {{ now()->format('F d, Y') }}
       </p>
     </div>
@@ -29,14 +29,14 @@ Privacy Policy for VetPedia veterinary medical knowledge platform.
   {{-- Sections --}}
   @php
     $sections = [
-      ['icon' => 'info', 'bg' => 'bg-blue-50 dark:bg-blue-900/20', 'tc' => 'text-blue-600 dark:text-blue-400', 'check' => 'text-blue-500 dark:text-blue-400', 'title' => __('messages.pages.privacy.intro_title'), 'text' => __('messages.pages.privacy.intro_text')],
-      ['icon' => 'database', 'bg' => 'bg-emerald-50 dark:bg-emerald-900/20', 'tc' => 'text-emerald-600 dark:text-emerald-400', 'check' => 'text-emerald-500 dark:text-emerald-400', 'title' => __('messages.pages.privacy.collect_title'), 'text' => __('messages.pages.privacy.collect_text')],
-      ['icon' => 'search', 'bg' => 'bg-purple-50 dark:bg-purple-900/20', 'tc' => 'text-purple-600 dark:text-purple-400', 'check' => 'text-purple-500 dark:text-purple-400', 'title' => __('messages.pages.privacy.use_title'), 'list' => __('messages.pages.privacy.use_items')],
-      ['icon' => 'cookie', 'bg' => 'bg-amber-50 dark:bg-amber-900/20', 'tc' => 'text-amber-600 dark:text-amber-400', 'check' => 'text-amber-500 dark:text-amber-400', 'title' => __('messages.pages.privacy.cookies_title'), 'text' => __('messages.pages.privacy.cookies_text')],
-      ['icon' => 'share-2', 'bg' => 'bg-rose-50 dark:bg-rose-900/20', 'tc' => 'text-rose-600 dark:text-rose-400', 'check' => 'text-rose-500 dark:text-rose-400', 'title' => __('messages.pages.privacy.third_party_title'), 'text' => __('messages.pages.privacy.third_party_text')],
-      ['icon' => 'shield', 'bg' => 'bg-indigo-50 dark:bg-indigo-900/20', 'tc' => 'text-indigo-600 dark:text-indigo-400', 'check' => 'text-indigo-500 dark:text-indigo-400', 'title' => __('messages.pages.privacy.security_title'), 'text' => __('messages.pages.privacy.security_text')],
-      ['icon' => 'check-circle', 'bg' => 'bg-cyan-50 dark:bg-cyan-900/20', 'tc' => 'text-cyan-600 dark:text-cyan-400', 'check' => 'text-cyan-500 dark:text-cyan-400', 'title' => __('messages.pages.privacy.accuracy_title'), 'text' => __('messages.pages.privacy.accuracy_text')],
-      ['icon' => 'refresh-cw', 'bg' => 'bg-orange-50 dark:bg-orange-900/20', 'tc' => 'text-orange-600 dark:text-orange-400', 'check' => 'text-orange-500 dark:text-orange-400', 'title' => __('messages.pages.privacy.changes_title'), 'text' => __('messages.pages.privacy.changes_text')],
+      ['icon' => 'info', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.intro_title'), 'text' => __('messages.pages.privacy.intro_text')],
+      ['icon' => 'database', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.collect_title'), 'text' => __('messages.pages.privacy.collect_text')],
+      ['icon' => 'search', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.use_title'), 'list' => __('messages.pages.privacy.use_items')],
+      ['icon' => 'cookie', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.cookies_title'), 'text' => __('messages.pages.privacy.cookies_text')],
+      ['icon' => 'share-2', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.third_party_title'), 'text' => __('messages.pages.privacy.third_party_text')],
+      ['icon' => 'shield', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.security_title'), 'text' => __('messages.pages.privacy.security_text')],
+      ['icon' => 'check-circle', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.accuracy_title'), 'text' => __('messages.pages.privacy.accuracy_text')],
+      ['icon' => 'refresh-cw', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand', 'check' => 'text-brand-medium', 'title' => __('messages.pages.privacy.changes_title'), 'text' => __('messages.pages.privacy.changes_text')],
     ];
   @endphp
 

@@ -44,11 +44,6 @@ new class extends Component
         }
     }
 
-    public function browseDiseases(): void
-    {
-        $this->redirectRoute('drugs.search', navigate: true);
-    }
-
     private function searchQuery(int $column)
     {
         $search = trim($this->{"search{$column}"});
@@ -559,11 +554,6 @@ new class extends Component
             <p class="text-sm text-body dark:text-slate-400 mb-6">
                 {{ __('large-animals.comparison.empty_desc') }}
             </p>
-            <button type="button" wire:click="browseDiseases"
-                class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-all">
-                <x-lucide-book-open class="w-4 h-4" />
-                {{ __('large-animals.comparison.browse_diseases') }}
-            </button>
         </div>
     @endif
 </div>

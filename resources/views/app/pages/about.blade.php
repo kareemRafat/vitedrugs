@@ -10,18 +10,18 @@
 <div id="about-page" class="max-w-7xl mx-auto space-y-12 pb-8 sm:pb-12">
 
   {{-- Hero --}}
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm mt-4">
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-brand-strong dark:from-brand-subtle dark:to-slate-900 px-8 sm:px-12 lg:px-16 py-14 sm:py-18 shadow-sm mt-4">
 
     <div class="relative z-10 max-w-2xl">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-blue-100 dark:text-sky-200 border border-white/10 dark:border-sky-700 mb-5">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white/80 border border-white/10 mb-5">
         <x-lucide-info class="w-4 h-4" />
         <span>{{ __('messages.nav.about') }}</span>
       </div>
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight">
         {{ __('messages.pages.about.heading') }}
       </h1>
-      <div class="w-16 h-1 bg-cyan-300 dark:bg-sky-400 rounded-full mt-6 mb-6"></div>
-      <p class="text-lg sm:text-xl text-blue-50 dark:text-sky-100 max-w-xl leading-relaxed">
+      <div class="w-16 h-1 bg-white/60 rounded-full mt-6 mb-6"></div>
+      <p class="text-lg sm:text-xl text-white/90 max-w-xl leading-relaxed">
         {{ __('messages.pages.about.subtitle') }}
       </p>
     </div>
@@ -30,8 +30,8 @@
   {{-- Mission / Vision --}}
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
-        <x-lucide-heart class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+      <div class="w-12 h-12 bg-brand-soft rounded-xl flex items-center justify-center mb-4">
+        <x-lucide-heart class="w-6 h-6 text-fg-brand" />
       </div>
       <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{{ __('messages.pages.about.mission_title') }}</h2>
       <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -39,8 +39,8 @@
       </p>
     </div>
     <div class="p-6 sm:p-8 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700  shadow-sm">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
-        <x-lucide-eye class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+      <div class="w-12 h-12 bg-brand-soft rounded-xl flex items-center justify-center mb-4">
+        <x-lucide-eye class="w-6 h-6 text-fg-brand" />
       </div>
       <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{{ __('messages.pages.about.vision_title') }}</h2>
       <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -55,14 +55,14 @@
     <p class="text-slate-500 dark:text-slate-400 mb-8">{{ __('messages.pages.about.features_subtitle') }}</p>
     @php
       $featuresList = [
-        ['key' => 'disease_db', 'icon' => 'stethoscope', 'bg' => 'bg-emerald-50 dark:bg-emerald-900/20', 'tc' => 'text-emerald-600 dark:text-emerald-400'],
-        ['key' => 'product_db', 'icon' => 'pill', 'bg' => 'bg-blue-50 dark:bg-blue-900/20', 'tc' => 'text-blue-600 dark:text-blue-400'],
-        ['key' => 'ingredient_lib', 'icon' => 'flask-conical', 'bg' => 'bg-purple-50 dark:bg-purple-900/20', 'tc' => 'text-purple-600 dark:text-purple-400'],
-        ['key' => 'company_dir', 'icon' => 'building-2', 'bg' => 'bg-amber-50 dark:bg-amber-900/20', 'tc' => 'text-amber-600 dark:text-amber-400'],
-        ['key' => 'disease_product', 'icon' => 'git-compare', 'bg' => 'bg-rose-50 dark:bg-rose-900/20', 'tc' => 'text-rose-600 dark:text-rose-400'],
-        ['key' => 'ingredient_product', 'icon' => 'git-branch', 'bg' => 'bg-cyan-50 dark:bg-cyan-900/20', 'tc' => 'text-cyan-600 dark:text-cyan-400'],
-        ['key' => 'clinical_tools', 'icon' => 'activity', 'bg' => 'bg-indigo-50 dark:bg-indigo-900/20', 'tc' => 'text-indigo-600 dark:text-indigo-400'],
-        ['key' => 'search_nav', 'icon' => 'search', 'bg' => 'bg-orange-50 dark:bg-orange-900/20', 'tc' => 'text-orange-600 dark:text-orange-400'],
+        ['key' => 'disease_db', 'icon' => 'stethoscope', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
+        ['key' => 'product_db', 'icon' => 'pill', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
+        ['key' => 'ingredient_lib', 'icon' => 'flask-conical', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
+        ['key' => 'company_dir', 'icon' => 'building-2', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
+        ['key' => 'disease_product', 'icon' => 'git-compare', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
+        ['key' => 'ingredient_product', 'icon' => 'git-branch', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
+        ['key' => 'clinical_tools', 'icon' => 'activity', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
+        ['key' => 'search_nav', 'icon' => 'search', 'bg' => 'bg-brand-soft', 'tc' => 'text-fg-brand'],
       ];
     @endphp
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -81,8 +81,8 @@
   {{-- Data Sources --}}
   <div>
     <div class="flex items-center gap-3 mb-4">
-      <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center shrink-0">
-        <x-lucide-database class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+      <div class="w-10 h-10 bg-brand-soft rounded-lg flex items-center justify-center shrink-0">
+        <x-lucide-database class="w-5 h-5 text-fg-brand" />
       </div>
       <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ __('messages.pages.about.sources_title') }}</h2>
     </div>
