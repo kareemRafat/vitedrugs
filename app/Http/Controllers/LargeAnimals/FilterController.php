@@ -84,9 +84,17 @@ class FilterController extends Controller
         return response()->json(['data' => $clinicalSigns->values()]);
     }
 
-    public function store(FilterRequest $request): RedirectResponse
+    public function store(FilterRequest $request): RedirectResponse|JsonResponse
     {
         $criteria = $request->validated();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'redirect' => route('large-animals.filter.results', [
+                    'criteria' => $this->filterShareService->create($criteria),
+                ]),
+            ]);
+        }
 
         return redirect()->route('large-animals.filter.results', [
             'criteria' => $this->filterShareService->create($criteria),

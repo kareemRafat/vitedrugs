@@ -25,14 +25,17 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('large-animals.filter.results.store') }}" x-data="filterPicker(@js(route('large-animals.filter.suggestions')))">
+        <form method="POST" action="{{ route('large-animals.filter.results.store') }}" x-data="filterPicker(@js(route('large-animals.filter.suggestions')))" @submit.prevent="submitForm($event)">
             @csrf
 
             {{-- Criteria --}}
             <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label for="host_species_id" class="block text-sm font-semibold text-heading dark:text-white mb-2">{{ __('large-animals.filter.species_label') }}</label>
+                        <label for="host_species_id" class="block text-sm font-semibold text-heading dark:text-white mb-2">
+                            {{ __('large-animals.filter.species_label') }}
+                            <span class="font-normal text-body dark:text-slate-400">({{ __('large-animals.filter.optional') }})</span>
+                        </label>
                         <select id="host_species_id" name="host_species_id"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ __('large-animals.filter.species_placeholder') }}</option>
@@ -83,7 +86,28 @@
 
             {{-- Token picker --}}
             <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-                <h2 class="text-base font-semibold text-heading dark:text-white mb-4">{{ __('large-animals.filter.tokens_label') }}</h2>
+                <h2 class="text-base font-semibold text-heading dark:text-white mb-4">
+                    {{ __('large-animals.filter.tokens_label') }} <span class="text-fg-danger-strong" aria-hidden="true">*</span>
+                </h2>
+
+                {{-- Fetch-submit error alert (no reload) --}}
+                <div x-show="errorMessage" x-cloak class="mb-4 flex items-center gap-2 bg-danger-soft border border-danger-subtle text-fg-danger-strong text-sm font-medium rounded-base px-4 py-3 dark:bg-red-950/40 dark:border-danger-subtle dark:text-red-300" role="alert">
+                    <x-lucide-alert-triangle class="w-5 h-5 shrink-0" />
+                    <span x-text="errorMessage"></span>
+                </div>
+
+                @error('clinical_signs')
+                    <div class="mb-4 flex items-center gap-2 bg-danger-soft border border-danger-subtle text-fg-danger-strong text-sm font-medium rounded-base px-4 py-3 dark:bg-red-950/40 dark:border-danger-subtle dark:text-red-300" role="alert">
+                        <x-lucide-alert-triangle class="w-5 h-5 shrink-0" />
+                        <span>{{ $message }}</span>
+                    </div>
+                @enderror
+                @error('clinical_signs.*')
+                    <div class="mb-4 flex items-center gap-2 bg-danger-soft border border-danger-subtle text-fg-danger-strong text-sm font-medium rounded-base px-4 py-3 dark:bg-red-950/40 dark:border-danger-subtle dark:text-red-300" role="alert">
+                        <x-lucide-alert-triangle class="w-5 h-5 shrink-0" />
+                        <span>{{ $message }}</span>
+                    </div>
+                @enderror
 
                 {{-- Autocomplete --}}
                 <div class="relative">
@@ -133,6 +157,8 @@
                         {{ __('large-animals.filter.clear') }}
                     </button>
                     <button type="submit"
+                        :disabled="submitting"
+                        :class="submitting ? 'opacity-60 cursor-not-allowed' : ''"
                         class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors">
                         <x-lucide-activity class="w-4 h-4" />
                         {{ __('large-animals.filter.submit') }}
@@ -140,6 +166,17 @@
                 </div>
             </div>
         </form>
+
+        @if ($errors->any())
+            <script>
+                (function () {
+                    var alertEl = document.querySelector('[role="alert"]');
+                    if (alertEl) {
+                        alertEl.scrollIntoView({ block: 'center' });
+                    }
+                })();
+            </script>
+        @endif
 
     </div>
 @endsection
@@ -152,6 +189,49 @@
                 suggestions: [],
                 tokens: [],
                 open: false,
+                submitting: false,
+                errorMessage: '',
+                async submitForm(event) {
+                    if (this.submitting) return;
+                    this.errorMessage = '';
+
+                    if (this.tokens.length === 0) {
+                        this.errorMessage = @js(__('validation.filter.signs_required'));
+                        return;
+                    }
+
+                    this.submitting = true;
+                    try {
+                        const response = await fetch(event.target.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json',
+                            },
+                            body: new FormData(event.target),
+                        });
+
+                        if (response.status === 422) {
+                            const json = await response.json();
+                            const errors = json.errors || {};
+                            this.errorMessage = (errors.clinical_signs && errors.clinical_signs[0])
+                                || Object.values(errors).flat()[0]
+                                || '';
+                            this.submitting = false;
+                            return;
+                        }
+
+                        if (!response.ok) {
+                            throw new Error('Unexpected response status: ' + response.status);
+                        }
+
+                        const json = await response.json();
+                        window.location.href = json.redirect;
+                    } catch (e) {
+                        this.submitting = false;
+                        event.target.submit();
+                    }
+                },
                 async search() {
                     const q = this.query.trim();
                     if (q.length < 2) {

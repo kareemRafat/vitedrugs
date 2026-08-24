@@ -147,6 +147,54 @@ class FilterToolTest extends TestCase
         ])->assertSessionHasErrors('clinical_signs');
     }
 
+    public function test_it_shows_an_error_when_everything_is_left_empty(): void
+    {
+        $this->from(route('large-animals.filter'))
+            ->post(route($this->storeRoute), [])
+            ->assertRedirect(route('large-animals.filter'))
+            ->assertSessionHasErrors('clinical_signs');
+
+        $this->get(route('large-animals.filter'))
+            ->assertOk()
+            ->assertSee(__('validation.filter.signs_required'), false);
+    }
+
+    public function test_it_allows_submitting_without_a_species(): void
+    {
+        $target = $this->makeDisease();
+
+        $response = $this->submitFilter([
+            'clinical_signs' => [$this->sign->id],
+        ]);
+
+        $response->assertOk()->assertSee($target->name);
+    }
+
+    public function test_it_still_rejects_an_invalid_species_when_provided(): void
+    {
+        $this->post(route($this->storeRoute), [
+            'host_species_id' => 'not-a-real-ulid',
+            'clinical_signs' => [$this->sign->id],
+        ])->assertSessionHasErrors('host_species_id');
+    }
+
+    public function test_it_returns_validation_errors_as_json_for_ajax_submissions(): void
+    {
+        $this->postJson(route($this->storeRoute), [])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('clinical_signs');
+    }
+
+    public function test_it_returns_a_redirect_target_for_valid_ajax_submissions(): void
+    {
+        $this->makeDisease();
+
+        $this->postJson(route($this->storeRoute), [
+            'clinical_signs' => [$this->sign->id],
+        ])->assertOk()
+            ->assertJsonStructure(['redirect']);
+    }
+
     public function test_it_rejects_an_invalid_etiology(): void
     {
         $this->post(route($this->storeRoute), [

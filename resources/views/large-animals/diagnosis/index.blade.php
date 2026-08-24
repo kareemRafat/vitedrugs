@@ -67,7 +67,7 @@
 
                                 <button type="button" x-show="signs.length > 3" @click="remove(index)"
                                     class="absolute top-1/2 end-1.5 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-xs text-body hover:bg-neutral-secondary-medium hover:text-fg-danger-strong transition-colors"
-                                    aria-label="Remove symptom">
+                                    aria-label="{{ __('large-animals.diagnosis.remove_symptom') }}">
                                     <x-lucide-x class="w-3.5 h-3.5" />
                                 </button>
 
@@ -101,6 +101,17 @@
                 <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors"><x-lucide-search class="w-4 h-4" />{{ __('large-animals.diagnosis.submit') }}</button>
             </div>
         </form>
+
+        @if ($errors->any())
+            <script>
+                (function () {
+                    var alertEl = document.querySelector('[role="alert"]');
+                    if (alertEl) {
+                        alertEl.scrollIntoView({ block: 'center' });
+                    }
+                })();
+            </script>
+        @endif
     </div>
 @endsection
 

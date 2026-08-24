@@ -98,6 +98,13 @@ return [
         'sign_duplicate' => 'Please remove duplicate clinical signs.',
     ],
 
+    'filter' => [
+        'signs_required' => 'Please add at least one clinical sign to filter diseases.',
+        'signs_min' => 'Please add at least :min clinical sign.',
+        'sign_invalid' => 'One of the selected clinical signs is invalid. Please choose from the suggestions.',
+        'sign_duplicate' => 'Please remove duplicate clinical signs.',
+    ],
+
     'attributes' => [
         'name' => 'name',
         'email' => 'email address',

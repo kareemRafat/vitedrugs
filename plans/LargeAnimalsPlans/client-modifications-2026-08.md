@@ -4,7 +4,7 @@
 
 ## Status
 
-- **In progress** (2026-08-24). Milestones 1–3 complete. Milestone 3 verified locally: diagnosis page renders 3-across grid (EN+AR), guard + alert markup present; new DiagnosisFormTest 3 passed. Pint clean; related tests green. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
+- **In progress** (2026-08-24). Milestones 1–4 complete. Milestone 4 verified: filter submits without species (share token + results page null-safe), invalid species still rejected; EN/AR pages 200 with "(optional)" hint. Pint clean; FilterToolTest 11 passed. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
 
 ## Decisions
 
@@ -52,9 +52,14 @@
 
 ## Milestone 4 — Filter page: optional species
 
-- [ ] **Edit** `app/Http/Requests/LargeAnimals/FilterRequest.php`: `host_species_id` rule `required` → `nullable` (keep `exists`); message stays.
-- [ ] **Edit** `resources/views/large-animals/filter/index.blade.php`: species label hint "(optional)" — applied to filtering only when chosen.
-- [ ] Verify results page renders fine without species criteria (FilterService already guards empty `host_species_id`).
+- [x] **Edit** `app/Http/Requests/LargeAnimals/FilterRequest.php`: `host_species_id` rule `required` → `nullable` (keep `exists`); message stays.
+- [x] **Edit** `app/Services/LargeAnimals/FilterShareService.php`: `create()` no longer assumes `host_species_id` exists (`?? null`); `read()` validation accepts null species — fixes 500 when submitting without species (caught by new test).
+- [x] **Edit** `resources/views/large-animals/filter/index.blade.php`: species label hint "(optional)" via new lang key `filter.optional` (en/ar) — applied to filtering only when chosen.
+- [x] **Edit** `lang/ar/large-animals.php`: removed stale "(اختياري)" from the **diagnosis** species label (species is required there per client).
+- [x] Verified: results page renders fine without species criteria (FilterService already guards empty `host_species_id`); FilterToolTest extended to 11 tests, all passing.
+- [x] Follow-up fix: submitting the form completely empty silently redirected back with no feedback — added prominent red alert (`bg-danger-soft border-danger-subtle`, warning icon, `role="alert"`) above the sign picker for `clinical_signs` / `clinical_signs.*` errors + required `*` marker on "Selected clinical signs". Added filter-specific validation messages (`validation.filter.*` en/ar) because it previously reused diagnosis copy saying "three signs" while the filter requires one ("يرجى إضافة علامة سريرية واحدة على الأقل لتصفية الأمراض."). FilterToolTest now 12 tests, all passing.
+- [x] Follow-up fix: after a failed submit the redirect-back landed at page top, hiding the alert — both filter and diagnosis pages now auto smooth-scroll to the first `[role="alert"]` on load when validation errors exist (`@if ($errors->any())` guarded inline script).
+- [x] Follow-up (Option B): filter form submits via `fetch` — no reload on validation errors. `FilterController::store()` returns `{ redirect }` JSON when `wantsJson()`; view uses `@submit.prevent` + Alpine `submitForm()`: empty tokens → instant localized alert (no request); 422 → inline red alert from JSON errors (token chips preserved); success → navigate to results URL; fetch failure → native form fallback. Submit button disabled while pending. FilterToolTest extended with AJAX cases (422 JSON + redirect payload) — 14 tests passing.
 
 ## Milestone 5 — Microorganism show label
 

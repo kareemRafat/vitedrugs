@@ -16,7 +16,7 @@ class FilterShareService
         $encrypted = Crypt::encryptString(json_encode([
             'version' => self::VERSION,
             'expires_at' => now()->addDay()->timestamp,
-            'host_species_id' => $criteria['host_species_id'],
+            'host_species_id' => $criteria['host_species_id'] ?? null,
             'clinical_signs' => array_values(array_unique($criteria['clinical_signs'])),
             'etiology_type' => $criteria['etiology_type'] ?? null,
             'body_system_id' => $criteria['body_system_id'] ?? null,
@@ -37,7 +37,7 @@ class FilterShareService
 
         if (! is_array($payload)
             || ($payload['version'] ?? null) !== self::VERSION
-            || ! is_int($payload['host_species_id'] ?? null)
+            || ! (is_int($payload['host_species_id'] ?? null) || ($payload['host_species_id'] ?? null) === null)
             || ! is_array($payload['clinical_signs'] ?? null)
             || ! is_int($payload['expires_at'] ?? null)
             || Carbon::createFromTimestamp($payload['expires_at'])->isPast()) {

@@ -19,7 +19,7 @@ class FilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'host_species_id' => ['required', Rule::exists(HostSpecies::class, 'id')],
+            'host_species_id' => ['nullable', Rule::exists(HostSpecies::class, 'id')],
             'clinical_signs' => ['required', 'array', 'min:1'],
             'clinical_signs.*' => ['required', 'integer', 'distinct', Rule::exists(ClinicalSign::class, 'id')],
             'etiology_type' => ['nullable', Rule::in($this->validEtiologies())],
@@ -33,12 +33,12 @@ class FilterRequest extends FormRequest
         return [
             'host_species_id.required' => __('validation.diagnosis.species_required'),
             'host_species_id.exists' => __('validation.diagnosis.species_invalid'),
-            'clinical_signs.required' => __('validation.diagnosis.signs_required'),
-            'clinical_signs.min' => __('validation.diagnosis.signs_min'),
-            'clinical_signs.*.required' => __('validation.diagnosis.sign_invalid'),
-            'clinical_signs.*.integer' => __('validation.diagnosis.sign_invalid'),
-            'clinical_signs.*.exists' => __('validation.diagnosis.sign_invalid'),
-            'clinical_signs.*.distinct' => __('validation.diagnosis.sign_duplicate'),
+            'clinical_signs.required' => __('validation.filter.signs_required'),
+            'clinical_signs.min' => __('validation.filter.signs_min'),
+            'clinical_signs.*.required' => __('validation.filter.sign_invalid'),
+            'clinical_signs.*.integer' => __('validation.filter.sign_invalid'),
+            'clinical_signs.*.exists' => __('validation.filter.sign_invalid'),
+            'clinical_signs.*.distinct' => __('validation.filter.sign_duplicate'),
         ];
     }
 
