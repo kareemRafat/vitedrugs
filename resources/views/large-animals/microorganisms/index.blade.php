@@ -52,7 +52,7 @@
                                             </span>
                                         @endif
                                         @if ($microorganism->active_ingredients_count > 0)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand" title="{{ __('large-animals.microorganisms.antibiotic_count') }}">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand" title="{{ __('large-animals.microorganisms.drug_count') }}">
                                                 <x-lucide-pill class="w-3 h-3" />
                                                 {{ $microorganism->active_ingredients_count }}
                                             </span>

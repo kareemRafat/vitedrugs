@@ -4,7 +4,7 @@
 
 ## Status
 
-- **In progress** (2026-08-24). Milestones 1–4 complete. Milestone 4 verified: filter submits without species (share token + results page null-safe), invalid species still rejected; EN/AR pages 200 with "(optional)" hint. Pint clean; FilterToolTest 11 passed. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
+- **In progress** (2026-08-24). Milestones 1–5 complete. Milestone 5 verified: "Antibiotics" → "Drugs" on microorganism show/index pages, fully bilingual (EN + AR). Pint clean; 25 related tests passing. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
 
 ## Decisions
 
@@ -63,9 +63,11 @@
 
 ## Milestone 5 — Microorganism show label
 
-- [ ] **Edit** `lang/en/large-animals.php` microorganisms keys: `antibiotics` → value `"Drugs"`, `no_antibiotics` → `"No linked drugs."`, `antibiotic_count` → `"Linked drugs"` (keys renamed to `drugs` / `no_drugs` / `drug_count`).
-- [ ] **Edit** `lang/ar/large-animals.php`: matching Arabic values (`الأدوية` / `لا توجد أدوية مرتبطة.` / `الأدوية المرتبطة`).
-- [ ] **Edit** `resources/views/large-animals/microorganisms/show.blade.php`: reference renamed keys.
+- [x] **Edit** `lang/en/large-animals.php` microorganisms keys: `antibiotics` → value `"Drugs"`, `no_antibiotics` → `"No linked drugs."`, `antibiotic_count` → `"Linked drugs"` (keys renamed to `drugs` / `no_drugs` / `drug_count`).
+- [x] **Edit** `lang/ar/large-animals.php`: matching Arabic values (`الأدوية` / `لا توجد أدوية مرتبطة.` / `الأدوية المرتبطة`).
+- [x] **Edit** `resources/views/large-animals/microorganisms/show.blade.php`: reference renamed keys (heading + empty state).
+- [x] **Edit** `resources/views/large-animals/microorganisms/index.blade.php`: pill-count tooltip now uses `microorganisms.drug_count`.
+- [x] Verified: EN show page renders "Drugs" heading with zero "Antibiotics" occurrences; AR renders «الأدوية» with no «المضادات الحيوية»; index 200 both locales. Pint clean; 25 related tests passing.
 
 ## Milestone 6 — Landing redesign (`/large-animals`)
 

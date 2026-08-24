@@ -376,10 +376,10 @@ return [
         'back' => 'Back to microorganisms',
         'name' => 'Name',
         'tags' => 'Tags',
-        'antibiotics' => 'Antibiotics',
-        'no_antibiotics' => 'No linked antibiotics.',
+        'drugs' => 'Drugs',
+        'no_drugs' => 'No linked drugs.',
         'disease_count' => 'Linked diseases',
-        'antibiotic_count' => 'Linked antibiotics',
+        'drug_count' => 'Linked drugs',
         'sensitivity' => [
             'sensitive' => 'Sensitive',
             'moderate' => 'Moderately sensitive',

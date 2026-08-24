@@ -80,7 +80,7 @@
                         <div class="relative overflow-hidden bg-slate-50 dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
                             <x-lucide-pill class="absolute -bottom-3 -end-3 w-20 h-20 text-slate-300 dark:text-slate-700" />
                             <div class="relative">
-                                <p class="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400 mb-1">{{ __('large-animals.microorganisms.antibiotic_count') }}</p>
+                                <p class="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400 mb-1">{{ __('large-animals.microorganisms.drug_count') }}</p>
                                 <p class="text-base font-bold text-slate-900 dark:text-white">{{ $microorganism->activeIngredients->count() }}</p>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
                 <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-pill class="w-4 h-4 text-body dark:text-slate-400" />
-                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.microorganisms.antibiotics') }}</h2>
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.microorganisms.drugs') }}</h2>
                         @if ($microorganism->activeIngredients->isNotEmpty())
                             <span class="ms-auto inline-flex items-center justify-center min-w-[1.5rem] px-2 py-0.5 text-sm font-semibold bg-brand-soft text-fg-brand rounded-base dark:bg-brand/20 dark:text-brand">{{ $microorganism->activeIngredients->count() }}</span>
                         @endif
@@ -185,7 +185,7 @@
                         @empty
                             <div class="text-center py-6">
                                 <x-lucide-pill class="w-10 h-10 text-body mx-auto mb-2 dark:text-slate-500" />
-                                <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.microorganisms.no_antibiotics') }}</p>
+                                <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.microorganisms.no_drugs') }}</p>
                             </div>
                         @endforelse
                     </div>
