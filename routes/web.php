@@ -100,12 +100,40 @@ Route::group([
 });
 
 Route::fallback(function () {
-    $locale = LaravelLocalization::getCurrentLocale();
-    $path = request()->path();
+    $segments = request()->segments();
+    $defaultLocale = LaravelLocalization::getDefaultLocale();
 
-    if (LaravelLocalization::checkLocaleInSupportedLocales(request()->segment(1))) {
+    $locale = null;
+    if ($segments !== [] && LaravelLocalization::checkLocaleInSupportedLocales($segments[0])) {
+        $locale = array_shift($segments);
+    }
+
+    // Legacy drugs URLs ({locale?}/products, {locale?}/diseases, ...) moved under /drugs.
+    $legacyDrugsPrefixes = ['products', 'companies', 'diseases', 'active-ingredients', 'search'];
+    if ($segments !== [] && in_array($segments[0], $legacyDrugsPrefixes, true)) {
+        if ($locale === null) {
+            return redirect('/drugs/'.implode('/', $segments), 301);
+        }
+
+        if ($locale === $defaultLocale && config('laravellocalization.hideDefaultLocaleInURL')) {
+            return redirect('/drugs/'.implode('/', $segments), 301);
+        }
+
+        return redirect('/'.$locale.'/drugs/'.implode('/', $segments), 301);
+    }
+
+    if ($locale !== null) {
         abort(404);
     }
 
-    return redirect('/'.$locale.'/'.$path);
+    $currentLocale = LaravelLocalization::getCurrentLocale();
+
+    $isHiddenDefault = $currentLocale === $defaultLocale
+        && config('laravellocalization.hideDefaultLocaleInURL');
+
+    if ($isHiddenDefault) {
+        abort(404);
+    }
+
+    return redirect('/'.$currentLocale.'/'.request()->path());
 });

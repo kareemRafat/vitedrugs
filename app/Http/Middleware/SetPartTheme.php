@@ -18,13 +18,23 @@ class SetPartTheme
     {
         $part = $this->resolvePart($request);
 
+        if ($part !== null) {
+            session(['part' => $part]);
+        } else {
+            $part = $request->session()->get('part', self::PARTS[0]);
+
+            if (! in_array($part, self::PARTS, true)) {
+                $part = self::PARTS[0];
+            }
+        }
+
         View::share('part', $part);
         $request->attributes->set('part', $part);
 
         return $next($request);
     }
 
-    protected function resolvePart(Request $request): string
+    protected function resolvePart(Request $request): ?string
     {
         $segments = $request->segments();
 
@@ -36,6 +46,6 @@ class SetPartTheme
 
         $first = $segments[0] ?? null;
 
-        return in_array($first, self::PARTS, true) ? $first : self::PARTS[0];
+        return in_array($first, self::PARTS, true) ? $first : null;
     }
 }

@@ -4,7 +4,8 @@
 
 ## Status
 
-- **In progress** (2026-08-24). Milestones 1–6 complete. Milestone 6 verified: redesigned landing with hero, 6 live stat counters, 8 service cards and CTA strip — fully bilingual. Pint clean; related tests passing. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
+- **In progress** (2026-08-24). Milestones 1–7 complete. Milestone 6 verified: redesigned landing with hero, 6 live stat counters, 8 service cards and CTA strip — fully bilingual. Pint clean; related tests passing. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
+- Milestone 7 follow-up fix: the legacy fallback route (`routes/web.php`) caused an infinite redirect loop (`/products` ⇄ `/en/products`) because it re-added the locale prefix that `LaravelLocalizationRedirectFilter` strips for the hidden default locale. Fallback is now locale-aware (404 instead of loop for hidden default) and issues 301 redirects for legacy drugs paths (`{locale?}/products|diseases|companies|active-ingredients|search[/*]` → `/drugs/...`).
 
 ## Decisions
 
@@ -82,12 +83,12 @@
 
 ## Milestone 7 — Footer redesign + part-awareness
 
-- [ ] **Edit** `app/Http/Middleware/SetPartTheme.php`: remember last project part in `session()` whenever URL resolves to `drugs|large-animals|poultry`; fallback for non-project URLs reads session (default unchanged: first PARTS entry).
-- [ ] **Edit** `resources/views/app/layouts/footer.blade.php`:
+- [x] **Edit** `app/Http/Middleware/SetPartTheme.php`: remember last project part in `session()` whenever URL resolves to `drugs|large-animals|poultry`; fallback for non-project URLs reads session (default unchanged: first PARTS entry).
+- [x] **Edit** `resources/views/app/layouts/footer.blade.php`:
   - Compress vertical space (~40%): smaller paddings/gaps/hr margins.
-  - Part-aware "Quick Links": large-animals → Diagnosis/Filter/Specializations/Microorganisms/Articles; drugs → Products/Diseases/Ingredients/Companies/Blog.
+  - Part-aware "Quick Links": large-animals → Diagnosis/Filter/Specializations/Microorganisms/Articles; drugs → Products/Diseases/Ingredients/Companies/Blog; poultry → Poultry Home.
   - Keep Resources column (About/Contact/Privacy/Terms) + Language column + compact copyright row.
-- [ ] Sanity-check header/footer on platform pages reached from each part (blog, about, contact).
+- [x] Sanity-check header/footer on platform pages reached from each part (blog, about, contact).
 
 ## Milestone 8 — Tests & QA
 

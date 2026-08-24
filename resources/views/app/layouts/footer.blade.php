@@ -1,3 +1,27 @@
+@php
+    $quickLinks = match($part ?? 'drugs') {
+        'large-animals' => [
+            ['url' => route('large-animals.diagnosis'), 'label' => __('large-animals.nav.diagnosis'), 'active' => request()->routeIs('large-animals.diagnosis*')],
+            ['url' => route('large-animals.filter'), 'label' => __('large-animals.nav.filter'), 'active' => request()->routeIs('large-animals.filter*')],
+            ['url' => route('large-animals.comparison'), 'label' => __('large-animals.nav.comparison'), 'active' => request()->routeIs('large-animals.comparison*')],
+            ['url' => route('large-animals.microorganisms.index'), 'label' => __('large-animals.nav.microorganisms'), 'active' => request()->routeIs('large-animals.microorganisms*')],
+            ['url' => route('large-animals.medical-articles.index'), 'label' => __('large-animals.nav.articles'), 'active' => request()->routeIs('large-animals.medical-articles*')],
+            ['url' => route('large-animals.specializations.index'), 'label' => __('large-animals.nav.specializations'), 'active' => request()->routeIs('large-animals.specializations*')],
+            ['url' => route('large-animals.projects.index'), 'label' => __('large-animals.nav.projects'), 'active' => request()->routeIs('large-animals.projects*')],
+        ],
+        'poultry' => [
+            ['url' => route('poultry.home'), 'label' => __('messages.poultry.landing'), 'active' => request()->routeIs('poultry.home')],
+        ],
+        default => [
+            ['url' => route('products.index'), 'label' => __('messages.nav.products'), 'active' => request()->routeIs('products.*') && ! request()->routeIs('products.compare') && ! request()->routeIs('products.submission.*')],
+            ['url' => route('products.submission.create'), 'label' => __('messages.nav.add_product'), 'active' => request()->routeIs('products.submission.*')],
+            ['url' => route('products.compare'), 'label' => __('messages.nav.compare_products'), 'active' => request()->routeIs('products.compare')],
+            ['url' => route('diseases.index'), 'label' => __('messages.nav.diseases'), 'active' => request()->routeIs('diseases.*')],
+            ['url' => route('active-ingredients.index'), 'label' => __('messages.nav.ingredients'), 'active' => request()->routeIs('active-ingredients.*')],
+            ['url' => route('companies.index'), 'label' => __('messages.nav.companies'), 'active' => request()->routeIs('companies.*')],
+        ],
+    };
+@endphp
 <footer class="bg-neutral-primary-soft border-t border-default-medium dark:bg-slate-800 dark:border-slate-700">
     <div class="w-full px-4 py-8 mx-auto lg:py-10">
         <div class="flex flex-col gap-12 lg:flex-row lg:gap-24">
@@ -21,21 +45,11 @@
                         <x-lucide-chevron-down class="w-4 h-4 text-body lg:hidden transition-transform [.is-open_&]:rotate-180" />
                     </button>
                     <ul class="max-lg:hidden lg:flex lg:flex-col space-y-2 text-sm [.is-open_&]:max-lg:block">
-                        <li>
-                            <a href="{{ route('products.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('products.*'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('products.*')])>{{ __('messages.nav.products') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('diseases.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('diseases.*'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('diseases.*')])>{{ __('messages.nav.diseases') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('active-ingredients.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('active-ingredients.*'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('active-ingredients.*')])>{{ __('messages.nav.ingredients') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('companies.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('companies.*'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('companies.*')])>{{ __('messages.nav.companies') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('blog.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('blog.*'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('blog.*')])>{{ __('messages.nav.blog') }}</a>
-                        </li>
+                        @foreach ($quickLinks as $link)
+                            <li>
+                                <a href="{{ $link['url'] }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => $link['active'], 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => ! $link['active']])>{{ $link['label'] }}</a>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
 
@@ -47,6 +61,9 @@
                     <ul class="max-lg:hidden lg:flex lg:flex-col space-y-2 text-sm [.is-open_&]:max-lg:block">
                         <li>
                             <a href="{{ route('about') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('about'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('about')])>{{ __('messages.nav.about') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('blog.index') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('blog.*'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('blog.*')])>{{ __('messages.nav.blog') }}</a>
                         </li>
                         <li>
                             <a href="{{ route('contact') }}" @class(['transition-colors duration-150', 'text-fg-brand font-medium' => request()->routeIs('contact'), 'text-body hover:text-heading dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('contact')])>{{ __('messages.nav.contact') }}</a>
