@@ -13,7 +13,6 @@
             badgeIcon="paw-print"
             :stats="[
                 ['count' => $groups->sum('disease_count'), 'label' => __('large-animals.hero.stats.diseases'), 'icon' => 'activity'],
-                ['count' => $groups->sum(fn ($g) => $g['species']->count()), 'label' => __('large-animals.hero.stats.species'), 'icon' => 'paw-print'],
             ]"
         />
 
@@ -21,24 +20,22 @@
             @foreach ($groups as $group)
                 @php
                     $icon = match ($group['key']) {
-                        'ruminant' => 'beef',
-                        'poultry' => 'egg',
-                        'fish' => 'fish',
-                        default => 'paw-print',
+                        'infectious-diseases' => 'bug',
+                        'internal-medicine' => 'stethoscope',
+                        'zoonotic-diseases' => 'globe',
+                        default => 'activity',
                     };
                 @endphp
                 <a href="{{ route('large-animals.specializations.show', $group['key']) }}" wire:navigate
-                    class="group bg-neutral-primary-soft rounded-base shadow-xs border border-default-medium hover:shadow-md hover:border-brand transition-all duration-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:border-brand p-6">
+                    class="group bg-neutral-primary-soft rounded-base shadow-xs border border-default-medium hover:shadow-md hover:border-brand transition-all duration-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:border-brand p-6 flex flex-col">
                     <div class="w-12 h-12 rounded-2xl bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand flex items-center justify-center mb-4">
                         <x-dynamic-component :component="'lucide-' . $icon" class="w-6 h-6" />
                     </div>
-                    <h2 class="text-lg font-bold text-heading dark:text-white mb-1">{{ __('large-animals.specializations.groups.' . $group['key']) }}</h2>
+                    <h2 class="text-lg font-bold text-heading dark:text-white mb-2">{{ __('large-animals.specializations.groups.' . $group['key']) }}</h2>
 
-                    @if ($group['species']->isNotEmpty())
-                        <p class="text-sm text-body dark:text-slate-400 mb-3">{{ $group['species']->pluck('display_name')->implode(', ') }}</p>
-                    @endif
+                    <p class="text-sm text-body dark:text-slate-400 mb-4 leading-relaxed">{{ __('large-animals.specializations.group_descriptions.' . $group['key']) }}</p>
 
-                    <div class="flex items-center justify-between">
+                    <div class="mt-auto flex items-center justify-between">
                         <span class="inline-flex items-center gap-1.5 text-sm font-semibold rounded-base bg-brand-soft text-fg-brand px-3 py-1 dark:bg-brand/20 dark:text-brand">
                             <x-lucide-activity class="w-3.5 h-3.5" />
                             {{ $group['disease_count'] }} {{ __('large-animals.specializations.diseases') }}

@@ -4,28 +4,22 @@ namespace App\Http\Controllers\LargeAnimals;
 
 use App\Http\Controllers\Controller;
 use App\Models\Disease;
-use App\Models\LargeAnimals\HostSpecies;
-use App\Models\LargeAnimals\MedicalArticle;
-use App\Models\LargeAnimals\Microorganism;
-use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 
 class SpecializationController extends Controller
 {
     protected const GROUPS = [
-        'ruminant',
-        'poultry',
-        'fish',
+        'infectious-diseases',
+        'internal-medicine',
+        'zoonotic-diseases',
     ];
 
     public function index()
     {
-        $groups = collect(self::GROUPS)->map(function (string $group) {
-            return [
-                'key' => $group,
-                'species' => $this->speciesForGroup($group),
-                'disease_count' => $this->diseasesQuery($group)->count(),
-            ];
-        });
+        $groups = collect(self::GROUPS)->map(fn (string $group) => [
+            'key' => $group,
+            'disease_count' => $this->diseasesQuery($group)->count(),
+        ]);
 
         return view('large-animals.specializations.index', compact('groups'));
     }
@@ -34,49 +28,21 @@ class SpecializationController extends Controller
     {
         abort_unless(in_array($group, self::GROUPS, true), 404);
 
-        $species = $this->speciesForGroup($group);
-        $speciesNames = $species->pluck('display_name')->all();
-
         $diseases = $this->diseasesQuery($group)->get();
 
-        $products = Product::query()
-            ->whereHas('diseases', fn ($q) => $q->whereHas('hostSpecies', fn ($q) => $q->where('taxonomy_group', $group)))
-            ->orderBy('trade_name')
-            ->get();
-
-        $articles = MedicalArticle::query()
-            ->where('is_published', true)
-            ->latest()
-            ->get()
-            ->filter(function (MedicalArticle $article) use ($speciesNames) {
-                $tokens = collect(explode(',', mb_strtolower($article->species ?? '')))
-                    ->map('trim')
-                    ->filter();
-
-                return $tokens->intersect(array_map('mb_strtolower', $speciesNames))->isNotEmpty();
-            })
-            ->values();
-
-        $microorganisms = Microorganism::query()
-            ->whereHas('diseases', fn ($q) => $q->whereHas('hostSpecies', fn ($q) => $q->where('taxonomy_group', $group)))
-            ->orderBy('name')
-            ->get();
-
-        return view('large-animals.specializations.show', compact('group', 'species', 'diseases', 'products', 'articles', 'microorganisms'));
+        return view('large-animals.specializations.show', compact('group', 'diseases'));
     }
 
-    private function speciesForGroup(string $group)
+    private function diseasesQuery(string $group): Builder
     {
-        return HostSpecies::query()
-            ->where('taxonomy_group', $group)
-            ->orderBy('display_name')
-            ->get();
-    }
+        $query = Disease::query()->where('is_active', true);
 
-    private function diseasesQuery(string $group)
-    {
-        return Disease::query()
-            ->whereHas('hostSpecies', fn ($q) => $q->where('taxonomy_group', $group))
-            ->orderBy('name');
+        $query = match ($group) {
+            'internal-medicine' => $query->where('is_internal', true),
+            'zoonotic-diseases' => $query->where('is_zoonotic', true),
+            default => $query,
+        };
+
+        return $query->orderBy('name');
     }
 }

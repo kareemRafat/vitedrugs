@@ -388,25 +388,48 @@ return [
     'specializations' => [
         'title' => 'Specializations',
         'heading' => 'Veterinary Specializations',
-        'subtitle' => 'Explore diseases, products, articles and microorganisms by production group.',
+        'subtitle' => 'Explore diseases by clinical category — infectious diseases, internal medicine and zoonotic diseases.',
         'groups' => [
-            'ruminant' => 'Ruminants',
-            'poultry' => 'Poultry',
-            'fish' => 'Aquaculture',
+            'infectious-diseases' => 'Infectious Diseases',
+            'internal-medicine' => 'Internal Medicine',
+            'zoonotic-diseases' => 'Zoonotic Diseases',
+        ],
+        'group_descriptions' => [
+            'infectious-diseases' => 'Diseases caused by pathogenic microorganisms — bacteria, viruses, fungi and parasites.',
+            'internal-medicine' => 'Systemic and non-infectious conditions affecting the internal organs and body systems.',
+            'zoonotic-diseases' => 'Diseases transmissible between animals and humans, of major public-health importance.',
+        ],
+        'articles' => [
+            'infectious-diseases' => [
+                'title' => 'Understanding Infectious Diseases in Large Animals',
+                'paragraphs' => [
+                    'Infectious diseases are among the leading causes of morbidity and mortality in large animal practice. They are caused by pathogenic microorganisms — bacteria, viruses, fungi and parasites — that spread between animals through direct contact, contaminated feed and water, aerosols, or vectors such as insects and ticks.',
+                    'Many of these diseases have a significant economic impact on livestock production, causing reduced weight gain, decreased milk yield, abortion, infertility and sudden deaths. Early recognition of typical clinical signs, supported by laboratory confirmation, is essential for effective control.',
+                    'Prevention relies on sound biosecurity measures, vaccination programs, proper hygiene, and quarantine of newly introduced animals. Browse the disease list below to explore each condition in detail.',
+                ],
+            ],
+            'internal-medicine' => [
+                'title' => 'Internal Medicine in Large Animals',
+                'paragraphs' => [
+                    'Internal medicine covers the non-infectious and systemic conditions that affect the internal organs and metabolic functions of large animals. This includes digestive disorders, respiratory and cardiac conditions, urinary and neurological diseases, as well as nutritional and metabolic imbalances.',
+                    'Unlike infectious diseases, these conditions are usually influenced by management factors such as feeding regimens, housing, stress and production level. Accurate diagnosis often requires a systematic clinical examination combined with laboratory profiling.',
+                    'Successful management focuses on correcting the underlying cause, supportive care and adjusting husbandry practices to prevent recurrence. Explore the conditions listed below for detailed guidance.',
+                ],
+            ],
+            'zoonotic-diseases' => [
+                'title' => 'Zoonotic Diseases Shared Between Animals and Humans',
+                'paragraphs' => [
+                    'Zoonotic diseases are infections transmissible between animals and humans. In large animal practice they represent a dual concern: they threaten herd health while also posing a direct risk to farmers, veterinarians and the general public.',
+                    'Well-known examples include brucellosis, rabies, anthrax, leptospirosis and tuberculosis. Transmission occurs through direct contact with infected animals or their products, consumption of unpasteurized dairy, bites, or contaminated environments.',
+                    'Protecting both animal and human health requires early detection, notification of suspected cases, safe handling of animal products, personal protective equipment, and cooperation between veterinary and public health authorities under the One Health approach.',
+                ],
+            ],
         ],
         'diseases' => 'Diseases',
-        'products' => 'Products',
-        'articles' => 'Articles',
-        'microorganisms' => 'Microorganisms',
-        'species' => 'Species',
         'explore' => 'Explore',
         'no_diseases' => 'No diseases recorded.',
-        'no_products' => 'No products recorded.',
-        'no_articles' => 'No articles recorded.',
-        'no_microorganisms' => 'No microorganisms recorded.',
         'back' => 'Back to specializations',
         'view_disease' => 'View disease',
-        'view_article' => 'Read article',
     ],
 
     'projects' => [

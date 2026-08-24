@@ -39,6 +39,13 @@ class Disease extends Model
         'knowledge_payload' => 'array',
     ];
 
+    public function getLocalizedNameAttribute(): string
+    {
+        return app()->getLocale() === 'ar' && filled($this->name_ar)
+            ? $this->name_ar
+            : $this->name;
+    }
+
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(

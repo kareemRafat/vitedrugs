@@ -4,7 +4,7 @@
 
 ## Status
 
-- **In progress** (2026-08-24). Milestone 1 complete: migration applied locally (MySQL), backfill verified (3 zoonotic diseases flagged from `disease_classifications`), pint clean, disease-related tests green (17 passed). Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
+- **In progress** (2026-08-24). Milestones 1–2 complete. Verified locally: all 3 category routes 200 (EN+AR), legacy `ruminant` slug → 404, zoonotic page lists the 3 flagged diseases, infectious lists all 22 active. Pint clean; related tests green (17 passed). Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
 
 ## Decisions
 
@@ -30,14 +30,15 @@
 
 ## Milestone 2 — Specializations restructure
 
-- [ ] **Rewrite** `app/Http/Controllers/LargeAnimals/SpecializationController.php`:
+- [x] **Rewrite** `app/Http/Controllers/LargeAnimals/SpecializationController.php`:
   - `GROUPS = ['infectious-diseases', 'internal-medicine', 'zoonotic-diseases']`.
   - `index()`: per-group disease counts only.
   - `show(string $group)`: 404 on unknown keys (legacy `ruminant|poultry|fish` 404 too); diseases query per group: infectious = **all** active diseases ordered by name; internal = `is_internal`; zoonotic = `is_zoonotic`. No species/products/articles/microorganisms logic.
-- [ ] **Edit** `resources/views/large-animals/specializations/index.blade.php`: three category cards with icons (`virus`, `stethoscope`, `globe` or similar), description snippet, disease count.
-- [ ] **Edit** `resources/views/large-animals/specializations/show.blade.php`: breadcrumb + hero + static article block + diseases grid (existing card pattern). Remove products/articles/microorganisms sections.
-- [ ] **New** static article partials `resources/views/large-animals/specializations/articles/{infectious-diseases,internal-medicine,zoonotic-diseases}.blade.php` with editorial intro copy (English-only).
-- [ ] **Edit** `lang/en/large-animals.php`: replace `specializations.groups` keys/values (Infectious Diseases / Internal Medicine / Zoonotic Diseases), update subtitle ("by category"), remove unused species strings, keep shared keys (`diseases`, `back`, …).
+- [x] **Edit** `resources/views/large-animals/specializations/index.blade.php`: three category cards with icons (`bug` — no `virus` icon in installed Lucide set, `stethoscope`, `globe`), description snippet, disease count.
+- [x] **Edit** `resources/views/large-animals/specializations/show.blade.php`: breadcrumb + hero + static article block + diseases grid (existing card pattern). Remove products/articles/microorganisms sections.
+- [x] Static article copy implemented as **lang keys** (`specializations.articles.{group}.{title,paragraphs}`) instead of blade partials — renders bilingually from the show view; no separate partials needed.
+- [x] **Edit** `lang/en/large-animals.php` + `lang/ar/large-animals.php`: new group names (Infectious Diseases / Internal Medicine / Zoonotic Diseases — الأمراض المعدية / الأمراض الباطنة / الأمراض المشتركة), descriptions, full EN+AR article content; unused species/products/articles strings removed.
+- [x] **Edit** `app/Models/Disease.php`: added `localized_name` accessor (`name_ar` on AR locale) so category pages show Arabic disease names.
 
 ## Milestone 3 — Diagnosis page UX
 
