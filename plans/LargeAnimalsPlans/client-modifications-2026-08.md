@@ -4,7 +4,7 @@
 
 ## Status
 
-- **In progress** (2026-08-24). Milestones 1–2 complete. Verified locally: all 3 category routes 200 (EN+AR), legacy `ruminant` slug → 404, zoonotic page lists the 3 flagged diseases, infectious lists all 22 active. Pint clean; related tests green (17 passed). Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
+- **In progress** (2026-08-24). Milestones 1–3 complete. Milestone 3 verified locally: diagnosis page renders 3-across grid (EN+AR), guard + alert markup present; new DiagnosisFormTest 3 passed. Pint clean; related tests green. Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
 
 ## Decisions
 
@@ -42,12 +42,13 @@
 
 ## Milestone 3 — Diagnosis page UX
 
-- [ ] **Edit** `resources/views/large-animals/diagnosis/index.blade.php`:
+- [x] **Edit** `resources/views/large-animals/diagnosis/index.blade.php`:
   - Wrap symptom inputs in `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3`; initial state = one row of 3 inputs.
-  - Alpine `add()` appends **a row of 3** inputs; per-input remove button shown when total count > 3.
-- [ ] Prominent validation alerts (Flowbite v4 danger tokens `bg-danger-soft border-danger-subtle text-fg-danger-strong` + warning icon) for `host_species_id`, `clinical_signs`, `clinical_signs.*` errors replacing the small `<p>` markup.
-- [ ] Client-side guard before submit: if any input has free text but no selected suggestion id → mark that input red-border, show alert with exact message `__('validation.diagnosis.sign_invalid')`, abort submission.
-- [ ] Species label marked required: red `*` suffix + helper text; server rule already `required`.
+  - Alpine `addRow()` appends **a row of 3** inputs; per-input remove button shown when total count > 3 (absolute-positioned X inside the cell).
+- [x] Prominent validation alerts (Flowbite v4 danger tokens `bg-danger-soft border-danger-subtle text-fg-danger-strong` + `lucide-alert-triangle`, `role="alert"`) for `host_species_id`, `clinical_signs`, `clinical_signs.*` errors replacing the small `<p>` markup.
+- [x] Client-side guard on submit (`onSubmit → validate()`): any input with free text but no selected suggestion id gets a red `border-danger-subtle` state, focus jumps to first invalid input, prominent alert shows exact message `__('validation.diagnosis.sign_invalid')`, submission aborted. Guard clears when a suggestion is selected.
+- [x] Species + signs headings marked required: red `*` suffix, `aria-required="true"`; server rule already `required`.
+- [x] **New** `tests/Feature/DiagnosisFormTest.php`: species+min:3 enforcement, non-existent sign ids rejected, valid 3-sign submission renders results (3 passed).
 
 ## Milestone 4 — Filter page: optional species
 
