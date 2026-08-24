@@ -52,6 +52,8 @@ class DiseaseFactory extends Factory
             'description' => fake()->paragraphs(3, true),
             'description_ar' => fake()->paragraphs(3, true),
             'is_active' => true,
+            'is_zoonotic' => false,
+            'is_internal' => false,
         ];
     }
 }

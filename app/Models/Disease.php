@@ -27,11 +27,15 @@ class Disease extends Model
         'description',
         'description_ar',
         'is_active',
+        'is_zoonotic',
+        'is_internal',
         'knowledge_payload',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_zoonotic' => 'boolean',
+        'is_internal' => 'boolean',
         'knowledge_payload' => 'array',
     ];
 

@@ -37,6 +37,12 @@ class DiseaseForm
                 Toggle::make('is_active')
                     ->default(true),
 
+                Toggle::make('is_zoonotic')
+                    ->default(false),
+
+                Toggle::make('is_internal')
+                    ->default(false),
+
             ]);
     }
 }

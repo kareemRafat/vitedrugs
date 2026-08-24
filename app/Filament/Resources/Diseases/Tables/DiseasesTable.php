@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use stdClass;
 
@@ -36,6 +37,14 @@ class DiseasesTable
                 IconColumn::make('is_active')
                     ->boolean(),
 
+                IconColumn::make('is_zoonotic')
+                    ->boolean()
+                    ->toggleable(),
+
+                IconColumn::make('is_internal')
+                    ->boolean()
+                    ->toggleable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -43,7 +52,9 @@ class DiseasesTable
 
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_zoonotic'),
+
+                TernaryFilter::make('is_internal'),
             ])
             ->recordActions([
                 ViewAction::make(),

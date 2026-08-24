@@ -4,7 +4,7 @@
 
 ## Status
 
-- **Planned** (2026-08-24). No work started.
+- **In progress** (2026-08-24). Milestone 1 complete: migration applied locally (MySQL), backfill verified (3 zoonotic diseases flagged from `disease_classifications`), pint clean, disease-related tests green (17 passed). Pre-existing unrelated failure kept: `AdminPanelSmokeTest` expects MySQL db `vetdrugs` which does not exist locally (fails on clean tree too).
 
 ## Decisions
 
@@ -20,13 +20,13 @@
 
 ## Milestone 1 — Database: disease category flags
 
-- [ ] **New** migration `add_is_zoonotic_and_is_internal_to_diseases_table`:
+- [x] **New** migration `add_is_zoonotic_and_is_internal_to_diseases_table`:
   - `$table->boolean('is_zoonotic')->default(false)` and `$table->boolean('is_internal')->default(false)` after `is_active`.
   - Backfill in `up()`: set `is_zoonotic = true` where the disease has `disease_classifications.zoonotic = 1` (query-builder statement, MySQL + SQLite compatible); reverse backfill in `down()` before dropping columns is not required (columns just drop).
-- [ ] **Edit** `app/Models/Disease.php`: add `is_zoonotic`, `is_internal` to `$fillable` and `$casts`.
-- [ ] **Edit** `database/factories/DiseaseFactory.php`: defaults `false` for both flags.
-- [ ] **Edit** `app/Filament/Resources/Diseases/Schemas/DiseaseForm.php`: two `Toggle`s (`is_zoonotic`, `is_internal`).
-- [ ] **Edit** `app/Filament/Resources/Diseases/Tables/DiseasesTable.php`: boolean icon columns + `TernaryFilter` (or `SelectFilter`) for each flag.
+- [x] **Edit** `app/Models/Disease.php`: add `is_zoonotic`, `is_internal` to `$fillable` and `$casts`.
+- [x] **Edit** `database/factories/DiseaseFactory.php`: defaults `false` for both flags.
+- [x] **Edit** `app/Filament/Resources/Diseases/Schemas/DiseaseForm.php`: two `Toggle`s (`is_zoonotic`, `is_internal`).
+- [x] **Edit** `app/Filament/Resources/Diseases/Tables/DiseasesTable.php`: boolean icon columns + `TernaryFilter` (or `SelectFilter`) for each flag.
 
 ## Milestone 2 — Specializations restructure
 
