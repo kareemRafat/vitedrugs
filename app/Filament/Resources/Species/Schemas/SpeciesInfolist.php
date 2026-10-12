@@ -19,6 +19,9 @@ class SpeciesInfolist
                 Section::make('Basic Information')
                     ->columnSpan(1)
                     ->schema([
+                        TextEntry::make('domain')
+                            ->badge()
+                            ->placeholder('-'),
                         TextEntry::make('name'),
                         TextEntry::make('name_ar')
                             ->placeholder('-'),

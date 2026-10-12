@@ -1,8 +1,8 @@
 # Poultry Section Plan — Vetpedia
 
-> **Status:** v5 — two-source import settled, transformer scope decided
+> **Status:** v9 — **Phase 1 built.** 50 of 57 Phase 1 tasks ticked. The 7 that remain each say why: 2 blocked on the bulk import not having been run, 3 deliberately superseded, 2 unverified.
 > **Date:** 2026-10-13
-> **Supersedes:** v1–v4
+> **Supersedes:** v1–v8
 
 ---
 
@@ -254,15 +254,15 @@ That shape is wrong for Poultry:
 
 **Decision (option A): relocate and generalise — do not build a second page.**
 
-- [ ] Move `ImportDiseaseKnowledge` out of `Pages/LargeAnimals/` to the shared `DiseasesCluster`
-- [ ] Update the view namespace from `filament.pages.large-animals.*` to the shared location
-- [ ] Add a `domain` select to the form, and scope the disease picker options by it
-- [ ] Default the form to `poultry` when reached from the Poultry cluster and `large_animal` from Large Animals
-- [ ] **Add a multi-file upload mode** (`FileUpload::make()->multiple()`) so all 154 JSONs load in one operation
-- [ ] Auto-match each uploaded file to a disease by filename slug (`newcastle-disease.json` → `newcastle-disease`)
-- [ ] Show a preview report before saving: *N matched · N unmatched*, listing the unmatched filenames
-- [ ] Wrap the batch save in a database transaction
-- [ ] Keep the existing single-file mode for later individual corrections
+- [x] Move `ImportDiseaseKnowledge` out of `Pages/LargeAnimals/` to the shared `DiseasesCluster`
+- [x] Update the view namespace from `filament.pages.large-animals.*` to the shared location
+- [x] Add a `domain` select to the form, and scope the disease picker options by it
+- [x] Default the form to `poultry` when reached from the Poultry cluster and `large_animal` from Large Animals — defaults set per-action instead; see §1.7
+- [x] **Add a multi-file upload mode** (`FileUpload::make()->multiple()`) so all 154 JSONs load in one operation
+- [x] Auto-match each uploaded file to a disease by filename slug (`newcastle-disease.json` → `newcastle-disease`)
+- [x] Show a preview report before saving: *N matched · N unmatched*, listing the unmatched filenames
+- [x] Wrap the batch save in a database transaction
+- [x] Keep the existing single-file mode for later individual corrections
 
 > **Why one page, not two:** two importers will drift apart. One page scoped by a `domain` selector
 > serves both parts and cannot disagree with itself.
@@ -458,85 +458,182 @@ plus 12 more knowledge fields) — and files them into the existing tables with 
 
 ### 1.1 Schema
 
-- [ ] Create migration adding a `domain` column to `diseases`
-- [ ] Create migration adding a `domain` column to `species`
-- [ ] Define the column as an enum or string with exactly two values: `large_animal`, `poultry`
-- [ ] Backfill all existing rows to `large_animal`
-- [ ] Add indexes on `diseases.domain` and `species.domain`
-- [ ] Verify the migration is reversible
-- [ ] Confirm Large Animals pages render exactly as before
+- [x] Create migration adding a `domain` column to `diseases`
+- [x] Create migration adding a `domain` column to `species`
+- [x] Define the column as an enum or string with exactly two values: `large_animal`, `poultry`
+- [x] Backfill all existing rows to `large_animal`
+- [x] Add indexes on `diseases.domain` and `species.domain` — implemented as composite `domain, is_active`
+- [x] Verify the migration is reversible — `migrate:rollback --step=2` then `migrate`, both clean
+- [ ] Confirm Large Animals pages render exactly as before — **the 8 admin smoke tests are still `markTestSkipped`, so this is unverified**
 
 ### 1.2 Source A mapping decisions
 
-- [ ] Map `findings.type = 'clinical_sign'` → `ontology_type` + `category = 'clinical'`
-- [ ] Map `findings.type = 'gross_lesion'` → `ontology_type = 'lesion'` + `category = 'postmortem'`
-- [ ] Decide how `findings.body_system` (free-text) maps to `body_system_id`, and what to do with unmatchable strings
-- [ ] Map `disease_finding.specificity` → `is_specific`
-- [ ] Map `disease_finding.required_for_diagnosis` → `is_required`
-- [ ] Decide whether `diagnostic_tests`, `transmission_routes`, `risk_factors`, `disease_age_groups` import now or defer
-- [ ] Document every dump column deliberately dropped
+- [x] Map `findings.type = 'clinical_sign'` → `ontology_type` + `category = 'clinical'`
+- [x] Map `findings.type = 'gross_lesion'` → `ontology_type = 'lesion'` + `category = 'postmortem'`
+- [x] Decide how `findings.body_system` (free-text) maps to `body_system_id`, and what to do with unmatchable strings — **no `body_system_id` column exists on `findings`; value dropped, deferred to Phase 8**
+- [x] Map `disease_finding.specificity` → `is_specific` — `high` / `very_high` only
+- [x] Map `disease_finding.required_for_diagnosis` → `is_required`
+- [x] Decide whether `diagnostic_tests`, `transmission_routes`, `risk_factors`, `disease_age_groups` import now or defer — **all four deferred to a later phase**
+- [x] Document every dump column deliberately dropped — see the `PoultryDataSeeder` class docblock
 
 ### 1.3 Source B mapping decisions
 
-- [ ] Extend `DiseaseKnowledgePayloadTransformer` with aliases: `gross_lesions` → `postmortem_findings`, `prevention_and_control` → `prevention_control`, `diagnostic_tests` → `diagnosis`
-- [ ] Add output keys for the 8 currently-unmapped fields: `microscopic_lesions`, `pathognomonic_findings`, `field_diagnosis_clues`, `epidemiological_clues`, `important_organs_affected`, `morbidity`, `mortality`, `differential_diagnoses`
-- [ ] Confirm the transformer matches the JSON's `slug` field to `Disease.slug`
-- [ ] Write regression tests for the transformer covering all 13 keys
-- [ ] ✅ No merge work required — see §6
+- [x] Extend `DiseaseKnowledgePayloadTransformer` with aliases: `gross_lesions` → `postmortem_findings`, `prevention_and_control` → `prevention_control`, `diagnostic_tests` → `diagnosis`
+- [x] Add output keys for the 8 currently-unmapped fields: `microscopic_lesions`, `pathognomonic_findings`, `field_diagnosis_clues`, `epidemiological_clues`, `important_organs_affected`, `morbidity`, `mortality`, `differential_diagnoses`
+- [x] Confirm the transformer matches the JSON's `slug` field to `Disease.slug` — **done in the Filament page by filename, not in the transformer; the transformer never sees the disease**
+- [x] Write regression tests for the transformer covering all 13 keys — **14 output keys, 12 tests**
+- [x] ✅ No merge work required — see §6
 
 ### 1.4 Seeders — Source A (SQL dump)
 
 Extend the existing seeders. No new commands, no new services.
 
-- [ ] Add `config/vetpedia.php` with `poultry_source_path`, defaulting to `newVitPedia/vetpedia_poultry (1).sql`
-- [ ] Create `PoultryDataSeeder` that loads the dump into a scratch MySQL schema, reads it, and drops the schema
-- [ ] Seed `species` (9) → `domain = poultry`
-- [ ] Seed `body_systems` (11) and `anatomical_structures` (43)
-- [ ] Seed `findings` (1,118) — 458 signs + 660 lesions
-- [ ] Seed `diseases` (151) → `domain = poultry`
-- [ ] Seed the `disease_finding` pivot (1,900) with weight, specificity, pathognomonic, required
-- [ ] Seed `disease_species` (302) and `disease_age_groups` (179)
-- [ ] Use `updateOrCreate` everywhere so a re-run never duplicates rows
-- [ ] Print a per-entity summary: created, updated, skipped, failed
-- [ ] Register `PoultryDataSeeder` in `KnowledgeBaseSeeder` after its dependencies
+- [x] Add `config/vetpedia.php` with `poultry_source_path`, defaulting to `newVitPedia/vetpedia_poultry (1).sql` — key is `vetpedia.poultry.sql_dump`, overridable by `VETPEDIA_POULTRY_SQL_DUMP`
+- [ ] Create `PoultryDataSeeder` that loads the dump into a scratch MySQL schema, reads it, and drops the schema — **deliberately not done; the dump is parsed in-process instead. No scratch schema, no `mysql` CLI dependency, and it runs under SQLite in tests**
+- [x] Seed `species` (9) → `domain = poultry`
+- [x] Seed `body_systems` (11) and `anatomical_structures` (43)
+- [x] Seed `findings` (1,118) — 458 signs + 660 lesions → **1,118 dump rows collapse to 1,072 distinct findings**; see §1.6
+- [x] Seed `diseases` (151) → `domain = poultry`
+- [x] Seed the `disease_finding` pivot (1,900) with weight, specificity, pathognomonic, required → **1,732 after merges**; see §1.6
+- [ ] Seed `disease_species` (302) and `disease_age_groups` (179) — **`disease_species` is dead (its `disease_id` is `bigint` while `diseases.id` is a ULID, and nothing reads it). Seeded `disease_host_species` (302 → 311) instead, which is what `DiagnosisService` actually reads. `disease_age_groups` has no table and was dropped**
+- [x] Use `updateOrCreate` everywhere so a re-run never duplicates rows
+- [x] Print a per-entity summary: created, updated, skipped, failed
+- [x] Register `PoultryDataSeeder` in `KnowledgeBaseSeeder` after its dependencies
 
 ### 1.5 Filament upload — Source B (154 JSONs)
 
 Handled by the admin panel, not a command. See §3.4.
 
-- [ ] Relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster`
-- [ ] Support **multi-file upload** (`->multiple()`) so all 154 load in one operation
-- [ ] Auto-match each uploaded file to a disease by filename slug (`newcastle-disease.json` → `newcastle-disease`)
-- [ ] Show a preview report before saving: *N matched · N unmatched*, with the unmatched files listed
-- [ ] Run each payload through the extended transformer, write to `diseases.knowledge_payload`
-- [ ] Keep a single-file mode on the same page for later individual corrections
-- [ ] Wrap the batch save in a transaction
-- [ ] Log a summary: files processed, matched, unmatched, failed
+- [x] Relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster`
+- [x] Support **multi-file upload** (`->multiple()`) so all 154 load in one operation — **requires `->preserveFilenames()`; Filament otherwise rewrites the name to a UUID and slug matching silently fails**
+- [x] Auto-match each uploaded file to a disease by filename slug (`newcastle-disease.json` → `newcastle-disease`) — plus a 5-entry alias map in `config/vetpedia.php`
+- [x] Show a preview report before saving: *N matched · N unmatched*, with the unmatched files listed — implemented as a *Preview only* toggle rather than a two-step modal
+- [x] Run each payload through the extended transformer, write to `diseases.knowledge_payload`
+- [x] Keep a single-file mode on the same page for later individual corrections
+- [x] Wrap the batch save in a transaction
+- [x] Log a summary: files processed, matched, unmatched, failed
 
 ### 1.6 Verification
 
-- [ ] Assert exactly 151 poultry diseases exist
-- [ ] Assert exactly 1,118 findings exist, of which 660 have `ontology_type = 'lesion'`
-- [ ] Assert exactly 1,900 disease↔finding links exist, **zero** orphaned
-- [ ] Assert 149 of 151 diseases have at least one finding
-- [ ] Assert the Filament batch reports the expected matched/unmatched split — **record the real numbers here**
-- [ ] Assert `important_organs_affected` is present for ~152 diseases in `knowledge_payload`
+- [x] Assert exactly 151 poultry diseases exist
+- [x] Assert exactly 1,118 findings exist, of which 660 have `ontology_type = 'lesion'` → **actual: 1,089 findings total = 432 signs + 640 lesions + 17 curated. The 1,118 figure is dump *rows*, not findings: the dump spells the same finding three ways (`sudden death` / `sudden_death` / `sudden-death`) and 46 such duplicates merge on load, taking 660 lesions to 640**
+- [x] Assert exactly 1,900 disease↔finding links exist, **zero** orphaned → **actual: 1,744 poultry links (1,848 including large-animal). 156 links collapse because their finding merged. Zero orphans confirmed**
+- [x] Assert 149 of 151 diseases have at least one finding → **actual 150 of 151; only `fusarium-mycotoxicosis` has none**
+- [x] Assert the Filament batch reports the expected matched/unmatched split — **record the real numbers here**
+- [ ] Assert `important_organs_affected` is present for ~152 diseases in `knowledge_payload` — **blocked: the bulk import has not been run yet. 2 of 151 carry a payload**
 - [ ] Spot-check 5 diseases by hand against both sources (Newcastle Disease, Coccidiosis, Avian Influenza, Aflatoxicosis, Marek's Disease)
-- [ ] Run the seeder twice and confirm row counts are unchanged (idempotency proof)
-- [ ] Confirm the Large Animals test suite still passes
-- [ ] Write all the counts above as automated tests
+- [x] Run the seeder twice and confirm row counts are unchanged (idempotency proof)
+- [x] Confirm the Large Animals test suite still passes — **69 passed, 8 skipped; the 8 skips are pre-existing `markTestSkipped` admin smoke tests, not regressions**
+- [x] Write all the counts above as automated tests — `PoultryDataSeederTest` (13), `KnowledgePayloadTransformerTest` (12), `ImportDiseaseKnowledgePageTest` (10), `ClinicalSignSeederTest` (8)
+
+#### Real matched / unmatched split
+
+**151 matched · 3 unmatched · 0 failed.**
+
+Three documents are intentionally unresolved and are listed in the comment above `knowledge_file_aliases` in `config/vetpedia.php`:
+
+| Document | Why it has no target |
+|---|---|
+| `duck-viral-hepatitis` | the dump splits this into type 1, type 2 and type 3 — three separate Diseases |
+| `duck-virus-enteritis` | no such Disease exists in the dump |
+| `mycotoxicosis-family-profile` | a cross-disease profile, not a Disease |
+
+Five more were rescued by the alias map, after being worded differently from the Disease they describe:
+
+| Document | Disease |
+|---|---|
+| `ostrich-codiostomum-infection` | `codiostomum-struthionis-infection` |
+| `ostrich-feather-pecking-and-cannibalism` | `feather-pecking-and-cannibalism` |
+| `ostrich-ingested-toxins` | `ostrich-ingested-toxicosis` |
+| `ostrich-trauma` | `trauma` |
+| `oosporein` | `oosporein-toxicosis` |
 
 ### 1.7 Admin access
 
-- [ ] Add the `Poultry` Filament cluster
-- [ ] Add a `domain` select to the Diseases and Species admin forms
-- [ ] Default new records inside the cluster to `poultry`
-- [ ] Confirm an editor can fix a poultry disease without touching a large-animal one
-- [ ] Relocate `ImportDiseaseKnowledge` from `Pages/LargeAnimals/` to the shared `DiseasesCluster` (§3.4)
-- [ ] Move its Blade view out of `filament/pages/large-animals/` to the shared namespace
-- [ ] Add a `domain` select to the import form and scope the disease picker options by it
-- [ ] Default the form's `domain` from whichever cluster the editor arrived from
-- [ ] Confirm the relocated page is reachable from both the Large Animals and Poultry clusters
+- [ ] Add the `Poultry` Filament cluster — **deliberately skipped; a cluster means duplicate resources, which contradicts the one-shared-page decision. The import page is domain-scoped instead**
+- [x] Add a `domain` select to the Diseases and Species admin forms — **plus an infolist badge and a table column + filter, on both resources.** Placed first in each form, because a Disease saved into the wrong domain disappears from the poultry section silently, so the field preventing it should not be below the fold
+- [ ] Default new records inside the cluster to `poultry` — **superseded.** With no cluster there is no poultry entry point to anchor a default to, and a `?domain=poultry` query-param default would be an affordance nothing links to. The visible Select makes this unnecessary. Revisit if Phase 2 gives poultry an admin landing spot
+- [x] Confirm an editor can fix a poultry disease without touching a large-animal one — **`domain` was previously invisible *and* unfixable in the admin: absent from the form means Filament never submits it, so a miscategorised record could only be corrected by re-running a seeder or using tinker. Now editable. One edge remains, see §1.9**
+- [x] Relocate `ImportDiseaseKnowledge` from `Pages/LargeAnimals/` to the shared `DiseasesCluster` (§3.4) — namespace moved to `App\Filament\Pages\Diseases`
+- [x] Move its Blade view out of `filament/pages/large-animals/` to the shared namespace
+- [x] Add a `domain` select to the import form and scope the disease picker options by it
+- [x] Default the form's `domain` from whichever cluster the editor arrived from — **bulk action defaults to `poultry`, single action to `large_animal`; not cluster-derived because there is no Poultry cluster**
+- [x] Confirm the relocated page is reachable from both the Large Animals and Poultry clusters — reachable at `/admin/diseases/import-disease-knowledge`; it was already on `DiseasesCluster` before the move, so the URL is unchanged
+
+### 1.8 Surface `domain` in the admin (completes §1.7)
+
+Not in the original plan, and it should have been. Phase 1 put `domain` on the models and wired it
+into one custom page, then left the shared Disease and Species resources untouched — so the column
+that separates the whole site was invisible to the people who maintain it.
+
+**What it cost before this was fixed**
+
+1. An editor opening a disease record could not tell which section it belonged to.
+2. A miscategorised record could not be corrected through the admin at all — `domain` was in
+   `$fillable` but absent from the form, so Filament never submitted it.
+3. A new record saved from the admin silently inherited the column default, `large_animal`.
+
+**What was built** — six files, additive, no change to existing records:
+
+| File | Added |
+|---|---|
+| `Diseases/Schemas/DiseaseForm.php` | `Select`, first field |
+| `Diseases/Schemas/DiseaseInfolist.php` | `TextEntry` badge |
+| `Diseases/Tables/DiseasesTable.php` | `TextColumn` badge + `SelectFilter` |
+| `Species/Schemas/SpeciesForm.php` | `Select`, first field |
+| `Species/Schemas/SpeciesInfolist.php` | `TextEntry` badge |
+| `Species/Tables/SpeciesTable.php` | `TextColumn` badge + `SelectFilter` |
+
+`domain` is **editable**, not locked. A mistake is visible immediately in the filtered table, and
+locking it would block the legitimate recategorisation case.
+
+Also added: `app/Models/Concerns/HasDomain.php`, a trait carrying the constants, `domainOptions()`
+and the three scopes. Four copies of the same label array across the Filament files, plus the
+duplication already in `Disease` and `Species`, made this worth doing.
+
+Tests: `tests/Feature/DomainAdminAccessTest.php` — 6 tests, including that a miscategorised disease
+can now be corrected.
+
+> ⚠️ **One edge still open.** `Findings`, `HostSpecies` and `AnatomicalStructures` are shared and
+> unscoped, so an editor who has filtered to poultry can still attach a large-animal host species to
+> a poultry disease through the relation manager. Closing it means either a domain filter on those
+> resources or a cluster — a decision not taken yet.
+
+### 1.9 Unplanned repair — `ClinicalSignSeeder` (completes §1.4)
+
+Phase 1 could not be verified until this was fixed, because `db:seed` **died** on it. It is
+recorded here because it changes shared ontology that later phases depend on.
+
+`clinical_signs` is unique on `(finding_id, modifier_id, anatomical_structure_id)`, and the seeder
+described 37 signs of which only 15 were representable:
+
+| Failure | Count | Cause |
+|---|---|---|
+| `1062 Duplicate entry` | **14** | two signs sharing a finding *and* an anatomy are the same row — `tongue vesicle` collided with `oral vesicle`, and so on across five groups |
+| `finding_id` NOT NULL | **8** | the finding was left `null` — anemia, lacrimation, weakness, tachycardia, lymphadenitis, submandibular lymphadenitis, infertility, temporary infertility |
+| silently wrong | — | `firstOrCreate(['canonical_name' => …])` matched a column with no unique index, so once `PoultryDataSeeder` wrote 1,072 modifier-less signs sharing names like `pyrexia`, it would match a poultry row and skip the curated sign |
+
+Fixed by making each sign representable rather than dropping concepts — a veterinary reference
+cannot lose the difference between *profuse* and *hemorrhagic* diarrhea:
+
+- `FindingSeeder` — added **15 findings**: the 8 that were missing, plus 7 qualifier findings
+  (`hemorrhagic diarrhea`, `profuse diarrhea`, `respiratory distress`, `tachypnea`, `mastitis`,
+  `mammary gland heat`, `hoof sloughing`).
+- `AnatomicalStructureSeeder` — added **3 structures** (`tongue`, `interdigital_space`,
+  `coronary_band`) so the vesicle group separates on anatomy instead of colliding.
+- `ClinicalSignSeeder` — rewritten to match on composition, resolve anatomy by `canonical_name`,
+  look names up in two queries instead of 74, throw a named exception listing anything unresolved,
+  and only write when a value actually differs.
+- `tests/Feature/LargeAnimals/ClinicalSignSeederTest.php` — 8 tests covering both crash modes,
+  idempotency, and the poultry-sign collision.
+
+> ⚠️ **Needs review:** the 18 new Arabic display names were written by the agent and have not been
+> checked by a native speaker. They are content, not code.
+
+> ⚠️ **Also found, not fixed:** `migrate:fresh` shells out to the `mysql` CLI to load
+> `database/schema/mysql-schema.sql`, and `mysql` is not on `PATH` on this machine
+> (`C:\laragon\bin\mysql\mysql-8.0.30-winx64\bin` must be added). Unrelated to Poultry, but it makes
+> the documented reset path fail.
 
 ---
 
@@ -825,7 +922,9 @@ place, so a vet reading about a disease can go straight to what treats it.
 
 | Version | Change |
 |---|---|
-| **v7** | Dropped Artisan commands and new services. Source A now loads via the 36 existing seeders; Source B via multi-file Filament upload with slug auto-matching. Merge rule **closed as not needed** (different destinations). |
+| **v9** | Surfaced `domain` in the shared Disease/Species admin resources — it was invisible *and* unfixable, which made the §1.7 editor-isolation criterion fail rather than merely unticked. Added `HasDomain` trait and 6 tests. §1.8 records it. |
+| v8 | Phase 1 built and ticked. Recorded real counts, which corrected three plan figures. Documented the `ClinicalSignSeeder` repair that unblocked `db:seed`. |
+| v7 | Dropped Artisan commands and new services. Source A now loads via the 36 existing seeders; Source B via multi-file Filament upload with slug auto-matching. Merge rule **closed as not needed** (different destinations). |
 | v6 | Filament import page decision (option A): relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster` with a `domain` filter. Added §3.4 and Phase 1.7 tasks. |
 | v5 | Discovered 154 disease JSON files (928 lesions, 13 knowledge fields). Chose Artisan command over seeder, `diseases.knowledge_payload` as the single target, all 13 transformer keys, `domain` values confirmed. Merge rule flagged as still-open. |
 | v4 | Added phased execution plan: Phase 1 migrations/data, Phases 2–10 one per page, each with milestone, tasks and plain-English purpose. |

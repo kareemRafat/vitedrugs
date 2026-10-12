@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Diseases\Schemas;
 
+use App\Models\Disease;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -14,6 +16,16 @@ class DiseaseForm
     {
         return $schema
             ->components([
+
+                // First, because every other surface is scoped by it: a Disease
+                // saved into the wrong domain silently vanishes from the poultry
+                // section.
+                Select::make('domain')
+                    ->label('Section')
+                    ->options(Disease::domainOptions())
+                    ->default(Disease::DOMAIN_LARGE_ANIMAL)
+                    ->required()
+                    ->native(false),
 
                 TextInput::make('name')
                     ->required()
