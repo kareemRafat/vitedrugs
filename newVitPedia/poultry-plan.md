@@ -258,11 +258,18 @@ That shape is wrong for Poultry:
 - [ ] Update the view namespace from `filament.pages.large-animals.*` to the shared location
 - [ ] Add a `domain` select to the form, and scope the disease picker options by it
 - [ ] Default the form to `poultry` when reached from the Poultry cluster and `large_animal` from Large Animals
-- [ ] Keep the existing file-upload and pasted-text paths exactly as they are
-- [ ] Leave the bulk 154-file load to the Artisan command (§5) — the page is for **single-disease corrections**
+- [ ] **Add a multi-file upload mode** (`FileUpload::make()->multiple()`) so all 154 JSONs load in one operation
+- [ ] Auto-match each uploaded file to a disease by filename slug (`newcastle-disease.json` → `newcastle-disease`)
+- [ ] Show a preview report before saving: *N matched · N unmatched*, listing the unmatched filenames
+- [ ] Wrap the batch save in a database transaction
+- [ ] Keep the existing single-file mode for later individual corrections
 
 > **Why one page, not two:** two importers will drift apart. One page scoped by a `domain` selector
 > serves both parts and cannot disagree with itself.
+>
+> **Why batch upload, not one-at-a-time:** 154 separate uploads is hours of manual clicking. Files are
+> already named by disease, so slug matching makes the bulk case trivial — while still keeping a human
+> in the loop, reviewing the report before anything is written.
 
 ---
 
@@ -291,37 +298,59 @@ SQL → app mapping for `findings` is **1:1**:
 
 ## 5. Import Mechanism
 
-**An Artisan command, not a seeder.**
+**Seeders and a Filament page. No Artisan commands. No new service classes.**
 
-| | Seeder | Artisan command |
+The project already ships **36 seeders**, including the exact entities we need:
+
+```
+SpeciesSeeder · BodySystemSeeder · AnatomicalStructureSeeder
+FindingSeeder · DiseaseSeeder · ClinicalSignSeeder
+DiseaseClinicalSignSeeder · DiseaseKnowledgePayloadSeeder · KnowledgeBaseSeeder
+```
+
+`KnowledgeBaseSeeder` already orchestrates the whole ontology. We extend that pattern rather than inventing new infrastructure.
+
+| Source | Mechanism | Lands in |
 |---|---|---|
-| Purpose | fake demo data | real client data |
-| Re-runnable | no | **yes** |
-| Progress + error report | no | **yes** |
-| Transactional | no | **yes** |
-
-The client **will** send corrected data, so the import must be repeatable.
+| **A** — SQL dump | **Extend the existing seeders** with poultry rows | relational tables |
+| **B** — 154 JSONs | **Filament upload page** (multi-file) | `diseases.knowledge_payload` |
 
 ```
-php artisan poultry:import-data        → Source A: SQL dump → relational tables
-php artisan poultry:import-knowledge   → Source B: 154 JSONs  → diseases.knowledge_payload
+php artisan db:seed --class=PoultryDataSeeder    → Source A
+/admin → Import Disease Knowledge               → Source B
 ```
 
-Both must be idempotent, transactional, and log a per-entity summary.
+### 5.1 Seeder requirements
+
+- Every seeder must use `updateOrCreate` (never `create`), so re-running after a corrected dump duplicates nothing
+- The dump-parsing logic (~150 lines) lives **inside** the seeder class — no separate service
+- Each seeder prints a per-entity summary: created, updated, skipped, failed
+- Register the new poultry seeders in `KnowledgeBaseSeeder` (or `DatabaseSeeder`) in dependency order
+
+### 5.2 Dump access
+
+- **Scratch database (chosen):** import the 7 MB dump once into a throwaway MySQL schema, read it with normal queries, transform, drop it. Far more reliable than parsing INSERT statements as text.
+- The dump path is **not hardcoded** — add `config/vetpedia.php` → `poultry_source_path` so it can be repointed without touching code.
 
 ---
 
-## 6. Merge Rule (Source A ↔ Source B)
+## 6. Merge Rule — CLOSED, not needed ✅
 
-Both sources describe the same diseases and the same lesions, in different words.
+**The two sources never merge, because they write to different places.**
 
-**Proposed default: JSON wins, SQL fills gaps.**
-- Source B entries are richer — they carry `anatomical_location`, `weight`, `specificity` and `notes`.
-- Source A fills only what Source B lacks.
-- Dedupe on `canonical_name`.
-- Log every conflict so it can be reviewed in Filament rather than silently overwritten.
+```
+Source A (SQL)  →  relational tables            findings · disease_finding · species · body_systems
+Source B (JSON) →  diseases.knowledge_payload   (one JSON column)
+```
 
-> ⚠️ **This is the one decision not yet formally confirmed.** Flagged here for review before Phase 1 is marked done.
+The 660 SQL lesions power the **diagnostic engine** (Phase 4). The 928 JSON lesions power the **disease article page** (Phase 3). They sit side by side and never contend.
+
+**Consequences:**
+- No `MergeResolver` service
+- No merge-rule decision
+- No dedupe logic, no conflict logging
+
+> ✅ **Closed. All Phase 1 decisions are now settled.**
 
 ---
 
@@ -388,13 +417,15 @@ Icons via Blade components: `<x-lucide-search />` (`fuzzyfox/lucide-for-laravel`
 | 7 | Stack | **Laravel 13 · Livewire 4 · Tailwind 4** |
 | 8 | Clinical Cases | **Removed from scope** |
 | 9 | Lesions | **Two sources** — 660 (SQL) + 928 (JSON) |
-| 10 | Knowledge import | **Artisan command, not a seeder** |
+| 10 | Knowledge import | **Filament page — no Artisan command, no new services** |
 | 11 | Knowledge target | **`diseases.knowledge_payload`** — one column, zero schema change |
 | 12 | Transformer scope | **All 13 fields**, not just the 5 rendered today |
 | 13 | Green theme | **Already working** — no change |
 | 14 | `newVitPedia/` | **Keep in repo as-is** (option C) |
 | 15 | Filament import page | **Option A — relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster`, add a `domain` filter.** No second page. |
-| — | Merge rule A↔B | ⚠️ proposed "JSON wins, SQL fills gaps" — **needs confirmation** |
+| 16 | Bulk JSON load | **Multi-file upload with slug auto-matching** on that same page — one operation, not 154 |
+| 17 | SQL dump load | **Extend the 36 existing seeders** — no new commands, no new services |
+| 18 | Merge rule A↔B | ✅ **CLOSED — not needed.** Different destinations, never contends |
 
 ---
 
@@ -449,31 +480,38 @@ plus 12 more knowledge fields) — and files them into the existing tables with 
 
 - [ ] Extend `DiseaseKnowledgePayloadTransformer` with aliases: `gross_lesions` → `postmortem_findings`, `prevention_and_control` → `prevention_control`, `diagnostic_tests` → `diagnosis`
 - [ ] Add output keys for the 8 currently-unmapped fields: `microscopic_lesions`, `pathognomonic_findings`, `field_diagnosis_clues`, `epidemiological_clues`, `important_organs_affected`, `morbidity`, `mortality`, `differential_diagnoses`
-- [ ] Match each JSON file to a disease by `slug`; log every file that matches nothing
-- [ ] **Confirm the Source A ↔ Source B merge rule** (see §6)
-- [ ] Implement the merge: JSON wins, SQL fills gaps, dedupe on `canonical_name`, log conflicts
+- [ ] Confirm the transformer matches the JSON's `slug` field to `Disease.slug`
 - [ ] Write regression tests for the transformer covering all 13 keys
+- [ ] ✅ No merge work required — see §6
 
-### 1.4 Importer — Source A (`poultry:import-data`)
+### 1.4 Seeders — Source A (SQL dump)
 
-- [ ] Build as a reusable Artisan command, idempotent, safe to re-run
-- [ ] Wrap in a database transaction so a failure leaves no half-imported state
-- [ ] Import `species` (9) → `domain = poultry`
-- [ ] Import `body_systems` (11) and `anatomical_structures` (43)
-- [ ] Import `findings` (1,118) — 458 signs + 660 lesions
-- [ ] Import `diseases` (151) → `domain = poultry`
-- [ ] Import the `disease_finding` pivot (1,900) with weight, specificity, pathognomonic, required
-- [ ] Import `disease_species` (302) and `disease_age_groups` (179)
-- [ ] Log a summary: rows imported per table, skipped, failed
+Extend the existing seeders. No new commands, no new services.
 
-### 1.5 Importer — Source B (`poultry:import-knowledge`)
+- [ ] Add `config/vetpedia.php` with `poultry_source_path`, defaulting to `newVitPedia/vetpedia_poultry (1).sql`
+- [ ] Create `PoultryDataSeeder` that loads the dump into a scratch MySQL schema, reads it, and drops the schema
+- [ ] Seed `species` (9) → `domain = poultry`
+- [ ] Seed `body_systems` (11) and `anatomical_structures` (43)
+- [ ] Seed `findings` (1,118) — 458 signs + 660 lesions
+- [ ] Seed `diseases` (151) → `domain = poultry`
+- [ ] Seed the `disease_finding` pivot (1,900) with weight, specificity, pathognomonic, required
+- [ ] Seed `disease_species` (302) and `disease_age_groups` (179)
+- [ ] Use `updateOrCreate` everywhere so a re-run never duplicates rows
+- [ ] Print a per-entity summary: created, updated, skipped, failed
+- [ ] Register `PoultryDataSeeder` in `KnowledgeBaseSeeder` after its dependencies
 
-- [ ] Build as a second reusable Artisan command, idempotent
-- [ ] Loop all 154 JSON files, match by `slug`
-- [ ] Run each through the extended transformer
-- [ ] Merge with Source A data per the confirmed rule
-- [ ] Write into `diseases.knowledge_payload`
-- [ ] Log a summary: files processed, matched, unmatched, merged, conflicts
+### 1.5 Filament upload — Source B (154 JSONs)
+
+Handled by the admin panel, not a command. See §3.4.
+
+- [ ] Relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster`
+- [ ] Support **multi-file upload** (`->multiple()`) so all 154 load in one operation
+- [ ] Auto-match each uploaded file to a disease by filename slug (`newcastle-disease.json` → `newcastle-disease`)
+- [ ] Show a preview report before saving: *N matched · N unmatched*, with the unmatched files listed
+- [ ] Run each payload through the extended transformer, write to `diseases.knowledge_payload`
+- [ ] Keep a single-file mode on the same page for later individual corrections
+- [ ] Wrap the batch save in a transaction
+- [ ] Log a summary: files processed, matched, unmatched, failed
 
 ### 1.6 Verification
 
@@ -481,10 +519,10 @@ plus 12 more knowledge fields) — and files them into the existing tables with 
 - [ ] Assert exactly 1,118 findings exist, of which 660 have `ontology_type = 'lesion'`
 - [ ] Assert exactly 1,900 disease↔finding links exist, **zero** orphaned
 - [ ] Assert 149 of 151 diseases have at least one finding
-- [ ] Assert 154 JSON files processed and N matched to a disease — **record the real N here**
-- [ ] Assert total lesion count equals 660 (SQL) + merged JSON entries
-- [ ] Assert `important_organs_affected` is present for ~152 diseases
+- [ ] Assert the Filament batch reports the expected matched/unmatched split — **record the real numbers here**
+- [ ] Assert `important_organs_affected` is present for ~152 diseases in `knowledge_payload`
 - [ ] Spot-check 5 diseases by hand against both sources (Newcastle Disease, Coccidiosis, Avian Influenza, Aflatoxicosis, Marek's Disease)
+- [ ] Run the seeder twice and confirm row counts are unchanged (idempotency proof)
 - [ ] Confirm the Large Animals test suite still passes
 - [ ] Write all the counts above as automated tests
 
@@ -787,7 +825,8 @@ place, so a vet reading about a disease can go straight to what treats it.
 
 | Version | Change |
 |---|---|
-| **v6** | Filament import page decision (option A): relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster` with a `domain` filter. Added §3.4 and Phase 1.7 tasks. |
+| **v7** | Dropped Artisan commands and new services. Source A now loads via the 36 existing seeders; Source B via multi-file Filament upload with slug auto-matching. Merge rule **closed as not needed** (different destinations). |
+| v6 | Filament import page decision (option A): relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster` with a `domain` filter. Added §3.4 and Phase 1.7 tasks. |
 | v5 | Discovered 154 disease JSON files (928 lesions, 13 knowledge fields). Chose Artisan command over seeder, `diseases.knowledge_payload` as the single target, all 13 transformer keys, `domain` values confirmed. Merge rule flagged as still-open. |
 | v4 | Added phased execution plan: Phase 1 migrations/data, Phases 2–10 one per page, each with milestone, tasks and plain-English purpose. |
 | v3 | All 5 decisions locked; URL naming fixed to match `large-animals`; file/route conventions, Tailwind v4 token rules, implementation notes. |
