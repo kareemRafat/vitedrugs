@@ -22,6 +22,9 @@ class AnatomicalStructureSeeder extends Seeder
                 ['abomasum', 'Abomasum', 'المنفحة'],
                 ['intestines', 'Intestines', 'الأمعاء'],
                 ['oral_cavity', 'Oral cavity', 'تجويف الفم'],
+                // Separate from "oral cavity" so a tongue vesicle and an oral
+                // vesicle are distinguishable signs.
+                ['tongue', 'Tongue', 'اللسان'],
             ],
             'nervous_system' => [
                 ['brain', 'Brain', 'الدماغ'],
@@ -36,6 +39,10 @@ class AnatomicalStructureSeeder extends Seeder
                 ['joints', 'Joints', 'المفاصل'],
                 ['hooves', 'Hooves', 'الأظلاف'],
                 ['muscles', 'Muscles', 'العضلات'],
+                // Separate from "hooves" so a vesicle at the interdigital space
+                // and one at the coronary band are distinguishable signs.
+                ['interdigital_space', 'Interdigital space', 'الفراغ بين الأصابع'],
+                ['coronary_band', 'Coronary band', 'حزام التاج'],
             ],
             'urinary_system' => [
                 ['kidneys', 'Kidneys', 'الكليتان'],
