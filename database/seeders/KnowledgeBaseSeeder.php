@@ -37,6 +37,9 @@ class KnowledgeBaseSeeder extends Seeder
             // F8 projects + disease encyclopedia payloads
             VeterinaryProjectSeeder::class,
             DiseaseKnowledgePayloadSeeder::class,
+
+            // Poultry section (tagged with the `poultry` domain in shared tables)
+            PoultryDataSeeder::class,
         ]);
     }
 }
