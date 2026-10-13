@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Knowledge\SearchController as KnowledgeSearchController;
 use App\Http\Controllers\LargeAnimals\DiagnosticController;
 use App\Http\Controllers\LargeAnimals\DiseaseArticleController;
 use App\Http\Controllers\LargeAnimals\DiseaseController;
@@ -7,7 +8,6 @@ use App\Http\Controllers\LargeAnimals\DrugLandingController;
 use App\Http\Controllers\LargeAnimals\FilterController;
 use App\Http\Controllers\LargeAnimals\MedicalArticleController;
 use App\Http\Controllers\LargeAnimals\MicroorganismController;
-use App\Http\Controllers\LargeAnimals\SearchController;
 use App\Http\Controllers\LargeAnimals\SpecializationController;
 use App\Http\Controllers\LargeAnimals\TestArticleController;
 use App\Http\Controllers\LargeAnimals\VeterinaryProjectController;
@@ -22,7 +22,7 @@ Route::group([
     Route::prefix('large-animals')->group(function () {
         Route::get('/', DrugLandingController::class)->name('large-animals.home');
 
-        Route::get('search', [SearchController::class, 'index'])->name('large-animals.search');
+        Route::get('search', [KnowledgeSearchController::class, 'index'])->name('large-animals.search');
 
         Route::get('diagnosis', [DiagnosticController::class, 'index'])->name('large-animals.diagnosis');
         Route::get('diagnosis/suggestions', [DiagnosticController::class, 'suggestions'])->name('large-animals.diagnosis.suggestions');

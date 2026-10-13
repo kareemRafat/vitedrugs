@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Knowledge\SearchController;
 use App\Http\Controllers\Poultry\DiagnosticController;
 use App\Http\Controllers\Poultry\DiseaseController;
 use App\Http\Controllers\Poultry\FilterController;
@@ -26,5 +27,7 @@ Route::group([
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('poultry.filter.suggestions');
 
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('poultry.diseases.show');
+
+        Route::get('search', [SearchController::class, 'index'])->name('poultry.search');
     });
 });

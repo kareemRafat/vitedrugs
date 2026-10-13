@@ -9,6 +9,7 @@ use App\Models\LargeAnimals\BodySystem;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\DiseaseClassification;
 use App\Models\LargeAnimals\HostSpecies;
+use App\Services\Knowledge\ToolPrefillService;
 use App\Services\LargeAnimals\FilterService;
 use App\Services\LargeAnimals\FilterShareService;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,15 +30,17 @@ class FilterController extends Controller
     public function __construct(
         private FilterService $filterService,
         private FilterShareService $filterShareService,
+        private ToolPrefillService $prefill,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
         return view('filter.index', [
             'part' => self::PART,
             'species' => $this->species(),
             'etiologies' => $this->etiologies(),
             'bodySystems' => $this->bodySystems(),
+            'initialSpeciesId' => $this->prefill->species(self::PART, $request->query('host_species_id'))?->id,
         ]);
     }
 

@@ -99,8 +99,11 @@
 
             <div class="flex items-center justify-end gap-1 sm:gap-2">
                 @php
+                    // Three-way, not two: 'poultry' used to fall through to the
+                    // drugs search page because it had no route of its own.
                     $searchRoute = match($part ?? 'large-animals') {
                         'large-animals' => route('large-animals.search'),
+                        'poultry' => route('poultry.search'),
                         default => route('search'),
                     };
                 @endphp

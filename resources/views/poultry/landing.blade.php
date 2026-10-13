@@ -11,11 +11,13 @@
         $serviceRoutes = [
             'diagnosis' => route('poultry.diagnosis'),
             'filter' => route('poultry.filter'),
+            'search' => route('poultry.search'),
         ];
 
         $serviceIcons = [
             'diagnosis' => 'stethoscope',
             'filter' => 'sliders-horizontal',
+            'search' => 'search',
         ];
 
         $statIcons = [

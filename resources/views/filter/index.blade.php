@@ -47,7 +47,7 @@
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                             <option value="">{{ $t('filter.species_placeholder') }}</option>
                             @foreach ($species as $item)
-                                <option value="{{ $item->id }}" @selected(old('host_species_id') == $item->id)>{{ $item->display_name }}</option>
+                                <option value="{{ $item->id }}" @selected((int) old('host_species_id', $initialSpeciesId) === (int) $item->id)>{{ $item->display_name }}</option>
                             @endforeach
                         </select>
                         @error('host_species_id')

@@ -19,6 +19,7 @@ return array_replace_recursive($shared, [
         'home' => 'Poultry',
         'diagnosis' => 'Diagnosis',
         'filter' => 'Filter',
+        'search' => 'Search',
         'diseases' => 'Diseases',
         'lesions' => 'Lesions',
     ],
@@ -43,6 +44,10 @@ return array_replace_recursive($shared, [
             'filter' => [
                 'title' => 'Clinical Filter',
                 'description' => 'Narrow the list by bird species, body system and whether a disease can pass to humans, using the signs you select.',
+            ],
+            'search' => [
+                'title' => 'Global Search',
+                'description' => 'One box across diseases, clinical signs, bird species and products, with suggestions as you type and tolerance for near-misses.',
             ],
         ],
 

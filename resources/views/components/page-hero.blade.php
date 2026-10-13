@@ -6,9 +6,12 @@
     'stats' => null,
 ])
 
-<div class="bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 rounded-base overflow-hidden mt-4">
+{{-- No overflow-hidden on this wrapper: it would clip the slot. The decorative
+     circles are clipped by their own inset layer instead. --}}
+<div class="bg-gradient-to-br from-brand to-brand-strong dark:from-sky-800 dark:to-sky-950 rounded-base mt-4">
         <div class="relative px-6 pt-16 pb-20 sm:pt-20 sm:pb-24">
-            <div class="absolute inset-0 opacity-10 dark:opacity-20">
+            <div class="absolute inset-0 overflow-hidden rounded-base" aria-hidden="true">
+                <div class="absolute inset-0 opacity-10 dark:opacity-20">
                 <div class="absolute -top-24 -end-24 w-96 h-96 rounded-full bg-white dark:bg-sky-200"></div>
                 <div class="absolute -bottom-32 -start-32 w-80 h-80 rounded-full bg-white dark:bg-sky-200"></div>
             </div>

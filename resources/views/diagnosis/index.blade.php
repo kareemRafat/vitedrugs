@@ -10,7 +10,13 @@
 @section('title', $t('diagnosis.title'))
 
 @section('content')
-    <div class="space-y-4" x-data="diagnosisForm()">
+    <div class="space-y-4" x-data="diagnosisForm(@js([
+        'sign' => $initialSign ? [
+            'id' => $initialSign->id,
+            'label' => $initialSign->localized_display_name,
+        ] : null,
+        'speciesId' => $initialSpeciesId,
+    ]))">
         <x-large-animals.page-hero
             :heading="$t('diagnosis.heading')"
             :subtitle="$t('diagnosis.subtitle')"
@@ -37,7 +43,7 @@
                 <select id="host_species_id" name="host_species_id" required aria-required="true" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                     <option value="">{{ $t('diagnosis.species_placeholder') }}</option>
                     @foreach ($hostSpecies as $species)
-                        <option value="{{ $species->id }}" @selected(old('host_species_id') === $species->id)>{{ $species->localized_display_name }}</option>
+                        <option value="{{ $species->id }}" @selected((int) old('host_species_id', $initialSpeciesId) === (int) $species->id)>{{ $species->localized_display_name }}</option>
                     @endforeach
                 </select>
                 @error('host_species_id')
@@ -132,11 +138,17 @@
 
 @section('css')
 <script>
-function diagnosisForm() {
+function diagnosisForm(prefill = {}) {
     const emptySign = (key) => ({ key, id: '', text: '', open: false, suggestions: [], invalid: false });
 
+    // A search result for a clinical sign deep-links here with ?sign=<id>, so the
+    // first row starts filled in rather than empty.
+    const seeded = prefill.sign
+        ? { ...emptySign(0), id: prefill.sign.id, text: prefill.sign.label }
+        : emptySign(0);
+
     return {
-        signs: Array.from({ length: 3 }, (_, index) => emptySign(index)),
+        signs: [seeded, emptySign(1), emptySign(2)],
         nextKey: 3,
         showInvalidSigns: false,
         add() {

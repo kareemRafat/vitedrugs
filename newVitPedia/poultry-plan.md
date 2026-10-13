@@ -1,9 +1,9 @@
 # Poultry Section Plan — Vetpedia
 
-> **Status:** v11 — **Phases 1, 2, 4 and 5 built; Phase 3 partially.**
-> Phase 1: 50/57 · Phase 2: 9/11 · Phase 3: 5/15 · Phase 4: 12/17 · Phase 5: 11/12
+> **Status:** v13 — **Phases 1, 2, 4 and 5 built; Phase 6 partially; Phase 3 partially.**
+> Phase 1: 50/57 · Phase 2: 9/11 · Phase 3: 5/15 · Phase 4: 12/17 · Phase 5: 11/12 · Phase 6: 7/12
 > **Date:** 2026-10-13
-> **Supersedes:** v1–v10
+> **Supersedes:** v1–v12
 
 ---
 
@@ -434,6 +434,9 @@ Icons via Blade components: `<x-lucide-search />` (`fuzzyfox/lucide-for-laravel`
 | 23 | Translation files | **Layered, not duplicated.** `lang/*/poultry.php` starts from `large-animals.php` via `array_replace_recursive` and overrides only bird-specific wording (~20 keys). A key added upstream arrives for free |
 | 24 | Share links | **Versioned and domain-tagged.** Token `VERSION` = 2 with a `domain` field, rejected on mismatch. Both services are base64url-encoded |
 | 25 | Large-animal tools | Now **scoped to `large_animal`** — 169 diseases → 18. A deliberate, visible behaviour change; see §2.1 |
+| 26 | Search architecture | **One shared controller, service and view**, keyed on `$part`, with bucket membership declared per part in `config/search.php`. Forking per part would duplicate config-reading code and is how the unscoped-leak defect was able to survive unnoticed |
+| 27 | Search buckets | Large-animals shows seven buckets, poultry four. A bucket is either `domain`, `part`, `through_disease` or `none` — the four vocabularies the data actually uses. Part membership by `taxonomy_group` alone is **not** sufficient: 14 of 384 `disease_host_species` rows cross the domain line |
+| 28 | Fuzzy matching | **LIKE first, trigram Dice as a fallback only when LIKE comes up short.** Not Levenshtein: the doubled-letter typo it was meant to catch (`cocido` → `coccidiosis`) is 5 edits away, beyond any usable threshold |
 
 ---
 
@@ -853,28 +856,165 @@ symptom, what could cause it?"*. A farmer who spots one worrying sign but has no
 ## Phase 6 — Global Search
 
 **Route:** `GET /poultry/search`
-**Milestone:** One search box returns matching diseases, symptoms, species and products, with live
-suggestions.
+**Milestone:** One search box returns matching diseases, symptoms, species and products on submit.
 
 **What this page is used for:** A single entry point when the user does not know which section to go
 to. Instead of guessing whether the answer lives in the disease library or the drug catalogue, they
-type one word and get everything relevant. The suggestions dropdown matters most — most users never
-press enter.
+type one word and get everything relevant. The box is a plain form, deliberately identical in shape to
+`/drugs/search`: you type, and results appear when you submit. A live dropdown was built and then
+removed — see deviation 5.
 
 ### Tasks
 
-- [ ] Adapt `LargeAnimals\SearchController` into a Poultry search controller
-- [ ] Search across diseases, findings, species, and (Phase 9) products
-- [ ] Filter to the Poultry domain except products, which use species matching
-- [ ] Add a live suggestions endpoint returning matches as the user types
-- [ ] Group dropdown results by type, with icons per type
-- [ ] Support Arabic search terms as well as English
-- [ ] Add fuzzy matching so near-misses still find something
-- [ ] Build the full results page with type filters
-- [ ] Add an empty state with helpful suggestions
-- [ ] Debounce input so we do not query on every keystroke
-- [ ] Rate-limit the suggestions endpoint
-- [ ] Tests: English match, Arabic match, fuzzy match, no results
+- [x] Adapt `LargeAnimals\SearchController` into a Poultry search controller → **built as one shared
+  controller instead of a fork.** `Knowledge\SearchController` reads `$part` from the request and both
+  parts point at the same service and view. Forking would have duplicated ~80 lines that only exist to
+  read configuration. The old `LargeAnimals\SearchController` and its view are deleted.
+- [x] Search across diseases, findings, species, and (Phase 9) products → **findings became clinical
+  signs, and products were pulled forward.** See the two deviations below.
+- [x] Filter to the Poultry domain except products, which use species matching → **products are scoped
+  through `disease_product` → `diseases.domain`, not through species.** Species matching would have let
+  the 14 cross-domain `disease_host_species` rows leak poultry drugs into large-animal results. Nine of
+  the thirty products treat a poultry disease today, so the bucket is populated.
+- [ ] Add a live suggestions endpoint returning matches as the user types → **built, then removed.**
+  `GET {part}/search/suggestions` returned 404 and is no longer registered. The dropdown it fed is gone;
+  see deviation 5.
+- [ ] Group dropdown results by type, with icons per type → **built, then removed with the dropdown.**
+  Every bucket still renders as its own card with an icon and a count, so the grouping survives — only
+  the dropdown did not.
+- [x] Support Arabic search terms as well as English → every bucket searches its `*_ar` column
+  regardless of locale, so an English query on the Arabic page still matches. On the Arabic locale the
+  Arabic name becomes the heading and the English one drops to the sub-line, matching the
+  `localized_name` / `localized_display_name` accessors the models already expose.
+- [x] Add fuzzy matching so near-misses still find something → **trigram Dice, not Levenshtein.** See
+  the third deviation below. LIKE runs first and the near-miss pass only runs when LIKE came back short.
+- [ ] Build the full results page with type filters → **the page is built; the type filter chips are
+  not.** Every bucket renders as its own card with a count, so results are already visually grouped,
+  but there is no control to narrow to one type.
+- [x] Add an empty state with helpful suggestions → no-match state links onward to the filter tool and
+  the diagnosis tool
+- [ ] Debounce input so we do not query on every keystroke → **built, then removed with the dropdown.**
+  Nothing is queried while typing, which satisfies the intent, but there is no longer any `@input`
+  handler to debounce.
+- [ ] Rate-limit the suggestions endpoint → **the endpoint it limited is gone**, so the `60/min`
+  limiter and `search.too_many_requests` were deleted with it. `/drugs/search` is equally unthrottled
+  and un-debounced, so the two are now consistent.
+- [x] Tests: English match, Arabic match, fuzzy match, no results → 45 tests in
+  `tests/Feature/Knowledge/`, six of them the part-isolation cases the old page failed
+
+### Deviations from the tasks above
+
+Five of these were decided against the wording above, so they are recorded here rather than left
+implicit in the diff.
+
+**1. Search `ClinicalSign`, not `Finding`.** The tasks say "findings", but `findings` (1,089 rows) has
+no `domain` column and no direct link to `Disease` — only `clinical_signs` does. They are also the same
+vocabulary at two layers: `ClinicalSign` is `Finding` plus anatomical structure and modifier, and the
+seeder writes one plain sign per finding. Exposing both buckets would render the same matches twice,
+which is precisely the defect this work set out to fix. One "Clinical Signs" bucket instead, and it is
+what the diagnosis tool already searches. `Finding` remains reachable on the admin side.
+
+**2. Trigram similarity, not Levenshtein.** The intended design was LIKE first, then a Levenshtein
+pass. Measured against the real data, Levenshtein cannot do the job it was chosen for:
+`levenshtein('cocido', 'coccidiosis')` is **5**, so any threshold loose enough to catch that also
+matches noise. The trigrams of `cocido` (`coc`, `cid`) overlap `coccidiosis` directly, giving
+Dice ≈ 0.31 against a 0.3 floor. It is also O(n) rather than O(n·m), and it only runs when LIKE misses,
+so the common case is still one query per bucket.
+
+**3. Products pulled forward from Phase 9.** The task text deferred products to Phase 9 but then
+described how to scope them, which is contradictory. Nine of the thirty products already treat a poultry
+disease, so leaving the bucket empty would have shipped a search page that silently omitted part of its
+own data.
+
+**4. The near-miss threshold stayed at 0.30, and a front-anchoring gate was added instead.** This one
+corrects deviation 2 above. A 0.30 Dice floor was chosen without measuring the corpus against false
+positives, and it produced them: `chicken` matched **thirteen** clinical signs beginning "Thickened",
+because `chicken` and `thickened` share the interior trigram run `hic/ick/cke/ken` and score **0.667**.
+
+The obvious fix — raise the floor to 0.50 — **does not work**. 0.667 clears 0.50 comfortably. The two
+words only begin matching at their *second* trigram, so what separates a typo from an accident of
+spelling is not how similar they are but *where* they start matching. A near-miss must therefore be
+**anchored at the front of the candidate**: same first trigram, or — to also catch transpositions —
+same leading two characters. `pnuemonia` → `pneumonia` is the transposition case, where `pnu` and `pne`
+differ but `pn` survives.
+
+Anchoring removes the false positives on its own, so raising the score was unnecessary *and* harmful:
+`cocido` → `coccidiosis` is anchored but scores only **0.308**, and a 0.50 floor would have thrown it
+away. `min_score` therefore stays at 0.30 and anchoring is a hard requirement rather than a relaxed
+alternative. Measured against the corpus, 8 of 9 known cases now behave correctly.
+
+**5. The suggestions dropdown was built and then removed.** The tasks above asked for a live endpoint, a
+grouped dropdown, debouncing and a rate limit. All four shipped, and all four were then removed, because
+the page was compared against `/drugs/search` and the two did not match: drugs is a plain form, and the
+poultry and large-animal pages had grown a keystroke-driven dropdown the drugs page has never had.
+
+The search view is now a plain GET form — no `x-data`, no `@input`, no `<script>` — matching drugs
+exactly. With the dropdown gone, `GET {part}/search/suggestions` returned 404 and was deleted along with
+`SearchService::suggestions()`, the `search-suggestions` rate limiter, `search.limits.suggestions*` and
+`search.too_many_requests` in both locales. Grouping is not lost: every bucket still renders as its own
+card with an icon and a count.
+
+The four unticked task boxes above are left open rather than deleted, so the reversal stays visible in
+the plan instead of disappearing from it.
+
+### What this fixed beyond the new page
+
+**Search results now hand off to the tools instead of dead-ending.** Clinical-sign and host-species
+results linked to `{part}.diagnosis` and `{part}.filter` with no parameters, and neither controller read
+the query string — so clicking a sign opened an empty diagnosis form. `ToolPrefillService` now resolves
+both parameters and validates them against the part:
+
+| Result clicked | Lands on | Carries |
+|---|---|---|
+| Clinical sign | `{part}.diagnosis` | `?sign={id}` — first sign row filled in |
+| Host species | `{part}.filter` | `?host_species_id={id}` — species preselected |
+
+A sign is accepted when it is reachable from that part's domain, which is why a sign carried by both
+domains works on either tool. Anything else — a deleted id, a `sign=abc`, `sign=1.5`, `sign=-4`, or an id
+belonging to the other part — degrades to an ordinary empty tool at 200 rather than a 404, because these
+parameters come from URLs and a stale bookmark should not be an error page.
+
+`LargeAnimals\SearchController` ran **one unscoped query per model**. Probing the live site before
+this change:
+
+| Query on `/large-animals/search` | Returned | Actual domain |
+|---|---|---|
+| `Coccidiosis` | `coccidiosis`, `ostrich-coccidiosis`, `rabbit-coccidiosis` | all **poultry** |
+| `Newcastle` | `ostrich-newcastle-disease` | **poultry** |
+| `dyspnea` | sign 23 | large_animal |
+| `dyspnea` | sign **41** | **poultry** |
+
+`dyspnea` is the clearest case: it exists as two separate `clinical_signs` rows, one per part, and the
+large-animal page rendered both. That page also ignored `diseases.is_active`, so deactivated diseases
+stayed findable, and `main-header.blade.php` matched the search route with a two-way `match`, sending the
+poultry search button to the **drugs** page. All three are fixed, and
+`tests/Feature/Knowledge/SearchScopingTest.php` exists to keep them fixed.
+
+### Scoping reference
+
+Four models, four vocabularies — no single scope covers them.
+
+| Bucket | How part membership is expressed |
+|---|---|
+| Diseases | `->forDomain($domain)` on its own `domain` column |
+| Clinical Signs | `->whereHas('diseases', fn ($d) => $d->forDomain($domain))` — no domain of its own |
+| Host Species | `->forPart($part)` via `taxonomy_group`; throws on an unknown part, and `config/vetpedia.parts` has no `drugs` key |
+| Products | `->whereHas('diseases', …)` through `disease_product`, plus the `approved` global scope |
+
+Bucket membership is per part in `config/search.php`: large-animals gets seven buckets including blog,
+microorganisms and medical articles; poultry gets four, because it has no content of its own in the
+other three.
+
+### Arabic search is only as good as the Arabic names
+
+Every bucket searches its `*_ar` column, and on the Arabic locale the Arabic name becomes the heading.
+Verified live: searching `الكوكسيديا` finds Coccidiosis and renders it in Arabic under `dir="rtl"`.
+
+But **only 2 of the 151 poultry diseases carry an Arabic name** — `coccidiosis` and `enteritis`. The
+other 149 have `name_ar` empty, so for most of the catalogue an Arabic query returns nothing no matter
+how the search is built. This is a Phase 1 data gap, not a Phase 6 defect, and it is now the single
+biggest thing limiting the feature. Until the Arabic names exist, the honest statement is that Arabic
+search *works* but covers 1% of the diseases.
 
 ---
 
@@ -1049,7 +1189,9 @@ place, so a vet reading about a disease can go straight to what treats it.
 
 | Version | Change |
 |---|---|
-| **v11** | **Phases 4 and 5 built on real `/poultry/*` routes; §2.1 cross-part defect CLOSED.** Engines parameterised by domain rather than subclassed, views shared rather than copied, lang files layered rather than duplicated. Share tokens versioned and domain-tagged, which also surfaced a latent `+`-in-query-string bug. Phase 3's detail route pulled forward so result links do not dead-end into Large Animals. Large-animal tools now domain-scoped (169 → 18 diseases). **106 passed, 8 skipped.** |
+| **v13** | **Phase 6 corrected: submit-only search, a working near-miss gate, and working deep links.** The live suggestions stack built in v12 was removed — the page is now a plain form identical to `/drugs/search`, and the endpoint, rate limiter, config limits and both translation keys went with it (Phase 6 11/12 → 7/12; the four unticked boxes left open rather than deleted). Separately, the 0.30 fuzzy floor chosen in v12 was corrected: it matched `chicken` against thirteen "Thickened" signs at Dice 0.667, and raising the floor to 0.50 would **not** have caught them. Near-misses must now be anchored at the front of the candidate — same first trigram, or same leading two characters for transpositions — which removes the false positives without discarding `cocido` → `coccidiosis` at 0.308. Clinical-sign and host-species results now deep-link into the diagnosis and filter tools via `ToolPrefillService`, with per-part validation and silent fallback to 200 for unusable ids. The generic `page-hero` got the same overflow fix as the large-animal one. **151 passed, 8 skipped.** |
+| **v12** | **Phase 6 built: `/poultry/search`, and the same leak fixed on `/large-animals/search`.** Shared controller/service/view keyed on `$part`; bucket membership per part in `config/search.php`. Live suggestions endpoint with grouped icons, debounced, rate-limited 60/min. Arabic searchable in both directions and rendered locale-aware, but **only 2 of 151 poultry diseases carry an Arabic name**, which caps the feature until Phase 1 fills them. Near-miss matching by trigram Dice after a LIKE first pass — **not** Levenshtein, which was measured against the data and cannot catch the typo it was chosen for. Two deviations recorded: `ClinicalSign` searched instead of `Finding` (same vocabulary, and `findings` cannot be domain-scoped), and products pulled forward from Phase 9 because nine of thirty already treat a poultry disease. Fixed the two-way header match that sent the poultry search button to the drugs page. **128 passed, 8 skipped.** |
+| v11 | **Phases 4 and 5 built on real `/poultry/*` routes; §2.1 cross-part defect CLOSED.** Engines parameterised by domain rather than subclassed, views shared rather than copied, lang files layered rather than duplicated. Share tokens versioned and domain-tagged, which also surfaced a latent `+`-in-query-string bug. Phase 3's detail route pulled forward so result links do not dead-end into Large Animals. Large-animal tools now domain-scoped (169 → 18 diseases). **106 passed, 8 skipped.** |
 | v10 | Phase 2 hub built as option B: live scoped stats, EN/AR lang files, 2 cards. Recorded the cross-part navigation defect it creates, and two pre-existing bugs it exposed (unscoped sign suggestions, domain-less share links). |
 | v9 | Surfaced `domain` in the shared Disease/Species admin resources — it was invisible *and* unfixable, which made the §1.7 editor-isolation criterion fail rather than merely unticked. Added `HasDomain` trait and 6 tests. §1.8 records it. |
 | v8 | Phase 1 built and ticked. Recorded real counts, which corrected three plan figures. Documented the `ClinicalSignSeeder` repair that unblocked `db:seed`. |

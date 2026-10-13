@@ -3,6 +3,7 @@
         'large-animals' => [
             ['url' => route('large-animals.diagnosis'), 'label' => __('large-animals.nav.diagnosis'), 'active' => request()->routeIs('large-animals.diagnosis*')],
             ['url' => route('large-animals.filter'), 'label' => __('large-animals.nav.filter'), 'active' => request()->routeIs('large-animals.filter*')],
+            ['url' => route('large-animals.search'), 'label' => __('large-animals.nav.search'), 'active' => request()->routeIs('large-animals.search*')],
             ['url' => route('large-animals.comparison'), 'label' => __('large-animals.nav.comparison'), 'active' => request()->routeIs('large-animals.comparison*')],
             ['url' => route('large-animals.microorganisms.index'), 'label' => __('large-animals.nav.microorganisms'), 'active' => request()->routeIs('large-animals.microorganisms*')],
             ['url' => route('large-animals.medical-articles.index'), 'label' => __('large-animals.nav.articles'), 'active' => request()->routeIs('large-animals.medical-articles*')],
@@ -13,6 +14,7 @@
             ['url' => route('poultry.home'), 'label' => __('messages.poultry.landing'), 'active' => request()->routeIs('poultry.home')],
             ['url' => route('poultry.diagnosis'), 'label' => __('poultry.nav.diagnosis'), 'active' => request()->routeIs('poultry.diagnosis*')],
             ['url' => route('poultry.filter'), 'label' => __('poultry.nav.filter'), 'active' => request()->routeIs('poultry.filter*')],
+            ['url' => route('poultry.search'), 'label' => __('poultry.nav.search'), 'active' => request()->routeIs('poultry.search*')],
         ],
         default => [
             ['url' => route('products.index'), 'label' => __('messages.nav.products'), 'active' => request()->routeIs('products.*') && ! request()->routeIs('products.compare') && ! request()->routeIs('products.submission.*')],

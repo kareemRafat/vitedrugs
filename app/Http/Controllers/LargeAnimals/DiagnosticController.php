@@ -8,6 +8,7 @@ use App\Http\Requests\LargeAnimals\RefinedDiagnosisRequest;
 use App\Models\Disease;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\HostSpecies;
+use App\Services\Knowledge\ToolPrefillService;
 use App\Services\LargeAnimals\DiagnosisService;
 use App\Services\LargeAnimals\DiagnosisShareService;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,9 +23,10 @@ class DiagnosticController extends Controller
     public function __construct(
         private DiagnosisService $diagnosisService,
         private DiagnosisShareService $diagnosisShareService,
+        private ToolPrefillService $prefill,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
         $hostSpecies = HostSpecies::query()
             ->forPart(self::PART)
@@ -34,6 +36,8 @@ class DiagnosticController extends Controller
         return view('diagnosis.index', [
             'part' => self::PART,
             'hostSpecies' => $hostSpecies,
+            'initialSign' => $this->prefill->sign(self::PART, $request->query('sign')),
+            'initialSpeciesId' => $this->prefill->species(self::PART, $request->query('host_species_id'))?->id,
         ]);
     }
 
