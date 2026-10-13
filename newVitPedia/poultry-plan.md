@@ -1274,26 +1274,115 @@ systems, the user clicks directly on the part they are worried about — the hea
 air sacs — and immediately sees what goes wrong there. It is the most intuitive entry point for
 someone who does not know the anatomical name of what they are looking at.
 
-> ⭐ **`important_organs_affected` is populated for 152 diseases** — the organ-to-disease mapping
-> already exists in the data. Only the illustration is missing.
+> ⛔ **The star note was wrong, and it was the only interesting fact in the phase.**
+> `important_organs_affected` does not exist — not as a column on `diseases` (169 rows: `id`,
+> `name`, `slug`, `description`, `knowledge_payload`, `domain`, three booleans, timestamps) and not
+> as a key inside `knowledge_payload`, which only 20 diseases carry and **none** of which contain
+> that key. The claim that "only the illustration is missing" described neither the columns nor the
+> JSON.
+>
+> The relational substitute is thinner still. `diseases → disease_clinical_sign → clinical_signs →
+> anatomical_structures` reaches **2 of the 151 poultry diseases** — Coccidiosis and Enteritis,
+> both through "Intestines". 1741 of 1744 poultry sign rows carry a null `anatomical_structure_id`,
+> and **all 641 post-mortem lesion findings resolve to zero structures**. `findings` has no
+> `anatomical_location` column either, so the plan's "928 JSON lesions via `anatomical_location`"
+> refers to a column that was never migrated.
+>
+> **A chicken diagram built on the curated path alone would have been a bird with nothing on it.**
+
+### 8.1 The third path, which the plan did not consider
+
+The finding vocabulary names its organs in plain text — "Liver lesions", "Hepatic necrosis",
+"Tracheal hemorrhage", "Cloacal prolapse". Matching each structure's name against those labels
+reaches what the curated link cannot: **32 of 48 poultry organs carry data, and 119 of 151 poultry
+diseases are reachable**, against 2 mapped.
+
+So the panel renders two tiers and names them, because they are not equally true:
+
+| Tier | What it is | Poultry reach |
+|---|---|---|
+| **Mapped** | A link somebody made — `clinical_signs.anatomical_structure_id` | 2 diseases |
+| **Matched by name** | This codebase's inference, kept out of the database | 119 diseases |
+
+The derived tier is labelled as inferred wherever it renders, and it is the candidate list for the
+curation pass that would promote any of it to mapped. Nothing is written back to the database: an
+inference that becomes a row becomes unreviewable truth, and the UI could no longer tell the two
+apart.
+
+### 8.2 The vocabulary problems behind it
+
+The organ list is **58 structures, not 43**, and it is shared by both species with nothing marking
+which. `anatomical_structures.domain` is now nullable, `null` meaning "every part", with ten organs
+scoped to `large_animal`: a chicken has no rumen, no udder, no hooves, no interdigital space and no
+urinary bladder. The list is written out rather than inferred from the parent system, because
+"Intestines" is a ruminant word in this dataset *and* the one organ two poultry diseases point at,
+while "Pharynx" and "Tongue" sit inside the same ruminant system and are fine bird anatomy.
+
+Body systems were **31 rows, not 11**, and eight of the display names were duplicated by a second
+canonical: `digestive` and `digestive_system` were two rows both reading "Digestive System", holding
+different structures. The findings filter listed them straight from the table, so that name has been
+in the dropdown twice — and picking either half returned a different, silently truncated result.
+Nine pairs merged (the bare canonical wins; it holds the structures in every pair, so it keeps its
+id and existing shared-filter links stay valid). 31 → 23 rows, of which exactly **11 hold
+structures** — which is where the plan's "11 body systems" came from, arrived at two steps later.
+
+The twelve systems left with no structures are kept, not deleted: `Otic`, `Ophthalmic` and
+`Systemic` are real taxonomy that a lesion atlas will want. They are simply no longer asked about,
+which fixes a second bug the map would otherwise inherit — `FilterService` treated "no structures" as
+"no filter" and returned the **entire 151-disease list** when someone picked "Systemic".
+
+### 8.3 What the illustration turned out to be
+
+Nothing was licensed, and no image exists anywhere in the repository — the old prototype pointed at
+`assets/images/poultry-body-map.png`, which was never committed. The diagram is **hand-drawn inline
+SVG**: a hen drawn from bezier paths, with the eleven body systems drawn as organs inside it.
+
+**It started as eleven dots on a blob and was rejected.** The first chicken was authored blind — no
+renderer on the machine, so nothing could be looked at before it shipped, and it came out as ellipses
+and circles. The fix was mechanical: a standalone `@resvg/resvg-js` in a temp folder outside the repo
+and a draw → render → look → fix loop. The bird took nine passes. The neck was a goose's for three of
+them, and the tail spent four as either a single fin or a fan of needles before it became a fanned
+tail mass.
+
+**Hotspots are organs, not dots**, and that is the reason for the change. A dot cannot point at a
+thyroid gland, a lymph node or a spinal cord, and those are three of the eleven systems — a marker
+over a breast is honest, a thyroid marker on a feathered neck is not. Each region is drawn on
+`currentColor`, so one class on the wrapping `<g>` drives every shape in it, and selecting one drops
+the other ten to 25% rather than leaving eleven systems overlapping and no selection.
+
+The regions are **drawn, not generated**, and keyed by the same canonical name the table uses. A key
+that stops matching does not error — the region silently never renders and the bird loses a system.
+That is why `every_body_system_gets_exactly_one_region_on_the_bird` exists.
+
+**The chicken is schematic and the page says so.**
 
 ### Tasks
 
-- [ ] Commission or source an anatomically accurate chicken illustration with defined clickable regions — **this is the blocker**
-- [ ] Confirm the licensing permits commercial use
-- [ ] Extract the organ list from `important_organs_affected` across all 152 diseases and build a frequency table
-- [ ] Map the 43 anatomical structures onto the illustration's regions
-- [ ] Link each region → body system → anatomical structures
-- [ ] Map the 928 JSON lesions onto the organs they occur in (via `anatomical_location`)
-- [ ] Build a Livewire component for the interactive diagram
-- [ ] Add hover states and a clear selected state
-- [ ] Show the clicked organ's name and related diseases in a side panel
-- [ ] Show the lesions associated with that organ
-- [ ] Keyboard accessible, not mouse only
-- [ ] Works on touch devices, including pinch zoom
-- [ ] Add a fallback list view for users who cannot use the diagram
-- [ ] Seed the 11 body systems so every region has content
-- [ ] Tests: region selection, keyboard navigation, fallback view
+- [x] Replace the star note with what the data actually holds — measured, not assumed
+- [x] Merge the 9 duplicate `body_systems` canonicals; 31 → 23 rows, 11 of which hold structures
+- [x] `anatomical_structures.domain` — nullable, `null` = both parts, ten organs scoped to `large_animal`
+- [x] `BodySystem::scopeWithStructures()`; both filter controllers stop listing systems with no structures
+- [x] `FilterService` — a system with no structures returns nothing, and a share token carrying a merged id degrades instead of 404ing
+- [x] `OrganAttachmentService` — curated tier and name-matched tier, three queries for the page
+- [x] Curated vocabulary map for organs the labels name in the adjective (liver→hepatic, kidneys→renal, lungs→pulmonary…)
+- [x] Word-boundary matching, plus a 5-character stem so "Cloaca" reaches "Cloacal"; `NOT_A_STEM` keeps "Oral Cavity" off "Marrow Cavity" and "Blood Vessels" off every "bloody" label
+- [x] Inline SVG diagram, one marker per body system, schematic and labelled as such
+- [x] `anatomy/⚡body-map.blade.php` — system → organ → diseases, URL-synced, three queries per render
+- [x] Hover, selected and focus states; `role="button"`, `tabindex`, Enter/Space, `aria-pressed`
+- [x] Side panel with the organ's mapped diseases, name-matched diseases, signs and lesions
+- [x] Honest empty state — five organs (duodenum, ileum, jejunum, syrinx, thyroid) genuinely have no labels and say so
+- [x] List view carrying every system and organ as real text, for anyone not using the diagram
+- [x] Thin `Poultry\BodyMapController`, route inside the localization group, header + landing hub links
+- [x] `body_map.*` translations in `lang/{en,ar}/poultry.php`
+- [x] `PartBodyMapTest` — 18 tests: both tiers, the adjective vocabulary, the word-boundary guarantee, part scoping, selection, empty states, keyboard, list view, Arabic
+
+### Not done, deliberately
+
+- **Large-animal diagram.** The `domain` column makes it possible; the geometry does not exist yet.
+- **Curation.** Promoting the 119 name-matched diseases to mapped is a vet's job and its own phase.
+- **Writing derived matches back.** It would outgrow the copy that distinguishes the two tiers.
+- **Phase 9 shares this wall.** 641 lesions still carry no organ of their own; the same service
+  produces the attachment the atlas will need.
 
 ---
 
@@ -1474,6 +1563,7 @@ the body text. The drugs catalogue card (§8) already solved this and the part c
 
 | Version | Change |
 |---|---|
+| **v21** | **Phase 8 built: `/poultry/body-map`. The star note was the phase, and it was false.** *"important_organs_affected is populated for 152 diseases — only the illustration is missing."* There is no such column, and `knowledge_payload` (20 of 169 diseases, **zero** with that key) does not carry it either. The curated path `diseases → disease_clinical_sign → clinical_signs → anatomical_structures` reaches **2 of 151** poultry diseases; **1741 of 1744** poultry sign rows have a null structure and **all 641 lesions resolve to zero**; `findings` has no `anatomical_location`, so "928 JSON lesions" refers to a column that was never migrated. **A diagram built on the curated path alone is a chicken with nothing on it.** What rescued the phase is a third path the plan never considered: the finding vocabulary *names* its organs — "Liver lesions", "Hepatic necrosis", "Tracheal hemorrhage" — and matching each structure's name against those labels reaches **32 of 48 organs and 119 of 151 diseases**. The page shows both tiers and names them: **mapped** (2, somebody made that link) and **matched by name** (119, this codebase inferred it), the second rendered inside a warning box that says it has not been reviewed by a veterinarian and never written back to the database. Vocabulary needed real work: word-boundary matching so "Crop" does not swallow "Cropped beak"; a 5-character stem so "Cloaca" reaches "Cloacal prolapse" and "Duodenum" reaches "Duodenal necrosis"; a curated adjective map because nothing gets from "liver" to "hepatic"; and a `NOT_A_STEM` list after the first pass gave "Oral Cavity" the label "Obliterated Marrow Cavity" and "Blood Vessels" every bloody label in the table. **Two data defects fixed on the way, both already shipped:** nine body systems existed twice (`digestive` *and* `digestive_system`, same display name, different structures — the findings filter has been listing "Digestive System" twice), and `FilterService` read "system with no structures" as "no filter" and returned the entire 151-disease list when someone picked "Systemic". Merged 31 → 23 systems, exactly 11 of which hold structures. `anatomical_structures.domain` added, nullable, `null` = every part, ten organs scoped to `large_animal` — the chicken diagram was otherwise offering teats. **The illustration was not the blocker it was called:** no image exists anywhere in the repo, so it is hand-drawn inline SVG, schematic, and the page says so. **One silent performance bug caught by measuring rather than assuming:** `#[Computed]` caches on *property* access, and calling `$this->attachments()` runs the real method — the page went from 6 queries to 30 until that was found; 9 total now. |
 | **v20** | **Phase 10 closed: 12 of 13 tasks ticked against the code, one genuinely outstanding.** The remaining box is the large-animals landing hub card — the poultry landing has a `products` entry in `$serviceRoutes` / `$serviceIcons`, the large-animal one has none, and neither `lang/en/large-animals.php` nor `lang/ar/large-animals.php` carries `landing.services.products.*`, so it stays unticked rather than being ticked on the strength of the navbar link that does work. Everything else was verified by reading the code rather than trusting v19: both scopes present (`Product.php:114`, `:135`), both thin controllers, both routes inside the localization group, `products` eager-loaded on both `DiseaseController`s, 28 `PartProductCatalogueTest` tests passing. Two card defects fixed in passing (§10.4): the trade name rendered at `text-base`, one step above the `text-sm` headings inside the same card, and **the Arabic name was printed under it on all 30 cards** because every row stores `trade_name_ar` identical to `trade_name` — `/drugs/products` had the same duplication and is guarded now too. Separately, the shared `page-hero` behind the drugs pages had one unclosed `<div>`, so the blue gradient was wrapping the entire page body on 8 pages. |
 | **v19** | **Phase 10 built: `/poultry/products` and `/large-animals/products`.** The plan said *"decide how a product is marked as poultry-applicable"* and treated it as a formality. It was the only real decision in the phase: **`products` is one shared table with no species column**, and the three available traces disagree — 15 products have a poultry dose, 12 treat a poultry disease, 6 carry a poultry withdrawal figure, 24 match at least one. Dosing won because it is the only one of the three that is a statement *about the animal*, which leaves 15 rather than 24 and excludes six products (Ketofen, Panacur, Fasinex, Doxypen, Sulfivet, Terramycin) for a reason that can be stated. The page shows 15 of 30 and that is the filter working, not a broken import. No migration — `Product::applicableTo()` and `withPartRelations()` are scopes, and the second is constrained rather than filtered afterwards so a poultry card never lists a cattle dose. **Withdrawal is never omitted and never blank**: 6 of 30 products have a poultry figure, and on a food-animal page an empty box reads as "no restriction", so the gap is stated in words instead. Cards link out to `/drugs/products/{slug}` — one URL per product beats a detail page scoped to 15 rows. Also: `Disease::getLocalizedNameAttribute()` moved to a shared `HasLocalizedName` trait (it was the only model with one; four others lacked it) and now covers `Species`, `Company`, `ActiveIngredient` and `DosageForm`; `milk_days` is hidden on the poultry page because it is meaningless for a bird and the source data populates it anyway; an N+1 fixed on both disease controllers, where the shared view's related-products block queried `diseases` lazily on every page. **Two implementation bugs the tests caught, both silent:** `wherePivot('role', …)` inside `whereHas` emits an unqualified `"pivot" = ?` rather than `product_company"."role"` on a relation declared `withPivot('role')`, so the manufacturer filter matched nothing and the page returned zero rows with no error anywhere; and an eager-load constraint is handed a **`Relation`** while a `whereHas` nested inside it is handed a **`Builder`**, so both are typed on the union. **236 passed, 8 skipped.** |
 | **v18** | **Phase 7 built: `/poultry/compare`, and the same leak fixed on `/large-animals/compare`.** One shared SFC moved to `app/components/knowledge/`, replacing a 491-line large-animals-only component whose picker ran `Disease::where('name','like',…)` with no domain filter and offered **151 poultry diseases** on the large-animals page — the same defect class as the unscoped search page. Scoping now applies in three places, not one: the picker, the loader, and `addDisease()`, because a foreign slug filtered only at the loader would still occupy one of the four slots. **The component read `knowledge_payload`, which 2 of 151 poultry diseases carry** — every matrix would have rendered empty. Signs and lesions now come from the relational pivot (159 and 148 diseases), split by `findings.ontology_type`; the payload merges on top. Matching `'sign'` exactly dropped **Pyrexia**, **Inappetence** and **Hemorrhagic diarrhea**, whose `ontology_type` is `NULL` — the rule is now to exclude lesions rather than match a clinical value. The plan's *"shared by all"* and *"unique to one"* are real questions and neither is answered by the old single `differs` flag, so rows are grouped `unique → partial → shared` with labelled headers; **`partial` is unreachable with two diseases** and needed its own three-way test. Selection is `?diseases[]=<slug>` instead of four integer params. **The organs substitute was built and then removed** — deriving from `anatomical_structure` looked right but only 27 of 1,109 sign rows carry an anatomy, covering 2 of 151 diseases; organs now read `important_organs_affected`, which is populated in **152 of 154 source documents** and simply not imported yet, so the tab is hidden and needs no code change when it lands. Age groups dropped (no table), differentials dropped (0 rows), susceptibility added in their place. **`DiseaseComparisonTest` rewritten in place, 27 tests. 201 passed, 8 skipped.** | **A canonical sign name is not unique, and the page was resolving it to one record.** `ClinicalSign` is a finding plus an anatomy plus a modifier, and five names are recorded twice on the poultry side — anemia, dehydration, depression, diarrhea, weight loss. Consequences, all verified against the live data: `/poultry/search` listed **Depression twice pointing at one URL**, and the page behind it resolved with `first()`, which is ordered by id and so always chose the *smaller* record — depression showed **11 of ~49** diseases, anemia **1 of 19**. A name now resolves to a *set* of records, the page presents the concept and unions their diseases one row per disease (heaviest weight wins, flags OR-ed), and the search collapses with a config-driven `dedupe_by` applied after scoring and before the limit so the cap and badge count concepts. **The large-animals half was already correct — zero duplicates there — and is now covered by a test, which was the actual gap behind the v16 request.** URLs keep `%20`; recorded as cosmetic. **180 passed, 8 skipped.** |

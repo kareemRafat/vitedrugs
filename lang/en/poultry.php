@@ -23,6 +23,7 @@ return array_replace_recursive($shared, [
         'diseases' => 'Diseases',
         'lesions' => 'Lesions',
         'products' => 'Drugs',
+        'body_map' => 'Body Map',
     ],
 
     'landing' => [
@@ -57,6 +58,10 @@ return array_replace_recursive($shared, [
             'products' => [
                 'title' => 'Drug Catalogue',
                 'description' => 'Drugs with a recorded poultry dose — active ingredients, dosing by bird, and withdrawal periods for meat and eggs.',
+            ],
+            'body_map' => [
+                'title' => 'Body Map',
+                'description' => 'Click the part of the bird you are worried about and see the diseases, signs and post-mortem lesions recorded against its organs.',
             ],
         ],
 
@@ -104,6 +109,49 @@ return array_replace_recursive($shared, [
     'catalogue' => [
         'subtitle' => 'Drugs with a recorded dose for poultry, with their active ingredients, manufacturer and withdrawal periods.',
         'withdrawal_unrecorded' => 'No withdrawal period recorded for poultry — confirm with the manufacturer before treating birds for meat or eggs.',
+    ],
+
+    /*
+    | The body map exists for poultry only, so the whole tree lives here rather
+    | than in the shared base. The two tiers of attachment are named in the copy
+    | because the page shows both and they are not equally trustworthy: "mapped"
+    | is a link somebody made, "matched by name" is a string comparison.
+    */
+    'body_map' => [
+        'title' => 'Poultry Body Map | VetPedia',
+        'heading' => 'Poultry Body Map',
+        'subtitle' => 'Click the part of the bird you are worried about and see what goes wrong there — the diseases, the signs you would observe, and the lesions you would find post-mortem.',
+        'badge' => 'Body Map',
+        'schematic_note' => 'The diagram is schematic. Marker positions are indicative, not anatomical.',
+
+        'stats' => [
+            'systems' => 'Body systems',
+            'organs' => 'Organs mapped',
+            'diseases' => 'Diseases reached',
+        ],
+
+        'diagram_view' => 'Diagram',
+        'list_view' => 'List view',
+        'diagram_label' => 'Schematic of a chicken. Each marker is a body system; select one to see its organs.',
+        'legend' => 'Body systems',
+
+        'select_system' => 'Select a body system to see the organs it covers.',
+        'select_organ' => 'Select an organ to see what is recorded against it.',
+        'back' => 'All body systems',
+
+        'diseases' => 'Diseases',
+        'signs' => 'Clinical signs',
+        'lesions' => 'Post-mortem lesions',
+        'organs' => 'Organs',
+
+        'mapped' => 'Mapped',
+        'derived' => 'Matched by name',
+        'mapped_note' => 'Linked to this organ in the source data.',
+        'derived_note' => 'Attached because a recorded sign or lesion names this organ. Matched by text, not reviewed by a veterinarian — treat it as a starting point.',
+
+        'organ_empty' => 'Nothing is recorded against this organ yet.',
+        'system_empty' => 'No organ in this system has anything recorded against it yet.',
+        'no_system' => 'No body systems are mapped yet.',
     ],
 
     /*

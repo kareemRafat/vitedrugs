@@ -14,6 +14,7 @@
             'search' => route('poultry.search'),
             'compare' => route('poultry.comparison'),
             'products' => route('poultry.products.index'),
+            'body_map' => route('poultry.body-map'),
         ];
 
         $serviceIcons = [
@@ -22,6 +23,7 @@
             'search' => 'search',
             'compare' => 'columns-3',
             'products' => 'pill',
+            'body_map' => 'scan-search',
         ];
 
         $statIcons = [

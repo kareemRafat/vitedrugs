@@ -3,6 +3,7 @@
 namespace App\Models\LargeAnimals;
 
 use Database\Factories\BodySystemFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,5 +34,22 @@ class BodySystem extends Model
     public function anatomicalStructures(): HasMany
     {
         return $this->hasMany(AnatomicalStructure::class);
+    }
+
+    /**
+     * Only the systems that hold at least one structure.
+     *
+     * Twelve systems in the table are empty — `Systemic`, `Metabolic`, `Otic`,
+     * `Ophthalmic` and the rest. They are kept because they are real taxonomy a
+     * lesion atlas will want, but every one of them is a filter option that can
+     * only ever return nothing, and a body system with no organs has nothing to
+     * draw on a diagram.
+     *
+     * @param  Builder<BodySystem>  $query
+     * @return Builder<BodySystem>
+     */
+    public function scopeWithStructures(Builder $query): Builder
+    {
+        return $query->whereHas('anatomicalStructures');
     }
 }

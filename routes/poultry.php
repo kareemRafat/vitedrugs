@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Knowledge\SearchController;
+use App\Http\Controllers\Poultry\BodyMapController;
 use App\Http\Controllers\Poultry\CompareController;
 use App\Http\Controllers\Poultry\DiagnosticController;
 use App\Http\Controllers\Poultry\DiseaseController;
@@ -30,6 +31,8 @@ Route::group([
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('poultry.filter.suggestions');
 
         Route::get('compare', CompareController::class)->name('poultry.comparison');
+
+        Route::get('body-map', BodyMapController::class)->name('poultry.body-map');
 
         Route::get('products', ProductController::class)->name('poultry.products.index');
 

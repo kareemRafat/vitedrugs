@@ -139,6 +139,25 @@ class FilterToolTest extends TestCase
             ->assertDontSee($other->name);
     }
 
+    /**
+     * A body system with no structures used to skip the filter entirely and
+     * return every disease in the part, so choosing "Systemic" from the dropdown
+     * looked like a filter that matched the whole catalogue.
+     */
+    public function test_a_body_system_with_no_structures_matches_nothing(): void
+    {
+        $empty = BodySystem::factory()->create(['display_name' => 'Otic']);
+        $disease = $this->makeDisease(false);
+
+        $response = $this->submitFilter([
+            'host_species_id' => $this->species->id,
+            'clinical_signs' => [$this->sign->id],
+            'body_system_id' => $empty->id,
+        ]);
+
+        $response->assertOk()->assertDontSee($disease->name);
+    }
+
     public function test_it_requires_a_single_clinical_sign(): void
     {
         $this->post(route($this->storeRoute), [

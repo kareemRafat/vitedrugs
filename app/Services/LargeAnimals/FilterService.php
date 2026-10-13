@@ -45,15 +45,26 @@ class FilterService
 
         if (! empty($criteria['body_system_id'])) {
             $structureIds = BodySystem::query()
-                ->findOrFail($criteria['body_system_id'])
-                ->anatomicalStructures()
+                ->find($criteria['body_system_id'])
+                ?->anatomicalStructures()
                 ->pluck('id');
 
-            if ($structureIds->isNotEmpty()) {
-                $query->whereHas('clinicalSigns', function (Builder $builder) use ($structureIds): void {
-                    $builder->whereIn('clinical_signs.anatomical_structure_id', $structureIds);
-                });
+            // A system with no structures matched nothing and used to fall
+            // through to the unfiltered result set, so picking "Systemic" from
+            // the dropdown returned every disease in the part. "No structures"
+            // means no diseases; it must not mean "ignore the filter".
+            //
+            // `find` rather than `findOrFail` because the id arrives inside an
+            // encrypted share token. A token minted before the duplicate body
+            // systems were merged can carry an id that no longer exists, and a
+            // dead link should degrade to an empty result rather than a 500.
+            if ($structureIds === null || $structureIds->isEmpty()) {
+                return collect();
             }
+
+            $query->whereHas('clinicalSigns', function (Builder $builder) use ($structureIds): void {
+                $builder->whereIn('clinical_signs.anatomical_structure_id', $structureIds);
+            });
         }
 
         $clinicalSignIds = $criteria['clinical_signs'] ?? [];

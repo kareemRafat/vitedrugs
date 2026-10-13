@@ -149,9 +149,20 @@ class FilterController extends Controller
             ->get();
     }
 
+    /**
+     * Only the systems that hold at least one structure.
+     *
+     * The table carries twelve systems with no structures at all, and offering
+     * them as options could only ever produce an empty result. They are still
+     * kept in the table — `Otic` and `Ophthalmic` are real taxonomy — they just
+     * are not asked about.
+     *
+     * @see \App\Http\Controllers\Poultry\FilterController::bodySystems()
+     */
     private function bodySystems()
     {
         return BodySystem::query()
+            ->withStructures()
             ->orderBy('display_name')
             ->get();
     }

@@ -145,11 +145,18 @@ class PoultryLandingTest extends TestCase
     {
         $html = $this->get('/poultry')->assertOk()->getContent();
 
-        // Phases 8 (body map) and 9 (atlas) have not landed. Their routes must
-        // not appear. Phases 6, 7 and 10 have landed and are asserted below.
-        foreach (['poultry/body-map', 'poultry/atlas'] as $unbuilt) {
-            $this->assertStringNotContainsString($unbuilt, $html, "{$unbuilt} is not built yet and must not be linked.");
-        }
+        // Phase 9 (the lesion atlas) has not landed. Its route must not appear.
+        // Phases 6, 7, 8 and 10 have landed and are asserted below.
+        $this->assertStringNotContainsString('poultry/atlas', $html, 'poultry/atlas is not built yet and must not be linked.');
+    }
+
+    #[Test]
+    public function it_links_to_the_body_map_now_that_it_is_built(): void
+    {
+        $html = $this->get('/poultry')->assertOk()->getContent();
+
+        $this->assertStringContainsString(route('poultry.body-map'), $html);
+        $this->assertStringContainsString(__('poultry.landing.services.body_map.title'), $html);
     }
 
     #[Test]
