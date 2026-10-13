@@ -14,7 +14,12 @@ return [
     'results_for' => 'Results for ":q"',
     'no_results_title' => 'Nothing matched ":q"',
     'no_results' => 'Check the spelling, or try a shorter or more general term.',
-    'no_section_results' => 'No matching items.',
+
+    // Read by the shared <x-pagination> component, one per bucket card.
+    'showing' => 'Showing',
+    'of' => 'of',
+    'previous_page' => 'Previous',
+    'next_page' => 'Next',
 
     'browse_by_sign' => 'Browse by clinical sign',
     'run_diagnosis' => 'Run a diagnosis',

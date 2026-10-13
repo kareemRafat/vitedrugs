@@ -29,7 +29,7 @@ class SearchController extends Controller
         $term = trim((string) $request->query('q', ''));
         $searched = $term !== '';
 
-        $groups = $searched ? $this->searchService->search($part, $term) : [];
+        $groups = $searched ? $this->searchService->search($part, $term, $this->pages($request, $part)) : [];
 
         return view('search.index', [
             'part' => $part,
@@ -40,22 +40,42 @@ class SearchController extends Controller
         ]);
     }
 
-    /**
-     * Powers the suggestions dropdown.
-     *
-     * Rate limited on the route rather than here, so a 429 is produced by the
-     * framework's throttle middleware and the payload stays a plain shape.
-     */
     private function part(Request $request): string
     {
         return (string) ($request->attributes->get('part') ?? 'large-animals');
     }
 
     /**
-     * @param  array<int, array{items: iterable<array<string, mixed>>}>  $groups
+     * The requested page for each bucket, read from `{bucket}_page`.
+     *
+     * Every bucket is asked for, not just the ones rendered, because the service
+     * needs a page number to slice each collection it returns — a bucket left at
+     * page 1 while the user pages its neighbours is the one visible bug.
+     *
+     * @return array<string, mixed>
+     */
+    private function pages(Request $request, string $part): array
+    {
+        $pages = [];
+
+        foreach ($this->searchService->bucketsFor($part) as $bucket) {
+            $pages[$bucket] = $request->query("{$bucket}_page");
+        }
+
+        return $pages;
+    }
+
+    /**
+     * The grand total across every bucket.
+     *
+     * Read from each bucket's own total rather than by counting what it returned:
+     * a bucket that matched 60 rows and is showing 10 of them has a total of 60,
+     * and counting the page would report 10.
+     *
+     * @param  array<int, array<string, mixed>>  $groups
      */
     private function resultCount(array $groups): int
     {
-        return collect($groups)->sum(fn (array $group): int => count($group['items']));
+        return collect($groups)->sum(fn (array $group): int => (int) $group['total']);
     }
 }

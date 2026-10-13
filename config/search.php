@@ -27,10 +27,20 @@ use App\Models\Product;
 return [
 
     /*
-    | How many rows a bucket shows on the results page.
+    | How many rows a bucket shows per page, and the most it will hold in memory.
+    |
+    | `per_page` matches /drugs/search so both parts paginate identically.
+    |
+    | `pool` caps the rows a bucket collects before slicing. Ranking happens in
+    | PHP — the LIKE pass cannot sort by relevance — so a bucket pages through an
+    | in-memory collection rather than asking the database for a page at a time.
+    | The pool is therefore a real ceiling: a term matching more rows than this
+    | reports and pages only what was collected. It is set well above a page so
+    | that reaching it is not something a normal search does.
     */
     'limits' => [
-        'results' => 20,
+        'per_page' => 10,
+        'pool' => 500,
     ],
 
     /*
@@ -54,6 +64,11 @@ return [
     |
     | min_shared stops a single common trigram such as "the" from dragging in
     | unrelated words.
+    |
+    | scan_limit bounds the rows pulled into memory by the near-miss pass. It is
+    | deliberately well under `limits.pool`: the pass runs for every bucket whose
+    | LIKE pass came up short of a full page, so on a narrow query all seven
+    | buckets scan at once and this is the number multiplied by seven.
     */
     'fuzzy' => [
         'min_length' => 4,
@@ -61,7 +76,7 @@ return [
         'min_shared' => 2,
 
         // Upper bound on rows pulled into memory for the near-miss pass.
-        'scan_limit' => 2000,
+        'scan_limit' => 500,
     ],
 
     /*
@@ -96,7 +111,10 @@ return [
     |   none           unscoped editorial or reference content
     |
     | title/secondary name the columns the row label and its sub-line read
-    | from. `columns` are every column the LIKE pass searches.
+    | from. `columns` are every column the LIKE pass searches. `relations`
+    | additionally searches related tables through `orWhereHas`, which is how the
+    | products bucket reaches a manufacturer, an active ingredient or a disease
+    | name the way /drugs/search does.
     */
     'buckets' => [
 
@@ -123,9 +141,37 @@ return [
             'title' => 'display_name',
             'title_ar' => 'display_name_ar',
             'secondary' => 'canonical_name',
-            'route' => '{part}.diagnosis',
+            // One row per concept, not per record.
+            //
+            // A canonical name is not unique — `ClinicalSign` is a finding plus an
+            // anatomy plus a modifier, and the same concept is sometimes recorded
+            // twice (five names do this on the poultry side). Without this, two
+            // identical-looking rows appeared in the results pointing at one URL,
+            // and the page behind it resolved to a single record and showed half
+            // the diseases. Applied before the limit, so the cap and the badge
+            // count concepts rather than records.
+            //
+            // Data-driven rather than special-cased, like `columns` and
+            // `relations` above.
+            'dedupe_by' => 'canonical_name',
+            // The sign's own page, which lists the diseases carrying it.
+            //
+            // It pointed at the diagnosis tool first, which was a dead end dressed
+            // as a hand-off: `InitialDiagnosisRequest` requires a species and
+            // `min:3` signs, so `?sign=93` opened a form that could not be
+            // submitted with the one sign it had been given. The filter tool was
+            // the next attempt and answered the question a level later than it
+            // needed to.
+            //
+            // A sign is a real entry in the knowledge base — the filter tool reads
+            // the same rows — so it gets a real page, and the page offers both
+            // hand-offs onward at the bottom.
+            //
+            // Addressed by `canonical_name`: `clinical_signs` has no slug column,
+            // and the canonical name is the stable normalised key.
+            'route' => '{part}.signs.show',
             'route_key' => null,
-            'route_params' => ['sign' => 'id'],
+            'route_params' => ['sign' => 'canonical_name'],
             'order_by' => 'display_name',
         ],
 
@@ -150,6 +196,11 @@ return [
             'icon' => 'package',
             'scope' => 'through_disease',
             'columns' => ['trade_name', 'trade_name_ar'],
+            'relations' => [
+                'activeIngredients' => ['name', 'name_ar'],
+                'companies' => ['name', 'name_ar'],
+                'diseases' => ['name', 'name_ar'],
+            ],
             'title' => 'trade_name',
             'title_ar' => 'trade_name_ar',
             'secondary' => null,

@@ -35,7 +35,30 @@ class FilterController extends Controller
             'etiologies' => $this->etiologies(),
             'bodySystems' => $this->bodySystems(),
             'initialSpeciesId' => $this->prefill->species(self::PART, $request->query('host_species_id'))?->id,
+            'initialSignTokens' => $this->initialSignTokens($request),
         ]);
+    }
+
+    /**
+     * The signs to show already picked, in the shape the token picker holds them.
+     *
+     * Reached by clicking a clinical sign in search. The picker is Alpine state,
+     * so a pre-selected sign has to enter as a token or it would render without
+     * a chip and without the hidden input behind it — present on screen, absent
+     * from the submission.
+     *
+     * `localized_display_name` rather than the raw column, so the chip reads the
+     * same name the search result the user just clicked showed them.
+     *
+     * @return array<int, array{id: int, title: string}>
+     */
+    private function initialSignTokens(Request $request): array
+    {
+        $sign = $this->prefill->sign(self::PART, $request->query('sign'));
+
+        return $sign === null
+            ? []
+            : [['id' => $sign->id, 'title' => $sign->localized_display_name]];
     }
 
     public function suggestions(Request $request): JsonResponse

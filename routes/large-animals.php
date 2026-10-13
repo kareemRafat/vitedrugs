@@ -8,6 +8,7 @@ use App\Http\Controllers\LargeAnimals\DrugLandingController;
 use App\Http\Controllers\LargeAnimals\FilterController;
 use App\Http\Controllers\LargeAnimals\MedicalArticleController;
 use App\Http\Controllers\LargeAnimals\MicroorganismController;
+use App\Http\Controllers\LargeAnimals\SignController;
 use App\Http\Controllers\LargeAnimals\SpecializationController;
 use App\Http\Controllers\LargeAnimals\TestArticleController;
 use App\Http\Controllers\LargeAnimals\VeterinaryProjectController;
@@ -41,6 +42,8 @@ Route::group([
 
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('large-animals.diseases.show');
         Route::get('diseases/{slug}/article', [DiseaseArticleController::class, 'show'])->name('large-animals.diseases.article');
+
+        Route::get('signs/{sign}', [SignController::class, 'show'])->name('large-animals.signs.show');
 
         Route::get('articles', [MedicalArticleController::class, 'index'])->name('large-animals.medical-articles.index');
         Route::get('articles/{slug}', [MedicalArticleController::class, 'show'])->name('large-animals.medical-articles.show');

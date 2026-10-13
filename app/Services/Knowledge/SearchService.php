@@ -6,6 +6,8 @@ use App\Models\Disease;
 use App\Models\LargeAnimals\Microorganism;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 
@@ -50,43 +52,95 @@ class SearchService
     }
 
     /**
-     * Full results page: one entry per configured bucket, empty buckets
-     * included so the page can show its per-section "nothing matched" state.
+     * Full results page: one entry per configured bucket, so the controller can
+     * tell "this bucket matched nothing" from "this bucket is not shown".
      *
+     * Buckets that matched nothing are still returned. The view hides them —
+     * /drugs/search does the same — but dropping them here would make the
+     * grand total and the per-bucket totals disagree with the page's own
+     * arrangement, and would cost a second pass to explain.
+     *
+     * @param  array<string, mixed>  $pages  requested page per bucket, keyed by bucket name
      * @return array<int, array<string, mixed>>
      */
-    public function search(string $part, string $term): array
+    public function search(string $part, string $term, array $pages = []): array
     {
         $groups = [];
 
         foreach ($this->bucketsFor($part) as $bucket) {
-            $groups[] = $this->group($part, $bucket, $term, (int) config('search.limits.results', 20));
+            $groups[] = $this->group($part, $bucket, $term, $pages[$bucket] ?? 1);
         }
 
         return $groups;
     }
 
     /**
+     * @param  array<string, mixed>  $definition
      * @return array<string, mixed>
      */
-    private function group(string $part, string $bucket, string $term, int $limit): array
+    private function group(string $part, string $bucket, string $term, mixed $page): array
     {
+        $definition = $this->definition($bucket);
+
+        $models = $definition === null
+            ? collect()
+            : $this->collectFor($part, $bucket, $term, $this->pool());
+
+        $paginator = $this->paginate($part, $bucket, $models, $definition, $page);
+
         return [
             'key' => $bucket,
             'label' => __("search.buckets.{$bucket}.label"),
             'icon' => config("search.buckets.{$bucket}.icon"),
-            'items' => $this->collectFor($part, $bucket, $term, $limit),
+            'items' => $paginator->items(),
+            'paginator' => $paginator,
+            'total' => $paginator->total(),
         ];
+    }
+
+    /**
+     * Slice the collected pool into a page.
+     *
+     * Built by hand rather than with the database's paginator because ranking
+     * happened in PHP: the rows arrive already ordered by relevance, so paging
+     * has to slice an ordered collection. `total` is the size of that pool, which
+     * is what keeps the badge and the page count telling the same story.
+     *
+     * @param  Collection<int, Model>  $models
+     * @param  array<string, mixed>|null  $definition
+     */
+    private function paginate(string $part, string $bucket, Collection $models, ?array $definition, mixed $page): LengthAwarePaginator
+    {
+        $perPage = max(1, (int) config('search.limits.per_page', 10));
+
+        $total = $models->count();
+        $lastPage = max(1, (int) ceil($total / $perPage));
+
+        // A stale bookmark can name a page past the end — ?diseases_page=99 from a
+        // result set that has since shrunk. Falling back to the last page shows
+        // results rather than an empty grid under a non-zero total.
+        $current = max(1, (int) $page);
+        $current = min($current, $lastPage);
+
+        $items = $definition === null
+            ? collect()
+            : $models->forPage($current, $perPage)->values()
+                ->map(fn (Model $model): array => $this->present($part, $bucket, $definition, $model));
+
+        return new LengthAwarePaginator($items, $total, $perPage, $current, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => $this->pageName($bucket),
+        ]);
     }
 
     /**
      * LIKE pass, topped up by a near-miss pass when it came up short.
      *
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, Model>
      */
-    private function collectFor(string $part, string $bucket, string $term, int $limit): Collection
+    private function collectFor(string $part, string $bucket, string $term, int $pool): Collection
     {
-        if ($limit <= 0 || trim($term) === '') {
+        if ($pool <= 0 || trim($term) === '') {
             return collect();
         }
 
@@ -99,7 +153,7 @@ class SearchService
         /** @var array<int, string> $columns */
         $columns = (array) $definition['columns'];
 
-        $fetch = $limit * 2;
+        $fetch = min($pool, $this->perPage() * 2);
 
         // Forced onto a base collection: the rows below are arrays, and merging
         // an Eloquent collection of arrays makes it try to match them by key.
@@ -112,26 +166,40 @@ class SearchService
                 ->all()
         );
 
-        if ($scored->count() < $limit) {
+        // Only top up while there is not yet a full page to show. Once the LIKE
+        // pass has one, the near-miss pass — which hydrates rows in PHP — has
+        // nothing left to contribute to this request.
+        if ($scored->count() < $this->perPage() && $scored->count() < $pool) {
             // Keys, not models: whereNotIn against a column needs scalars, and
             // passing models silently excluded nothing — which let the near-miss
             // pass return every row the LIKE pass had already found.
             $alreadyFound = $scored->pluck('model')->map(fn (Model $model): mixed => $model->getKey())->all();
 
+            $scored = $scored->merge($this->nearMissPass($part, $bucket, $term, $columns, $alreadyFound, $pool)->all());
+        }
+
+        $scored = $scored->sortByDesc('score')->values();
+
+        // Collapse records that are the same concept, keeping the best-ranked one.
+        // Done after scoring so the survivor is the strongest match, and before
+        // the limit so the cap counts concepts rather than records.
+        $dedupeBy = $definition['dedupe_by'] ?? null;
+
+        if ($dedupeBy !== null) {
             $scored = $scored
-                ->merge($this->nearMissPass($part, $bucket, $term, $columns, $alreadyFound)->all())
-                ->sortByDesc('score')
+                ->unique(fn (array $row): string => mb_strtolower(trim((string) $row['model']->getAttribute($dedupeBy))))
                 ->values();
         }
 
         return $scored
-            ->take($limit)
-            ->map(fn (array $row): array => $this->present($part, $bucket, $definition, $row['model']))
+            ->take($pool)
+            ->pluck('model')
             ->values();
     }
 
     /**
-     * The fast path. `LIKE '%term%'` across every searchable column.
+     * The fast path. `LIKE '%term%'` across every searchable column, plus any
+     * relation the bucket declares.
      *
      * Over-fetched by the caller so the ranking step has something to reorder —
      * the database returns rows in index order, which is not relevance order.
@@ -143,10 +211,27 @@ class SearchService
     {
         $pattern = '%'.$this->escapeLike($term).'%';
 
+        $definition = $this->definition($bucket);
+
+        /** @var array<string, array<int, string>> $relations */
+        $relations = (array) ($definition['relations'] ?? []);
+
         return $this->queryFor($part, $bucket)
-            ->where(function (Builder $query) use ($columns, $pattern): void {
+            ->where(function (Builder $query) use ($columns, $relations, $pattern): void {
                 foreach ($columns as $column) {
                     $query->orWhere($column, 'like', $pattern);
+                }
+
+                // A product typed by its manufacturer or its active ingredient is a
+                // product result, the same way /drugs/search answers it.
+                foreach ($relations as $relation => $relationColumns) {
+                    $query->orWhereHas($relation, function (Builder $related) use ($relationColumns, $pattern): void {
+                        $related->where(function (Builder $query) use ($relationColumns, $pattern): void {
+                            foreach ($relationColumns as $column) {
+                                $query->orWhere($column, 'like', $pattern);
+                            }
+                        });
+                    });
                 }
             })
             ->limit($limit)
@@ -159,11 +244,17 @@ class SearchService
      * Scored in PHP because neither `clinical_signs` nor `host_species` has a
      * fulltext index — only `diseases` and `products` do, and only on MySQL.
      *
+     * Selects the columns the ranking and presentation steps actually read rather
+     * than whole models. This pass runs for every bucket that came up short, so on
+     * a narrow query it hydrates the corpus of all seven at once, and a full
+     * `diseases` row carries a knowledge payload this code never looks at.
+     *
      * @param  array<int, string>  $columns
      * @param  array<int, mixed>  $exclude  keys the LIKE pass already found
+     * @param  int  $pool  ceiling on rows collected
      * @return Collection<int, array{model: Model, score: int}>
      */
-    private function nearMissPass(string $part, string $bucket, string $term, array $columns, array $exclude): Collection
+    private function nearMissPass(string $part, string $bucket, string $term, array $columns, array $exclude, int $pool): Collection
     {
         if (mb_strlen($term) < (int) config('search.fuzzy.min_length', 4)) {
             return collect();
@@ -173,8 +264,9 @@ class SearchService
         $keyName = $this->keyNameFor($bucket);
 
         return $this->queryFor($part, $bucket)
+            ->select($this->readableColumns($bucket, $columns))
             ->when($exclude !== [], fn (Builder $query): Builder => $query->whereNotIn($keyName, $exclude))
-            ->limit((int) config('search.fuzzy.scan_limit', 2000))
+            ->limit(min($pool, (int) config('search.fuzzy.scan_limit', 500)))
             ->get()
             ->map(function (Model $model) use ($columns, $term, $minimum): ?array {
                 $score = $this->nearMissScore($model, $columns, $term);
@@ -185,6 +277,35 @@ class SearchService
             })
             ->filter()
             ->values();
+    }
+
+    /**
+     * Every column this service reads off a model: the searchable set, the two
+     * the row label reads, the route key and the primary key.
+     *
+     * Derived from the bucket's own config rather than written out per bucket, so
+     * a bucket cannot present a row whose column this select left out.
+     *
+     * @param  array<int, string>  $columns
+     * @return array<int, string>
+     */
+    private function readableColumns(string $bucket, array $columns): array
+    {
+        $definition = $this->definition($bucket);
+
+        $candidates = array_merge(
+            $columns,
+            [
+                $definition['title'] ?? null,
+                $definition['title_ar'] ?? null,
+                $definition['secondary'] ?? null,
+                $definition['route_key'] ?? null,
+                $this->keyNameFor($bucket),
+            ],
+            array_values((array) ($definition['route_params'] ?? [])),
+        );
+
+        return array_values(array_unique(array_filter($candidates, 'is_string')));
     }
 
     /**
@@ -478,6 +599,29 @@ class SearchService
         $class = $this->modelFor($bucket);
 
         return (new $class)->getKeyName();
+    }
+
+    private function perPage(): int
+    {
+        return max(1, (int) config('search.limits.per_page', 10));
+    }
+
+    private function pool(): int
+    {
+        return max(0, (int) config('search.limits.pool', 500));
+    }
+
+    /**
+     * The query-string key a bucket pages on — `diseases_page`, `products_page`.
+     *
+     * One name per bucket rather than a single `page`, so seven cards on the page
+     * can each be on their own page without one card's paging resetting another's.
+     * This is the convention /drugs/search already uses (`product_page`,
+     * `disease_page`), extended to the bucket name.
+     */
+    private function pageName(string $bucket): string
+    {
+        return $bucket.'_page';
     }
 
     /**

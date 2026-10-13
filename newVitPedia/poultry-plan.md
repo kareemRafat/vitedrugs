@@ -1,9 +1,9 @@
 # Poultry Section Plan — Vetpedia
 
-> **Status:** v13 — **Phases 1, 2, 4 and 5 built; Phase 6 partially; Phase 3 partially.**
+> **Status:** v17 — **Phases 1, 2, 4 and 5 built; Phase 6 partially; Phase 3 partially.**
 > Phase 1: 50/57 · Phase 2: 9/11 · Phase 3: 5/15 · Phase 4: 12/17 · Phase 5: 11/12 · Phase 6: 7/12
 > **Date:** 2026-10-13
-> **Supersedes:** v1–v12
+> **Supersedes:** v1–v16
 
 ---
 
@@ -899,8 +899,9 @@ removed — see deviation 5.
 - [ ] Rate-limit the suggestions endpoint → **the endpoint it limited is gone**, so the `60/min`
   limiter and `search.too_many_requests` were deleted with it. `/drugs/search` is equally unthrottled
   and un-debounced, so the two are now consistent.
-- [x] Tests: English match, Arabic match, fuzzy match, no results → 45 tests in
-  `tests/Feature/Knowledge/`, six of them the part-isolation cases the old page failed
+- [x] Tests: English match, Arabic match, fuzzy match, no results → 54 tests in
+  `tests/Feature/Knowledge/`, six of them the part-isolation cases the old page failed, nine of them
+  added at v14 for paging, real totals, hidden empty buckets and product relation matching
 
 ### Deviations from the tasks above
 
@@ -957,6 +958,71 @@ card with an icon and a count.
 The four unticked task boxes above are left open rather than deleted, so the reversal stays visible in
 the plan instead of disappearing from it.
 
+> ⚠️ **Corrected at v14.** This entry claimed the page was *"matching drugs exactly"*. It was not —
+> only the **form** was. The **results** still differed in four ways, all of which are now fixed; see
+> the v14 section below. The v13 claim was true of the input and overstated about the output, and the
+> difference was not visible in a diff because the drugs page was never opened next to it.
+
+### v14 — Parity with `/drugs/search`
+
+The v13 work made the two pages *look* alike. Comparing them line by line showed the results half was
+still a different design, and in three of the four cases it was worse, not merely different.
+
+| | `/drugs/search` (before) | poultry + large-animals (before) |
+|---|---|---|
+| Paging | 10 per bucket, `<x-pagination>` per bucket | **none** — capped at 20, silently |
+| Bucket badge | real total | `count($items)` — **reported the cap, not the total** |
+| Product matching | trade name + ingredient + company + disease | trade name only |
+| Empty buckets | hidden | all rendered, reading "no matching items" |
+
+**1. The silent truncation is the one that mattered.** Searching a common fragment matched more than
+twenty diseases and the page listed twenty, with a badge reading `20` and no way to reach the rest.
+The badge was not merely capped — it was *counting the page it had just sliced*, so it was wrong in
+exactly the case where a reader would use it to decide whether anything was missing.
+
+Each bucket now paginates on its own query-string key, `{bucket}_page` (`diseases_page`,
+`products_page`), continuing the convention the drugs page already used (`disease_page`,
+`product_page`) generalised to the bucket name. One key per bucket rather than a single `page`,
+because seven cards on one page must be able to sit on seven different pages without one card's
+paging resetting another's.
+
+Paging is done in memory rather than by the database's paginator, because ranking happens in PHP:
+the rows arrive already ordered by relevance, so a page cannot be expressed as `LIMIT/OFFSET` over an
+unsorted table. The consequence is recorded rather than hidden — a bucket collects at most
+`search.limits.pool` (500) rows, so a term matching more than that *is* still truncated. It is set
+well above a page so a normal search never reaches it, and because the badge is read from the same
+pool, the badge and the page count can never disagree.
+
+**2. The product bucket was narrower than the drugs one.** Typing a manufacturer or an active
+ingredient returned products on `/drugs/search` and nothing on `/poultry`. That reads as a broken
+search rather than as a narrower one. Buckets may now declare `relations`, folded into the LIKE pass
+via `orWhereHas`; the products bucket declares its three. Scoping is unchanged — a product is still
+admitted only by the domain of a disease it treats, so widening what is *searched* did not widen what
+is *visible*. A test asserts a product treating only a large-animal disease stays invisible to a
+poultry query even when its manufacturer name matches.
+
+**3. Empty buckets are hidden**, as they are on the drugs page. `search.no_section_results` and its
+`@forelse` branch went with them, from both locales.
+
+**4. The near-miss pass was hydrating far too much.** It fires for every bucket whose LIKE pass came
+up short of a full page, so on a narrow query *all seven* buckets scanned at once at 2,000 rows each —
+up to 14,000 models on a single request, for a page that shows at most 20 rows. `scan_limit` is now
+500, the pass is skipped entirely once the LIKE pass has a full page to show, and it selects only the
+columns the ranking and presentation steps read rather than whole rows (a `diseases` row carries a
+`knowledge_payload` this code never looks at). The column list is derived from each bucket's own
+config, so a bucket cannot present a row whose column the select left out.
+
+**Not changed, deliberately.** The page uses `<x-large-animals.page-hero>`, which reads like a
+misnomer on `/poultry` but is what every shared part view uses (`diagnosis/*`, `filter/*`). Swapping
+it for the generic `<x-page-hero>` would have made this one page inconsistent with its siblings, and
+the generic component hardcodes *sky* tokens for dark mode rather than the part's brand — correct
+for drugs, wrong for the two green/amber parts.
+
+**Phase 6 stays 7/12.** None of the four deliberately-unticked boxes (§ deviation 5) were ticked: the
+live endpoint, the grouped dropdown, debouncing and the rate limit all remain reversed and out of
+scope. The unticked *type filter chips* also remain unticked — results are visually grouped by bucket,
+but there is still no control to narrow to one type.
+
 ### What this fixed beyond the new page
 
 **Search results now hand off to the tools instead of dead-ending.** Clinical-sign and host-species
@@ -966,8 +1032,66 @@ both parameters and validates them against the part:
 
 | Result clicked | Lands on | Carries |
 |---|---|---|
-| Clinical sign | `{part}.diagnosis` | `?sign={id}` — first sign row filled in |
+| Clinical sign | `{part}.signs/{canonical_name}` | its own page ✅ **changed at v16** |
 | Host species | `{part}.filter` | `?host_species_id={id}` — species preselected |
+
+> ⚠️ **The clinical sign row has been repointed twice.** It originally went to `{part}.diagnosis`,
+> which looked reasonable and was a dead end. `InitialDiagnosisRequest` requires a species **and**
+> `min:3` signs, so `/poultry/diagnosis?sign=93` opened a form that could not be submitted with what
+> it had been given — one sign filled, no species, two more still required. The link promised a
+> hand-off and delivered a form the user had to complete from scratch anyway.
+>
+> At v15 it went to `{part}.filter`, which worked but answered the question one level later than it
+> needed to. **At v16 it has its own page**, `GET {part}/signs/{canonical_name}` — the sign's
+> details plus every disease carrying it, each with its pivot weight and its pathognomonic /
+> required / specific flags. A sign is a real entry in the knowledge base — the filter tool reads
+> the same rows — so it gets a real page.
+>
+> The filter and diagnosis hand-offs did not disappear: they are now buttons at the bottom of the
+> sign page, which is a better place for them than a search result. The filter prefill stays for
+> exactly that reason.
+
+### v16 — The clinical sign page
+
+| | |
+|---|---|
+| Route | `GET /{part}/signs/{sign}` → `{part}.signs.show` |
+| Views | `resources/views/signs/show.blade.php` — shared, keyed on `$part` |
+| Controllers | `Poultry\SignController` · `LargeAnimals\SignController` — thin siblings |
+| Shared logic | `ResolvesPartClinicalSign` trait (part scoping + weight ordering) |
+
+**Addressed by `canonical_name`, not by slug or id.** `clinical_signs` has no slug column, and the
+canonical name is the stable normalised key — it is what the seeder merges duplicates on. Adding a
+slug column to a 1,089-row shared table to serve a URL would have been a schema change for a
+cosmetic reason.
+
+**Part scoping is a `whereHas`, not a column.** `clinical_signs` has no domain column, so a sign
+belongs to a part when at least one disease in it carries the sign (§9.22). The consequence is that
+a sign carried by both domains is legitimately on both pages — and each page lists only its own
+domain's diseases. A poultry-only sign on `/large-animals/signs/…` is a **404**, the same decision
+the disease pages make and for the same reason.
+
+**Diseases are ordered by pivot weight, descending** — the weight the diagnosis engine scores on, so
+the page and the tool agree about which disease is the strongest match. Ties fall back to the name.
+
+**Two bugs worth recording, because both failed as something else entirely:**
+
+1. A closure passed to `with(['diseases' => fn (Builder $d) => …])` receives the **relation**, not
+   the query builder. Type-hinting `Builder` produced a `TypeError` that read like a broken
+   relationship. The diseases are now loaded by a separate method that scopes them, which is clearer
+   anyway.
+2. `route($part.'search', …)` instead of `route($part.'.search', …)` — the dot was PHP's
+   concatenation operator rather than part of the string, so it rendered `poultrysearch`. Reading the
+   output rather than the source hid it: the source *looked* right. Hex-dumping the line settled it
+   in one command, after a stale-compiled-view theory and a `view:clear` both failed to explain it.
+
+**Tests:** `SignPageTest`, 12 — rendering, pivot flags, weight ordering, anatomy/body system, both
+hand-offs, the large-animals half, a sign on both pages, cross-part 404, unknown 404, inactive
+disease excluded, reachable from search, and no unresolved translation key in either locale.
+
+> The Arabic strings here are agent-written and **unreviewed by a native speaker**, as with the rest
+> of this file. `pathognomonic`, `required`, `specific`, `weight` and `na` deliberately reuse the
+> existing disease-page wording rather than introducing a second set of terms for the same idea.
 
 A sign is accepted when it is reachable from that part's domain, which is why a sign carried by both
 domains works on either tool. Anything else — a deleted id, a `sign=abc`, `sign=1.5`, `sign=-4`, or an id
@@ -1189,7 +1313,11 @@ place, so a vet reading about a disease can go straight to what treats it.
 
 | Version | Change |
 |---|---|
-| **v13** | **Phase 6 corrected: submit-only search, a working near-miss gate, and working deep links.** The live suggestions stack built in v12 was removed — the page is now a plain form identical to `/drugs/search`, and the endpoint, rate limiter, config limits and both translation keys went with it (Phase 6 11/12 → 7/12; the four unticked boxes left open rather than deleted). Separately, the 0.30 fuzzy floor chosen in v12 was corrected: it matched `chicken` against thirteen "Thickened" signs at Dice 0.667, and raising the floor to 0.50 would **not** have caught them. Near-misses must now be anchored at the front of the candidate — same first trigram, or same leading two characters for transpositions — which removes the false positives without discarding `cocido` → `coccidiosis` at 0.308. Clinical-sign and host-species results now deep-link into the diagnosis and filter tools via `ToolPrefillService`, with per-part validation and silent fallback to 200 for unusable ids. The generic `page-hero` got the same overflow fix as the large-animal one. **151 passed, 8 skipped.** |
+| **v17** | **A canonical sign name is not unique, and the page was resolving it to one record.** `ClinicalSign` is a finding plus an anatomy plus a modifier, and five names are recorded twice on the poultry side — anemia, dehydration, depression, diarrhea, weight loss. Consequences, all verified against the live data: `/poultry/search` listed **Depression twice pointing at one URL**, and the page behind it resolved with `first()`, which is ordered by id and so always chose the *smaller* record — depression showed **11 of ~49** diseases, anemia **1 of 19**. A name now resolves to a *set* of records, the page presents the concept and unions their diseases one row per disease (heaviest weight wins, flags OR-ed), and the search collapses with a config-driven `dedupe_by` applied after scoring and before the limit so the cap and badge count concepts. **The large-animals half was already correct — zero duplicates there — and is now covered by a test, which was the actual gap behind the v16 request.** URLs keep `%20`; recorded as cosmetic. **180 passed, 8 skipped.** |
+| **v16** | **A clinical sign now has its own page.** The search row has been repointed twice — diagnosis (a dead end: that form needs a species and `min:3` signs and could not be submitted with one sign), then filter (correct but one level later than needed), and now `GET {part}/signs/{canonical_name}`. The page shows the sign's anatomy, body system, stage, modifier and finding, then every disease carrying it with its pivot weight and its pathognomonic / required / specific flags, ordered by weight so the page agrees with the diagnosis engine about the strongest match. Part scoping is a `whereHas` through `diseases` rather than a column, so a cross-domain sign appears on both pages with only its own diseases, and a single-domain sign on the other part's URL is a 404. Routed by `canonical_name` because `clinical_signs` has no slug column. The filter and diagnosis hand-offs moved to the bottom of the page, which is why the v15 filter prefill was kept. **176 passed, 8 skipped.** |
+| **v15** | **A clinical sign in search now opens the filter tool, not the diagnosis tool.** Pointing it at `?sign={id}` on the diagnosis page was a dead end dressed as a hand-off: `InitialDiagnosisRequest` requires a species and `min:3` signs, so the form arrived holding one sign and could not be submitted at all. The filter tool is the sign's real home — it asks "what could cause this sign?", and its minimum is one, so results are there on arrival. `FilterController::index()` gained an `initialSignTokens` prefill in both parts, seeded into the Alpine picker's `tokens` rather than rendered beside it, so a prefilled sign is an ordinary token: removable, and posted with the rest. The diagnosis prefill still works and still accepts `?sign=`; it is just no longer what a search result points at. **164 passed, 8 skipped.** |
+| **v14** | **Phase 6 parity with `/drugs/search`; deviation 5 corrected.** v13 recorded that the page "matched drugs exactly". It matched on the *form* and not on the *results*, and the difference was invisible in a diff because the drugs page was never opened beside it. Four gaps closed: buckets paginate on their own `{bucket}_page` key at 10 per page instead of silently truncating at 20; the badge counts the bucket instead of the page, so it stopped reporting the cap as if it were the total; the products bucket matches on manufacturer, active ingredient and disease name as the drugs page does, via a new `relations` key folded into the LIKE pass with part-scoping unchanged; empty buckets are hidden rather than rendered as "no matching items" cards. The near-miss pass — which fired for every short bucket, so up to 14,000 models hydrated per request — now runs at 500 rows, only while there is no full page to show, and selects just the columns it reads. **160 passed, 8 skipped.** |
+| **v13** | **Phase 6 corrected: submit-only search, a working near-miss gate, and working deep links.** The live suggestions stack built in v12 was removed - the page is now a plain form identical to `/drugs/search`, and the endpoint, rate limiter, config limits and both translation keys went with it (Phase 6 11/12 → 7/12; the four unticked boxes left open rather than deleted). Separately, the 0.30 fuzzy floor chosen in v12 was corrected: it matched `chicken` against thirteen "Thickened" signs at Dice 0.667, and raising the floor to 0.50 would **not** have caught them. Near-misses must now be anchored at the front of the candidate - same first trigram, or same leading two characters for transpositions - which removes the false positives without discarding `cocido` → `coccidiosis` at 0.308. Clinical-sign and host-species results now deep-link into the diagnosis and filter tools via `ToolPrefillService`, with per-part validation and silent fallback to 200 for unusable ids. The generic `page-hero` got the same overflow fix as the large-animal one. **151 passed, 8 skipped.** |
 | **v12** | **Phase 6 built: `/poultry/search`, and the same leak fixed on `/large-animals/search`.** Shared controller/service/view keyed on `$part`; bucket membership per part in `config/search.php`. Live suggestions endpoint with grouped icons, debounced, rate-limited 60/min. Arabic searchable in both directions and rendered locale-aware, but **only 2 of 151 poultry diseases carry an Arabic name**, which caps the feature until Phase 1 fills them. Near-miss matching by trigram Dice after a LIKE first pass — **not** Levenshtein, which was measured against the data and cannot catch the typo it was chosen for. Two deviations recorded: `ClinicalSign` searched instead of `Finding` (same vocabulary, and `findings` cannot be domain-scoped), and products pulled forward from Phase 9 because nine of thirty already treat a poultry disease. Fixed the two-way header match that sent the poultry search button to the drugs page. **128 passed, 8 skipped.** |
 | v11 | **Phases 4 and 5 built on real `/poultry/*` routes; §2.1 cross-part defect CLOSED.** Engines parameterised by domain rather than subclassed, views shared rather than copied, lang files layered rather than duplicated. Share tokens versioned and domain-tagged, which also surfaced a latent `+`-in-query-string bug. Phase 3's detail route pulled forward so result links do not dead-end into Large Animals. Large-animal tools now domain-scoped (169 → 18 diseases). **106 passed, 8 skipped.** |
 | v10 | Phase 2 hub built as option B: live scoped stats, EN/AR lang files, 2 cards. Recorded the cross-part navigation defect it creates, and two pre-existing bugs it exposed (unscoped sign suggestions, domain-less share links). |

@@ -32,7 +32,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route($part.'.filter.results.store') }}" x-data="filterPicker(@js(route($part.'.filter.suggestions')))" @submit.prevent="submitForm($event)">
+        <form method="POST" action="{{ route($part.'.filter.results.store') }}" x-data="filterPicker(@js(route($part.'.filter.suggestions')), @js($initialSignTokens))" @submit.prevent="submitForm($event)">
             @csrf
 
             {{-- Criteria --}}
@@ -190,11 +190,18 @@
 
 @section('css')
     <script>
-        function filterPicker(url) {
+        /**
+         * `initialTokens` carries signs that arrived already selected — from a
+         * search result link, which deep-links to `?sign=<id>`. They are seeded
+         * into `tokens` rather than rendered separately so a pre-selected sign is
+         * an ordinary token: it gets a removable chip, it posts with the rest, and
+         * Clear takes it away like any other.
+         */
+        function filterPicker(url, initialTokens = []) {
             return {
                 query: '',
                 suggestions: [],
-                tokens: [],
+                tokens: initialTokens,
                 open: false,
                 submitting: false,
                 errorMessage: '',
