@@ -1,8 +1,8 @@
 # Poultry Section Plan — Vetpedia
 
-> **Status:** v9 — **Phase 1 built.** 50 of 57 Phase 1 tasks ticked. The 7 that remain each say why: 2 blocked on the bulk import not having been run, 3 deliberately superseded, 2 unverified.
+> **Status:** v10 — **Phase 1 built, Phase 2 built.** Phase 1: 50/57 ticked. Phase 2: 8/11 ticked.
 > **Date:** 2026-10-13
-> **Supersedes:** v1–v8
+> **Supersedes:** v1–v9
 
 ---
 
@@ -648,17 +648,63 @@ clear map of what is inside and let them jump straight to the tool they need. It
 
 ### Tasks
 
-- [ ] Upgrade `PoultryLandingController` (currently returns an empty view)
-- [ ] Build the landing view under the Poultry view namespace
-- [ ] Add hero section with title and one-line description, Arabic and English
-- [ ] Add a stats strip: diseases, findings, lesions, species — all read live, never hardcoded
-- [ ] Add a card grid linking to each section
-- [ ] Hide cards for sections not yet built — no dead links
-- [ ] Use Flowbite v4 semantic tokens only
-- [ ] Add Lucide icons to each card
-- [ ] Responsive: 1 column mobile, 2 tablet, 3–4 desktop
-- [ ] Verify the RTL layout for Arabic
-- [ ] Confirm the green part theme and correct logo/colours render
+- [x] Upgrade `PoultryLandingController` (currently returns an empty view)
+- [x] Build the landing view under the Poultry view namespace
+- [x] Add hero section with title and one-line description, Arabic and English — added `lang/en/poultry.php` and `lang/ar/poultry.php`; the view previously hardcoded English
+- [x] Add a stats strip: diseases, findings, lesions, species — all read live, never hardcoded — verified live: **151 · 1,075 · 640 · 10**
+- [ ] Add a card grid linking to each section — **only 2 cards, both pointing at `large-animals/*`.** See §2.1
+- [x] Hide cards for sections not yet built — no dead links — asserted by test: the page must not contain `poultry/diseases`, `/compare`, `/lesions`, `/products` or `/search`
+- [x] Use Flowbite v4 semantic tokens only
+- [x] Add Lucide icons to each card
+- [x] Responsive: 1 column mobile, 2 tablet, 3–4 desktop
+- [ ] Verify the RTL layout for Arabic — **asserted `dir="rtl"` and that the Arabic strings render; nobody has looked at it.** Needs a human eye before launch
+- [ ] Confirm the green part theme and correct logo/colours render — **not verified.** `SetPartTheme` does resolve `poultry` from the first URL segment, so the emerald theme should apply, but it has not been rendered and checked
+
+### 2.1 Built as option B, and why that is a known defect
+
+Phase 2 was built before Phases 3–10, so **no `/poultry/*` section existed to link to**. Three
+options were weighed:
+
+| | Approach | Outcome |
+|---|---|---|
+| **A** | Stats only, cards arrive with each phase | Honest but a near-empty page |
+| **B** ✅ | Link out to the working `large-animals` tools | Page is useful today, cards are cross-part |
+| **C** | Promote the routes to `/poultry/*` now | Re-scoping Phases 4 and 5 into Phase 2 |
+
+**B was chosen.** It ships something usable without smuggling two phases into one.
+
+> ⚠️ **The known defect.** Clicking *Differential Diagnosis* or *Clinical Filter* leaves the poultry
+> section entirely. `SetPartTheme` resolves the theme from the **first URL segment**, so
+> `/large-animals/diagnosis` re-themes the whole page as Large Animals — heading, colours and all —
+> and there is no way back. A visible notice on the hub admits the tools are shared; it does not fix
+> the navigation. Fixing this properly means option C, and it is a large job:
+>
+> - 6 routes, a new domain-scoped controller, and 3 copied views (~16 KB)
+> - **116 lang keys for diagnosis and 28 for filter, × 2 languages**
+> - Sign suggestions must be scoped to poultry-linked signs, and results to `domain = poultry`
+
+Two related bugs surfaced while scoping this, **both live on the Large Animals page today**:
+
+1. **`suggestions()` is unscoped.** It matches `display_name LIKE %q%` across all 1,109 clinical
+   signs, so a poultry user is offered large-animal signs today. Invisible only because the page
+   says "Large Animals".
+2. **Share links carry no domain.** `DiagnosisShareService::create()` stores `host_species_id` and
+   sign IDs and nothing else. A link made under Large Animals and opened under a future
+   `/poultry/diagnosis/results` would render large-animal results. Harmless while both parts are the
+   same page; a cross-part hole the moment they are split.
+
+### 2.2 Judgement calls worth recording
+
+- **Findings and lesions are counted through the disease links**, not off the `findings` table
+  directly. A bare `Finding::count()` returns 1,089 including large-animal-only findings; the
+  link-scoped query returns 1,075. Same reasoning as the admin filters in §1.8.
+- **Species is counted by `taxonomy_group = 'poultry'` (10), not by disease link (13).** Counting by
+  link includes cattle, sheep, goat, pig and calf, which are legitimately linked to cross-host
+  diseases such as salmonellosis — correct data, wrong number for a "bird species" figure.
+  > Worth a separate look: are those cross-host links intentional, or did `DiseaseHostSpeciesSeeder`
+  > sweep across the now-shared `diseases` table?
+- **The Arabic is agent-written and unreviewed** — 18 strings here, plus 18 in §1.9. Both need a
+  native speaker before launch.
 
 ---
 
@@ -922,7 +968,8 @@ place, so a vet reading about a disease can go straight to what treats it.
 
 | Version | Change |
 |---|---|
-| **v9** | Surfaced `domain` in the shared Disease/Species admin resources — it was invisible *and* unfixable, which made the §1.7 editor-isolation criterion fail rather than merely unticked. Added `HasDomain` trait and 6 tests. §1.8 records it. |
+| **v10** | Phase 2 hub built as option B: live scoped stats, EN/AR lang files, 2 cards. Recorded the cross-part navigation defect it creates, and two pre-existing bugs it exposed (unscoped sign suggestions, domain-less share links). |
+| v9 | Surfaced `domain` in the shared Disease/Species admin resources — it was invisible *and* unfixable, which made the §1.7 editor-isolation criterion fail rather than merely unticked. Added `HasDomain` trait and 6 tests. §1.8 records it. |
 | v8 | Phase 1 built and ticked. Recorded real counts, which corrected three plan figures. Documented the `ClinicalSignSeeder` repair that unblocked `db:seed`. |
 | v7 | Dropped Artisan commands and new services. Source A now loads via the 36 existing seeders; Source B via multi-file Filament upload with slug auto-matching. Merge rule **closed as not needed** (different destinations). |
 | v6 | Filament import page decision (option A): relocate `ImportDiseaseKnowledge` to the shared `DiseasesCluster` with a `domain` filter. Added §3.4 and Phase 1.7 tasks. |
