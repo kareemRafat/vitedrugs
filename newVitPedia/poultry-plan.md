@@ -1366,7 +1366,9 @@ That is why `every_body_system_gets_exactly_one_region_on_the_bird` exists.
 - [x] `OrganAttachmentService` — curated tier and name-matched tier, three queries for the page
 - [x] Curated vocabulary map for organs the labels name in the adjective (liver→hepatic, kidneys→renal, lungs→pulmonary…)
 - [x] Word-boundary matching, plus a 5-character stem so "Cloaca" reaches "Cloacal"; `NOT_A_STEM` keeps "Oral Cavity" off "Marrow Cavity" and "Blood Vessels" off every "bloody" label
-- [x] Inline SVG diagram, one marker per body system, schematic and labelled as such
+- [x] Inline SVG hen, schematic and labelled as such, drawn from bezier paths rather than primitives
+- [x] Eleven regions drawn as organs inside the bird, not as dots — three of the systems have no surface anatomy for a dot to point at
+- [x] Regions keyed by the table's canonical name, with a test that every body system gets exactly one region
 - [x] `anatomy/⚡body-map.blade.php` — system → organ → diseases, URL-synced, three queries per render
 - [x] Hover, selected and focus states; `role="button"`, `tabindex`, Enter/Space, `aria-pressed`
 - [x] Side panel with the organ's mapped diseases, name-matched diseases, signs and lesions
