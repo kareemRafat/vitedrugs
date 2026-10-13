@@ -304,11 +304,24 @@ new class extends Component
 
                 <article class="flex flex-col bg-neutral-primary-soft dark:bg-slate-800 rounded-base shadow-xs border border-default-medium dark:border-slate-700 hover:border-brand hover:shadow-md transition-all duration-300">
                     <div class="p-5 border-b border-default-medium dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-heading dark:text-white">
-                            <a href="{{ route('products.show', $product) }}" wire:navigate class="hover:text-fg-brand hover:underline">{{ $product->trade_name }}</a>
-                        </h3>
+                        {{-- The trade name is what the card is: it is the anchor, the
+                             largest thing on the card, and the one place the Arabic
+                             name gets its own line. The whole header block is the
+                             link target, so the name is never the only thing to hit. --}}
+                        <a href="{{ route('products.show', $product) }}" wire:navigate
+                            class="block group/title focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-xs">
+                            <h3 class="text-lg sm:text-xl font-bold leading-snug text-heading dark:text-white group-hover/title:text-fg-brand transition-colors duration-200 break-words line-clamp-2"
+                                title="{{ $product->trade_name }}">
+                                {{ $product->trade_name }}
+                            </h3>
+                            @if (filled($product->trade_name_ar) && $product->trade_name_ar !== $product->trade_name)
+                                <span class="block mt-1 text-sm font-medium text-body dark:text-slate-400 line-clamp-1">
+                                    {{ $product->trade_name_ar }}
+                                </span>
+                            @endif
+                        </a>
 
-                        <div class="mt-2 flex flex-wrap gap-1.5">
+                        <div class="mt-3 flex flex-wrap gap-1.5">
                             @if ($product->dosageForm)
                                 <span class="inline-flex items-center rounded-xs px-2 py-0.5 text-xs font-medium bg-neutral-secondary-soft dark:bg-slate-700 text-body dark:text-slate-300">
                                     {{ $product->dosageForm->localized_name }}
@@ -329,8 +342,9 @@ new class extends Component
                         </div>
 
                         @if ($product->manufacturer->isNotEmpty())
-                            <p class="mt-2 text-xs text-body dark:text-slate-400">
-                                {{ $t('catalogue.manufacturer') }}: {{ $product->manufacturer->first()->localized_name }}
+                            <p class="mt-3 pt-3 border-t border-default-medium dark:border-slate-700 text-sm text-body dark:text-slate-400">
+                                {{ $t('catalogue.manufacturer') }}:
+                                <span class="font-medium text-heading dark:text-slate-200">{{ $product->manufacturer->first()->localized_name }}</span>
                             </p>
                         @endif
                     </div>

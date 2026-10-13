@@ -118,7 +118,7 @@
                                     <h3 class="text-lg sm:text-xl font-bold text-heading dark:text-white group-hover/title:text-brand dark:group-hover/title:text-sky-400 transition-colors duration-200 leading-snug line-clamp-2">
                                         {{ $product->trade_name }}
                                     </h3>
-                                    @if (!empty($product->trade_name_ar))
+                                    @if (filled($product->trade_name_ar) && $product->trade_name_ar !== $product->trade_name)
                                         <span class="block text-xs font-medium text-body/70 dark:text-slate-400 mt-1 line-clamp-1">
                                             {{ $product->trade_name_ar }}
                                         </span>
