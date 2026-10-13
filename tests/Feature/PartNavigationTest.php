@@ -33,14 +33,33 @@ class PartNavigationTest extends TestCase
                 'poultry.diagnosis',
                 'poultry.filter',
                 'poultry.comparison',
+                'poultry.products.index',
             ],
 
             'large-animals' => [
                 'large-animals.diagnosis',
                 'large-animals.filter',
                 'large-animals.comparison',
+                'large-animals.products.index',
             ],
         ];
+    }
+
+    /**
+     * The translation key a route name maps to.
+     *
+     * The nav label is not derived from the route name by a rule — it is looked
+     * up as `{part}.nav.{leaf}`. Index routes drop the `.index` first, so
+     * `poultry.products.index` reads `poultry.nav.products` rather than
+     * `poultry.nav.products.nav.index`.
+     */
+    private function navKeyFor(string $routeName): string
+    {
+        $leaf = str_ends_with($routeName, '.index')
+            ? substr($routeName, 0, -strlen('.index'))
+            : $routeName;
+
+        return preg_replace('/^[^.]+/', '$0.nav', $leaf);
     }
 
     /**
@@ -138,7 +157,7 @@ class PartNavigationTest extends TestCase
 
             foreach ($this->expectedTools() as $part => $routeNames) {
                 foreach ($routeNames as $name) {
-                    $key = str_replace('.', '.nav.', $name);
+                    $key = $this->navKeyFor($name);
 
                     $this->assertNotSame(
                         $key,

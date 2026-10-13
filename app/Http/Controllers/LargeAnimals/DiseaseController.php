@@ -18,6 +18,10 @@ class DiseaseController extends Controller
                 'hostSpecies',
                 'microorganisms',
                 'diseaseClassification',
+
+                // The shared disease view renders a related-products block, and
+                // without this it is one extra query per disease page.
+                'products',
             ])
             ->where('slug', $slug)
             ->firstOrFail();

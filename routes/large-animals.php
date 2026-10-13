@@ -9,6 +9,7 @@ use App\Http\Controllers\LargeAnimals\DrugLandingController;
 use App\Http\Controllers\LargeAnimals\FilterController;
 use App\Http\Controllers\LargeAnimals\MedicalArticleController;
 use App\Http\Controllers\LargeAnimals\MicroorganismController;
+use App\Http\Controllers\LargeAnimals\ProductController;
 use App\Http\Controllers\LargeAnimals\SignController;
 use App\Http\Controllers\LargeAnimals\SpecializationController;
 use App\Http\Controllers\LargeAnimals\TestArticleController;
@@ -38,6 +39,8 @@ Route::group([
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('large-animals.filter.suggestions');
 
         Route::get('compare', CompareController::class)->name('large-animals.comparison');
+
+        Route::get('products', ProductController::class)->name('large-animals.products.index');
 
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('large-animals.diseases.show');
         Route::get('diseases/{slug}/article', [DiseaseArticleController::class, 'show'])->name('large-animals.diseases.article');

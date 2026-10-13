@@ -27,6 +27,37 @@ class SpeciesFactory extends Factory
         ];
     }
 
+    public function largeAnimals(): static
+    {
+        return $this->forDomain(Species::DOMAIN_LARGE_ANIMAL);
+    }
+
+    public function poultry(): static
+    {
+        return $this->forDomain(Species::DOMAIN_POULTRY);
+    }
+
+    public function forDomain(string $domain): static
+    {
+        return $this->state(fn (): array => ['domain' => $domain]);
+    }
+
+    /**
+     * Pin the name instead of taking the randomised one.
+     *
+     * `species.name` and `species.slug` are both unique, and every name in the
+     * pool above is a real animal, so an unnamed `Species::factory()` can collide
+     * with a named one elsewhere in the same test.
+     */
+    public function named(string $name): static
+    {
+        return $this->state(fn (): array => [
+            'name' => $name,
+            'name_ar' => $this->arabicSpecies($name),
+            'slug' => Str::slug($name),
+        ]);
+    }
+
     private function arabicSpecies(string $name): string
     {
         return match ($name) {

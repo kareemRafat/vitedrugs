@@ -29,6 +29,13 @@ class DiseaseController extends Controller
                 'hostSpecies',
                 'microorganisms',
                 'diseaseClassification',
+
+                // The shared disease view renders a related-products block, and
+                // without this it is one extra query per disease page. `products`
+                // is not scoped to the part here: a poultry disease may
+                // legitimately list a drug whose dosing record is only held for
+                // cattle, and silently dropping it would hide a real treatment.
+                'products',
             ])
             ->where('slug', $slug)
             ->firstOrFail();

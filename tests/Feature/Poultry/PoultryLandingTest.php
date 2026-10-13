@@ -145,11 +145,20 @@ class PoultryLandingTest extends TestCase
     {
         $html = $this->get('/poultry')->assertOk()->getContent();
 
-        // Phases 3, 8 and 10 have not landed. Their routes must not appear.
-        // Phases 6 (search) and 7 (comparison) have landed and are expected below.
-        foreach (['poultry/diseases', 'poultry/lesions', 'poultry/products'] as $unbuilt) {
+        // Phases 8 (body map) and 9 (atlas) have not landed. Their routes must
+        // not appear. Phases 6, 7 and 10 have landed and are asserted below.
+        foreach (['poultry/body-map', 'poultry/atlas'] as $unbuilt) {
             $this->assertStringNotContainsString($unbuilt, $html, "{$unbuilt} is not built yet and must not be linked.");
         }
+    }
+
+    #[Test]
+    public function it_links_to_the_drug_catalogue_now_that_it_is_built(): void
+    {
+        $html = $this->get('/poultry')->assertOk()->getContent();
+
+        $this->assertStringContainsString(route('poultry.products.index'), $html);
+        $this->assertStringContainsString(__('poultry.landing.services.products.title'), $html);
     }
 
     public function it_links_to_the_comparison_now_that_it_is_built(): void

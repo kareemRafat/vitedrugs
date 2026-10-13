@@ -13,6 +13,7 @@
             'filter' => route('poultry.filter'),
             'search' => route('poultry.search'),
             'compare' => route('poultry.comparison'),
+            'products' => route('poultry.products.index'),
         ];
 
         $serviceIcons = [
@@ -20,6 +21,7 @@
             'filter' => 'sliders-horizontal',
             'search' => 'search',
             'compare' => 'columns-3',
+            'products' => 'pill',
         ];
 
         $statIcons = [
@@ -86,7 +88,7 @@
                 <p class="mt-2 text-sm sm:text-base text-body dark:text-slate-400">{{ __('poultry.landing.services_subtitle') }}</p>
             </div>
 
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach ($serviceRoutes as $key => $url)
                     <a href="{{ $url }}" wire:navigate
                         class="group flex flex-col bg-neutral-primary-soft rounded-base shadow-xs border border-default-medium hover:border-brand hover:shadow-md transition-all duration-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:border-brand p-5">

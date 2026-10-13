@@ -22,6 +22,7 @@ return array_replace_recursive($shared, [
         'search' => 'Search',
         'diseases' => 'Diseases',
         'lesions' => 'Lesions',
+        'products' => 'Drugs',
     ],
 
     'landing' => [
@@ -52,6 +53,10 @@ return array_replace_recursive($shared, [
             'compare' => [
                 'title' => 'Disease Comparison',
                 'description' => 'Put up to four bird diseases side by side to see which signs tell them apart and which signs they all share.',
+            ],
+            'products' => [
+                'title' => 'Drug Catalogue',
+                'description' => 'Drugs with a recorded poultry dose — active ingredients, dosing by bird, and withdrawal periods for meat and eggs.',
             ],
         ],
 
@@ -94,6 +99,11 @@ return array_replace_recursive($shared, [
         'stats' => [
             'species' => 'Bird species',
         ],
+    ],
+
+    'catalogue' => [
+        'subtitle' => 'Drugs with a recorded dose for poultry, with their active ingredients, manufacturer and withdrawal periods.',
+        'withdrawal_unrecorded' => 'No withdrawal period recorded for poultry — confirm with the manufacturer before treating birds for meat or eggs.',
     ],
 
     /*

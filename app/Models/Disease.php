@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasDomain;
+use App\Models\Concerns\HasLocalizedName;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\DifferentialSyndrome;
 use App\Models\LargeAnimals\DiseaseClassification;
@@ -20,6 +21,7 @@ class Disease extends Model
 {
     use HasDomain;
     use HasFactory;
+    use HasLocalizedName;
     use HasUlids;
     use SoftDeletes;
 
@@ -42,13 +44,6 @@ class Disease extends Model
         'is_internal' => 'boolean',
         'knowledge_payload' => 'array',
     ];
-
-    public function getLocalizedNameAttribute(): string
-    {
-        return app()->getLocale() === 'ar' && filled($this->name_ar)
-            ? $this->name_ar
-            : $this->name;
-    }
 
     public function products(): BelongsToMany
     {

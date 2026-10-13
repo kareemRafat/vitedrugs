@@ -1330,31 +1330,80 @@ they are seeing.
 
 ---
 
-## Phase 10 — Poultry Drugs
+## Phase 10 — Part Drug Catalogue
 
-**Route:** `GET /poultry/products`
-**Milestone:** A visitor can browse poultry-applicable drugs, see active ingredients and companies,
-with links back to the disease pages they treat.
+**Route:** `GET /poultry/products` and `GET /large-animals/products`
+**Milestone:** A visitor can browse the drugs applicable to their part, see active ingredients,
+companies and withdrawal periods, with links back to the disease pages they treat.
 
-**What this page is used for:** The drug catalogue, restricted to what is relevant to poultry. This
+**What this page is used for:** The drug catalogue, restricted to what is relevant to the part. This
 completes the client's "three parts" structure — disease knowledge and treatment knowledge in one
 place, so a vet reading about a disease can go straight to what treats it.
 
-> **No new product data** — this reuses the existing catalogue and shows the poultry-relevant slice.
+> **No new product data** — this reuses the existing catalogue and shows the part-relevant slice.
+
+### 10.1 There is no species column on products
+
+`products` is **one shared table for the whole site** — 30 drugs — with no species column. Nothing
+records "this one is for poultry". The only traces of part-applicability are indirect, and they do
+not agree:
+
+| Signal | Poultry products (of 30) |
+|---|---|
+| `dosages` → `species.domain = poultry` | 15 |
+| `disease_product` → `diseases.domain = poultry` | 12 |
+| `withdrawal_periods` → `species.domain = poultry` | 6 |
+| union of all three | 24 |
+
+| Product | Poultry dose | Poultry disease | Poultry withdrawal |
+|---|---|---|---|
+| Ivomec | — | ✓ Coccidiosis | — |
+| Droncit | ✓ | — | — |
+| Ripercol | — | — | ✓ |
+| Ketofen | — | — | — |
+
+### 10.2 Locked decisions
+
+- **Inclusion rule: a poultry dosing instruction.** `products → dosages → species.domain = <part>`.
+  The widest of the trustworthy signals and the only one actually *about the bird*. Excludes the six
+  products with no poultry-specific record at all (Doxypen, Fasinex, Panacur, Sulfivet, Terramycin,
+  Ketofen) for a stated reason rather than silently. Yields 15 poultry / ~15 large-animal products.
+- **One shared component, both parts** — same shape as Phase 7's compare builder (§9.19).
+- **Cards link out to `/drugs/products/{slug}`** — one URL per product, no duplicated detail page,
+  and the Drugs part is left untouched. Scoped relations are loaded for the card, not the detail view.
+- **Withdrawal periods shown per species, with an explicit not-recorded state.** Never blank, never
+  zero: *"No withdrawal period recorded — confirm with the manufacturer."* Silence on a food-animal
+  page reads as "no restriction", which is the one reading that can hurt someone.
+
+### 10.3 Known data defects (recorded, not hidden)
+
+- **The product catalogue is placeholder data.** 30 products with lorem ipsum descriptions. Cards do
+  not render description text.
+- **Withdrawal figures are lorem ipsum and self-contradictory.** Excenel has two Quail rows with egg
+  days 3 and 5; Ripercol has three Broiler rows reading 10/7/0, 28/0/1 and 3/14/0. Both rows render,
+  species-labelled. This reads as a data bug rather than a page bug — it is one.
+- **`milk_days` is populated on poultry rows.** Meaningless for a bird. The poultry card renders meat
+  and egg days; milk is not shown.
+- **`species` row "Poultry" (slug `poultry`) is tagged `domain = large_animal`.** No dosage row
+  references it, so the count is unaffected, but it will misclassify a future one.
+- **The disease detail page already links to products** (`large-animals.diseases.show`, block at line
+  201) — Phase 10 does not build it. It queries `diseases` lazily; the eager load is added here.
 
 ### Tasks
 
-- [ ] Decide how a product is marked as poultry-applicable — reuse the existing species relationship
-- [ ] Add a Poultry products index showing only poultry-applicable products
-- [ ] Add filters: dosage form, active ingredient, manufacturer
-- [ ] Reuse the existing product card and comparison components
-- [ ] Link each product to the poultry diseases it treats or prevents
-- [ ] Link each product to the relevant disease detail pages
-- [ ] Link from each poultry disease page to the drugs that treat it — **this cross-link ties the section together**
-- [ ] Show withdrawal periods prominently — these matter for food-producing birds
-- [ ] Handle the case where no products are tagged yet — clear empty state
-- [ ] Confirm the Drugs part of the site is unaffected
-- [ ] Tests: filter, empty state, disease-to-product link
+- [ ] `Product::scopeApplicableTo(string $domain)` — `whereHas('dosages.species')`, no migration
+- [ ] `Product::scopeWithPartRelations()` — eager-loads the part's doses, withdrawal periods and diseases
+- [ ] Shared SFC `resources/views/app/components/products/⚡part-catalogue.blade.php`
+- [ ] Search across trade name, active ingredient, manufacturer and treated disease
+- [ ] Filters: dosage form, active ingredient, manufacturer
+- [ ] Card: trade name, active ingredients + strength, manufacturer, dosage form, part dose rows, withdrawal block, treated diseases
+- [ ] Withdrawal block: species-labelled rows; meat + egg days on poultry; explicit not-recorded state
+- [ ] Thin controllers `Poultry\ProductController` / `LargeAnimals\ProductController`, mirroring `CompareController`
+- [ ] Routes inside the localization group — `poultry.products.index`, `large-animals.products.index`
+- [ ] Navbar link + landing hub card on both parts
+- [ ] Eager-load `diseases` on both `DiseaseController`s — the existing related-products block is an N+1
+- [ ] Confirm `/drugs/products` is unaffected — same 30 products, same filters, same URLs
+- [ ] `PartProductCatalogueTest` — inclusion rule, part isolation, withdrawal present vs not-recorded, each filter, empty state, disease→product link, navbar link
 
 ---
 
@@ -1406,6 +1455,7 @@ place, so a vet reading about a disease can go straight to what treats it.
 
 | Version | Change |
 |---|---|
+| **v19** | **Phase 10 built: `/poultry/products` and `/large-animals/products`.** The plan said *"decide how a product is marked as poultry-applicable"* and treated it as a formality. It was the only real decision in the phase: **`products` is one shared table with no species column**, and the three available traces disagree — 15 products have a poultry dose, 12 treat a poultry disease, 6 carry a poultry withdrawal figure, 24 match at least one. Dosing won because it is the only one of the three that is a statement *about the animal*, which leaves 15 rather than 24 and excludes six products (Ketofen, Panacur, Fasinex, Doxypen, Sulfivet, Terramycin) for a reason that can be stated. The page shows 15 of 30 and that is the filter working, not a broken import. No migration — `Product::applicableTo()` and `withPartRelations()` are scopes, and the second is constrained rather than filtered afterwards so a poultry card never lists a cattle dose. **Withdrawal is never omitted and never blank**: 6 of 30 products have a poultry figure, and on a food-animal page an empty box reads as "no restriction", so the gap is stated in words instead. Cards link out to `/drugs/products/{slug}` — one URL per product beats a detail page scoped to 15 rows. Also: `Disease::getLocalizedNameAttribute()` moved to a shared `HasLocalizedName` trait (it was the only model with one; four others lacked it) and now covers `Species`, `Company`, `ActiveIngredient` and `DosageForm`; `milk_days` is hidden on the poultry page because it is meaningless for a bird and the source data populates it anyway; an N+1 fixed on both disease controllers, where the shared view's related-products block queried `diseases` lazily on every page. **Two implementation bugs the tests caught, both silent:** `wherePivot('role', …)` inside `whereHas` emits an unqualified `"pivot" = ?` rather than `product_company"."role"` on a relation declared `withPivot('role')`, so the manufacturer filter matched nothing and the page returned zero rows with no error anywhere; and an eager-load constraint is handed a **`Relation`** while a `whereHas` nested inside it is handed a **`Builder`**, so both are typed on the union. **236 passed, 8 skipped.** |
 | **v18** | **Phase 7 built: `/poultry/compare`, and the same leak fixed on `/large-animals/compare`.** One shared SFC moved to `app/components/knowledge/`, replacing a 491-line large-animals-only component whose picker ran `Disease::where('name','like',…)` with no domain filter and offered **151 poultry diseases** on the large-animals page — the same defect class as the unscoped search page. Scoping now applies in three places, not one: the picker, the loader, and `addDisease()`, because a foreign slug filtered only at the loader would still occupy one of the four slots. **The component read `knowledge_payload`, which 2 of 151 poultry diseases carry** — every matrix would have rendered empty. Signs and lesions now come from the relational pivot (159 and 148 diseases), split by `findings.ontology_type`; the payload merges on top. Matching `'sign'` exactly dropped **Pyrexia**, **Inappetence** and **Hemorrhagic diarrhea**, whose `ontology_type` is `NULL` — the rule is now to exclude lesions rather than match a clinical value. The plan's *"shared by all"* and *"unique to one"* are real questions and neither is answered by the old single `differs` flag, so rows are grouped `unique → partial → shared` with labelled headers; **`partial` is unreachable with two diseases** and needed its own three-way test. Selection is `?diseases[]=<slug>` instead of four integer params. **The organs substitute was built and then removed** — deriving from `anatomical_structure` looked right but only 27 of 1,109 sign rows carry an anatomy, covering 2 of 151 diseases; organs now read `important_organs_affected`, which is populated in **152 of 154 source documents** and simply not imported yet, so the tab is hidden and needs no code change when it lands. Age groups dropped (no table), differentials dropped (0 rows), susceptibility added in their place. **`DiseaseComparisonTest` rewritten in place, 27 tests. 201 passed, 8 skipped.** | **A canonical sign name is not unique, and the page was resolving it to one record.** `ClinicalSign` is a finding plus an anatomy plus a modifier, and five names are recorded twice on the poultry side — anemia, dehydration, depression, diarrhea, weight loss. Consequences, all verified against the live data: `/poultry/search` listed **Depression twice pointing at one URL**, and the page behind it resolved with `first()`, which is ordered by id and so always chose the *smaller* record — depression showed **11 of ~49** diseases, anemia **1 of 19**. A name now resolves to a *set* of records, the page presents the concept and unions their diseases one row per disease (heaviest weight wins, flags OR-ed), and the search collapses with a config-driven `dedupe_by` applied after scoring and before the limit so the cap and badge count concepts. **The large-animals half was already correct — zero duplicates there — and is now covered by a test, which was the actual gap behind the v16 request.** URLs keep `%20`; recorded as cosmetic. **180 passed, 8 skipped.** |
 | **v16** | **A clinical sign now has its own page.** The search row has been repointed twice — diagnosis (a dead end: that form needs a species and `min:3` signs and could not be submitted with one sign), then filter (correct but one level later than needed), and now `GET {part}/signs/{canonical_name}`. The page shows the sign's anatomy, body system, stage, modifier and finding, then every disease carrying it with its pivot weight and its pathognomonic / required / specific flags, ordered by weight so the page agrees with the diagnosis engine about the strongest match. Part scoping is a `whereHas` through `diseases` rather than a column, so a cross-domain sign appears on both pages with only its own diseases, and a single-domain sign on the other part's URL is a 404. Routed by `canonical_name` because `clinical_signs` has no slug column. The filter and diagnosis hand-offs moved to the bottom of the page, which is why the v15 filter prefill was kept. **176 passed, 8 skipped.** |
 | **v15** | **A clinical sign in search now opens the filter tool, not the diagnosis tool.** Pointing it at `?sign={id}` on the diagnosis page was a dead end dressed as a hand-off: `InitialDiagnosisRequest` requires a species and `min:3` signs, so the form arrived holding one sign and could not be submitted at all. The filter tool is the sign's real home — it asks "what could cause this sign?", and its minimum is one, so results are there on arrival. `FilterController::index()` gained an `initialSignTokens` prefill in both parts, seeded into the Alpine picker's `tokens` rather than rendered beside it, so a prefilled sign is an ordinary token: removable, and posted with the rest. The diagnosis prefill still works and still accepts `?sign=`; it is just no longer what a search result points at. **164 passed, 8 skipped.** |

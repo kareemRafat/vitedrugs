@@ -6,6 +6,7 @@ use App\Http\Controllers\Poultry\DiagnosticController;
 use App\Http\Controllers\Poultry\DiseaseController;
 use App\Http\Controllers\Poultry\FilterController;
 use App\Http\Controllers\Poultry\PoultryLandingController;
+use App\Http\Controllers\Poultry\ProductController;
 use App\Http\Controllers\Poultry\SignController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -29,6 +30,8 @@ Route::group([
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('poultry.filter.suggestions');
 
         Route::get('compare', CompareController::class)->name('poultry.comparison');
+
+        Route::get('products', ProductController::class)->name('poultry.products.index');
 
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('poultry.diseases.show');
 
