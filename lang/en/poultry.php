@@ -49,6 +49,10 @@ return array_replace_recursive($shared, [
                 'title' => 'Global Search',
                 'description' => 'One box across diseases, clinical signs, bird species and products, with suggestions as you type and tolerance for near-misses.',
             ],
+            'compare' => [
+                'title' => 'Disease Comparison',
+                'description' => 'Put up to four bird diseases side by side to see which signs tell them apart and which signs they all share.',
+            ],
         ],
 
         'stats_heading' => 'Poultry knowledge base at a glance',

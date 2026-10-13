@@ -12,12 +12,14 @@
             'diagnosis' => route('poultry.diagnosis'),
             'filter' => route('poultry.filter'),
             'search' => route('poultry.search'),
+            'compare' => route('poultry.comparison'),
         ];
 
         $serviceIcons = [
             'diagnosis' => 'stethoscope',
             'filter' => 'sliders-horizontal',
             'search' => 'search',
+            'compare' => 'columns-3',
         ];
 
         $statIcons = [

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Knowledge\SearchController;
+use App\Http\Controllers\Poultry\CompareController;
 use App\Http\Controllers\Poultry\DiagnosticController;
 use App\Http\Controllers\Poultry\DiseaseController;
 use App\Http\Controllers\Poultry\FilterController;
@@ -26,6 +27,8 @@ Route::group([
         Route::get('filter/results', [FilterController::class, 'showResults'])->name('poultry.filter.results');
         Route::post('filter/results', [FilterController::class, 'store'])->name('poultry.filter.results.store');
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('poultry.filter.suggestions');
+
+        Route::get('compare', CompareController::class)->name('poultry.comparison');
 
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('poultry.diseases.show');
 

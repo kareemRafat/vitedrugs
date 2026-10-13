@@ -130,7 +130,6 @@ return [
         'companies' => 'Companies',
         'blog' => 'Blog',
         'search' => 'Search',
-        'sidebar_label' => 'Sidebar',
         'dashboard' => 'Dashboard',
         'home' => 'Home',
         'global_search' => 'Global Search',

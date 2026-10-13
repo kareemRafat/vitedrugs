@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Knowledge\SearchController as KnowledgeSearchController;
+use App\Http\Controllers\LargeAnimals\CompareController;
 use App\Http\Controllers\LargeAnimals\DiagnosticController;
 use App\Http\Controllers\LargeAnimals\DiseaseArticleController;
 use App\Http\Controllers\LargeAnimals\DiseaseController;
@@ -36,9 +37,7 @@ Route::group([
         Route::post('filter/results', [FilterController::class, 'store'])->name('large-animals.filter.results.store');
         Route::get('filter/suggestions', [FilterController::class, 'suggestions'])->name('large-animals.filter.suggestions');
 
-        Route::get('compare', function () {
-            return view('large-animals.comparison.index');
-        })->name('large-animals.comparison');
+        Route::get('compare', CompareController::class)->name('large-animals.comparison');
 
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('large-animals.diseases.show');
         Route::get('diseases/{slug}/article', [DiseaseArticleController::class, 'show'])->name('large-animals.diseases.article');

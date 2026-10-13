@@ -130,7 +130,6 @@ return [
         'companies' => 'الشركات',
         'blog' => 'المدونة',
         'search' => 'بحث',
-        'sidebar_label' => 'الشريط الجانبي',
         'dashboard' => 'لوحة التحكم',
         'home' => 'الرئيسية',
         'global_search' => 'بحث شامل',

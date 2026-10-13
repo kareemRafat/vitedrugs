@@ -280,6 +280,16 @@ return [
         'select_placeholder' => 'Choose a disease...',
         'no_selection' => 'No diseases selected',
         'no_selection_desc' => 'Choose at least 2 diseases to start comparing.',
+        'organs' => 'Affected Organs',
+        'susceptibility' => 'Host Susceptibility',
+        'organisms' => 'Microorganisms',
+        'products' => 'Drugs That Treat It',
+        'legend' => 'Rows are grouped. Findings only one disease has are the differentiators; findings every disease has cannot tell them apart.',
+        'groups' => [
+            'unique' => 'Unique to one disease',
+            'partial' => 'Shared by some',
+            'shared' => 'Shared by all — cannot tell them apart',
+        ],
     ],
 
     'disease' => [

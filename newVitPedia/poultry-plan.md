@@ -1,9 +1,9 @@
 # Poultry Section Plan — Vetpedia
 
-> **Status:** v17 — **Phases 1, 2, 4 and 5 built; Phase 6 partially; Phase 3 partially.**
-> Phase 1: 50/57 · Phase 2: 9/11 · Phase 3: 5/15 · Phase 4: 12/17 · Phase 5: 11/12 · Phase 6: 7/12
+> **Status:** v18 — **Phases 1, 2, 4, 5 and 7 built; Phase 6 partially; Phase 3 partially.**
+> Phase 1: 50/57 · Phase 2: 10/11 · Phase 3: 5/15 · Phase 4: 12/17 · Phase 5: 11/12 · Phase 6: 7/12 · Phase 7: 12/12
 > **Date:** 2026-10-13
-> **Supersedes:** v1–v16
+> **Supersedes:** v1–v17
 
 ---
 
@@ -1152,21 +1152,114 @@ search *works* but covers 1% of the diseases.
 glance — shared symptoms, unique symptoms, affected organs, age. It saves opening several pages and
 comparing from memory.
 
+> **Built at v18 on real `/poultry/compare` and `/large-animals/compare` routes.** Three of the tasks
+> below were rewritten against the data and one was dropped; the reasons are recorded rather than
+> left implicit in the diff.
+
 ### Tasks
 
-- [ ] Adapt the existing `⚡disease-compare-builder` for poultry rather than writing a new one
-- [ ] Restrict the disease picker to poultry diseases
-- [ ] Support 2 to 4 diseases
-- [ ] Build the side-by-side table
-- [ ] Show symptoms shared by all selected — these cannot tell them apart
-- [ ] Show unique symptoms per disease — these are the differentiators
-- [ ] Compare affected organs (`important_organs_affected`) and age groups
-- [ ] Sync selections to the URL via the URL attribute so a comparison can be shared
-- [ ] Add remove and clear-all controls
-- [ ] Add per-column search within the builder
-- [ ] Horizontal scroll on mobile
-- [ ] Show a note explaining why shared signs do not help distinguish
-- [ ] Tests: 2-way, 4-way, over-limit attempts, clear
+- [x] Adapt the existing `⚡disease-compare-builder` for poultry rather than writing a new one — **one shared SFC, not a copy.** Moved from `app/components/large-animals/` to `app/components/knowledge/`, so it resolves as `knowledge.disease-compare-builder` and is no longer named after one part. §9.19 applies: two copies of a 500-line matrix builder is how they drift.
+- [x] Restrict the disease picker to poultry diseases — **and the loader, and the setter.** See below.
+- [x] Support 2 to 4 diseases — a fifth is **refused, not truncated**: silently dropping it would leave the reader comparing something other than what they asked for.
+- [x] Build the side-by-side table
+- [x] Show symptoms shared by all selected — these cannot tell them apart — **as a group, not as a flag.** See below.
+- [x] Show unique symptoms per disease — these are the differentiators — **listed first**, because a finding only one disease has is the entire reason to open the page.
+- [x] Compare affected organs (`important_organs_affected`) and age groups — **split, and both rewritten.** Age groups have no table (§1.4); organs read the payload and the tab stays hidden until the import lands. See below.
+- [x] Sync selections to the URL via the URL attribute so a comparison can be shared — **`?diseases[]=<slug>`.** Four `#[Url(as: 'disease1')]` integer params became one slug array. Old `?disease1=<ulid>` bookmarks are ignored rather than redirected; a stale bookmark degrades to an empty comparison at 200, the same treatment the v15 prefill parameters get.
+- [x] Add remove and clear-all controls — **removal closes the gap.** The table's columns come from the selection in order, so an empty slot in the middle would render as an empty column and read as "these diseases share nothing".
+- [x] Add per-column search within the builder
+- [x] Horizontal scroll on mobile — `overflow-x-auto` on the table, as before.
+- [x] Show a note explaining why shared signs do not help distinguish — the legend line plus a labelled group header on every `shared` group.
+- [x] Tests: 2-way, 4-way, over-limit attempts, clear — **`DiseaseComparisonTest`, 27.** Rewritten in place rather than added alongside, since the file already tested this page against an API that no longer exists.
+
+### The comparison was reading the wrong source
+
+Every matrix read `diseases.knowledge_payload`. On the live database:
+
+| | |
+|---|---|
+| Poultry diseases | 151 |
+| …carrying a `knowledge_payload` | **2** |
+| …carrying `important_organs_affected` | **0** |
+
+A payload-only matrix renders **empty for 149 of 151 diseases**. The relational pivot is populated:
+
+| Relational source | Diseases covered |
+|---|---|
+| `disease_clinical_sign` → findings typed `sign` | 159 |
+| → findings typed `lesion` | 148 |
+| `disease_host_species` | 384 rows |
+| `disease_product` | 20 |
+
+Signs and lesions are the **same relation** — `clinical_signs` is a layer over `findings`, and the dump imported gross lesions into the same table with `findings.ontology_type = 'lesion'` (§4.1). They are split by reading that column. `Disease::signItems()` and `Disease::lesionItems()` are the two places the question is asked, and the payload is merged on top for fields that have no table at all.
+
+### Four things found while building it
+
+**1. The picker was unscoped — the same defect class as the search page.** `searchQuery()` ran
+`Disease::where('name','like',…)` with no domain filter, so `/large-animals/compare` offered
+**151 poultry diseases**. Scoping is now applied in three places, not one: the picker query, the
+loader, and — the one that was nearly missed — `addDisease()`. Filtering only at the loader is not
+enough, because a foreign slug would still occupy one of the four slots, and four crafted calls
+would fill the comparison with nothing at all.
+
+**2. `findings.ontology_type` is nullable, and matching `'sign'` dropped Pyrexia.** The curated
+signs — **Pyrexia**, **Inappetence**, **Hemorrhagic diarrhea** — carry `NULL` on both
+`ontology_type` and `category`. They are the most common signs in the clinical vocabulary and they
+were falling out of *both* matrices, silently, with no error. The rule is now to **exclude** lesions
+rather than match a clinical value: a post-mortem finding is explicitly typed `lesion`, anything not
+typed as one is a clinical observation. Pinned by a test, because it is exactly the kind of
+assumption that breaks without failing.
+
+**3. "Differs" was not the question the plan asked.** The old matrix had one flag — *not all equal*.
+The plan asks for *shared by all* and *unique to one*, which are different questions and neither is
+answered by that flag. Every row is now classified into `unique` / `partial` / `shared`, with a
+labelled group header, ordered `unique → partial → shared`. Group headers carry `has_diff` so a
+group that is identical across every column disappears with the "differences only" toggle instead of
+leaving a label over nothing.
+
+> **`partial` is unreachable with two diseases** — a finding is then either in both or in one. It
+> needs three. Worth stating because the two-way test cannot cover it, and the practical case that
+> matters ("these two look alike, what tells them apart?") is a three-way question.
+
+**4. The organs substitute did not work, and was removed.** The plan asks for
+`important_organs_affected`, which is populated for zero poultry diseases today. Deriving organs from
+`clinicalSigns.anatomical_structure` looked like the obvious replacement and **was built** — but
+measured on the live data only **27 of 1,109** sign rows carry an anatomy, covering **2 of 151**
+diseases. A tab built on 2 of 151 records is worse than no tab. Organs now read the payload like
+every other payload field: **152 of the 154 source documents** have the key populated and it simply
+has not been imported (§1.6). The tab is hidden today and **needs no code change when the import
+runs**. It is a flat string list rather than a list of objects, which is why it reads through
+`payloadList()` and not `payloadItems()`.
+
+### What the page compares now
+
+| Axis | Source | Status |
+|---|---|---|
+| Overview — etiology, host species, susceptibility, microorganisms, zoonotic, notifiable, OIE | `disease_classifications`, `disease_host_species`, `disease_microorganism` | ✅ works |
+| Treating drugs | `disease_product` | ✅ new |
+| Clinical signs | relational pivot + payload | ✅ works |
+| Gross lesions | relational pivot + payload | ✅ works |
+| Organs | `knowledge_payload.important_organs_affected` | ⏳ hidden until the bulk import |
+| Diagnosis · Treatment · Prevention · References | payload only | ⏳ hidden until the bulk import |
+
+**Dropped:** age groups (no table — §1.4) and differentials (`differential_syndrome_disease` is
+**0 rows**, so a differential tab could never appear). Host **susceptibility** replaces age: it is
+read off `disease_host_species.susceptibility` and reported at the highest level recorded, because
+one host being highly susceptible is the finding that matters, not an average across a dozen.
+It is a three-value vocabulary — `moderate` / `high` / `susceptible` — displayed headline-cased
+rather than translated, matching how `etiology_type` is already rendered raw in the column card.
+
+> ⚠️ **Susceptibility is untranslated on the Arabic page.** The three values come from the database,
+> not from a lang file. Translating them needs a native speaker, as does the rest of this file's
+> Arabic.
+
+**A tab with no rows is not rendered at all** rather than shown empty. Four of the seven axes are
+payload-only and the payload is 2-of-151 imported, so an empty panel would be the page's dominant
+impression. An absent tab is honest; an empty one looks broken.
+
+**Not changed:** the page still uses `<x-large-animals.page-hero>`, which reads like a misnomer on
+`/poultry` but is what every shared part view uses (`diagnosis/*`, `filter/*`) — same reasoning as
+v14.
 
 ---
 
@@ -1313,7 +1406,7 @@ place, so a vet reading about a disease can go straight to what treats it.
 
 | Version | Change |
 |---|---|
-| **v17** | **A canonical sign name is not unique, and the page was resolving it to one record.** `ClinicalSign` is a finding plus an anatomy plus a modifier, and five names are recorded twice on the poultry side — anemia, dehydration, depression, diarrhea, weight loss. Consequences, all verified against the live data: `/poultry/search` listed **Depression twice pointing at one URL**, and the page behind it resolved with `first()`, which is ordered by id and so always chose the *smaller* record — depression showed **11 of ~49** diseases, anemia **1 of 19**. A name now resolves to a *set* of records, the page presents the concept and unions their diseases one row per disease (heaviest weight wins, flags OR-ed), and the search collapses with a config-driven `dedupe_by` applied after scoring and before the limit so the cap and badge count concepts. **The large-animals half was already correct — zero duplicates there — and is now covered by a test, which was the actual gap behind the v16 request.** URLs keep `%20`; recorded as cosmetic. **180 passed, 8 skipped.** |
+| **v18** | **Phase 7 built: `/poultry/compare`, and the same leak fixed on `/large-animals/compare`.** One shared SFC moved to `app/components/knowledge/`, replacing a 491-line large-animals-only component whose picker ran `Disease::where('name','like',…)` with no domain filter and offered **151 poultry diseases** on the large-animals page — the same defect class as the unscoped search page. Scoping now applies in three places, not one: the picker, the loader, and `addDisease()`, because a foreign slug filtered only at the loader would still occupy one of the four slots. **The component read `knowledge_payload`, which 2 of 151 poultry diseases carry** — every matrix would have rendered empty. Signs and lesions now come from the relational pivot (159 and 148 diseases), split by `findings.ontology_type`; the payload merges on top. Matching `'sign'` exactly dropped **Pyrexia**, **Inappetence** and **Hemorrhagic diarrhea**, whose `ontology_type` is `NULL` — the rule is now to exclude lesions rather than match a clinical value. The plan's *"shared by all"* and *"unique to one"* are real questions and neither is answered by the old single `differs` flag, so rows are grouped `unique → partial → shared` with labelled headers; **`partial` is unreachable with two diseases** and needed its own three-way test. Selection is `?diseases[]=<slug>` instead of four integer params. **The organs substitute was built and then removed** — deriving from `anatomical_structure` looked right but only 27 of 1,109 sign rows carry an anatomy, covering 2 of 151 diseases; organs now read `important_organs_affected`, which is populated in **152 of 154 source documents** and simply not imported yet, so the tab is hidden and needs no code change when it lands. Age groups dropped (no table), differentials dropped (0 rows), susceptibility added in their place. **`DiseaseComparisonTest` rewritten in place, 27 tests. 201 passed, 8 skipped.** | **A canonical sign name is not unique, and the page was resolving it to one record.** `ClinicalSign` is a finding plus an anatomy plus a modifier, and five names are recorded twice on the poultry side — anemia, dehydration, depression, diarrhea, weight loss. Consequences, all verified against the live data: `/poultry/search` listed **Depression twice pointing at one URL**, and the page behind it resolved with `first()`, which is ordered by id and so always chose the *smaller* record — depression showed **11 of ~49** diseases, anemia **1 of 19**. A name now resolves to a *set* of records, the page presents the concept and unions their diseases one row per disease (heaviest weight wins, flags OR-ed), and the search collapses with a config-driven `dedupe_by` applied after scoring and before the limit so the cap and badge count concepts. **The large-animals half was already correct — zero duplicates there — and is now covered by a test, which was the actual gap behind the v16 request.** URLs keep `%20`; recorded as cosmetic. **180 passed, 8 skipped.** |
 | **v16** | **A clinical sign now has its own page.** The search row has been repointed twice — diagnosis (a dead end: that form needs a species and `min:3` signs and could not be submitted with one sign), then filter (correct but one level later than needed), and now `GET {part}/signs/{canonical_name}`. The page shows the sign's anatomy, body system, stage, modifier and finding, then every disease carrying it with its pivot weight and its pathognomonic / required / specific flags, ordered by weight so the page agrees with the diagnosis engine about the strongest match. Part scoping is a `whereHas` through `diseases` rather than a column, so a cross-domain sign appears on both pages with only its own diseases, and a single-domain sign on the other part's URL is a 404. Routed by `canonical_name` because `clinical_signs` has no slug column. The filter and diagnosis hand-offs moved to the bottom of the page, which is why the v15 filter prefill was kept. **176 passed, 8 skipped.** |
 | **v15** | **A clinical sign in search now opens the filter tool, not the diagnosis tool.** Pointing it at `?sign={id}` on the diagnosis page was a dead end dressed as a hand-off: `InitialDiagnosisRequest` requires a species and `min:3` signs, so the form arrived holding one sign and could not be submitted at all. The filter tool is the sign's real home — it asks "what could cause this sign?", and its minimum is one, so results are there on arrival. `FilterController::index()` gained an `initialSignTokens` prefill in both parts, seeded into the Alpine picker's `tokens` rather than rendered beside it, so a prefilled sign is an ordinary token: removable, and posted with the rest. The diagnosis prefill still works and still accepts `?sign=`; it is just no longer what a search result points at. **164 passed, 8 skipped.** |
 | **v14** | **Phase 6 parity with `/drugs/search`; deviation 5 corrected.** v13 recorded that the page "matched drugs exactly". It matched on the *form* and not on the *results*, and the difference was invisible in a diff because the drugs page was never opened beside it. Four gaps closed: buckets paginate on their own `{bucket}_page` key at 10 per page instead of silently truncating at 20; the badge counts the bucket instead of the page, so it stopped reporting the cap as if it were the total; the products bucket matches on manufacturer, active ingredient and disease name as the drugs page does, via a new `relations` key folded into the LIKE pass with part-scoping unchanged; empty buckets are hidden rather than rendered as "no matching items" cards. The near-miss pass — which fired for every short bucket, so up to 14,000 models hydrated per request — now runs at 500 rows, only while there is no full page to show, and selects just the columns it reads. **160 passed, 8 skipped.** |

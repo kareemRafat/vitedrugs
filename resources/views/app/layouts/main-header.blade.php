@@ -35,6 +35,7 @@
                     @case('poultry')
                         <a href="{{ route('poultry.diagnosis') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.diagnosis*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.diagnosis*')])>{{ __('poultry.nav.diagnosis') }}</a>
                         <a href="{{ route('poultry.filter') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.filter'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.filter')])>{{ __('poultry.nav.filter') }}</a>
+                        <a href="{{ route('poultry.comparison') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.comparison*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.comparison*')])>{{ __('poultry.nav.comparison') }}</a>
                     @break
 
                     @default
@@ -187,29 +188,14 @@
         </button>
     </div>
 
-    <div class="px-5 py-4 border-b border-default-medium dark:border-slate-700">
-        <p class="px-3 pb-2 text-xs font-semibold text-body uppercase tracking-wider dark:text-slate-400">{{ __('messages.sidebar_label') }}</p>
-        <div class="grid grid-cols-3 gap-1">
-            @foreach ($partTabs ?? [] as $key => $tab)
-                <a href="{{ route($tab['route']) }}" onclick="toggleMobileMenu()"
-                    @class(['flex items-center justify-center px-2 py-2 text-sm font-semibold rounded-base transition-colors duration-150', 'bg-brand text-white' => ($currentPart ?? 'large-animals') === $key, 'bg-neutral-secondary-soft text-body dark:text-slate-300 dark:bg-slate-700' => ($currentPart ?? 'large-animals') !== $key])>
-                    {{ $tab['label'] }}
-                </a>
-            @endforeach
-        </div>
-    </div>
+    {{-- Two "Sidebar" sections used to sit here, each an empty grid.
 
-    <div class="px-5 py-4 border-b border-default-medium dark:border-slate-700">
-        <p class="px-3 pb-2 text-xs font-semibold text-body uppercase tracking-wider dark:text-slate-400">{{ __('messages.sidebar_label') }}</p>
-        <div class="grid grid-cols-3 gap-1">
-            @foreach ($partTabs ?? [] as $key => $tab)
-                <a href="{{ route($tab['route']) }}" onclick="toggleMobileMenu()"
-                    @class(['flex items-center justify-center px-2 py-2 text-sm font-semibold rounded-base transition-colors duration-150', 'bg-brand text-white' => ($currentPart ?? 'large-animals') === $key, 'bg-neutral-secondary-soft text-body dark:text-slate-300 dark:bg-slate-700' => ($currentPart ?? 'large-animals') !== $key])>
-                    {{ $tab['label'] }}
-                </a>
-            @endforeach
-        </div>
-    </div>
+         They iterated `$partTabs` / `$currentPart`, which are defined nowhere in
+         the application — not in SetPartTheme, not in a controller, not in this
+         layout. The `?? []` guard on the loop swallowed the failure, so each
+         rendered as a heading with nothing under it, twice, on every mobile
+         page. A part-switcher would be a real feature rather than a copy fix;
+         until one exists, the drawer opens straight onto the tool links. --}}
 
     <div class="px-5 py-5 space-y-6 overflow-y-auto">
         <div class="space-y-1">
@@ -253,6 +239,10 @@
                     <a href="{{ route('poultry.filter') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('poultry.filter'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('poultry.filter')])>
                         <x-lucide-sliders-horizontal class="w-5 h-5" />
                         {{ __('poultry.nav.filter') }}
+                    </a>
+                    <a href="{{ route('poultry.comparison') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('poultry.comparison*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('poultry.comparison*')])>
+                        <x-lucide-columns-3 class="w-5 h-5" />
+                        {{ __('poultry.nav.comparison') }}
                     </a>
                 @break
 

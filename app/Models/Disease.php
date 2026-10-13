@@ -6,6 +6,7 @@ use App\Models\Concerns\HasDomain;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\DifferentialSyndrome;
 use App\Models\LargeAnimals\DiseaseClassification;
+use App\Models\LargeAnimals\Finding;
 use App\Models\LargeAnimals\HostSpecies;
 use App\Models\LargeAnimals\Microorganism;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -73,6 +74,68 @@ class Disease extends Model
                 'is_required',
                 'is_pathognomonic',
             ]);
+    }
+
+    /**
+     * Clinical signs and gross lesions are the same relation.
+     *
+     * `clinical_signs` is a layer over `findings` — a sign is a finding plus an
+     * anatomical structure plus a modifier — and the dump imported gross lesions
+     * into the same table with `findings.ontology_type = 'lesion'` (§4.1). So
+     * "the signs of this disease" and "the lesions of this disease" are the same
+     * pivot read through `finding.ontology_type`, which splits them.
+     *
+     * Reading the pivot directly rather than the `knowledge_payload` is what
+     * makes this usable across the whole section: signs reach 159 diseases and
+     * lesions 148, while only 2 of the 151 poultry diseases carry a payload at
+     * all. `finding` must be eager-loaded or this is one query per sign.
+     *
+     * @return array<string, string> Lower-cased canonical name => display name.
+     */
+    public function signItemsOfType(string $ontologyType): array
+    {
+        return $this->clinicalSigns
+            ->filter(fn (ClinicalSign $sign): bool => $sign->finding?->ontology_type === $ontologyType)
+            ->mapWithKeys(fn (ClinicalSign $sign): array => [
+                mb_strtolower(trim((string) $sign->canonical_name)) => $sign->localized_display_name,
+            ])
+            ->all();
+    }
+
+    /**
+     * @return array<string, string>
+     *
+     * @see signItemsOfType()
+     */
+    public function lesionItems(): array
+    {
+        return $this->signItemsOfType(Finding::ONTOLOGY_LESION);
+    }
+
+    /**
+     * Every finding that is not a post-mortem lesion.
+     *
+     * Matched by *excluding* lesions rather than by matching `'sign'` exactly,
+     * because `findings.ontology_type` is nullable — and is null on the curated
+     * signs: **Pyrexia**, **Inappetence** and **Hemorrhagic diarrhea** on the
+     * poultry side today. Matching `'sign'` silently dropped all three, pyrexia
+     * being the single most common sign in the clinical vocabulary.
+     *
+     * A post-mortem finding is explicitly typed `lesion`; anything not typed as
+     * one is a clinical observation. That is the assumption encoded here.
+     *
+     * @return array<string, string>
+     *
+     * @see signItemsOfType()
+     */
+    public function signItems(): array
+    {
+        return $this->clinicalSigns
+            ->filter(fn (ClinicalSign $sign): bool => $sign->finding?->ontology_type !== Finding::ONTOLOGY_LESION)
+            ->mapWithKeys(fn (ClinicalSign $sign): array => [
+                mb_strtolower(trim((string) $sign->canonical_name)) => $sign->localized_display_name,
+            ])
+            ->all();
     }
 
     public function hostSpecies(): BelongsToMany
