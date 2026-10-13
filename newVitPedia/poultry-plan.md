@@ -1,8 +1,9 @@
 # Poultry Section Plan — Vetpedia
 
-> **Status:** v10 — **Phase 1 built, Phase 2 built.** Phase 1: 50/57 ticked. Phase 2: 8/11 ticked.
+> **Status:** v11 — **Phases 1, 2, 4 and 5 built; Phase 3 partially.**
+> Phase 1: 50/57 · Phase 2: 9/11 · Phase 3: 5/15 · Phase 4: 12/17 · Phase 5: 11/12
 > **Date:** 2026-10-13
-> **Supersedes:** v1–v9
+> **Supersedes:** v1–v10
 
 ---
 
@@ -41,9 +42,9 @@ Tasks use markdown checkboxes. Tick a box when the task is genuinely done.
 | Path | Contents |
 |---|---|
 | `app/Filament/Resources/Poultry/` | **`.gitkeep` only** |
-| `app/Models/Poultry/` | **empty** |
-| `app/Models/LargeAnimals/` | **empty** |
-| `app/Http/Controllers/Poultry/` | `PoultryLandingController` only |
+| `app/Models/Poultry/` | **empty** — no Poultry-specific models; the shared tables are scoped by `domain` instead (§3.2) |
+| `app/Models/LargeAnimals/` | **24 models** — `HostSpecies` · `ClinicalSign` · `Finding` · `BodySystem` · `AnatomicalStructure` · `DiseaseClassification` · `Microorganism` and others |
+| `app/Http/Controllers/Poultry/` | `PoultryLandingController` · `DiagnosticController` · `FilterController` · `DiseaseController` |
 
 ### 0.3 Infrastructure already scaffolded ✅
 
@@ -426,6 +427,13 @@ Icons via Blade components: `<x-lucide-search />` (`fuzzyfox/lucide-for-laravel`
 | 16 | Bulk JSON load | **Multi-file upload with slug auto-matching** on that same page — one operation, not 154 |
 | 17 | SQL dump load | **Extend the 36 existing seeders** — no new commands, no new services |
 | 18 | Merge rule A↔B | ✅ **CLOSED — not needed.** Different destinations, never contends |
+| 19 | Page views | **Shared, not copied.** `resources/views/{diagnosis,filter}/` serve both parts, parameterised by `$part`. Copying ~500 lines ×2 per tool would guarantee drift |
+| 20 | Engine services | **Parameterised, not subclassed.** `DiagnosisService::rank()` and `FilterService::filter()` take a **required** `$domain`. There is no `Poultry\DiagnosisService` — a second copy of the scoring maths is the one thing that must not diverge |
+| 21 | Species scoping | `host_species` has **no `domain` column** — it uses `taxonomy_group`. Part membership is mapped explicitly in `config/vetpedia.php` → `parts[].taxonomy_groups`, listing every group rather than excluding poultry with `!=` |
+| 22 | Sign scoping | `clinical_signs` has no domain either. A sign belongs to a part when it is **reachable through at least one disease in that part**, via `ClinicalSign → diseases.domain` |
+| 23 | Translation files | **Layered, not duplicated.** `lang/*/poultry.php` starts from `large-animals.php` via `array_replace_recursive` and overrides only bird-specific wording (~20 keys). A key added upstream arrives for free |
+| 24 | Share links | **Versioned and domain-tagged.** Token `VERSION` = 2 with a `domain` field, rejected on mismatch. Both services are base64url-encoded |
+| 25 | Large-animal tools | Now **scoped to `large_animal`** — 169 diseases → 18. A deliberate, visible behaviour change; see §2.1 |
 
 ---
 
@@ -598,6 +606,12 @@ can now be corrected.
 > unscoped, so an editor who has filtered to poultry can still attach a large-animal host species to
 > a poultry disease through the relation manager. Closing it means either a domain filter on those
 > resources or a cluster — a decision not taken yet.
+>
+> **Update at v11 — still open, and now slightly more awkward to ignore.** `HostSpecies::scopeForPart()`
+> now exists, and the public poultry pages use it, so the *reader* side of this is closed. But the
+> **editor-facing hole is untouched**: nothing in the Filament relation manager calls the scope, so an
+> admin can still cross-attach. Closing it is now a small, obvious change rather than an open question.
+> Recorded here rather than silently fixed, because it is Phase 1 admin work and this was frontend work.
 
 ### 1.9 Unplanned repair — `ClinicalSignSeeder` (completes §1.4)
 
@@ -652,15 +666,15 @@ clear map of what is inside and let them jump straight to the tool they need. It
 - [x] Build the landing view under the Poultry view namespace
 - [x] Add hero section with title and one-line description, Arabic and English — added `lang/en/poultry.php` and `lang/ar/poultry.php`; the view previously hardcoded English
 - [x] Add a stats strip: diseases, findings, lesions, species — all read live, never hardcoded — verified live: **151 · 1,075 · 640 · 10**
-- [ ] Add a card grid linking to each section — **only 2 cards, both pointing at `large-animals/*`.** See §2.1
+- [x] Add a card grid linking to each section — **2 cards, now pointing at `poultry/*` rather than `large-animals/*`.** See §2.1
 - [x] Hide cards for sections not yet built — no dead links — asserted by test: the page must not contain `poultry/diseases`, `/compare`, `/lesions`, `/products` or `/search`
 - [x] Use Flowbite v4 semantic tokens only
 - [x] Add Lucide icons to each card
 - [x] Responsive: 1 column mobile, 2 tablet, 3–4 desktop
-- [ ] Verify the RTL layout for Arabic — **asserted `dir="rtl"` and that the Arabic strings render; nobody has looked at it.** Needs a human eye before launch
-- [ ] Confirm the green part theme and correct logo/colours render — **not verified.** `SetPartTheme` does resolve `poultry` from the first URL segment, so the emerald theme should apply, but it has not been rendered and checked
+- [ ] Verify the RTL layout for Arabic — **asserted `dir="rtl"` and that the Arabic strings render; nobody has looked at it.** Re-checked at v11 and still no human eye on it: `/ar/poultry/diagnosis` returns 200, renders `dir="rtl"`, and resolves **zero** unresolved translation keys, but layout and typography still need a person before launch
+- [ ] Confirm the green part theme and correct logo/colours render — **partially verified.** `/poultry/diagnosis` renders `data-part="poultry"`, so `SetPartTheme` resolves correctly. The **logo and colour choices themselves are still unrendered and unchecked by a human**
 
-### 2.1 Built as option B, and why that is a known defect
+### 2.1 The cross-part defect — CLOSED ✅
 
 Phase 2 was built before Phases 3–10, so **no `/poultry/*` section existed to link to**. Three
 options were weighed:
@@ -668,30 +682,56 @@ options were weighed:
 | | Approach | Outcome |
 |---|---|---|
 | **A** | Stats only, cards arrive with each phase | Honest but a near-empty page |
-| **B** ✅ | Link out to the working `large-animals` tools | Page is useful today, cards are cross-part |
-| **C** | Promote the routes to `/poultry/*` now | Re-scoping Phases 4 and 5 into Phase 2 |
+| **B** | Link out to the working `large-animals` tools | Page is useful today, cards are cross-part |
+| **C** ✅ | Promote the routes to `/poultry/*` now | Re-scoping Phases 4 and 5 into Phase 2 |
 
-**B was chosen.** It ships something usable without smuggling two phases into one.
+**B shipped first** so Phase 2 was useful before Phases 4 and 5 existed. **C has since been built**
+and B's defect is closed.
 
-> ⚠️ **The known defect.** Clicking *Differential Diagnosis* or *Clinical Filter* leaves the poultry
+> ⚠️ **The defect B created.** Clicking *Differential Diagnosis* or *Clinical Filter* left the poultry
 > section entirely. `SetPartTheme` resolves the theme from the **first URL segment**, so
-> `/large-animals/diagnosis` re-themes the whole page as Large Animals — heading, colours and all —
-> and there is no way back. A visible notice on the hub admits the tools are shared; it does not fix
-> the navigation. Fixing this properly means option C, and it is a large job:
->
-> - 6 routes, a new domain-scoped controller, and 3 copied views (~16 KB)
-> - **116 lang keys for diagnosis and 28 for filter, × 2 languages**
-> - Sign suggestions must be scoped to poultry-linked signs, and results to `domain = poultry`
+> `/large-animals/diagnosis` re-themed the whole page as Large Animals — heading, colours and all —
+> with no way back. A visible notice on the hub admitted the tools were shared; it did not fix the
+> navigation. The notice is now **deleted**, because it is no longer true.
 
-Two related bugs surfaced while scoping this, **both live on the Large Animals page today**:
+Two pre-existing bugs that the defect exposed were **live on the Large Animals page** and are now
+fixed on both sides:
 
-1. **`suggestions()` is unscoped.** It matches `display_name LIKE %q%` across all 1,109 clinical
-   signs, so a poultry user is offered large-animal signs today. Invisible only because the page
-   says "Large Animals".
-2. **Share links carry no domain.** `DiagnosisShareService::create()` stores `host_species_id` and
-   sign IDs and nothing else. A link made under Large Animals and opened under a future
-   `/poultry/diagnosis/results` would render large-animal results. Harmless while both parts are the
-   same page; a cross-part hole the moment they are split.
+1. **`suggestions()` was unscoped.** It matched `display_name LIKE %q%` across all 1,109 clinical
+   signs, so a poultry user was offered large-animal signs. Invisible only because the page said
+   "Large Animals". Both parts now filter through `diseases.domain` — verified live: *Hoof sloughing*
+   and *Interdigital vesicle* return nothing on `/poultry`, and *Ataxia* returns results on both
+   because it is genuinely linked to diseases in each.
+2. **Share links carried no domain.** A link made under Large Animals, opened under
+   `/poultry/diagnosis/results`, would have rendered large-animal results. Tokens are now versioned
+   and domain-tagged; a mismatch is rejected and the user is told the link expired.
+
+> **A third, latent bug surfaced while fixing the second.** `DiagnosisShareService::create()`
+> returned raw base64, which can contain `+`. In a query string `+` decodes as a space, so roughly
+> one token in 64 silently failed to decrypt. Both share services are now base64url-encoded.
+
+#### What C actually cost — four deviations from the estimate
+
+v10 estimated this as *"6 routes, a new domain-scoped controller, and 3 copied views (~16 KB) ·
+116 lang keys for diagnosis and 28 for filter, × 2 languages"*. All four numbers were wrong:
+
+| v10 estimated | Actually built | Why |
+|---|---|---|
+| 6 routes | **10** | the disease detail route was pulled forward from Phase 3 — without it every result link dead-ended back into Large Animals, which is the defect being fixed |
+| 1 controller | **3** (+1 shared trait) | `DiagnosticController`, `FilterController`, `DiseaseController`, plus `ScopesToSitePart` for the validation rules |
+| 3 copied views | **0 copied** | 5 views in `resources/views/{diagnosis,filter}/` are **shared** and parameterised by `$part` (see §9.19) |
+| 144 lang keys ×2, hand-written | **~20 overrides ×2** | `lang/*/poultry.php` starts from `large-animals.php` via `array_replace_recursive` and overrides only the wording that is wrong for birds (§9.23) |
+
+Copying was rejected because the diagnosis and filter views are ~500 lines each including two inline
+Alpine components; forking them would guarantee drift for no benefit.
+
+#### One deliberate behaviour change worth stating plainly
+
+**The large-animal tools are now scoped to `large_animal`.** Their diagnosis and filter results go
+from 169 diseases to 18. This is the point of the fix — the two parts are now symmetric — but it is a
+visible reduction on a previously-working page, so it is recorded here rather than left implicit in a
+tick. Large-animal users can no longer browse poultry diseases from the large-animal pages; that is
+what `/poultry` is for.
 
 ### 2.2 Judgement calls worth recording
 
@@ -718,23 +758,29 @@ payload — not just symptoms.
 is, which birds it affects, how old they are when it hits, which symptoms point to it, and what to do
 about it. Everything else on the site links into these pages.
 
+> ⏩ **Part of Phase 3 was built at v11, out of order.** Every row in a Phase 4 or Phase 5 result links
+> to a disease detail page. Without one, every link on those pages dead-ended back into
+> `/large-animals/diseases/{slug}` — re-theming the page as Large Animals, which is the exact defect
+> §2.1 was closing. So `Poultry\DiseaseController` and the detail route were pulled forward. The
+> **browse/list half of Phase 3 remains unbuilt** and is still the bulk of the remaining work here.
+
 ### Tasks
 
-- [ ] Add `Poultry\DiseaseController` mirroring `LargeAnimals\DiseaseController`
+- [x] Add `Poultry\DiseaseController` mirroring `LargeAnimals\DiseaseController` — ⏩ pulled forward at v11; resolves strictly against `domain = poultry`
 - [ ] Add the list route, paginated, alphabetised, filtered to `domain = poultry`
 - [ ] Add letter/group navigation for browsing 151 entries
 - [ ] Build the list view using the existing Large Animals disease card as the base
-- [ ] Add the detail route, resolved by slug, scoped to `domain = poultry`
-- [ ] Show: name, Arabic name, description, etiology, affected species, bird types, age groups, synonyms
-- [ ] Show the symptom list with each symptom's weight, pathognomonic and required flags
-- [ ] Visually distinguish pathognomonic and required symptoms
-- [ ] Extend `DiseaseArticleBuilder` to render the 8 new knowledge sections: gross lesions, microscopic lesions, field diagnosis clues, epidemiological clues, pathognomonic findings, differential diagnoses, morbidity/mortality, important organs
+- [x] Add the detail route, resolved by slug, scoped to `domain = poultry` — ⏩ pulled forward at v11; a large-animal slug is a **404** here, asserted by test
+- [ ] Show: name, Arabic name, description, etiology, affected species, bird types, age groups, synonyms — **partial.** The shared view renders name, Arabic name, description, etiology, affected species, zoonotic/notifiable/OIE classification, the knowledge-payload sections and related products. **`bird_types`, `age_groups` and `synonyms` are not shown** — the first two have no table (§1.4)
+- [x] Show the symptom list with each symptom's weight, pathognomonic and required flags
+- [x] Visually distinguish pathognomonic and required symptoms — three badges: pathognomonic, required, specific
+- [ ] Extend `DiseaseArticleBuilder` to render the 8 new knowledge sections: gross lesions, microscopic lesions, field diagnosis clues, epidemiological clues, pathognomonic findings, differential diagnoses, morbidity/mortality, important organs — **blocked on the bulk JSON import (§1.6); 2 of 151 diseases carry a payload**
 - [ ] Show the **treatment** section — ⚠️ note only 17 of 154 diseases have treatment data, so render a graceful empty state
 - [ ] Link each disease to the diagnosis tool, pre-loaded with its key symptoms
 - [ ] Link each disease to the drugs that treat it (Phase 9)
-- [ ] Add `404` handling for unknown slugs
+- [x] Add `404` handling for unknown slugs — via `firstOrFail`; asserted by test
 - [ ] Add Arabic names/descriptions for at least the top 20 diseases
-- [ ] Feature tests: list renders, detail renders, unknown slug 404s, large-animal slug rejected
+- [ ] Feature tests: list renders, detail renders, unknown slug 404s, large-animal slug rejected — **3 of 4 covered** at v11: detail renders, unknown slug 404s, large-animal slug rejected. **The list-render assertion waits on the list route**
 
 ---
 
@@ -749,25 +795,28 @@ The user has a sick bird and does not know what is wrong. They pick the bird typ
 they can see, and get a ranked list of the most likely diseases with a confidence level and an
 explanation of which symptoms drove the ranking.
 
+> **Built at v11 on the real `/poultry/diagnosis` routes.** The engine was not rewritten — see §9.20.
+> Every note below records what the live page actually does, not what was planned.
+
 ### Tasks
 
-- [ ] Adapt `LargeAnimals\DiagnosisService` into `Poultry\DiagnosisService`, scoped to `domain = poultry`
-- [ ] Keep the existing scoring approach — weight plus pathognomonic, required and specificity bonuses
-- [ ] Map the imported pivot flags onto the scoring correctly (see §1.2)
-- [ ] Add the species picker as step one — the 9 poultry species
-- [ ] Build the symptom picker grouped by body system, searchable, using the 458 clinical signs
-- [ ] Build the results view: ranked diseases with a confidence percentage
-- [ ] Show *why* each disease ranked where it did — which symptoms matched and how strongly
-- [ ] Show "key symptoms you did not select" — this is what makes the tool useful rather than a guessing game
-- [ ] Sync species and symptoms to the URL so results can be bookmarked and shared
-- [ ] Wire the URL state into the existing share mechanism
-- [ ] Handle the empty case — nothing selected yet
-- [ ] Handle the no-match case — symptoms matching no poultry disease
-- [ ] Add an age filter using the 179 age-group records
-- [ ] **Verify against the 45 `diagnostic_sessions`** — the engine must rank the same diseases in the same order
-- [ ] Fix whatever the verification reveals, re-run until it passes
-- [ ] Automated tests for ranking order, no-match path, empty path
-- [ ] Confirm Large Animals diagnosis still works unchanged
+- [x] Adapt `LargeAnimals\DiagnosisService` into `Poultry\DiagnosisService`, scoped to `domain = poultry` — **done, but not as a separate class.** `DiagnosisService::rank()` takes a **required** `$domain` and applies `->forDomain($domain)`. A `Poultry\DiagnosisService` subclass would have been a second copy of the scoring maths, which is exactly the thing that must not drift. Same for `FilterService` in Phase 5
+- [x] Keep the existing scoring approach — weight plus pathognomonic, required and specificity bonuses — **unchanged and verified live.** Worked example: Chicken + Ataxia + Head Tremors + Neck Tremors (each `weight 10`, pathognomonic, specific) scores **210** for *Avian Encephalomyelitis* against **70** for the runner-up → 100% vs 33%
+- [x] Map the imported pivot flags onto the scoring correctly (see §1.2) — **confirmed end-to-end against live data**, not just in unit tests
+- [x] Add the species picker as step one — **10 poultry species, not 9** (`taxonomy_group = 'poultry'`; see §2.2 for why 9 was the wrong figure)
+- [ ] Build the symptom picker grouped by body system, searchable, using the 458 clinical signs — **searchable ✅, grouped by body system ❌.** The large-animal picker was reused rather than rebuilt. Also note the sign count: **1,080 of 1,109 signs are poultry-linked**, so the "458 signs" figure in §2.2 was a dump-row count, not a reality
+- [x] Build the results view: ranked diseases with a confidence percentage — three tiers: primary ≥50%, secondary 30–49%, low support <30%
+- [x] Show *why* each disease ranked where it did — matched-signs column plus a match-score percentage (matched weight ÷ total disease weight)
+- [x] Show "key symptoms you did not select" — **this is what makes the tool useful rather than a guessing game.** Confirmed live: the Avian Encephalomyelitis run surfaces *Partial Leg Paralysis, Complete Leg Paralysis, Incoordination, Blindness, Lens Opacity*
+- [x] Sync species and symptoms to the URL so results can be bookmarked and shared
+- [x] Wire the URL state into the existing share mechanism — via the existing encrypted-token mechanism, no new infrastructure
+- [ ] Handle the empty case — nothing selected yet — **unreachable by design.** `InitialDiagnosisRequest` enforces `min:3` signs, so the form cannot be submitted empty. The refinement step's empty state covers the case that can actually happen
+- [x] Handle the no-match case — symptoms matching no poultry disease — empty state with guidance text
+- [ ] Add an age filter using the 179 age-group records — **no table exists**; `disease_age_groups` was dropped in Phase 1 (§1.4). Needs the data landing first
+- [ ] **Verify against the 45 `diagnostic_sessions`** — the engine must rank the same diseases in the same order — **still the largest unticked item in this phase**
+- [ ] Fix whatever the verification reveals, re-run until it passes — blocked by the line above
+- [x] Automated tests for ranking order, no-match path, empty path — `PoultryDiagnosticTest`, 11 tests: species scoping, ranking, large-animal exclusion, cross-part species rejection, cross-part sign rejection, suggestion scoping, share-link rejection, share-link round trip, detail page reachability, large-animal slug 404, and the large-animal → poultry redirect
+- [x] Confirm Large Animals diagnosis still works unchanged — **it works, and it is deliberately *changed*.** Large-animal results are now scoped to `large_animal`: 169 diseases → 18. See §2.1 for why that is the intent, not a regression. Verified live: signs *Pyrexia / Oral vesicle / Tongue vesicle* on Cattle rank *Foot and Mouth Disease* first
 
 ---
 
@@ -781,20 +830,23 @@ the diagnosis page.
 himself. The diagnosis page asks *"I have these symptoms, what is it?"*. This page asks *"I saw this
 symptom, what could cause it?"*. A farmer who spots one worrying sign but has no full picture uses this.
 
+> **Built at v11 on the real `/poultry/filter` routes**, sharing both the controller logic and the
+> views with Phase 4 — see §9.19 and §9.20.
+
 ### Tasks
 
-- [ ] Adapt `LargeAnimals\FilterController` and `FilterService` into Poultry equivalents
-- [ ] Build the symptom multi-select using the same 458 clinical signs
-- [ ] Support one symptom and several
-- [ ] Build the results view: every disease matching the selected symptoms
-- [ ] Show overlap — how many of a disease's symptoms the user selected out of its total
-- [ ] Sort by match strength
-- [ ] Link each result to the disease detail page
-- [ ] Add search by symptom name
-- [ ] Sync selections to the URL
-- [ ] Add empty state and no-results state
-- [ ] Reuse the Phase 4 results component rather than writing a second one
-- [ ] Feature tests: single symptom, multiple symptoms, no results
+- [x] Adapt `LargeAnimals\FilterController` and `FilterService` into Poultry equivalents — **parameterised, not duplicated.** `FilterService::filter()` takes a required `$domain`; `Poultry\FilterController` is a thin sibling of the large-animal one
+- [x] Build the symptom multi-select using the same 458 clinical signs — **1,080 poultry-linked signs** (§2.2's 458 was a dump-row count). Type-ahead search, minimum 2 characters
+- [x] Support one symptom and several — `min:1`
+- [x] Build the results view: every disease matching the selected symptoms
+- [ ] Show overlap — how many of a disease's symptoms the user selected out of its total — **partial.** Matched signs are shown as chips and results are **sorted by match count**, but the *"n of m"* ratio is not rendered
+- [x] Sort by match strength
+- [x] Link each result to the disease detail page — to `/poultry/diseases/{slug}`, the Phase 3 page pulled forward for exactly this reason
+- [x] Add search by symptom name
+- [x] Sync selections to the URL
+- [x] Add empty state and no-results state
+- [x] Reuse the Phase 4 results component rather than writing a second one — **one view tree serves both tools across both parts**
+- [x] Feature tests: single symptom, multiple symptoms, no results — `PoultryFilterTest`, 9 tests. Verified live: Chicken + *Ataxia* matches 13 poultry diseases; clearing the species raises the count and still returns no large-animal disease
 
 ---
 
@@ -962,13 +1014,43 @@ place, so a vet reading about a disease can go straight to what treats it.
 - **Run Pint** on every changed PHP file before finishing each phase.
 - **Dev server is on `127.0.0.1:8000`**, not port 80 — something else is bound to 80 locally.
 
+### 12.1 Notes added at v11
+
+- **`$part` is load-bearing — do not refactor it casually.** In the shared views `$part` is
+  simultaneously the **route-name prefix** and the **translation namespace**, because both
+  vocabularies happen to be spelled `large-animals` / `poultry`. §3.2 warns never to mix the
+  hyphenated and underscored forms; here they coincide *on purpose*, so one typo changes a URL and
+  its copy at the same time. Controllers pass `part` explicitly rather than reading the middleware's
+  session value, so a shared link cannot inherit the wrong part.
+- **Factories must be domain-deterministic.** `HostSpeciesFactory` used to randomise
+  `taxonomy_group`, which meant a large-animal test had roughly a **1-in-6 chance** of generating a
+  bird and failing for no visible reason. It now has explicit `->poultry()` / `->largeAnimals()`
+  states. `DiseaseFactory` gained `->poultry()` / `->largeAnimals()` / `->named()` — the last
+  because `diseases.name` and `diseases.slug` are both UNIQUE, so a test naming one disease
+  explicitly can still collide with another that rolled the same name. **If a test names one disease,
+  it must name every disease it creates:** every name in the factory's pool is a real veterinary
+  disease, so it is exactly the name a test reaches for, and the resulting failure is an intermittent
+  UNIQUE violation about one run in thirty rather than a clear error.
+- **Scoped validation matters as much as scoped queries.** The suggestions endpoints are scoped, but
+  validation runs separately and a hand-crafted POST can carry any id. `ScopesToSitePart` re-checks
+  both the species and every sign against the part, so a large-animal sign POSTed to
+  `/poultry/diagnosis` is rejected rather than silently scoring zero matches.
+- **`localeViewPath` is skipped on POST** (`httpMethodsIgnored` includes POST/PUT/PATCH/DELETE).
+  The refinement and results views render from a POST, so they never get the locale path registered.
+  Harmless under FPM — the view finder is rebuilt each request — but latent under **Octane**, where
+  it persists.
+- **One pre-existing UX bug found and fixed here:** `showResults` flashed a `warning` on an invalid
+  share link and redirected to the diagnosis index, but only the **filter** index rendered
+  `session('warning')`. The diagnosis page silently swallowed it.
+
 ---
 
 ## 13. Changelog
 
 | Version | Change |
 |---|---|
-| **v10** | Phase 2 hub built as option B: live scoped stats, EN/AR lang files, 2 cards. Recorded the cross-part navigation defect it creates, and two pre-existing bugs it exposed (unscoped sign suggestions, domain-less share links). |
+| **v11** | **Phases 4 and 5 built on real `/poultry/*` routes; §2.1 cross-part defect CLOSED.** Engines parameterised by domain rather than subclassed, views shared rather than copied, lang files layered rather than duplicated. Share tokens versioned and domain-tagged, which also surfaced a latent `+`-in-query-string bug. Phase 3's detail route pulled forward so result links do not dead-end into Large Animals. Large-animal tools now domain-scoped (169 → 18 diseases). **106 passed, 8 skipped.** |
+| v10 | Phase 2 hub built as option B: live scoped stats, EN/AR lang files, 2 cards. Recorded the cross-part navigation defect it creates, and two pre-existing bugs it exposed (unscoped sign suggestions, domain-less share links). |
 | v9 | Surfaced `domain` in the shared Disease/Species admin resources — it was invisible *and* unfixable, which made the §1.7 editor-isolation criterion fail rather than merely unticked. Added `HasDomain` trait and 6 tests. §1.8 records it. |
 | v8 | Phase 1 built and ticked. Recorded real counts, which corrected three plan figures. Documented the `ClinicalSignSeeder` repair that unblocked `db:seed`. |
 | v7 | Dropped Artisan commands and new services. Source A now loads via the 36 existing seeders; Source B via multi-file Filament upload with slug auto-matching. Merge rule **closed as not needed** (different destinations). |

@@ -1,4 +1,4 @@
-@props(['current' => 1])
+@props(['current' => 1, 'part' => 'large-animals'])
 
 @php
     $steps = [
@@ -36,7 +36,7 @@
                         'text-sm font-semibold leading-tight',
                         'text-heading dark:text-white' => $isActive,
                         'text-body dark:text-slate-400' => ! $isActive,
-                    ])>{{ __('large-animals.diagnosis.steps.' . $step['key']) }}</p>
+                    ])>{{ __($part.'.diagnosis.steps.' . $step['key']) }}</p>
                 </div>
             </div>
 
@@ -51,6 +51,6 @@
     </div>
 
     <p class="mt-4 pt-3 border-t border-default-medium text-xs text-body dark:text-slate-400">
-        {{ __('large-animals.diagnosis.step_of', ['current' => $current, 'total' => $total]) }}
+        {{ __($part.'.diagnosis.step_of', ['current' => $current, 'total' => $total]) }}
     </p>
 </div>

@@ -1,26 +1,41 @@
 @extends('app.layouts.master')
 
-@section('title', __('large-animals.diagnosis.title'))
+@php
+    // Shared by the large-animals and poultry controllers. $part doubles as both
+    // the route-name prefix and the translation namespace because the two
+    // vocabularies are spelled the same ('large-animals' / 'poultry').
+    $t = fn (string $key, array $replace = []): string => __($part.'.'.$key, $replace);
+@endphp
+
+@section('title', $t('diagnosis.title'))
 
 @section('content')
     <div class="space-y-4" x-data="diagnosisForm()">
         <x-large-animals.page-hero
-            :heading="__('large-animals.diagnosis.heading')"
-            :subtitle="__('large-animals.diagnosis.subtitle')"
-            :badge="__('large-animals.hero.badge.diagnosis')"
+            :heading="$t('diagnosis.heading')"
+            :subtitle="$t('diagnosis.subtitle')"
+            :badge="$t('hero.badge.diagnosis')"
             badgeIcon="stethoscope"
         />
-        <x-large-animals.stepper :current="1" />
+        <x-large-animals.stepper :current="1" :part="$part" />
 
-        <form method="POST" action="{{ route('large-animals.diagnosis.run') }}" @submit="onSubmit" class="bg-neutral-primary-soft rounded-base shadow-xs p-5 space-y-6 dark:bg-slate-800">
+        {{-- Flashed by the controller when a share link cannot be read. --}}
+        @if (session('warning'))
+            <div class="flex items-center gap-3 bg-danger-soft border border-danger-subtle text-fg-danger-strong text-sm rounded-base px-4 py-3 dark:bg-danger/20 dark:border-danger-subtle dark:text-red-400">
+                <x-lucide-alert-triangle class="w-5 h-5 shrink-0" />
+                <span>{{ session('warning') }}</span>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route($part.'.diagnosis.run') }}" @submit="onSubmit" class="bg-neutral-primary-soft rounded-base shadow-xs p-5 space-y-6 dark:bg-slate-800">
             @csrf
 
             <div>
                 <label for="host_species_id" class="block text-sm font-semibold text-heading dark:text-white mb-2">
-                    {{ __('large-animals.diagnosis.species_label') }} <span class="text-fg-danger-strong" aria-hidden="true">*</span>
+                    {{ $t('diagnosis.species_label') }} <span class="text-fg-danger-strong" aria-hidden="true">*</span>
                 </label>
                 <select id="host_species_id" name="host_species_id" required aria-required="true" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                    <option value="">{{ __('large-animals.diagnosis.species_placeholder') }}</option>
+                    <option value="">{{ $t('diagnosis.species_placeholder') }}</option>
                     @foreach ($hostSpecies as $species)
                         <option value="{{ $species->id }}" @selected(old('host_species_id') === $species->id)>{{ $species->localized_display_name }}</option>
                     @endforeach
@@ -37,11 +52,11 @@
                 <div class="flex items-center justify-between gap-3 mb-2">
                     <div>
                         <h2 class="text-base font-semibold text-heading dark:text-white">
-                            {{ __('large-animals.diagnosis.signs_heading') }} <span class="text-fg-danger-strong" aria-hidden="true">*</span>
+                            {{ $t('diagnosis.signs_heading') }} <span class="text-fg-danger-strong" aria-hidden="true">*</span>
                         </h2>
-                        <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.diagnosis.signs_help') }}</p>
+                        <p class="text-sm text-body dark:text-slate-400">{{ $t('diagnosis.signs_help') }}</p>
                     </div>
-                    <span class="text-sm font-medium text-fg-brand" x-text="`${signs.length} {{ __('large-animals.diagnosis.selected') }}`"></span>
+                    <span class="text-sm font-medium text-fg-brand" x-text="`${signs.length} {{ $t('diagnosis.selected') }}`"></span>
                 </div>
 
                 {{-- Client-side guard: free text without a selected suggestion --}}
@@ -54,7 +69,7 @@
                     <template x-for="(sign, index) in signs" :key="sign.key">
                         <div class="relative">
                             <input type="hidden" name="clinical_signs[]" :value="sign.id">
-                            <label class="sr-only" :for="`clinical-sign-${sign.key}`">{{ __('large-animals.diagnosis.clinical_sign') }}</label>
+                            <label class="sr-only" :for="`clinical-sign-${sign.key}`">{{ $t('diagnosis.clinical_sign') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"><x-lucide-search class="w-4 h-4 text-body" /></div>
                                 <input type="text" :id="`clinical-sign-${sign.key}`" x-model="sign.text"
@@ -63,11 +78,11 @@
                                     @click.outside="sign.open = false"
                                     autocomplete="off" required
                                     class="bg-neutral-secondary-medium text-heading text-sm rounded-base focus:ring-brand block w-full ps-10 pe-9 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:text-white"
-                                    :placeholder="`${index + 1}. {{ __('large-animals.diagnosis.search_placeholder') }}`">
+                                    :placeholder="`${index + 1}. {{ $t('diagnosis.search_placeholder') }}`">
 
                                 <button type="button" x-show="signs.length > 3" @click="remove(index)"
                                     class="absolute top-1/2 end-1.5 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-xs text-body hover:bg-neutral-secondary-medium hover:text-fg-danger-strong transition-colors"
-                                    aria-label="{{ __('large-animals.diagnosis.remove_symptom') }}">
+                                    aria-label="{{ $t('diagnosis.remove_symptom') }}">
                                     <x-lucide-x class="w-3.5 h-3.5" />
                                 </button>
 
@@ -94,11 +109,11 @@
                     </div>
                 @enderror
 
-                <button type="button" @click="add()" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-fg-brand hover:underline"><x-lucide-plus class="w-4 h-4" />{{ __('large-animals.diagnosis.add_symptom') }}</button>
+                <button type="button" @click="add()" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-fg-brand hover:underline"><x-lucide-plus class="w-4 h-4" />{{ $t('diagnosis.add_symptom') }}</button>
             </div>
 
             <div class="pt-5 border-t border-default-medium flex justify-end">
-                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors"><x-lucide-search class="w-4 h-4" />{{ __('large-animals.diagnosis.submit') }}</button>
+                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors"><x-lucide-search class="w-4 h-4" />{{ $t('diagnosis.submit') }}</button>
             </div>
         </form>
 
@@ -134,7 +149,7 @@ function diagnosisForm() {
             const sign = this.signs[index];
             sign.id = '';
             if (!sign.text.trim()) { sign.open = false; sign.suggestions = []; return; }
-            const response = await fetch(`{{ route('large-animals.diagnosis.suggestions') }}?q=${encodeURIComponent(sign.text)}`);
+            const response = await fetch(`{{ route($part.'.diagnosis.suggestions') }}?q=${encodeURIComponent(sign.text)}`);
             sign.suggestions = await response.json();
             sign.open = true;
         },

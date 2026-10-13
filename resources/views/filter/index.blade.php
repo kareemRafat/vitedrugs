@@ -1,20 +1,27 @@
 @extends('app.layouts.master')
 
-@section('title', __('large-animals.filter.title'))
+@php
+    // Shared by the large-animals and poultry controllers. $part doubles as both
+    // the route-name prefix and the translation namespace because the two
+    // vocabularies are spelled the same ('large-animals' / 'poultry').
+    $t = fn (string $key, array $replace = []): string => __($part.'.'.$key, $replace);
+@endphp
+
+@section('title', $t('filter.title'))
 
 @section('content')
     <div class="space-y-4">
 
         {{-- Hero --}}
         <x-large-animals.page-hero
-            :heading="__('large-animals.filter.heading')"
-            :subtitle="__('large-animals.filter.subtitle')"
-            :badge="__('large-animals.hero.badge.filter')"
+            :heading="$t('filter.heading')"
+            :subtitle="$t('filter.subtitle')"
+            :badge="$t('hero.badge.filter')"
             badgeIcon="sliders-horizontal"
             :stats="[
-                ['count' => $species->count(), 'label' => __('large-animals.hero.stats.species'), 'icon' => 'paw-print'],
-                ['count' => $bodySystems->count(), 'label' => __('large-animals.hero.stats.body_systems'), 'icon' => 'stethoscope'],
-                ['count' => $etiologies->count(), 'label' => __('large-animals.hero.stats.etiologies'), 'icon' => 'bug'],
+                ['count' => $species->count(), 'label' => $t('hero.stats.species'), 'icon' => 'paw-print'],
+                ['count' => $bodySystems->count(), 'label' => $t('hero.stats.body_systems'), 'icon' => 'stethoscope'],
+                ['count' => $etiologies->count(), 'label' => $t('hero.stats.etiologies'), 'icon' => 'bug'],
             ]"
         />
 
@@ -25,7 +32,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('large-animals.filter.results.store') }}" x-data="filterPicker(@js(route('large-animals.filter.suggestions')))" @submit.prevent="submitForm($event)">
+        <form method="POST" action="{{ route($part.'.filter.results.store') }}" x-data="filterPicker(@js(route($part.'.filter.suggestions')))" @submit.prevent="submitForm($event)">
             @csrf
 
             {{-- Criteria --}}
@@ -33,12 +40,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label for="host_species_id" class="block text-sm font-semibold text-heading dark:text-white mb-2">
-                            {{ __('large-animals.filter.species_label') }}
-                            <span class="font-normal text-body dark:text-slate-400">({{ __('large-animals.filter.optional') }})</span>
+                            {{ $t('filter.species_label') }}
+                            <span class="font-normal text-body dark:text-slate-400">({{ $t('filter.optional') }})</span>
                         </label>
                         <select id="host_species_id" name="host_species_id"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                            <option value="">{{ __('large-animals.filter.species_placeholder') }}</option>
+                            <option value="">{{ $t('filter.species_placeholder') }}</option>
                             @foreach ($species as $item)
                                 <option value="{{ $item->id }}" @selected(old('host_species_id') == $item->id)>{{ $item->display_name }}</option>
                             @endforeach
@@ -49,10 +56,10 @@
                     </div>
 
                     <div>
-                        <label for="etiology_type" class="block text-sm font-semibold text-heading dark:text-white mb-2">{{ __('large-animals.filter.etiology_label') }}</label>
+                        <label for="etiology_type" class="block text-sm font-semibold text-heading dark:text-white mb-2">{{ $t('filter.etiology_label') }}</label>
                         <select id="etiology_type" name="etiology_type"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                            <option value="">{{ __('large-animals.filter.etiology_placeholder') }}</option>
+                            <option value="">{{ $t('filter.etiology_placeholder') }}</option>
                             @foreach ($etiologies as $item)
                                 <option value="{{ $item->etiology_type }}" @selected(old('etiology_type') === $item->etiology_type)>{{ $item->etiology_type }}</option>
                             @endforeach
@@ -63,10 +70,10 @@
                     </div>
 
                     <div>
-                        <label for="body_system_id" class="block text-sm font-semibold text-heading dark:text-white mb-2">{{ __('large-animals.filter.body_system_label') }}</label>
+                        <label for="body_system_id" class="block text-sm font-semibold text-heading dark:text-white mb-2">{{ $t('filter.body_system_label') }}</label>
                         <select id="body_system_id" name="body_system_id"
                             class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                            <option value="">{{ __('large-animals.filter.body_system_placeholder') }}</option>
+                            <option value="">{{ $t('filter.body_system_placeholder') }}</option>
                             @foreach ($bodySystems as $item)
                                 <option value="{{ $item->id }}" @selected(old('body_system_id') == $item->id)>{{ $item->localized_display_name }}</option>
                             @endforeach
@@ -80,14 +87,14 @@
                 <label class="mt-4 inline-flex items-center gap-2.5 cursor-pointer">
                     <input type="checkbox" name="zoonotic" value="1" @checked(old('zoonotic'))
                         class="w-4 h-4 rounded-xs text-brand focus:ring-2 focus:ring-brand-soft dark:bg-slate-600 dark:border-slate-500">
-                    <span class="text-sm font-medium text-heading dark:text-white">{{ __('large-animals.filter.zoonotic_label') }}</span>
+                    <span class="text-sm font-medium text-heading dark:text-white">{{ $t('filter.zoonotic_label') }}</span>
                 </label>
             </div>
 
             {{-- Token picker --}}
             <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
                 <h2 class="text-base font-semibold text-heading dark:text-white mb-4">
-                    {{ __('large-animals.filter.tokens_label') }} <span class="text-fg-danger-strong" aria-hidden="true">*</span>
+                    {{ $t('filter.tokens_label') }} <span class="text-fg-danger-strong" aria-hidden="true">*</span>
                 </h2>
 
                 {{-- Fetch-submit error alert (no reload) --}}
@@ -116,7 +123,7 @@
                     </div>
                     <input type="text" x-model="query" @input.debounce.250ms="search()" @focus="if (query.length >= 2) { search(); }" @click.outside="open = false"
                         class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full ps-10 px-3 py-2.5 shadow-xs placeholder:text-body dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                        placeholder="{{ __('large-animals.filter.search_placeholder') }}">
+                        placeholder="{{ $t('filter.search_placeholder') }}">
 
                     <div x-show="open && suggestions.length > 0" x-cloak
                         class="absolute z-20 mt-2 w-full bg-neutral-primary-soft rounded-base shadow-lg border border-default-medium dark:bg-slate-700 dark:border-slate-600 overflow-hidden">
@@ -124,13 +131,13 @@
                             <button type="button" @click="add(s)"
                                 class="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-start text-sm hover:bg-neutral-secondary-soft dark:hover:bg-slate-600 transition-colors">
                                 <span class="font-medium text-heading dark:text-white" x-text="s.title"></span>
-                                <span class="text-xs text-body dark:text-slate-400">{{ __('large-animals.filter.add') }}</span>
+                                <span class="text-xs text-body dark:text-slate-400">{{ $t('filter.add') }}</span>
                             </button>
                         </template>
                     </div>
 
                     <p x-show="open && suggestions.length === 0 && query.trim().length >= 2" x-cloak
-                        class="mt-2 text-sm text-body dark:text-slate-400">{{ __('large-animals.search.no_results') }}</p>
+                        class="mt-2 text-sm text-body dark:text-slate-400">{{ $t('search.no_results') }}</p>
                 </div>
 
                 {{-- Tokens --}}
@@ -154,14 +161,14 @@
                     <button type="button" @click="clear()"
                         class="inline-flex items-center gap-1.5 text-sm font-medium text-fg-brand hover:underline dark:text-brand">
                         <x-lucide-trash-2 class="w-4 h-4" />
-                        {{ __('large-animals.filter.clear') }}
+                        {{ $t('filter.clear') }}
                     </button>
                     <button type="submit"
                         :disabled="submitting"
                         :class="submitting ? 'opacity-60 cursor-not-allowed' : ''"
                         class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors">
                         <x-lucide-activity class="w-4 h-4" />
-                        {{ __('large-animals.filter.submit') }}
+                        {{ $t('filter.submit') }}
                     </button>
                 </div>
             </div>

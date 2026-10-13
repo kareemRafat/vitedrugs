@@ -11,6 +11,8 @@
         ],
         'poultry' => [
             ['url' => route('poultry.home'), 'label' => __('messages.poultry.landing'), 'active' => request()->routeIs('poultry.home')],
+            ['url' => route('poultry.diagnosis'), 'label' => __('poultry.nav.diagnosis'), 'active' => request()->routeIs('poultry.diagnosis*')],
+            ['url' => route('poultry.filter'), 'label' => __('poultry.nav.filter'), 'active' => request()->routeIs('poultry.filter*')],
         ],
         default => [
             ['url' => route('products.index'), 'label' => __('messages.nav.products'), 'active' => request()->routeIs('products.*') && ! request()->routeIs('products.compare') && ! request()->routeIs('products.submission.*')],

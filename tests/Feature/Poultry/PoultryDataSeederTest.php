@@ -204,7 +204,7 @@ class PoultryDataSeederTest extends TestCase
             ->pluck('id')
             ->all();
 
-        $results = app(DiagnosisService::class)->rank($chicken->id, $signIds);
+        $results = app(DiagnosisService::class)->rank($chicken->id, $signIds, Disease::DOMAIN_POULTRY);
 
         $this->assertCount(1, $results);
         $this->assertSame('Newcastle Disease', $results->first()['disease']->name);

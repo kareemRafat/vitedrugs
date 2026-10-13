@@ -2,26 +2,44 @@
 
 namespace App\Http\Requests\LargeAnimals;
 
+use App\Http\Requests\Concerns\ScopesToSitePart;
 use App\Models\LargeAnimals\ClinicalSign;
-use App\Models\LargeAnimals\HostSpecies;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class RefinedDiagnosisRequest extends FormRequest
 {
+    use ScopesToSitePart;
+
     public function authorize(): bool
     {
         return true;
     }
 
+    protected function part(): string
+    {
+        return 'large-animals';
+    }
+
     public function rules(): array
     {
         return [
-            'host_species_id' => ['required', Rule::exists(HostSpecies::class, 'id')],
+            'host_species_id' => ['required', $this->speciesExists()],
             'clinical_signs' => ['required', 'array', 'min:3'],
-            'clinical_signs.*' => ['required', 'integer', 'distinct', Rule::exists(ClinicalSign::class, 'id')],
+            'clinical_signs.*' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists(ClinicalSign::class, 'id'),
+                $this->clinicalSignInPart(__('validation.diagnosis.sign_invalid')),
+            ],
             'refinement_signs' => ['nullable', 'array'],
-            'refinement_signs.*' => ['integer', 'distinct', Rule::exists(ClinicalSign::class, 'id')],
+            'refinement_signs.*' => [
+                'integer',
+                'distinct',
+                Rule::exists(ClinicalSign::class, 'id'),
+                $this->clinicalSignInPart(__('validation.diagnosis.sign_invalid')),
+            ],
         ];
     }
 

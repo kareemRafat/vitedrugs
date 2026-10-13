@@ -9,8 +9,8 @@
         // Only sections that exist today. A card appears here the phase that
         // builds it lands, so the grid never links to a 404.
         $serviceRoutes = [
-            'diagnosis' => route('large-animals.diagnosis'),
-            'filter' => route('large-animals.filter'),
+            'diagnosis' => route('poultry.diagnosis'),
+            'filter' => route('poultry.filter'),
         ];
 
         $serviceIcons = [
@@ -46,12 +46,12 @@
                     {{ __('poultry.landing.subtitle') }}
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <a href="{{ route('large-animals.diagnosis') }}" wire:navigate
+                    <a href="{{ route('poultry.diagnosis') }}" wire:navigate
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 text-sm font-bold text-brand-strong bg-white rounded-base shadow-lg shadow-black/10 hover:bg-white/90 transition-all active:scale-[0.98]">
                         <x-lucide-stethoscope class="w-4 h-4" />
                         {{ __('poultry.landing.cta_primary') }}
                     </a>
-                    <a href="{{ route('large-animals.filter') }}" wire:navigate
+                    <a href="{{ route('poultry.filter') }}" wire:navigate
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 text-sm font-semibold text-white border border-white/40 rounded-base hover:bg-white/10 transition-colors">
                         {{ __('poultry.landing.cta_secondary') }}
                         <x-lucide-arrow-right class="w-4 h-4 rtl:rotate-180" />
@@ -99,19 +99,14 @@
                 @endforeach
             </div>
 
-            {{-- Honest note: these tools are shared with Large Animals today. --}}
-            <div class="mt-4 flex gap-3 bg-neutral-primary-soft rounded-base border border-default-medium p-4 dark:bg-slate-800 dark:border-slate-700">
-                <x-lucide-info class="w-5 h-5 shrink-0 text-fg-brand dark:text-brand mt-0.5" />
-                <div>
-                    <p class="text-sm font-bold text-heading dark:text-white">{{ __('poultry.landing.notice_title') }}</p>
-                    <p class="mt-1 text-sm text-body dark:text-slate-400 leading-relaxed">{{ __('poultry.landing.notice_body') }}</p>
-                </div>
-            </div>
+            {{-- The tools used to live under /large-animals and link out of this
+                 page. They are poultry-only now, so the old "shared with Large
+                 Animals" notice that stood here is gone. --}}
         </section>
 
         {{-- CTA strip --}}
         <section class="pb-2">
-            <a href="{{ route('large-animals.diagnosis') }}" wire:navigate
+            <a href="{{ route('poultry.diagnosis') }}" wire:navigate
                 class="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-strong dark:from-brand-subtle dark:to-brand-soft rounded-base">
                 <div class="absolute inset-0 opacity-10 pointer-events-none">
                     <div class="absolute -top-16 -end-16 w-64 h-64 rounded-full bg-white"></div>

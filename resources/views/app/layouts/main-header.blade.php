@@ -33,6 +33,8 @@
                     @break
 
                     @case('poultry')
+                        <a href="{{ route('poultry.diagnosis') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.diagnosis*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.diagnosis*')])>{{ __('poultry.nav.diagnosis') }}</a>
+                        <a href="{{ route('poultry.filter') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.filter'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.filter')])>{{ __('poultry.nav.filter') }}</a>
                     @break
 
                     @default
@@ -241,6 +243,14 @@
                 @break
 
                 @case('poultry')
+                    <a href="{{ route('poultry.diagnosis') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('poultry.diagnosis*'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('poultry.diagnosis*')])>
+                        <x-lucide-stethoscope class="w-5 h-5" />
+                        {{ __('poultry.nav.diagnosis') }}
+                    </a>
+                    <a href="{{ route('poultry.filter') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('poultry.filter'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('poultry.filter')])>
+                        <x-lucide-sliders-horizontal class="w-5 h-5" />
+                        {{ __('poultry.nav.filter') }}
+                    </a>
                 @break
 
                 @default

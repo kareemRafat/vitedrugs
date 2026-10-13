@@ -1,21 +1,28 @@
 @extends('app.layouts.master')
 
-@section('title', __('large-animals.filter.results_title'))
+@php
+    // Shared by the large-animals and poultry controllers. $part doubles as both
+    // the route-name prefix and the translation namespace because the two
+    // vocabularies are spelled the same ('large-animals' / 'poultry').
+    $t = fn (string $key, array $replace = []): string => __($part.'.'.$key, $replace);
+@endphp
+
+@section('title', $t('filter.results_title'))
 
 @section('content')
     <div class="space-y-4">
         <x-large-animals.page-hero
-            :heading="__('large-animals.filter.results_heading')"
-            :subtitle="__('large-animals.filter.results_subtitle')"
-            :badge="__('large-animals.hero.badge.filter')"
+            :heading="$t('filter.results_heading')"
+            :subtitle="$t('filter.results_subtitle')"
+            :badge="$t('hero.badge.filter')"
             badgeIcon="sliders-horizontal"
         >
-            <a href="{{ route('large-animals.filter') }}" wire:navigate class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25"><x-lucide-rotate-ccw class="w-4 h-4" />{{ __('large-animals.filter.back') }}</a>
+            <a href="{{ route($part.'.filter') }}" wire:navigate class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/15 text-white border border-white/30 rounded-base hover:bg-white/25"><x-lucide-rotate-ccw class="w-4 h-4" />{{ $t('filter.back') }}</a>
         </x-large-animals.page-hero>
 
         {{-- Criteria summary --}}
         <div class="bg-neutral-primary-soft rounded-base shadow-xs p-5 dark:bg-slate-800">
-            <h2 class="text-sm font-semibold text-heading dark:text-white mb-3">{{ __('large-animals.filter.selected_criteria') }}</h2>
+            <h2 class="text-sm font-semibold text-heading dark:text-white mb-3">{{ $t('filter.selected_criteria') }}</h2>
             <div class="flex flex-wrap gap-2">
                 @php
                     $appliedSpecies = $species->firstWhere('id', $criteria['host_species_id'] ?? null);
@@ -42,7 +49,7 @@
                 @if (! empty($criteria['zoonotic']))
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-base bg-danger-soft text-fg-danger-strong border border-danger-subtle dark:bg-danger/20 dark:text-red-400 dark:border-danger-subtle">
                         <x-lucide-biohazard class="w-3.5 h-3.5" />
-                        {{ __('large-animals.filter.zoonotic_label') }}
+                        {{ $t('filter.zoonotic_label') }}
                     </span>
                 @endif
                 @foreach ($clinicalSigns as $sign)
@@ -57,15 +64,15 @@
         @if ($diseases->isEmpty())
             <div class="bg-neutral-primary-soft rounded-base shadow-xs p-12 text-center dark:bg-slate-800">
                 <x-lucide-search-x class="w-12 h-12 text-body mx-auto mb-3" />
-                <h2 class="text-lg font-semibold text-heading dark:text-white">{{ __('large-animals.filter.no_results') }}</h2>
-                <p class="mt-1 text-sm text-body">{{ __('large-animals.filter.no_results_desc') }}</p>
-                <a href="{{ route('large-animals.filter') }}" wire:navigate class="mt-6 inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors">
-                    <x-lucide-arrow-left class="w-4 h-4" />{{ __('large-animals.filter.back') }}
+                <h2 class="text-lg font-semibold text-heading dark:text-white">{{ $t('filter.no_results') }}</h2>
+                <p class="mt-1 text-sm text-body">{{ $t('filter.no_results_desc') }}</p>
+                <a href="{{ route($part.'.filter') }}" wire:navigate class="mt-6 inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base transition-colors">
+                    <x-lucide-arrow-left class="w-4 h-4" />{{ $t('filter.back') }}
                 </a>
             </div>
         @else
             {{-- Summary --}}
-            <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.filter.results_summary', ['count' => $diseases->count()]) }}</p>
+            <p class="text-sm text-body dark:text-slate-400">{{ $t('filter.results_summary', ['count' => $diseases->count()]) }}</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 @foreach ($diseases as $result)
@@ -82,11 +89,11 @@
                         <div class="p-5 flex-1">
                             <div class="flex items-start justify-between gap-3">
                                 <h3 class="text-base font-semibold text-heading dark:text-white leading-snug">
-                                    <a href="{{ route('large-animals.diseases.show', $disease->slug) }}" wire:navigate class="text-fg-brand hover:underline">{{ app()->getLocale() === 'ar' && $disease->name_ar ? $disease->name_ar : $disease->name }}</a>
+                                    <a href="{{ route($part.'.diseases.show', $disease->slug) }}" wire:navigate class="text-fg-brand hover:underline">{{ app()->getLocale() === 'ar' && $disease->name_ar ? $disease->name_ar : $disease->name }}</a>
                                 </h3>
                                 @if ($classification?->zoonotic)
                                     <span class="inline-flex shrink-0 items-center gap-1 text-xs font-medium px-2 py-1 rounded bg-danger-soft text-fg-danger-strong dark:bg-danger/20 dark:text-red-400">
-                                        <x-lucide-biohazard class="w-3.5 h-3.5" />{{ __('large-animals.disease.zoonotic') }}
+                                        <x-lucide-biohazard class="w-3.5 h-3.5" />{{ $t('disease.zoonotic') }}
                                     </span>
                                 @endif
                             </div>
@@ -108,7 +115,7 @@
 
                             @if ($result['matched_signs']->isNotEmpty())
                                 <div class="mt-4">
-                                    <h4 class="text-xs font-semibold uppercase tracking-wide text-body dark:text-slate-400 mb-2">{{ __('large-animals.filter.matched_signs') }}</h4>
+                                    <h4 class="text-xs font-semibold uppercase tracking-wide text-body dark:text-slate-400 mb-2">{{ $t('filter.matched_signs') }}</h4>
                                     <div class="flex flex-wrap gap-1.5">
                                         @foreach ($result['matched_signs'] as $signName)
                                             <span class="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">
@@ -122,8 +129,8 @@
                         </div>
 
                         <div class="px-5 py-4 border-t border-default-medium bg-neutral-secondary-soft/50 dark:bg-slate-700/30">
-                            <a href="{{ route('large-animals.diseases.show', $disease->slug) }}" wire:navigate class="inline-flex items-center gap-1.5 text-sm font-semibold text-fg-brand hover:underline">
-                                {{ __('large-animals.disease.overview') }}
+                            <a href="{{ route($part.'.diseases.show', $disease->slug) }}" wire:navigate class="inline-flex items-center gap-1.5 text-sm font-semibold text-fg-brand hover:underline">
+                                {{ $t('disease.overview') }}
                                 <x-lucide-arrow-right class="w-4 h-4 rtl:hidden" />
                                 <x-lucide-arrow-left class="w-4 h-4 ltr:hidden" />
                             </a>
@@ -133,6 +140,6 @@
             </div>
         @endif
 
-        <p class="text-xs text-body dark:text-slate-400">{{ __('large-animals.filter.disclaimer') }}</p>
+        <p class="text-xs text-body dark:text-slate-400">{{ $t('filter.disclaimer') }}</p>
     </div>
 @endsection

@@ -1,6 +1,19 @@
 <?php
 
-return [
+/*
+| The poultry views are shared with large animals (resources/views/diagnosis and
+| resources/views/filter) and read their copy from `$part.<section>.*`. Rather
+| than duplicate ~144 keys per locale, this file starts from the large-animal
+| tree and overrides only the wording that is actually wrong for birds.
+|
+| A key added to large-animals.php is picked up here automatically; a key that
+| must read differently for poultry belongs in the overrides below. Both files
+| must stay in step — the Arabic one overrides the same keys.
+*/
+
+$shared = require __DIR__.'/large-animals.php';
+
+return array_replace_recursive($shared, [
 
     'nav' => [
         'home' => 'Poultry',
@@ -18,11 +31,8 @@ return [
         'cta_primary' => 'Start Diagnosis',
         'cta_secondary' => 'Use the Filter',
 
-        'notice_title' => 'These tools already cover poultry',
-        'notice_body' => 'Both tools below already run against the full poultry disease set. They are shared with the Large Animals section for now — dedicated poultry pages arrive with the next releases.',
-
         'services_heading' => 'Start here',
-        'services_subtitle' => 'Both tools work with every poultry disease loaded into VetPedia.',
+        'services_subtitle' => 'Both tools run against the poultry disease set only — every result you see is a bird disease.',
         'open' => 'Open',
 
         'services' => [
@@ -32,7 +42,7 @@ return [
             ],
             'filter' => [
                 'title' => 'Clinical Filter',
-                'description' => 'Narrow the list by species, body system and whether a disease can pass to humans, using the signs you select.',
+                'description' => 'Narrow the list by bird species, body system and whether a disease can pass to humans, using the signs you select.',
             ],
         ],
 
@@ -49,4 +59,40 @@ return [
         'cta_button' => 'Start a diagnosis',
     ],
 
-];
+    /*
+    | Wording the large-animal pages say in terms of livestock. Everything not
+    | listed here is inherited as-is.
+    */
+    'diagnosis' => [
+        'subtitle' => 'Select the clinical signs you observed in the bird and we will rank the most likely poultry diseases.',
+        'species_label' => 'Bird species',
+        'species_placeholder' => 'Select bird species',
+        'warning' => 'Please select at least three observed clinical signs before running differential diagnosis.',
+        'no_results_desc' => 'Try selecting more or different clinical signs, or a different bird species.',
+    ],
+
+    'filter' => [
+        'subtitle' => 'Narrow the poultry disease list by bird species, etiology, body system and zoonotic risk.',
+        'species_label' => 'Bird species',
+        'species_placeholder' => 'All bird species',
+        'results_subtitle' => 'Poultry diseases matching the bird species, etiology, body system, zoonotic and clinical signs you selected.',
+    ],
+
+    'hero' => [
+        'badge' => [
+            'diagnosis' => 'Poultry Diagnostic Tool',
+        ],
+        'stats' => [
+            'species' => 'Bird species',
+        ],
+    ],
+
+    /*
+    | Some poultry diseases are legitimately linked to livestock hosts too
+    | (salmonellosis, for one), so this stays "species" rather than "birds".
+    */
+    'disease' => [
+        'host_species' => 'Affected species',
+    ],
+
+]);

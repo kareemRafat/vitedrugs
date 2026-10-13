@@ -14,6 +14,45 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Site parts
+    |--------------------------------------------------------------------------
+    |
+    | A "part" is a themed section of the site: drugs, large-animals, poultry.
+    | `SetPartTheme` resolves the part from the first URL segment, and the
+    | header, footer and shared views all key off it.
+    |
+    | This map connects each part to the data that belongs to it. Two different
+    | vocabularies meet here and they are deliberately kept apart:
+    |
+    |   domain           the value stored on `diseases` and `species`. Underscored
+    |                    (`large_animal`), see the HasDomain trait.
+    |   taxonomy_groups  the values stored on `host_species`. That table has no
+    |                    `domain` column at all, so part membership has to be
+    |                    expressed through its taxonomy instead.
+    |
+    | Every taxonomy group currently present in `host_species` is listed
+    | explicitly rather than derived with a `!= 'poultry'` exclusion, so a group
+    | added later has to be placed deliberately instead of silently joining the
+    | large-animal part.
+    |
+    */
+
+    'parts' => [
+
+        'large-animals' => [
+            'domain' => 'large_animal',
+            'taxonomy_groups' => ['ruminant', 'equine', 'porcine', 'canine', 'feline', 'fish'],
+        ],
+
+        'poultry' => [
+            'domain' => 'poultry',
+            'taxonomy_groups' => ['poultry'],
+        ],
+
+    ],
+
     'poultry' => [
 
         /*

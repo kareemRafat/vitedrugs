@@ -206,12 +206,30 @@ class FilterToolTest extends TestCase
 
     public function test_it_returns_empty_state(): void
     {
+        // The sign has to be a valid one — validation now rejects a sign that is
+        // not linked to any disease in this part — but the body system below has
+        // to be one no disease with that sign belongs to. That combination is
+        // reachable from the UI: both criteria come from offered suggestions.
+        $this->makeDisease();
+
+        $empty = BodySystem::factory()->create(['display_name' => 'Unused System']);
+        AnatomicalStructure::factory()->create(['body_system_id' => $empty->id]);
+
         $response = $this->submitFilter([
             'host_species_id' => $this->species->id,
             'clinical_signs' => [$this->sign->id],
+            'body_system_id' => $empty->id,
         ]);
 
         $response->assertOk()->assertSee(__('large-animals.filter.no_results'));
+    }
+
+    public function test_it_rejects_a_sign_with_no_disease_in_this_part(): void
+    {
+        $this->post(route($this->storeRoute), [
+            'host_species_id' => $this->species->id,
+            'clinical_signs' => [ClinicalSign::factory()->create()->id],
+        ])->assertSessionHasErrors('clinical_signs.*');
     }
 
     public function test_it_redirects_back_with_invalid_token(): void

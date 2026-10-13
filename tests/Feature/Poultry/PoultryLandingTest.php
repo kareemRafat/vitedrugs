@@ -152,12 +152,24 @@ class PoultryLandingTest extends TestCase
     }
 
     #[Test]
-    public function it_says_the_tools_are_shared_rather_than_pretending_otherwise(): void
+    public function it_keeps_the_tools_inside_the_poultry_part(): void
+    {
+        $html = $this->get('/poultry')->assertOk()->getContent();
+
+        // The cards used to point at /large-animals, which re-themed the whole
+        // page and left no way back. Every tool link now has to stay under
+        // /poultry.
+        $this->assertStringContainsString(route('poultry.diagnosis'), $html);
+        $this->assertStringContainsString(route('poultry.filter'), $html);
+        $this->assertStringNotContainsString('/large-animals/', $html);
+    }
+
+    #[Test]
+    public function it_does_not_still_claim_the_tools_are_shared(): void
     {
         $this->get('/poultry')
             ->assertOk()
-            ->assertSee('These tools already cover poultry')
-            ->assertSee('shared with the Large Animals section');
+            ->assertDontSee('shared with the Large Animals section');
     }
 
     /**

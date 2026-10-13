@@ -4,61 +4,35 @@ namespace App\Http\Controllers\LargeAnimals;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LargeAnimals\FilterRequest;
+use App\Models\Disease;
 use App\Models\LargeAnimals\BodySystem;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\DiseaseClassification;
 use App\Models\LargeAnimals\HostSpecies;
 use App\Services\LargeAnimals\FilterService;
 use App\Services\LargeAnimals\FilterShareService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class FilterController extends Controller
 {
+    private const PART = 'large-animals';
+
     public function __construct(
         private FilterService $filterService,
         private FilterShareService $filterShareService,
     ) {}
 
-    protected const PREFERRED_SPECIES_ORDER = [
-        'Cattle',
-        'Buffalo',
-        'Sheep',
-        'Goat',
-        'Camel',
-        'Equine',
-        'Dogs',
-        'Cats',
-        'Poultry',
-        'Turkey',
-        'Calf',
-    ];
-
     public function index()
     {
-        $species = HostSpecies::query()
-            ->whereIn('display_name', self::PREFERRED_SPECIES_ORDER)
-            ->get()
-            ->sortBy(fn ($species) => array_search($species->display_name, self::PREFERRED_SPECIES_ORDER))
-            ->values();
-
-        $etiologies = DiseaseClassification::query()
-            ->select('etiology_type')
-            ->whereNotNull('etiology_type')
-            ->groupBy('etiology_type')
-            ->orderBy('etiology_type')
-            ->get();
-
-        $bodySystems = BodySystem::query()
-            ->orderBy('display_name')
-            ->get();
-
-        return view('large-animals.filter.index', compact(
-            'species',
-            'etiologies',
-            'bodySystems'
-        ));
+        return view('filter.index', [
+            'part' => self::PART,
+            'species' => $this->species(),
+            'etiologies' => $this->etiologies(),
+            'bodySystems' => $this->bodySystems(),
+        ]);
     }
 
     public function suggestions(Request $request): JsonResponse
@@ -69,11 +43,11 @@ class FilterController extends Controller
             return response()->json(['data' => []]);
         }
 
-        $clinicalSigns = ClinicalSign::query()
+        $clinicalSigns = $this->signQuery()
             ->whereRaw('LOWER(display_name) LIKE ?', ['%'.mb_strtolower($query).'%'])
             ->limit(10)
             ->get()
-            ->map(fn ($item) => [
+            ->map(fn (ClinicalSign $item): array => [
                 'id' => 'clinical_sign_'.$item->id,
                 'title' => $item->display_name,
                 'type' => 'Clinical Sign',
@@ -91,47 +65,79 @@ class FilterController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'redirect' => route('large-animals.filter.results', [
-                    'criteria' => $this->filterShareService->create($criteria),
+                    'criteria' => $this->filterShareService->create($criteria, $this->domain()),
                 ]),
             ]);
         }
 
         return redirect()->route('large-animals.filter.results', [
-            'criteria' => $this->filterShareService->create($criteria),
+            'criteria' => $this->filterShareService->create($criteria, $this->domain()),
         ]);
     }
 
     public function showResults(Request $request)
     {
-        $criteria = $this->filterShareService->read((string) $request->query('criteria'));
+        $criteria = $this->filterShareService->read((string) $request->query('criteria'), $this->domain());
 
         if (! $criteria) {
             return redirect()->route('large-animals.filter')
                 ->with('warning', __('large-animals.filter.invalid_link'));
         }
 
-        $species = HostSpecies::query()
-            ->whereIn('display_name', self::PREFERRED_SPECIES_ORDER)
-            ->get()
-            ->sortBy(fn ($species) => array_search($species->display_name, self::PREFERRED_SPECIES_ORDER))
-            ->values();
-
-        $bodySystems = BodySystem::query()
-            ->orderBy('display_name')
-            ->get();
-
         $clinicalSigns = ClinicalSign::query()
             ->whereIn('id', $criteria['clinical_signs'])
             ->get();
 
-        $diseases = $this->filterService->filter($criteria);
+        return view('filter.results', [
+            'part' => self::PART,
+            'criteria' => $criteria,
+            'species' => $this->species(),
+            'bodySystems' => $this->bodySystems(),
+            'clinicalSigns' => $clinicalSigns,
+            'diseases' => $this->filterService->filter($criteria, $this->domain()),
+        ]);
+    }
 
-        return view('large-animals.filter.results', compact(
-            'criteria',
-            'species',
-            'bodySystems',
-            'clinicalSigns',
-            'diseases'
-        ));
+    private function domain(): string
+    {
+        return (string) config('vetpedia.parts.large-animals.domain');
+    }
+
+    private function species()
+    {
+        return HostSpecies::query()
+            ->forPart(self::PART)
+            ->orderBy('display_name')
+            ->get();
+    }
+
+    private function etiologies()
+    {
+        return DiseaseClassification::query()
+            ->select('etiology_type')
+            ->whereNotNull('etiology_type')
+            ->whereHas('disease', fn (Builder $disease): Builder => $disease
+                ->forDomain(Disease::DOMAIN_LARGE_ANIMAL))
+            ->groupBy('etiology_type')
+            ->orderBy('etiology_type')
+            ->get();
+    }
+
+    private function bodySystems()
+    {
+        return BodySystem::query()
+            ->orderBy('display_name')
+            ->get();
+    }
+
+    /**
+     * Clinical signs carry no domain column, so a sign belongs to this part when
+     * it is reachable through at least one disease in it.
+     */
+    private function signQuery(): Builder
+    {
+        return ClinicalSign::query()
+            ->whereHas('diseases', fn (Builder $diseases): Builder => $diseases
+                ->where('domain', Disease::DOMAIN_LARGE_ANIMAL));
     }
 }

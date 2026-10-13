@@ -8,10 +8,11 @@ use Illuminate\Support\Collection;
 
 class DiagnosisService
 {
-    public function rank(string $hostSpeciesId, array $clinicalSignIds): Collection
+    public function rank(string $hostSpeciesId, array $clinicalSignIds, string $domain): Collection
     {
         $diseases = Disease::query()
             ->where('is_active', true)
+            ->forDomain($domain)
             ->whereHas('hostSpecies', function (Builder $query) use ($hostSpeciesId): void {
                 $query->whereKey($hostSpeciesId)
                     ->where(function (Builder $query): void {

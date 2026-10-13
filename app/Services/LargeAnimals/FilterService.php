@@ -9,10 +9,11 @@ use Illuminate\Support\Collection;
 
 class FilterService
 {
-    public function filter(array $criteria): Collection
+    public function filter(array $criteria, string $domain): Collection
     {
         $query = Disease::query()
             ->where('is_active', true)
+            ->forDomain($domain)
             ->with([
                 'clinicalSigns.anatomicalStructure.bodySystem',
                 'hostSpecies',

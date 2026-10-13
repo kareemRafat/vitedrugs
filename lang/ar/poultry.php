@@ -1,6 +1,21 @@
 <?php
 
-return [
+/*
+| The poultry views are shared with large animals (resources/views/diagnosis and
+| resources/views/filter) and read their copy from `$part.<section>.*`. Rather
+| than duplicate ~144 keys per locale, this file starts from the large-animal
+| tree and overrides only the wording that is actually wrong for birds.
+|
+| A key added to large-animals.php is picked up here automatically; a key that
+| must read differently for poultry belongs in the overrides below. Both files
+| must stay in step — the English one overrides the same keys.
+|
+| Note for translators: these overrides are unreviewed by a native speaker.
+*/
+
+$shared = require __DIR__.'/large-animals.php';
+
+return array_replace_recursive($shared, [
 
     'nav' => [
         'home' => 'الدواجن',
@@ -18,11 +33,8 @@ return [
         'cta_primary' => 'ابدأ التشخيص',
         'cta_secondary' => 'استخدم التصفية',
 
-        'notice_title' => 'هاتان الأداتان تغطيان الدواجن بالفعل',
-        'notice_body' => 'تعمل الأداتان أدناه بالفعل على كامل مجموعة أمراض الدواجن، وهما مشتركتان مع قسم الحيوانات الكبيرة في الوقت الحالي — أما الصفحات المخصصة للدواجن فتصل في الإصدارات القادمة.',
-
         'services_heading' => 'ابدأ من هنا',
-        'services_subtitle' => 'تعمل الأداتان مع كل أمراض الدواجن المحمّلة في VetPedia.',
+        'services_subtitle' => 'تعمل الأداتان على مجموعة أمراض الدواجن فقط — وكل نتيجة تراها هي مرض يصيب الطيور.',
         'open' => 'افتح',
 
         'services' => [
@@ -32,7 +44,7 @@ return [
             ],
             'filter' => [
                 'title' => 'التصفية السريرية',
-                'description' => 'ضيّق قائمة الأمراض حسب النوع والمنظومة الجسدية ومدى إمكانية انتقال المرض إلى الإنسان، باستخدام العلامات التي تختارها.',
+                'description' => 'ضيّق قائمة الأمراض حسب نوع الطائر والمنظومة الجسدية ومدى إمكانية انتقال المرض إلى الإنسان، باستخدام العلامات التي تختارها.',
             ],
         ],
 
@@ -49,4 +61,40 @@ return [
         'cta_button' => 'ابدأ تشخيصاً',
     ],
 
-];
+    /*
+    | Wording the large-animal pages say in terms of livestock. Everything not
+    | listed here is inherited as-is.
+    */
+    'diagnosis' => [
+        'subtitle' => 'اختر العلامات السريرية التي لاحظتها على الطائر وسنرتب قائمة بأمراض الدواجن الأكثر احتمالاً في تفسيرها.',
+        'species_label' => 'نوع الطائر',
+        'species_placeholder' => 'اختر نوع الطائر',
+        'warning' => 'يرجى اختيار ثلاث علامات سريرية لاحظتها على الأقل قبل تشغيل التشخيص التفريقي.',
+        'no_results_desc' => 'جرّب اختيار علامات سريرية أكثر أو مختلفة، أو نوع طائر آخر.',
+    ],
+
+    'filter' => [
+        'subtitle' => 'ضيّق قائمة أمراض الدواجن حسب نوع الطائر، والسبب، والمنظومة الجسدية، وخطر نقل المرض إلى الإنسان.',
+        'species_label' => 'نوع الطائر',
+        'species_placeholder' => 'كل أنواع الطيور',
+        'results_subtitle' => 'أمراض الدواجن المطابقة لنوع الطائر، والسبب، والمنظومة الجسدية، وخطر نقل المرض، والعلامات السريرية التي اخترتها.',
+    ],
+
+    'hero' => [
+        'badge' => [
+            'diagnosis' => 'أداة التشخيص البيطري للدواجن',
+        ],
+        'stats' => [
+            'species' => 'أنواع الطيور',
+        ],
+    ],
+
+    /*
+    | Some poultry diseases are legitimately linked to livestock hosts too
+    | (salmonellosis, for one), so this stays "species" rather than "birds".
+    */
+    'disease' => [
+        'host_species' => 'الأنواع المصابة',
+    ],
+
+]);

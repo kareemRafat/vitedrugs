@@ -1,6 +1,13 @@
 @extends('app.layouts.master')
 
-@section('title', __('large-animals.disease.title', ['name' => $disease->name]))
+@php
+    // Shared by the large-animals and poultry controllers. $part doubles as both
+    // the route-name prefix and the translation namespace because the two
+    // vocabularies are spelled the same ('large-animals' / 'poultry').
+    $t = fn (string $key, array $replace = []): string => __($part.'.'.$key, $replace);
+@endphp
+
+@section('title', $t('disease.title', ['name' => $disease->name]))
 
 @section('meta_description')
     {{ \Illuminate\Support\Str::limit(strip_tags(app()->getLocale() === 'ar' && $disease->description_ar ? $disease->description_ar : ($disease->description ?? '')), 160) }}
@@ -18,10 +25,10 @@
             ? $item[$field.'_ar']
             : ($item[$field] ?? '');
         $payloadSections = [
-            'postmortem_findings' => ['label' => __('large-animals.disease.postmortem_findings'), 'icon' => 'microscope', 'items' => collect($payload['postmortem_findings'] ?? [])->filter(fn ($i) => filled($i['display_name'] ?? null))],
-            'diagnosis' => ['label' => __('large-animals.disease.diagnosis'), 'icon' => 'test-tube-2', 'items' => collect($payload['diagnosis'] ?? [])->filter(fn ($i) => filled($i['method'] ?? null))],
-            'treatment' => ['label' => __('large-animals.disease.treatment'), 'icon' => 'syringe', 'items' => collect($payload['treatment'] ?? [])->filter(fn ($i) => filled($i['intervention'] ?? null))],
-            'prevention_control' => ['label' => __('large-animals.disease.prevention_control'), 'icon' => 'shield-check', 'items' => collect($payload['prevention_control'] ?? [])->filter(fn ($i) => filled($i['measure'] ?? null))],
+            'postmortem_findings' => ['label' => $t('disease.postmortem_findings'), 'icon' => 'microscope', 'items' => collect($payload['postmortem_findings'] ?? [])->filter(fn ($i) => filled($i['display_name'] ?? null))],
+            'diagnosis' => ['label' => $t('disease.diagnosis'), 'icon' => 'test-tube-2', 'items' => collect($payload['diagnosis'] ?? [])->filter(fn ($i) => filled($i['method'] ?? null))],
+            'treatment' => ['label' => $t('disease.treatment'), 'icon' => 'syringe', 'items' => collect($payload['treatment'] ?? [])->filter(fn ($i) => filled($i['intervention'] ?? null))],
+            'prevention_control' => ['label' => $t('disease.prevention_control'), 'icon' => 'shield-check', 'items' => collect($payload['prevention_control'] ?? [])->filter(fn ($i) => filled($i['measure'] ?? null))],
         ];
     @endphp
 
@@ -29,9 +36,9 @@
 
         {{-- Breadcrumb --}}
         <nav class="flex mb-4 pt-4 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body dark:text-slate-400" aria-label="{{ __('messages.nav.breadcrumb') }}">
-            <a href="{{ route('large-animals.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ __('messages.parts.large_animals') }}</a>
+            <a href="{{ route($part.'.home') }}" wire:navigate class="hover:text-fg-brand dark:hover:text-brand transition-colors">{{ $part === 'poultry' ? __('messages.parts.poultry') : __('messages.parts.large_animals') }}</a>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
-            <span>{{ __('large-animals.breadcrumb.diseases') }}</span>
+            <span>{{ $t('breadcrumb.diseases') }}</span>
             <x-lucide-chevron-right class="w-4 h-4 rtl:rotate-180 shrink-0" />
             <span class="text-heading dark:text-white font-medium">{{ $isArabic && $disease->name_ar ? $disease->name_ar : $disease->name }}</span>
         </nav>
@@ -41,15 +48,18 @@
             :heading="$isArabic && $disease->name_ar ? $disease->name_ar : $disease->name"
             :subtitle="\Illuminate\Support\Str::limit(strip_tags($isArabic && $disease->description_ar ? $disease->description_ar : ($disease->description ?? '')), 220)"
             :stats="[
-                ['value' => $disease->clinicalSigns->count(), 'label' => __('large-animals.hero.stats.clinical_signs'), 'icon' => 'stethoscope'],
-                ['value' => $disease->hostSpecies->count(), 'label' => __('large-animals.hero.stats.species'), 'icon' => 'paw-print', 'labelClass' => 'text-emerald-600 dark:text-emerald-400'],
+                ['value' => $disease->clinicalSigns->count(), 'label' => $t('hero.stats.clinical_signs'), 'icon' => 'stethoscope'],
+                ['value' => $disease->hostSpecies->count(), 'label' => $t('hero.stats.species'), 'icon' => 'paw-print', 'labelClass' => 'text-emerald-600 dark:text-emerald-400'],
             ]"
         >
-            <a href="{{ route('large-animals.diseases.article', $disease->slug) }}" wire:navigate
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-base bg-brand text-white hover:bg-brand-strong transition-colors">
-                <x-lucide-file-text class="w-3.5 h-3.5" />
-                {{ __('large-animals.disease.read_article') }}
-            </a>
+            {{-- The long-form article page is only built for large animals so far. --}}
+            @if ($part === 'large-animals')
+                <a href="{{ route($part.'.diseases.article', $disease->slug) }}" wire:navigate
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-base bg-brand text-white hover:bg-brand-strong transition-colors">
+                    <x-lucide-file-text class="w-3.5 h-3.5" />
+                    {{ $t('disease.read_article') }}
+                </a>
+            @endif
         </x-large-animals.card-hero>
 
         {{-- Classification chips --}}
@@ -64,18 +74,18 @@
                 @if ($classification->zoonotic)
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-danger-soft border border-danger-subtle text-fg-danger-strong dark:bg-red-950 dark:border-red-900 dark:text-red-300">
                         <x-lucide-users class="w-3.5 h-3.5" />
-                        {{ __('large-animals.disease.zoonotic') }}
+                        {{ $t('disease.zoonotic') }}
                     </span>
                 @endif
                 @if ($classification->notifiable)
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-success-soft border border-success-subtle text-fg-success-strong dark:bg-green-950 dark:border-green-900 dark:text-green-300">
                         <x-lucide-bell-ring class="w-3.5 h-3.5" />
-                        {{ __('large-animals.disease.notifiable') }}
+                        {{ $t('disease.notifiable') }}
                     </span>
                 @endif
                 @if ($classification->oie_category)
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-base bg-neutral-secondary-soft border border-default-medium text-body dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300">
-                        {{ __('large-animals.disease.oie_category') }}: {{ $classification->oie_category }}
+                        {{ $t('disease.oie_category') }}: {{ $classification->oie_category }}
                     </span>
                 @endif
             </div>
@@ -90,7 +100,7 @@
                 <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-stethoscope class="w-4 h-4 text-body dark:text-slate-400" />
-                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.disease.clinical_signs') }}</h2>
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ $t('disease.clinical_signs') }}</h2>
                     </div>
                     <div class="p-5 space-y-5">
                         @if ($clinicalSigns->isNotEmpty())
@@ -102,11 +112,11 @@
                                             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-base bg-neutral-secondary-soft border border-default-medium text-heading dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                                                 {{ $sign->localized_display_name }}
                                                 @if ($sign->pivot?->is_pathognomonic)
-                                                    <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand text-white">{{ __('large-animals.disease.pathognomonic') }}</span>
+                                                    <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand text-white">{{ $t('disease.pathognomonic') }}</span>
                                                 @elseif ($sign->pivot?->is_required)
-                                                    <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('large-animals.disease.required') }}</span>
+                                                    <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $t('disease.required') }}</span>
                                                 @elseif ($sign->pivot?->is_specific)
-                                                    <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('large-animals.disease.specific') }}</span>
+                                                    <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $t('disease.specific') }}</span>
                                                 @endif
                                             </span>
                                         @endforeach
@@ -119,17 +129,17 @@
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-base bg-neutral-secondary-soft border border-default-medium text-heading dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                                         {{ $isArabic && filled($sign['display_name_ar'] ?? null) ? $sign['display_name_ar'] : ($sign['display_name'] ?? $sign['canonical_name']) }}
                                         @if (! empty($sign['is_pathognomonic']))
-                                            <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand text-white">{{ __('large-animals.disease.pathognomonic') }}</span>
+                                            <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand text-white">{{ $t('disease.pathognomonic') }}</span>
                                         @elseif (! empty($sign['is_required']))
-                                            <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('large-animals.disease.required') }}</span>
+                                            <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $t('disease.required') }}</span>
                                         @elseif (! empty($sign['is_specific']))
-                                            <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ __('large-animals.disease.specific') }}</span>
+                                            <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $t('disease.specific') }}</span>
                                         @endif
                                     </span>
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.disease.no_data') }}</p>
+                            <p class="text-sm text-body dark:text-slate-400">{{ $t('disease.no_data') }}</p>
                         @endif
                     </div>
                 </div>
@@ -169,7 +179,7 @@
                     <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                         <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                             <x-lucide-book-marked class="w-4 h-4 text-body dark:text-slate-400" />
-                            <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.disease.references') }}</h2>
+                            <h2 class="text-base font-semibold text-heading dark:text-white">{{ $t('disease.references') }}</h2>
                         </div>
                         <div class="p-5">
                             <ul class="space-y-2">
@@ -192,11 +202,11 @@
                 <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-package class="w-4 h-4 text-body dark:text-slate-400" />
-                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.disease.related_products') }}</h2>
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ $t('disease.related_products') }}</h2>
                     </div>
                     <div class="p-5">
                         @if ($disease->products->isEmpty())
-                            <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.disease.no_related_products') }}</p>
+                            <p class="text-sm text-body dark:text-slate-400">{{ $t('disease.no_related_products') }}</p>
                         @else
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 @foreach ($disease->products as $product)
@@ -220,54 +230,54 @@
                     <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                         <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                             <x-lucide-clipboard-list class="w-4 h-4 text-body dark:text-slate-400" />
-                            <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.disease.classification') }}</h2>
+                            <h2 class="text-base font-semibold text-heading dark:text-white">{{ $t('disease.classification') }}</h2>
                         </div>
                         <div class="p-5 space-y-3 text-sm">
                             @if ($classification->etiology_type)
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.etiology_type') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.etiology_type') }}</span>
                                     <span class="font-medium text-heading dark:text-white">{{ $classification->etiology_type }}</span>
                                 </div>
                             @endif
                             @if ($classification->zoonotic)
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.zoonotic') }}</span>
-                                    <span class="font-medium text-heading dark:text-white">{{ $classification->zoonotic ? __('large-animals.disease.yes') : __('large-animals.disease.no') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.zoonotic') }}</span>
+                                    <span class="font-medium text-heading dark:text-white">{{ $classification->zoonotic ? $t('disease.yes') : $t('disease.no') }}</span>
                                 </div>
                             @endif
                             @if ($classification->notifiable)
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.notifiable') }}</span>
-                                    <span class="font-medium text-heading dark:text-white">{{ $classification->notifiable ? __('large-animals.disease.yes') : __('large-animals.disease.no') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.notifiable') }}</span>
+                                    <span class="font-medium text-heading dark:text-white">{{ $classification->notifiable ? $t('disease.yes') : $t('disease.no') }}</span>
                                 </div>
                             @endif
                             @if ($classification->transmissibility)
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.transmissibility') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.transmissibility') }}</span>
                                     <span class="font-medium text-heading dark:text-white">{{ $classification->transmissibility }}</span>
                                 </div>
                             @endif
                             @if ($classification->infectiousness)
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.infectiousness') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.infectiousness') }}</span>
                                     <span class="font-medium text-heading dark:text-white">{{ $classification->infectiousness }}</span>
                                 </div>
                             @endif
                             @if ($classification->oie_category)
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.oie_category') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.oie_category') }}</span>
                                     <span class="font-medium text-heading dark:text-white">{{ $classification->oie_category }}</span>
                                 </div>
                             @endif
                             @if ($classification->occurrence_patterns)
                                 <div>
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.occurrence_patterns') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.occurrence_patterns') }}</span>
                                     <p class="mt-1 font-medium text-heading dark:text-white">{{ is_array($classification->occurrence_patterns) ? implode(', ', $classification->occurrence_patterns) : $classification->occurrence_patterns }}</p>
                                 </div>
                             @endif
                             @if ($classification->disease_courses)
                                 <div>
-                                    <span class="text-body dark:text-slate-400">{{ __('large-animals.disease.disease_courses') }}</span>
+                                    <span class="text-body dark:text-slate-400">{{ $t('disease.disease_courses') }}</span>
                                     <p class="mt-1 font-medium text-heading dark:text-white">{{ is_array($classification->disease_courses) ? implode(', ', $classification->disease_courses) : $classification->disease_courses }}</p>
                                 </div>
                             @endif
@@ -279,11 +289,11 @@
                 <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-paw-print class="w-4 h-4 text-body dark:text-slate-400" />
-                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.disease.host_species') }}</h2>
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ $t('disease.host_species') }}</h2>
                     </div>
                     <div class="p-5">
                         @if ($disease->hostSpecies->isEmpty())
-                            <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.disease.no_data') }}</p>
+                            <p class="text-sm text-body dark:text-slate-400">{{ $t('disease.no_data') }}</p>
                         @else
                             <div class="space-y-2">
                                 @foreach ($disease->hostSpecies as $species)
@@ -291,17 +301,17 @@
                                         <span class="text-sm font-medium text-heading dark:text-white">{{ $species->localized_display_name }}</span>
                                         @php
                                             $tags = [];
-                                            if ($species->pivot?->is_primary_host) { $tags[] = __('large-animals.disease.primary_host'); }
-                                            if ($species->pivot?->is_reservoir) { $tags[] = __('large-animals.disease.reservoir'); }
-                                            if ($species->pivot?->is_vector) { $tags[] = __('large-animals.disease.vector'); }
-                                            if ($species->pivot?->is_carrier) { $tags[] = __('large-animals.disease.carrier'); }
-                                            if ($species->pivot?->is_incidental_host) { $tags[] = __('large-animals.disease.incidental'); }
+                                            if ($species->pivot?->is_primary_host) { $tags[] = $t('disease.primary_host'); }
+                                            if ($species->pivot?->is_reservoir) { $tags[] = $t('disease.reservoir'); }
+                                            if ($species->pivot?->is_vector) { $tags[] = $t('disease.vector'); }
+                                            if ($species->pivot?->is_carrier) { $tags[] = $t('disease.carrier'); }
+                                            if ($species->pivot?->is_incidental_host) { $tags[] = $t('disease.incidental'); }
                                         @endphp
                                         @foreach ($tags as $tag)
                                             <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-brand-soft text-fg-brand dark:bg-brand/20 dark:text-brand">{{ $tag }}</span>
                                         @endforeach
                                         @if ($species->pivot?->susceptibility)
-                                            <span class="ms-auto text-xs text-body dark:text-slate-400">{{ __('large-animals.disease.susceptibility') }}: {{ $species->pivot->susceptibility }}</span>
+                                            <span class="ms-auto text-xs text-body dark:text-slate-400">{{ $t('disease.susceptibility') }}: {{ $species->pivot->susceptibility }}</span>
                                         @endif
                                     </div>
                                 @endforeach
@@ -314,21 +324,31 @@
                 <div class="bg-neutral-primary-soft rounded-base shadow-xs dark:bg-slate-800 overflow-hidden">
                     <div class="px-5 py-4 border-b border-default-medium flex items-center gap-2">
                         <x-lucide-microscope class="w-4 h-4 text-body dark:text-slate-400" />
-                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ __('large-animals.disease.microorganisms') }}</h2>
+                        <h2 class="text-base font-semibold text-heading dark:text-white">{{ $t('disease.microorganisms') }}</h2>
                     </div>
                     <div class="p-5">
                         @if ($disease->microorganisms->isEmpty())
-                            <p class="text-sm text-body dark:text-slate-400">{{ __('large-animals.disease.no_data') }}</p>
+                            <p class="text-sm text-body dark:text-slate-400">{{ $t('disease.no_data') }}</p>
                         @else
                             <div class="space-y-2">
                                 @foreach ($disease->microorganisms as $microorganism)
-                                    <a href="{{ route('large-animals.microorganisms.show', $microorganism->slug) }}" wire:navigate
-                                        class="flex items-center justify-between gap-3 p-3 rounded-base border border-default-medium bg-neutral-secondary-soft hover:border-brand transition-colors dark:bg-slate-700 dark:border-slate-600 dark:hover:border-brand">
-                                        <span class="text-sm font-medium text-heading dark:text-white">{{ $microorganism->display_name ?? $microorganism->name }}</span>
-                                        @if ($microorganism->pivot?->role === 'cause')
-                                            <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-danger-soft text-fg-danger-strong dark:bg-red-950 dark:text-red-300">{{ __('large-animals.microorganisms.cause') }}</span>
-                                        @endif
-                                    </a>
+                                    @php $cardClass = 'flex items-center justify-between gap-3 p-3 rounded-base border border-default-medium bg-neutral-secondary-soft hover:border-brand transition-colors dark:bg-slate-700 dark:border-slate-600 dark:hover:border-brand'; @endphp
+                                    {{-- The microorganism reference pages are large-animal only; elsewhere the name is plain text so nothing leads out of the part. --}}
+                                    @if ($part === 'poultry')
+                                        <span class="{{ $cardClass }}">
+                                            <span class="text-sm font-medium text-heading dark:text-white">{{ $microorganism->display_name ?? $microorganism->name }}</span>
+                                            @if ($microorganism->pivot?->role === 'cause')
+                                                <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-danger-soft text-fg-danger-strong dark:bg-red-950 dark:text-red-300">{{ $t('microorganisms.cause') }}</span>
+                                            @endif
+                                        </span>
+                                    @else
+                                        <a href="{{ route('large-animals.microorganisms.show', $microorganism->slug) }}" wire:navigate class="{{ $cardClass }}">
+                                            <span class="text-sm font-medium text-heading dark:text-white">{{ $microorganism->display_name ?? $microorganism->name }}</span>
+                                            @if ($microorganism->pivot?->role === 'cause')
+                                                <span class="px-1.5 py-0.5 text-xs font-semibold rounded-xs bg-danger-soft text-fg-danger-strong dark:bg-red-950 dark:text-red-300">{{ $t('microorganisms.cause') }}</span>
+                                            @endif
+                                        </a>
+                                    @endif
                                 @endforeach
                             </div>
                         @endif
