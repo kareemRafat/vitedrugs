@@ -140,14 +140,19 @@ class PoultryLandingTest extends TestCase
         }
     }
 
+    /**
+     * Every phase the plan lists has landed, so the landing page links to all of
+     * them. This started as the inverse — a guard that the atlas card stayed
+     * hidden while Phase 9 was unbuilt — and is now the assertion that it is
+     * present, which is what stops the card being dropped silently.
+     */
     #[Test]
-    public function it_hides_cards_for_sections_that_are_not_built_yet(): void
+    public function it_links_to_the_lesion_atlas_now_that_it_is_built(): void
     {
         $html = $this->get('/poultry')->assertOk()->getContent();
 
-        // Phase 9 (the lesion atlas) has not landed. Its route must not appear.
-        // Phases 6, 7, 8 and 10 have landed and are asserted below.
-        $this->assertStringNotContainsString('poultry/atlas', $html, 'poultry/atlas is not built yet and must not be linked.');
+        $this->assertStringContainsString(route('poultry.atlas'), $html);
+        $this->assertStringContainsString(__('poultry.landing.services.atlas.title'), $html);
     }
 
     #[Test]

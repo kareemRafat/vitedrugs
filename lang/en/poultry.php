@@ -63,6 +63,10 @@ return array_replace_recursive($shared, [
                 'title' => 'Body Map',
                 'description' => 'Click the part of the bird you are worried about and see the diseases, signs and post-mortem lesions recorded against its organs.',
             ],
+            'atlas' => [
+                'title' => 'Lesion Atlas',
+                'description' => 'Opened a bird and found something you cannot name? Browse every post-mortem lesion recorded for poultry and see which diseases cause it.',
+            ],
         ],
 
         'stats_heading' => 'Poultry knowledge base at a glance',
@@ -152,6 +156,52 @@ return array_replace_recursive($shared, [
         'organ_empty' => 'Nothing is recorded against this organ yet.',
         'system_empty' => 'No organ in this system has anything recorded against it yet.',
         'no_system' => 'No body systems are mapped yet.',
+    ],
+
+    /*
+    | The atlas shares the body map's tiering problem and inherits its honest
+    | wording. No lesion carries an organ, so every placement on this page comes
+    | from the lesion's name naming one, and the share that names none is listed
+    | rather than dropped.
+    */
+    'atlas' => [
+        'title' => 'Poultry Lesion Atlas | VetPedia',
+        'heading' => 'Poultry Lesion Atlas',
+        'subtitle' => 'What a disease looks like from the inside. Browse the post-mortem lesions recorded for poultry and see which diseases cause each one.',
+        'badge' => 'Lesion Atlas',
+        'grouping_note' => 'Lesions are filed under a body system when their name names an organ. That is a text match, not a link a veterinarian made, and lesions that name no organ are listed separately rather than hidden.',
+
+        'stats' => [
+            'lesions' => 'Lesions recorded',
+            'diseases' => 'Diseases covered',
+            'systems' => 'Body systems',
+            'unclassified' => 'Not yet placed',
+        ],
+
+        'search_placeholder' => 'Search lesion names',
+        'letter_nav' => 'Jump to letter',
+        'all_letters' => 'All',
+        'showing' => 'Showing :count lesions',
+        'clear' => 'Clear filters',
+
+        'unclassified' => 'Not yet placed',
+        'organ' => 'Names',
+        'diseases_count' => ':count diseases',
+        'caused_by' => 'Caused by',
+        'no_diseases' => 'No poultry disease is linked to this lesion yet.',
+
+        'image_soon' => 'Photograph coming soon',
+        'empty' => 'No lesion matches these filters. Try clearing the search or choosing a different body system.',
+
+        // Read by the shared <x-pagination> component, which is handed this
+        // namespace as its translationPrefix.
+        'showing' => 'Showing',
+        'of' => 'of',
+        'previous_page' => 'Previous',
+        'next_page' => 'Next',
+
+        // Where a section's atlas-wide count exceeds the rows on this page.
+        'count_on_page' => ':on on this page',
     ],
 
     /*

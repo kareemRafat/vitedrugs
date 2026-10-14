@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Knowledge\SearchController;
+use App\Http\Controllers\Poultry\AtlasController;
 use App\Http\Controllers\Poultry\BodyMapController;
 use App\Http\Controllers\Poultry\CompareController;
 use App\Http\Controllers\Poultry\DiagnosticController;
@@ -33,6 +34,8 @@ Route::group([
         Route::get('compare', CompareController::class)->name('poultry.comparison');
 
         Route::get('body-map', BodyMapController::class)->name('poultry.body-map');
+
+        Route::get('atlas', AtlasController::class)->name('poultry.atlas');
 
         Route::get('products', ProductController::class)->name('poultry.products.index');
 

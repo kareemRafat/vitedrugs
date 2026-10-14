@@ -418,14 +418,16 @@ class PartBodyMapTest extends TestCase
     }
 
     /**
-     * Phase 9 has not landed. Its 404 is asserted by the landing test; this is
-     * here so that adding the atlas is a deliberate change rather than a stray
-     * route.
+     * Phase 9 has landed. This asserted a 404 while the atlas was unbuilt, so that
+     * adding it would be a deliberate change rather than a stray route; the atlas
+     * page itself is covered by `PoultryLesionAtlasTest`, and this only pins that
+     * the two anatomy pages coexist on distinct routes.
      */
     #[Test]
-    public function the_lesion_atlas_is_still_unbuilt(): void
+    public function the_lesion_atlas_is_a_separate_page_from_the_body_map(): void
     {
-        $this->get('/poultry/atlas')->assertNotFound();
+        $this->get('/poultry/atlas')->assertOk();
+        $this->get('/poultry/body-map')->assertOk();
     }
 
     // ----------------------------------------------------------------- helpers

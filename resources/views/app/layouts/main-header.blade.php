@@ -39,6 +39,7 @@
                         <a href="{{ route('poultry.comparison') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.comparison*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.comparison*')])>{{ __('poultry.nav.comparison') }}</a>
                         <a href="{{ route('poultry.products.index') }}" wire:navigate @class(['px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.products*'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.products*')])>{{ __('poultry.nav.products') }}</a>
                         <a href="{{ route('poultry.body-map') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.body-map'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.body-map')])>{{ __('poultry.nav.body_map') }}</a>
+                        <a href="{{ route('poultry.atlas') }}" wire:navigate @class(['hidden lg:inline-flex px-2 py-1 text-sm font-medium rounded-base transition-colors duration-150 whitespace-nowrap', 'text-fg-brand font-semibold' => request()->routeIs('poultry.atlas'), 'text-body hover:text-fg-brand dark:text-slate-400 dark:hover:text-white' => !request()->routeIs('poultry.atlas')])>{{ __('poultry.nav.lesions') }}</a>
                     @break
 
                     @default
@@ -258,6 +259,10 @@
                     <a href="{{ route('poultry.body-map') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('poultry.body-map'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('poultry.body-map')])>
                         <x-lucide-scan-search class="w-5 h-5" />
                         {{ __('poultry.nav.body_map') }}
+                    </a>
+                    <a href="{{ route('poultry.atlas') }}" onclick="toggleMobileMenu()" @class(['flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150', 'border-s-2 border-brand bg-brand/10 text-fg-brand' => request()->routeIs('poultry.atlas'), 'text-body hover:text-heading hover:bg-neutral-secondary-soft dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700' => !request()->routeIs('poultry.atlas')])>
+                        <x-lucide-book-open-text class="w-5 h-5" />
+                        {{ __('poultry.nav.lesions') }}
                     </a>
                 @break
 

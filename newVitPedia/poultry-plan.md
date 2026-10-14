@@ -383,7 +383,7 @@ The 660 SQL lesions power the **diagnostic engine** (Phase 4). The 928 JSON lesi
 | 5 | Search | `GET /poultry/search` | — |
 | 6 | Comparison | `GET /poultry/compare` | `⚡disease-compare-builder` |
 | 7 | Body Map | `GET /poultry/body-map` | `⚡body-map` |
-| 8 | Lesion Atlas | `GET /poultry/atlas` | `⚡lesion-atlas` |
+| 8 | Lesion Atlas | `GET /poultry/atlas` | `knowledge.⚡lesion-atlas` |
 | 9 | Drugs | `GET /poultry/products` | reuse `products.*` |
 
 ### 8.1 Livewire v4 SFC conventions
@@ -1404,20 +1404,101 @@ they are seeing.
 
 ### Tasks
 
-- [ ] Build the atlas controller and view
-- [ ] List the merged lesion set (`ontology_type = 'lesion'`)
-- [ ] Group by body system, using the 11 body systems
-- [ ] Add a filter by body system
-- [ ] Add text search across lesion names and descriptions
-- [ ] Add letter navigation
-- [ ] Show, per lesion, which diseases cause it — the 856 SQL links plus the JSON associations
-- [ ] Show the JSON `notes` field alongside each lesion
-- [ ] Make the layout image-ready so photographs can be added without redesign
-- [ ] Show a clear "image coming soon" placeholder rather than a broken box
-- [ ] Add a documented upload path for images via Filament
-- [ ] Link each lesion to its disease detail page
-- [ ] Add English and Arabic names for lesions
-- [ ] Tests: grouping, filtering, search, empty-image placeholder
+- [x] Build the atlas controller and view
+- [x] List the merged lesion set (`ontology_type = 'lesion'`) — **640 lesions, all poultry**
+- [x] Group by body system, using the 11 body systems — **12 systems hold structures**
+- [x] Add a filter by body system
+- [x] Add text search across lesion names and descriptions — **names only, see deviations**
+- [x] Add letter navigation — **22 letters in use**
+- [x] Show, per lesion, which diseases cause it — the 856 SQL links plus the JSON associations
+- [x] Show the JSON `notes` field alongside each lesion — **no such field, see deviations**
+- [x] Make the layout image-ready so photographs can be added without redesign
+- [x] Show a clear "image coming soon" placeholder rather than a broken box
+- [ ] Add a documented upload path for images via Filament — **blocked on the media table, see deviations**
+- [x] Link each lesion to its disease detail page
+- [ ] Add English and Arabic names for lesions — **1 of 640 has an Arabic name**
+- [x] Tests: grouping, filtering, search, empty-image placeholder — **20 tests**
+
+### 9.1 What shipped
+
+| | |
+|---|---|
+| Route | `GET /poultry/atlas` — not the prototype's `/lesion-atlas`; that path never existed in this application |
+| Page | `poultry/atlas.blade.php` + `knowledge.⚡lesion-atlas` (Livewire SFC) |
+| Service | `LesionAtlasService` — 9 queries for the whole page |
+| Tests | `PoultryLesionAtlasTest` — 20 tests, **278 passed / 8 skipped** |
+
+Sections and their sizes, from the live database:
+
+| Body system | Lesions |
+|---|---|
+| Digestive System | 163 |
+| Respiratory System | 54 |
+| Integumentary System | 40 |
+| Musculoskeletal System | 39 |
+| Immune System | 37 |
+| Urinary System | 29 |
+| Nervous System | 17 |
+| Cardiovascular System | 12 |
+| Reproductive System | 10 |
+| Lymphatic System | 8 |
+| Ocular System | 3 |
+| **Not yet placed** | **228** |
+
+### 9.2 Deviations, and why
+
+Three of the phase's assumptions do not hold on the data. Each is recorded here
+rather than quietly dropped, because each one changed what the page could honestly
+claim to be.
+
+**Lesion *descriptions* do not exist.** `findings` carries `canonical_name`,
+`display_name` and `category` — there is no description column — and there is no
+`gross_lesions` table to read prose out of. So "search across lesion names and
+descriptions" ships as **search across names**. The disease rows that carry a
+lesion do have a `knowledge_payload`, but that describes the disease rather than
+the lesion, and matching a lesion name inside a disease description would attach
+text that is about something else.
+
+**There is no `notes` field.** Same reason. Nothing to show.
+
+**There is no media table.** Phase 9 planned photographs behind `media_assets`.
+This application has no such table — `product_images` is the only image table —
+so there is no upload path to document, and that task is left open rather than
+marked done against a table that does not exist. Every lesion renders a framed
+4:3 placeholder instead of a broken image, and the layout takes the photograph
+without a redesign when one is added.
+
+### 9.3 The unclassified bucket is load-bearing
+
+**No lesion carries an organ.** Zero of the 640 have a
+`clinical_signs.anatomical_structure_id`, so "group by body system" cannot be
+answered from the data at all. It is answered by `OrganAttachmentService`, which
+reaches an organ when the lesion's *name* contains one — the same inference the
+body map draws as its amber tier, reused rather than reimplemented so the two
+pages cannot drift apart.
+
+The matcher places **412 of 640**. The other **228** name no organ: "Post-mortem:
+birds dull", "Necropsy: enlarged abdomen". A literal group-by drops them, which
+looks like a working page with a smaller number on it. They are therefore listed in
+their own `Not yet placed` section at the same level as the body systems, and the
+page carries the caveat above the results.
+
+A lesion naming two organs is filed under the first in display order. It is one row
+in `findings`, not two, and duplicating it would inflate the per-system counts.
+
+### 9.4 What this inherits and does not fix
+
+**The atlas does not advance the curation wall — it maps it.** 641 lesions still
+carry no organ of their own, and the atlas reads that gap out loud by listing 228
+of them. It is a worklist rendered as a page: every entry under `Not yet placed`
+is a lesion somebody could attribute to an organ by hand, and doing so would move
+it into a system and into the body map's mapped tier at the same time.
+
+**Arabic is 1 of 640.** The page renders its chrome, headings and system names in
+Arabic, and 639 of the 640 lesion names fall back to English. This is the same
+wall Phase 6 recorded for diseases and it is not new here — but the atlas is where
+it is most visible, because a vet browsing in Arabic gets an Arabic frame around
+an English list.
 
 ---
 

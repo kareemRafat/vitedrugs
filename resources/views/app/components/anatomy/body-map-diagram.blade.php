@@ -77,7 +77,7 @@
             @endphp
 
             <button type="button" class="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-white
-                    before:absolute before:-inset-4 lg:before:-inset-5 before:content-[''] focus-visible:outline-none
+                    before:absolute before:-inset-5 lg:before:-inset-7 before:content-[''] focus-visible:outline-none
                     lg:border-[3px] dark:border-slate-700"
                 style="top: {{ $spot['y'] }}%; left: {{ $spot['x'] }}%; animation-delay: {{ round($loop->index * 0.12, 2) }}s"
                 role="button" tabindex="0" aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
