@@ -40,24 +40,24 @@
      */
     $hotspots = [
         'eye' => ['label' => 'Eye', 'x' => 21.6, 'y' => 9.1],
-        'beak' => ['label' => 'Beak / Oral Cavity', 'x' => 17.4, 'y' => 14.8],
-        'esophagus' => ['label' => 'Esophagus', 'x' => 27.2, 'y' => 22.0],
+        'beak' => ['label' => 'Beak / Oral Cavity', 'x' => 17.4, 'y' => 15.7],
+        'esophagus' => ['label' => 'Esophagus', 'x' => 27.7, 'y' => 21.4],
         'trachea' => ['label' => 'Trachea', 'x' => 28.4, 'y' => 27.6],
-        'lungs' => ['label' => 'Lungs', 'x' => 39.3, 'y' => 37.9],
-        'crop' => ['label' => 'Crop', 'x' => 28.3, 'y' => 47.2],
+        'lungs' => ['label' => 'Lungs', 'x' => 39.6, 'y' => 35.8],
+        'crop' => ['label' => 'Crop', 'x' => 28.3, 'y' => 47.8],
         'heart' => ['label' => 'Heart', 'x' => 34.6, 'y' => 45.2],
         'proventriculus' => ['label' => 'Proventriculus', 'x' => 38.0, 'y' => 52.7],
         'gizzard' => ['label' => 'Gizzard', 'x' => 45.6, 'y' => 54.3],
-        'liver' => ['label' => 'Liver', 'x' => 41.4, 'y' => 62.5],
-        'spleen' => ['label' => 'Spleen', 'x' => 51.1, 'y' => 60.0],
+        'liver' => ['label' => 'Liver', 'x' => 41.9, 'y' => 62.5],
+        'spleen' => ['label' => 'Spleen', 'x' => 51.5, 'y' => 59.8],
         'pancreas' => ['label' => 'Pancreas', 'x' => 59.6, 'y' => 69.6],
         'ovary' => ['label' => 'Ovary', 'x' => 54.4, 'y' => 36.8],
         'kidneys' => ['label' => 'Kidney', 'x' => 63.8, 'y' => 35.2],
         'oviduct' => ['label' => 'Oviduct', 'x' => 74.3, 'y' => 43.1],
-        'cloaca' => ['label' => 'Cloaca', 'x' => 77.8, 'y' => 50.5],
-        'large_intestine' => ['label' => 'Large Intestine', 'x' => 72.6, 'y' => 55.9],
-        'intestines' => ['label' => 'Small Intestine', 'x' => 67.1, 'y' => 61.6],
-        'ceca' => ['label' => 'Ceca', 'x' => 67.9, 'y' => 67.1],
+        'cloaca' => ['label' => 'Cloaca', 'x' => 78.1, 'y' => 50.3],
+        'large_intestine' => ['label' => 'Large Intestine', 'x' => 73.2, 'y' => 56.2],
+        'intestines' => ['label' => 'Small Intestine', 'x' => 67.6, 'y' => 61.2],
+        'ceca' => ['label' => 'Ceca', 'x' => 68.4, 'y' => 67.1],
     ];
 @endphp
 
@@ -77,7 +77,7 @@
             @endphp
 
             <button type="button" class="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-white
-                    before:absolute before:-inset-2.5 before:content-[''] focus-visible:outline-none
+                    before:absolute before:-inset-4 lg:before:-inset-5 before:content-[''] focus-visible:outline-none
                     lg:border-[3px] dark:border-slate-700"
                 style="top: {{ $spot['y'] }}%; left: {{ $spot['x'] }}%; animation-delay: {{ round($loop->index * 0.12, 2) }}s"
                 role="button" tabindex="0" aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
