@@ -103,6 +103,32 @@ new class extends Component
             ->all();
     }
 
+    /**
+     * Every organ the diagram can mark, keyed by `canonical_name`.
+     *
+     * The markers are drawn from an authored geometry keyed the same way, and this
+     * is the lookup that joins the two: a marker whose key is not in here drops
+     * off the bird rather than opening a panel with nothing in it.
+     *
+     * @return array<string, array{name: string, diseases: int}>
+     */
+    #[Computed]
+    public function organIndex(): array
+    {
+        $index = [];
+
+        foreach ($this->attachments as $attachment) {
+            $structure = $attachment['structure'];
+
+            $index[$structure->canonical_name] = [
+                'name' => $structure->localized_display_name,
+                'diseases' => $this->diseaseCount($attachment),
+            ];
+        }
+
+        return $index;
+    }
+
     public function selectSystem(string $system): void
     {
         // Clicking the system you are already looking at puts the diagram back
@@ -243,7 +269,8 @@ new class extends Component
                 @if ($systems === [])
                     <p class="py-12 text-center text-sm text-body dark:text-slate-400">{{ $t('no_system') }}</p>
                 @else
-                    <x-anatomy.body-map-diagram :systems="$systems" :selected="$this->selectedSystem"
+                    <x-anatomy.body-map-diagram :organs="$this->organIndex()"
+                        :selected-organ="$this->selectedOrgan" :selected-system="$this->selectedSystem"
                         :label="$t('diagram_label')" />
 
                     <ul class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-1.5">

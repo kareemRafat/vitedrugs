@@ -1,260 +1,114 @@
 @props([
     /**
-     * Body systems keyed by canonical name, each `['system' => BodySystem,
-     * 'attachments' => Collection, 'diseases' => int, 'organs' => int]`.
+     * Organs keyed by `canonical_name`, each `['name' => string, 'diseases' => int]`.
      */
-    'systems' => [],
-    'selected' => null,
+    'organs' => [],
+    'selectedOrgan' => '',
+    'selectedSystem' => '',
     'label' => '',
 ])
 
 {{--
-    A schematic hen, drawn here rather than imported.
+    The bird, drawn from a supplied illustration rather than here.
 
-    No illustration was licensed for this page and none exists in the repository,
-    so both the bird and the organ regions are drawn inline. Marker positions are
-    indicative rather than anatomical and the page says so. Drawing it inline
-    means no image request, no pinch-zoom interception and no licensing question,
-    and when the anatomy needs to move it moves here rather than in a design file
-    nobody can diff.
+    This started as an inline SVG hen, because no illustration had been licensed
+    and none existed in the repository. One has since been supplied, so the bird is
+    an image and this file is the layer that makes it navigable.
 
-    Hotspots are body systems drawn as organs, not dots. A dot cannot point at a
-    thyroid gland, a lymph node or a spinal cord, and those are three of the
-    eleven systems — which is the whole reason this is shapes rather than markers.
+    Hotspots are organs and they are authored here, not data-driven: the geometry
+    is a drawing, and a drawing does not come out of a join. Each entry is keyed
+    by the same `canonical_name` the structures table uses, so a key that stops
+    matching does not error — the marker simply never renders and the organ
+    quietly falls off the bird. That is the only place it shows up, which is why
+    `PartBodyMapTest` asserts the keys as hard as it does.
 
-    `$shapes` holds the inner markup of each region, colour-free and built on
-    `currentColor` so one class on the wrapping `<g>` drives every shape in it.
-    A system with no entry here is still listed, still selectable and still
-    readable in the panel; it simply has no artwork on the bird. Adding a
-    thirteenth system to the table does not draw itself.
+    `intestines` is what the diagram calls "Small Intestine". The artwork splits
+    large from small, the table keeps one `intestines` row, and that row is the
+    only structure in the whole vocabulary carrying curated links — so the label
+    points at the structure that can actually answer.
 
-    The hen faces start, and the SVG is never mirrored for RTL: anatomy should not
-    reverse under an Arabic locale.
+    The image is never mirrored for RTL: anatomy should not reverse under an
+    Arabic locale, so markers stay on `left`/`top` and the illustration keeps
+    facing start.
 --}}
 @php
     /**
-     * The bird: tail plumes, body, head furniture, wing, legs.
+     * One entry per organ labelled on the illustration. Percentages of the image
+     * box, so the map stays responsive and the markers move with the artwork.
      *
-     * Held back so the organs read on top, but it still has to read as a bird —
-     * the first pass dropped the beak, eye and legs and it became a blob.
+     * @var array<string, array{label: string, x: float, y: float}>
      */
-    $bird = <<<'SVG'
-    <g fill="#cbd5e1">
-      <path d="M466 252 Q566 178 652 118 Q588 198 492 266 Z"/>
-      <path d="M476 280 Q578 232 656 184 Q600 264 500 290 Z"/>
-      <path d="M484 306 Q570 282 628 246 Q578 314 502 316 Z"/>
-      <path d="M492 330 Q554 326 582 300 Q548 346 506 342 Z"/>
-      <path d="
-        M 100 182
-        C 116 176, 130 172, 142 170
-        C 140 138, 156 118, 184 118
-        C 212 118, 232 138, 234 168
-        C 235 188, 233 202, 229 214
-        C 240 214, 252 218, 266 222
-        C 310 214, 366 214, 418 226
-        C 454 234, 476 246, 488 262
-        C 504 290, 502 324, 484 350
-        C 454 384, 404 402, 346 406
-        C 302 408, 258 398, 230 374
-        C 200 348, 184 320, 180 286
-        C 177 260, 180 242, 190 226
-        C 182 236, 168 232, 162 216
-        C 152 208, 140 202, 126 196
-        C 114 190, 104 186, 100 182
-        Z"/>
-
-      <path fill="#f59e0b" d="M 118 180 L 62 190 L 118 198 Z"/>
-      <path fill="#d97706" d="M 118 187 L 62 190 L 118 194 Z"/>
-      <path fill="#dc2626" d="
-        M 140 132
-        C 140 104, 148 86, 158 82
-        C 166 66, 180 62, 186 78
-        C 194 60, 210 60, 214 80
-        C 222 68, 236 72, 236 90
-        C 240 102, 236 118, 230 128
-        C 206 118, 168 120, 140 132
-        Z"/>
-      <path fill="#dc2626" d="M 146 194 C 138 204, 138 226, 148 232 C 158 238, 166 226, 164 208 C 162 196, 154 190, 146 194 Z"/>
-      <circle cx="172" cy="158" r="7" fill="#334155"/>
-      <circle cx="170" cy="156" r="2.4" fill="#ffffff"/>
-
-      <path d="
-        M 256 258
-        C 310 240, 384 242, 442 260
-        C 470 270, 486 284, 488 298
-        C 456 312, 394 318, 334 314
-        C 288 310, 260 288, 256 258
-        Z"/>
-      <g fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round">
-        <path d="M270 280 C324 294 396 294 462 284"/>
-        <path d="M274 296 C328 308 400 306 466 294"/>
-      </g>
-
-      <g fill="#dde4ed">
-        <ellipse cx="302" cy="394" rx="30" ry="26"/>
-        <ellipse cx="356" cy="394" rx="30" ry="26"/>
-      </g>
-      <g stroke="#94a3b8" stroke-width="14" stroke-linecap="round" fill="none">
-        <path d="M302 402 L308 440 L302 466"/>
-        <path d="M356 402 L360 440 L354 466"/>
-      </g>
-      <g stroke="#94a3b8" stroke-width="9" stroke-linecap="round" fill="none">
-        <path d="M302 466 L268 484"/>
-        <path d="M302 466 L302 492"/>
-        <path d="M302 466 L336 482"/>
-        <path d="M302 466 L330 472"/>
-        <path d="M354 466 L320 484"/>
-        <path d="M354 466 L354 492"/>
-        <path d="M354 466 L388 482"/>
-        <path d="M354 466 L382 472"/>
-      </g>
-    </g>
-    SVG;
-
-    /**
-     * One entry per body system. Authored here, not data-driven: the anatomy is
-     * a drawing, and a drawing does not come out of a join.
-     */
-    $shapes = [
-        'digestive' => <<<'SVG'
-        <g fill="currentColor" stroke="currentColor">
-            <path d="M158 182 C180 186 196 196 208 206" fill="none" stroke-width="9" stroke-linecap="round"/>
-            <ellipse cx="222" cy="212" rx="19" ry="13" stroke="none"/>
-            <path d="M232 220 C252 236 268 250 282 268" fill="none" stroke-width="7" stroke-linecap="round"/>
-            <path d="M316 292 C310 310 328 326 346 322 C364 318 368 298 354 286 C342 276 322 278 316 292 Z" stroke="none"/>
-            <path d="M348 332 C366 324 392 332 396 350 C400 366 384 378 366 374 C350 370 342 354 350 342
-                     C356 334 370 334 376 342 C382 350 374 358 366 354" fill="none"
-                stroke-width="8" stroke-linecap="round"/>
-            <ellipse cx="452" cy="348" rx="10" ry="9" stroke="none"/>
-        </g>
-        SVG,
-
-        'respiratory' => <<<'SVG'
-        <g fill="currentColor" stroke="currentColor">
-            <path d="M200 196 C222 214 242 232 268 246" fill="none" stroke-width="7" stroke-linecap="round"/>
-            <path d="M286 264 C296 250 330 248 342 260 C350 270 342 284 328 288 C308 292 288 280 286 264 Z" stroke="none"/>
-            <path d="M346 262 C356 250 384 250 392 262 C398 272 390 284 374 286 C358 288 346 276 346 262 Z" stroke="none"/>
-            <ellipse cx="398" cy="316" rx="30" ry="22" stroke="none"/>
-            <ellipse cx="444" cy="298" rx="24" ry="18" stroke="none"/>
-            <ellipse cx="450" cy="338" rx="20" ry="16" stroke="none"/>
-            <ellipse cx="368" cy="352" rx="20" ry="15" stroke="none"/>
-        </g>
-        SVG,
-
-        'cardiovascular' => <<<'SVG'
-        <g fill="currentColor" stroke="currentColor">
-            <path d="M280 292 C272 278 284 266 298 270 C312 274 312 294 298 306 C286 314 276 302 280 292 Z" stroke="none"/>
-            <path d="M288 268 C284 250 280 236 276 222" fill="none" stroke-width="6" stroke-linecap="round"/>
-            <path d="M288 254 C318 248 350 252 374 262" fill="none" stroke-width="5" stroke-linecap="round"/>
-        </g>
-        SVG,
-
-        'urinary' => <<<'SVG'
-        <g fill="currentColor">
-            <path d="M396 262 C420 252 452 254 466 264 C472 272 464 278 450 278 C424 276 400 272 396 262 Z"/>
-            <path d="M398 288 C422 280 452 284 464 292 C470 300 462 306 448 306 C424 304 402 298 398 288 Z"/>
-        </g>
-        SVG,
-
-        'reproductive' => <<<'SVG'
-        <g fill="currentColor" stroke="currentColor">
-            <circle cx="344" cy="302" r="8" stroke="none"/><circle cx="358" cy="297" r="7" stroke="none"/>
-            <circle cx="352" cy="312" r="7" stroke="none"/><circle cx="366" cy="309" r="6" stroke="none"/>
-            <path d="M372 320 C390 314 406 324 400 338 C394 350 374 350 370 338 C367 330 380 328 386 334"
-                fill="none" stroke-width="6" stroke-linecap="round"/>
-        </g>
-        SVG,
-
-        'immune' => <<<'SVG'
-        <g fill="currentColor">
-            <circle cx="244" cy="230" r="7"/>
-            <circle cx="258" cy="240" r="6"/>
-            <circle cx="271" cy="246" r="5"/>
-            <ellipse cx="328" cy="330" rx="16" ry="11"/>
-            <ellipse cx="438" cy="352" rx="12" ry="16"/>
-        </g>
-        SVG,
-
-        'nervous' => <<<'SVG'
-        <g fill="currentColor" stroke="currentColor">
-            <ellipse cx="198" cy="164" rx="20" ry="17" stroke="none"/>
-            <path d="M198 194 C222 210 238 224 266 230 C306 236 356 234 402 246" fill="none"
-                stroke-width="8" stroke-linecap="round"/>
-        </g>
-        SVG,
-
-        'lymphatic_system' => <<<'SVG'
-        <g fill="currentColor">
-            <circle cx="286" cy="252" r="6"/>
-            <circle cx="304" cy="260" r="5"/>
-            <circle cx="296" cy="388" r="6"/>
-            <circle cx="316" cy="392" r="5"/>
-        </g>
-        SVG,
-
-        'endocrine' => <<<'SVG'
-        <g fill="currentColor">
-            <ellipse cx="210" cy="204" rx="10" ry="7"/>
-            <ellipse cx="228" cy="210" rx="9" ry="6"/>
-        </g>
-        SVG,
-
-        'musculoskeletal' => <<<'SVG'
-        <g fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round">
-            <path d="M302 398 L308 438 L302 464"/>
-            <path d="M354 398 L360 438 L354 464"/>
-            <path d="M284 298 C336 308 404 306 444 294"/>
-            <path d="M302 300 L302 352"/>
-        </g>
-        SVG,
-
-        'integumentary' => <<<'SVG'
-        <g fill="currentColor" stroke="currentColor">
-            <path d="
-                M 140 132
-                C 140 104, 148 86, 158 82
-                C 166 66, 180 62, 186 78
-                C 194 60, 210 60, 214 80
-                C 222 68, 236 72, 236 90
-                C 240 102, 236 118, 230 128
-                C 206 118, 168 120, 140 132
-                Z" stroke="none"/>
-            <ellipse cx="154" cy="212" rx="9" ry="13" stroke="none"/>
-            <path d="M272 230 C316 220 372 220 416 232 C434 237 444 245 450 254" fill="none"
-                stroke-width="10" stroke-linecap="round"/>
-            <path d="M196 300 C210 330 232 356 266 374" fill="none" stroke-width="10" stroke-linecap="round"/>
-        </g>
-        SVG,
+    $hotspots = [
+        'eye' => ['label' => 'Eye', 'x' => 21.6, 'y' => 9.1],
+        'beak' => ['label' => 'Beak / Oral Cavity', 'x' => 17.4, 'y' => 14.8],
+        'esophagus' => ['label' => 'Esophagus', 'x' => 27.2, 'y' => 22.0],
+        'trachea' => ['label' => 'Trachea', 'x' => 28.4, 'y' => 27.6],
+        'lungs' => ['label' => 'Lungs', 'x' => 39.3, 'y' => 37.9],
+        'crop' => ['label' => 'Crop', 'x' => 28.3, 'y' => 47.2],
+        'heart' => ['label' => 'Heart', 'x' => 34.6, 'y' => 45.2],
+        'proventriculus' => ['label' => 'Proventriculus', 'x' => 38.0, 'y' => 52.7],
+        'gizzard' => ['label' => 'Gizzard', 'x' => 45.6, 'y' => 54.3],
+        'liver' => ['label' => 'Liver', 'x' => 41.4, 'y' => 62.5],
+        'spleen' => ['label' => 'Spleen', 'x' => 51.1, 'y' => 60.0],
+        'pancreas' => ['label' => 'Pancreas', 'x' => 59.6, 'y' => 69.6],
+        'ovary' => ['label' => 'Ovary', 'x' => 54.4, 'y' => 36.8],
+        'kidneys' => ['label' => 'Kidney', 'x' => 63.8, 'y' => 35.2],
+        'oviduct' => ['label' => 'Oviduct', 'x' => 74.3, 'y' => 43.1],
+        'cloaca' => ['label' => 'Cloaca', 'x' => 77.8, 'y' => 50.5],
+        'large_intestine' => ['label' => 'Large Intestine', 'x' => 72.6, 'y' => 55.9],
+        'intestines' => ['label' => 'Small Intestine', 'x' => 67.1, 'y' => 61.6],
+        'ceca' => ['label' => 'Ceca', 'x' => 67.9, 'y' => 67.1],
     ];
 @endphp
 
-<svg viewBox="0 0 700 520" class="w-full h-auto select-none" role="group" aria-label="{{ $label }}"
-    xmlns="http://www.w3.org/2000/svg">
+<div class="relative mx-auto w-full max-w-4xl select-none">
+    <img src="{{ asset('images/poultry-body-map.jpg') }}" alt="{{ $label }}"
+        class="block h-auto w-full rounded-base dark:opacity-90">
 
-    {{-- The bird, held back so the organs read on top of it. --}}
-    <g class="opacity-70 dark:opacity-45">{!! $bird !!}</g>
+    @foreach ($hotspots as $canonical => $spot)
+        @php
+            $organ = $organs[$canonical] ?? null;
+        @endphp
 
-    @foreach ($systems as $key => $entry)
-        @if (isset($shapes[$key]))
-            @php $isSelected = $selected === $key; @endphp
+        @if ($organ !== null)
+            @php
+                $isSelected = $selectedOrgan === $canonical;
+                $isDimmed = ! $isSelected && ($selectedOrgan !== '' || $selectedSystem !== '');
+            @endphp
 
-            <g role="button" tabindex="0" aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
-                aria-label="{{ $entry['system']->localized_display_name }} — {{ $entry['diseases'] }}"
-                wire:key="region-{{ $key }}" wire:click="selectSystem('{{ $key }}')"
-                wire:keydown.enter.prevent="selectSystem('{{ $key }}')"
-                wire:keydown.space.prevent="selectSystem('{{ $key }}')"
+            <button type="button" class="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-white
+                    before:absolute before:-inset-2.5 before:content-[''] focus-visible:outline-none
+                    lg:border-[3px] dark:border-slate-700"
+                style="top: {{ $spot['y'] }}%; left: {{ $spot['x'] }}%; animation-delay: {{ round($loop->index * 0.12, 2) }}s"
+                role="button" tabindex="0" aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
+                aria-label="{{ $organ['name'] }} — {{ $organ['diseases'] }}"
+                wire:key="organ-{{ $canonical }}" wire:click="selectOrgan('{{ $canonical }}')"
+                wire:keydown.enter.prevent="selectOrgan('{{ $canonical }}')"
+                wire:keydown.space.prevent="selectOrgan('{{ $canonical }}')"
                 @class([
-                    'cursor-pointer outline-none transition-colors duration-200',
-                    'text-brand' => $isSelected,
-                    'text-brand/70 hover:text-brand' => ! $isSelected && ! $selected,
-                    // With one region lit the rest drop back, or eleven systems
-                    // overlap and the selection is lost in the noise.
-                    'text-brand/25' => ! $isSelected && $selected,
-                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+                    // Bigger than a touch target strictly needs to be, because the
+                    // dot is not on a plain background: it sits on a busy pink
+                    // illustration and has to be found before it is aimed at. The
+                    // steps keep it in proportion as the artwork scales down.
+                    'h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9 transition duration-200 hover:scale-110 hover:bg-success focus-visible:scale-110',
+                    // A ring rather than a fill change on selection: nineteen
+                    // markers already overlap the artwork, and a ring reads on top
+                    // of a label where a recoloured dot does not.
+                    'bg-success ring-4 ring-brand/60 ring-offset-2 ring-offset-white dark:ring-offset-slate-800' => $isSelected,
+                    // The faint white ring is what lifts an unselected marker off
+                    // the artwork. Without it the dots sink into the organ.
+                    'bg-danger shadow-md ring-2 ring-white/50 dark:ring-white/25' => ! $isSelected,
+                    'opacity-25' => $isDimmed,
+                    'hover:opacity-100 focus-visible:opacity-100' => $isDimmed,
+                    // The ping is what says "these are clickable", so it only runs
+                    // while nothing is chosen and stops competing with selection.
+                    'after:absolute after:inset-0 after:rounded-full after:bg-danger/40 after:content-[""] after:animate-ping motion-reduce:after:hidden' => ! $isDimmed,
                 ])>
-                <title>{{ $entry['system']->localized_display_name }} — {{ $entry['diseases'] }}</title>
-                {!! $shapes[$key] !!}
-            </g>
+                <span aria-hidden="true"
+                    class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full bg-slate-900/90 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-white opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-slate-700">
+                    {{ $organ['name'] }} ({{ $organ['diseases'] }})
+                </span>
+            </button>
         @endif
     @endforeach
-</svg>
+</div>

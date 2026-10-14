@@ -8,6 +8,7 @@ use App\Models\LargeAnimals\BodySystem;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\Finding;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -244,11 +245,17 @@ class PartBodyMapTest extends TestCase
         $this->organ('Liver', 'liver', null, $digestive);
         $this->organ('Lungs', 'lungs', null, $respiratory);
 
-        Livewire::test('anatomy.body-map', ['part' => 'poultry'])
+        $component = Livewire::test('anatomy.body-map', ['part' => 'poultry'])
             ->call('selectSystem', 'respiratory')
             ->assertSee('Respiratory System')
-            ->assertSee('Lungs')
-            ->assertDontSee('Liver');
+            ->assertSee('Lungs');
+
+        // The panel is what is scoped to the selected system, so the panel is what
+        // has to be asserted. The diagram names every organ it draws, so a
+        // page-wide assertion can no longer tell "the panel is showing the right
+        // system" from "the bird happens to mention the organ" — it was passing
+        // before only because the drawing used no organ names to begin with.
+        $this->assertStringNotContainsString('Liver', $this->panelOf($component));
     }
 
     #[Test]
@@ -330,30 +337,45 @@ class PartBodyMapTest extends TestCase
     }
 
     /**
-     * The regions are drawn, not generated, and each one is keyed by the same
-     * canonical name the table uses. A key that stops matching — `lymphatic` for
-     * `lymphatic_system`, say — does not error: the region simply never renders
-     * and the bird quietly loses a system. This is the only place that shows up.
+     * The markers are drawn, not generated, and each one is keyed by the same
+     * canonical name the structures table uses. A key that stops matching — an
+     * organ renamed, or a typo introduced into the geometry — does not error: the
+     * marker simply never renders and the bird quietly loses the organ. Nothing
+     * else on the page notices, which is why this is asserted against the full
+     * set rather than one marker at a time.
      */
     #[Test]
-    public function every_body_system_gets_exactly_one_region_on_the_bird(): void
+    public function every_organ_drawn_on_the_bird_gets_exactly_one_marker(): void
     {
-        $digestive = $this->system('digestive', 'Digestive System');
-        $respiratory = $this->system('respiratory', 'Respiratory System');
-        $lymphatic = $this->system('lymphatic_system', 'Lymphatic System');
-
-        $this->organ('Liver', 'liver', null, $digestive);
-        $this->organ('Lungs', 'lungs', null, $respiratory);
-        $this->organ('Lymph nodes', 'lymph_nodes', null, $lymphatic);
+        $this->createLabelledOrgans();
 
         $html = $this->get('/poultry/body-map')->assertOk()->getContent();
 
-        preg_match_all('/wire:key="region-([a-z_]+)"/', $html, $matches);
+        preg_match_all('/wire:key="organ-([a-z_]+)"/', $html, $matches);
 
         $this->assertSame(
-            ['digestive', 'lymphatic_system', 'respiratory'],
+            collect(array_keys($this->labelledOrgans()))->sort()->values()->all(),
             collect($matches[1])->unique()->sort()->values()->all(),
         );
+    }
+
+    /**
+     * The geometry is authored by hand, so it is not part-scoped the way the query
+     * is. A marker whose organ belongs to another part has to be withheld rather
+     * than drawn: otherwise the diagram is the one place on the page that will
+     * happily point a poultry bird at a teat.
+     */
+    #[Test]
+    public function an_organ_the_part_excludes_has_no_marker(): void
+    {
+        $this->createLabelledOrgans(except: ['eye']);
+
+        $this->organ('Eye', 'eye', 'large_animal', $this->system('ocular', self::SYSTEM_NAMES['ocular']));
+
+        $html = $this->get('/poultry/body-map')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('wire:key="organ-eye"', $html);
+        $this->assertStringContainsString('wire:key="organ-liver"', $html);
     }
 
     #[Test]
@@ -409,6 +431,78 @@ class PartBodyMapTest extends TestCase
     // ----------------------------------------------------------------- helpers
 
     /**
+     * Display names for the body systems the illustration reaches into, so a
+     * system created here is not called "Digestive System" by accident.
+     *
+     * @var array<string, string>
+     */
+    private const SYSTEM_NAMES = [
+        'cardiovascular' => 'Cardiovascular System',
+        'digestive' => 'Digestive System',
+        'immune' => 'Immune System',
+        'ocular' => 'Ocular System',
+        'reproductive' => 'Reproductive System',
+        'respiratory' => 'Respiratory System',
+        'urinary' => 'Urinary System',
+    ];
+
+    /**
+     * The organs the supplied illustration labels: canonical name => display name
+     * and the body system it sits in.
+     *
+     * This is the diagram's geometry seen from the other side. The view draws a
+     * marker per entry and this seeds a structure per entry, so the two have to
+     * agree — which is the whole point of asserting the full set above.
+     *
+     * "Small Intestine" is the artwork's label for `intestines`: the illustration
+     * splits large from small and the table keeps one row. The artwork's other
+     * seventeen labels are the structure's own name.
+     *
+     * @return array<string, array{string, string}>
+     */
+    private function labelledOrgans(): array
+    {
+        return [
+            'eye' => ['Eye', 'ocular'],
+            'beak' => ['Beak', 'digestive'],
+            'esophagus' => ['Esophagus', 'digestive'],
+            'trachea' => ['Trachea', 'respiratory'],
+            'lungs' => ['Lungs', 'respiratory'],
+            'crop' => ['Crop', 'digestive'],
+            'heart' => ['Heart', 'cardiovascular'],
+            'proventriculus' => ['Proventriculus', 'digestive'],
+            'gizzard' => ['Gizzard', 'digestive'],
+            'liver' => ['Liver', 'digestive'],
+            'spleen' => ['Spleen', 'immune'],
+            'pancreas' => ['Pancreas', 'digestive'],
+            'ovary' => ['Ovary', 'reproductive'],
+            'kidneys' => ['Kidneys', 'urinary'],
+            'oviduct' => ['Oviduct', 'reproductive'],
+            'cloaca' => ['Cloaca', 'digestive'],
+            'large_intestine' => ['Large Intestine', 'digestive'],
+            'intestines' => ['Intestines', 'digestive'],
+            'ceca' => ['Ceca', 'digestive'],
+        ];
+    }
+
+    /**
+     * Give the diagram something to draw against.
+     *
+     * @param  array<int, string>  $except  Canonical names to leave uncreated, so
+     *                                      a test can create one of them itself.
+     */
+    private function createLabelledOrgans(array $except = []): void
+    {
+        foreach ($this->labelledOrgans() as $canonical => [$display, $system]) {
+            if (in_array($canonical, $except, true)) {
+                continue;
+            }
+
+            $this->organ($display, $canonical, null, $this->system($system, self::SYSTEM_NAMES[$system]));
+        }
+    }
+
+    /**
      * One digestive system per test, reused across organs: `canonical_name` is
      * unique and a second organ must not fail on the system it lands in.
      */
@@ -453,6 +547,22 @@ class PartBodyMapTest extends TestCase
             'canonical_name' => $finding->canonical_name,
             'display_name' => $finding->display_name,
         ]);
+    }
+
+    /**
+     * The panel's markup on its own.
+     *
+     * A page-wide "does not contain" assertion cannot tell a panel that is scoped
+     * to the selection from a diagram that names every organ it draws. Only the
+     * panel answers the question these assertions are actually asking.
+     */
+    private function panelOf(Testable $component): string
+    {
+        $html = $component->html();
+        $start = strpos($html, '<aside');
+        $end = strpos($html, '</aside>');
+
+        return $start === false || $end === false ? '' : substr($html, $start, $end - $start);
     }
 
     /**

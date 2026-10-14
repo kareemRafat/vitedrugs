@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Poultry Body Map</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f8f9fa;
+            color: #212529;
+        }
+
+        .page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .body-map-hero {
+            background: linear-gradient(135deg, #1d4350, #a43931);
+            color: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .body-map-hero-inner {
+            text-align: center;
+            padding: 42px 20px;
+        }
+
+        .body-map-hero h1 {
+            margin: 0 0 12px;
+            font-size: clamp(28px, 4vw, 42px);
+        }
+
+        .body-map-hero p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .card {
+            background: #fff;
+            border: 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .06);
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 18px;
+        }
+
+        .body-map-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            padding: 10px 0;
+            overflow: hidden;
+        }
+
+        .body-map-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 950px;
+            line-height: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .body-map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            user-select: none;
+            -webkit-user-select: none;
+            border-radius: 8px;
+        }
+
+        .organ-button {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2.5px solid #fff;
+            background: #dc3545;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+            z-index: 10;
+            animation: markerPulse 2.5s infinite;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Larger invisible touch target for mobile */
+        .organ-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .organ-button:hover,
+        .organ-button:focus {
+            transform: translate(-50%, -50%) scale(1.35);
+            background: #28a745;
+            border-color: #fff;
+            box-shadow: 0 0 16px rgba(40, 167, 69, .8);
+            outline: none;
+            z-index: 25;
+            animation: none;
+        }
+
+        .organ-label {
+            position: absolute;
+            transform: translate(-50%, -150%);
+            background: rgba(15, 23, 42, .88);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+            padding: 3px 9px;
+            border-radius: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s ease, transform .2s ease;
+            z-index: 30;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+        }
+
+        .organ-button:hover + .organ-label,
+        .organ-button:focus + .organ-label {
+            opacity: 1;
+            transform: translate(-50%, -170%);
+        }
+
+        @keyframes markerPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, .7), 0 2px 8px rgba(0, 0, 0, .35);
+            }
+            70% {
+                box-shadow: 0 0 0 9px rgba(220, 53, 69, 0), 0 2px 8px rgba(0, 0, 0, .35);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0), 0 2px 8px rgba(0, 0, 0, .35);
+            }
+        }
+
+        .legend-card {
+            height: 100%;
+        }
+
+        .card-header {
+            padding: 18px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .legend-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #dc3545;
+            margin-right: 10px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 8px rgba(0,0,0,.2);
+            flex-shrink: 0;
+        }
+
+        .tip {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .organ-button {
+                width: 20px;
+                height: 20px;
+                border-width: 2px;
+            }
+
+            .organ-button::after {
+                width: 44px;
+                height: 44px;
+            }
+
+            .organ-label {
+                font-size: 11px;
+                padding: 2px 8px;
+            }
+
+            .card-body {
+                padding: 10px;
+            }
+
+            .page {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .organ-button {
+                width: 18px;
+                height: 18px;
+                border-width: 2px;
+            }
+
+            .card-body {
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="body-map-hero">
+        <div class="body-map-hero-inner">
+            <h1>Interactive Poultry Body Map</h1>
+            <p>Explore poultry diseases anatomically by selecting an organ.</p>
+        </div>
+    </div>
+
+    <div class="layout">
+
+        <div class="card">
+            <div class="card-body">
+
+                <div class="body-map-container">
+
+                    <div class="body-map-wrapper">
+
+                        <!--
+                            Keep this image path relative to the HTML file.
+                            For the Laravel project, the equivalent path is:
+                            public/assets/images/poultry-interactive-body-map.png
+                        -->
+                        <img
+                            src="WhatsApp Image 2026-10-14 at 8.22.58 PM.jpeg"
+                            class="body-map-image"
+                            alt="Interactive Poultry Body Map">
+
+                        <!-- Brain -->
+                        <button class="organ-button"
+                                style="top: 13.5%; left: 25.2%;"
+                                onclick="goToOrgan('brain')"
+                                type="button"
+                                aria-label="Brain"></button>
+                        <span class="organ-label"
+                              style="top: 13.5%; left: 25.2%;">Brain</span>
+
+                        <!-- Trachea -->
+                        <button class="organ-button"
+                                style="top: 27.6%; left: 28.1%;"
+                                onclick="goToOrgan('trachea')"
+                                type="button"
+                                aria-label="Trachea"></button>
+                        <span class="organ-label"
+                              style="top: 27.6%; left: 28.1%;">Trachea</span>
+
+                        <!-- Lungs -->
+                        <button class="organ-button"
+                                style="top: 37.8%; left: 39.7%;"
+                                onclick="goToOrgan('lungs')"
+                                type="button"
+                                aria-label="Lungs"></button>
+                        <span class="organ-label"
+                              style="top: 37.8%; left: 39.7%;">Lungs</span>
+
+                        <!-- Heart -->
+                        <button class="organ-button"
+                                style="top: 48.1%; left: 35.6%;"
+                                onclick="goToOrgan('heart')"
+                                type="button"
+                                aria-label="Heart"></button>
+                        <span class="organ-label"
+                              style="top: 48.1%; left: 35.6%;">Heart</span>
+
+                        <!-- Liver -->
+                        <button class="organ-button"
+                                style="top: 63.0%; left: 41.2%;"
+                                onclick="goToOrgan('liver')"
+                                type="button"
+                                aria-label="Liver"></button>
+                        <span class="organ-label"
+                              style="top: 63.0%; left: 41.2%;">Liver</span>
+
+                        <!-- Large Intestine -->
+                        <button class="organ-button"
+                                style="top: 56.0%; left: 71.5%;"
+                                onclick="goToOrgan('large-intestine')"
+                                type="button"
+                                aria-label="Large Intestine"></button>
+                        <span class="organ-label"
+                              style="top: 56.0%; left: 71.5%;">Large Intestine</span>
+
+                        <!-- Ceca -->
+                        <button class="organ-button"
+                                style="top: 68.6%; left: 66.0%;"
+                                onclick="goToOrgan('ceca')"
+                                type="button"
+                                aria-label="Ceca"></button>
+                        <span class="organ-label"
+                              style="top: 68.6%; left: 66.0%;">Ceca</span>
+
+                        <!-- Spleen -->
+                        <button class="organ-button"
+                                style="top: 59.4%; left: 49.3%;"
+                                onclick="goToOrgan('spleen')"
+                                type="button"
+                                aria-label="Spleen"></button>
+                        <span class="organ-label"
+                              style="top: 59.4%; left: 49.3%;">Spleen</span>
+
+                        <!-- Kidneys -->
+                        <button class="organ-button"
+                                style="top: 36.4%; left: 62.1%;"
+                                onclick="goToOrgan('kidneys')"
+                                type="button"
+                                aria-label="Kidneys"></button>
+                        <span class="organ-label"
+                              style="top: 36.4%; left: 62.1%;">Kidneys</span>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card legend-card">
+
+            <div class="card-header">
+                <h2>Navigation Guide</h2>
+            </div>
+
+            <div class="card-body">
+
+                <div class="legend-item">
+                    <span class="legend-dot"></span>
+                    <span>Click any highlighted organ.</span>
+                </div>
+
+                <div class="legend-item">
+                    <span class="legend-dot"></span>
+                    <span>Explore associated diseases.</span>
+                </div>
+
+                <div class="legend-item">
+                    <span class="legend-dot"></span>
+                    <span>Review lesions and findings.</span>
+                </div>
+
+                <div class="tip">
+                    <strong>Tip:</strong>
+                    Hover over markers to identify anatomical structures.
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function goToOrgan(slug) {
+        window.location.href = '/anatomy/' + slug;
+    }
+</script>
+
+</body>
+</html>

@@ -122,7 +122,7 @@ return array_replace_recursive($shared, [
         'heading' => 'Poultry Body Map',
         'subtitle' => 'Click the part of the bird you are worried about and see what goes wrong there — the diseases, the signs you would observe, and the lesions you would find post-mortem.',
         'badge' => 'Body Map',
-        'schematic_note' => 'The diagram is schematic. Marker positions are indicative, not anatomical.',
+        'schematic_note' => 'Select any organ on the diagram to see the diseases, signs and lesions recorded against it.',
 
         'stats' => [
             'systems' => 'Body systems',
@@ -132,7 +132,7 @@ return array_replace_recursive($shared, [
 
         'diagram_view' => 'Diagram',
         'list_view' => 'List view',
-        'diagram_label' => 'Schematic of a chicken. Each marker is a body system; select one to see its organs.',
+        'diagram_label' => 'Anatomy of a chicken. Each marker is an organ; select one to see what is recorded against it.',
         'legend' => 'Body systems',
 
         'select_system' => 'Select a body system to see the organs it covers.',

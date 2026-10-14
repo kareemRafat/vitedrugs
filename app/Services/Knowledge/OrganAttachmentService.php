@@ -248,6 +248,11 @@ class OrganAttachmentService
         'esophagus' => ['esophageal'],
         'ceca' => ['cecal'],
         'heart' => ['cardiac'],
+        // The eye goes by two names in veterinary usage, and the structure's own
+        // name is neither of them: the artwork says "Eye" and the labels say
+        // "Ocular discharge" or "Ophthalmic lesions". Without both, the organ
+        // reads as empty while its findings sit in the same table.
+        'eye' => ['ocular', 'ophthalmic'],
     ];
 
     /**
