@@ -324,17 +324,41 @@ new class extends Component
                         :selected-organ="$this->selectedOrgan" :selected-system="$this->selectedSystem"
                         :label="$t('diagram_label')" />
 
-                    <ul class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                    {{-- The systems under the bird are the page's primary navigation,
+                         not a caption. They are the same control as the organ buttons
+                         in the panel beside them, so they share that treatment:
+                         a visible border at rest, an explicit toggle state for
+                         assistive tech, and a count that reads as a number rather
+                         than as a bracket glued to the name. --}}
+                    <ul class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                         @foreach ($systems as $entry)
                             <li>
-                                <button type="button" wire:click="selectSystem('{{ $entry['key'] }}')"
+                                @php $target = "selectSystem('{$entry['key']}')"; @endphp
+                                <button type="button" wire:click="{{ $target }}"
+                                    wire:loading.attr="disabled" wire:target="{{ $target }}"
+                                    aria-pressed="{{ $this->selectedSystem === $entry['key'] ? 'true' : 'false' }}"
                                     @class([
-                                        'w-full text-start px-2.5 py-1.5 rounded-xs text-xs font-medium transition-colors duration-150 border',
+                                        'group w-full flex items-center gap-2 cursor-pointer rounded-base border px-3 py-2 text-sm font-medium transition-colors duration-150 disabled:cursor-wait',
                                         'bg-brand-soft border-brand text-fg-brand-strong' => $this->selectedSystem === $entry['key'],
-                                        'border-transparent text-body dark:text-slate-400 hover:bg-neutral-secondary-soft dark:hover:bg-slate-700' => $this->selectedSystem !== $entry['key'],
+                                        'bg-neutral-secondary-soft border-default-medium text-heading dark:text-slate-300 dark:bg-slate-700 dark:border-slate-600 hover:border-brand' => $this->selectedSystem !== $entry['key'],
                                     ])>
-                                    {{ $entry['system']->localized_display_name }}
-                                    <span class="opacity-70">({{ $entry['diseases'] }})</span>
+                                    <span>{{ $entry['system']->localized_display_name }}</span>
+                                    <span class="ms-auto shrink-0 text-xs font-normal tabular-nums text-body dark:text-slate-400">
+                                        {{ $entry['diseases'] }}
+                                    </span>
+
+                                    {{-- The chevron says "drills into"; the spinner says
+                                         "already did". Only the clicked chip swaps,
+                                         which is why the target carries the system's
+                                         name rather than the bare method. --}}
+                                    <span wire:loading.remove wire:target="{{ $target }}"
+                                        class="shrink-0 text-body dark:text-slate-400">
+                                        <x-lucide-chevron-right
+                                            class="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5 rtl:rotate-180" />
+                                    </span>
+                                    <span wire:loading wire:target="{{ $target }}" class="shrink-0 text-body dark:text-slate-400">
+                                        @include('anatomy.partials.spinner', ['size' => 'w-4 h-4'])
+                                    </span>
                                 </button>
                             </li>
                         @endforeach

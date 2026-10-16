@@ -76,16 +76,27 @@
                 $isDimmed = ! $isSelected && ($selectedOrgan !== '' || $selectedSystem !== '');
             @endphp
 
-            <button type="button" class="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-white
-                    before:absolute before:-inset-5 lg:before:-inset-7 before:content-[''] focus-visible:outline-none
-                    lg:border-[3px] dark:border-slate-700"
+            {{-- `@class` emits a whole `class="…"` attribute of its own, so it cannot
+                 sit alongside a literal one. This tag carried both, which put two
+                 `class` attributes on a single element; HTML forbids that and the
+                 browser keeps the first and drops the second. Every conditional
+                 class below was therefore discarded, and the markers rendered as a
+                 6px white-bordered transparent square with no colour, no ping, and
+                 no visible selection. The base classes live in the array now, as an
+                 unconditional first entry — `Arr::toCssClasses` handles numeric
+                 keys for exactly that. --}}
+            <button type="button"
                 style="top: {{ $spot['y'] }}%; left: {{ $spot['x'] }}%; animation-delay: {{ round($loop->index * 0.12, 2) }}s"
                 role="button" tabindex="0" aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
                 aria-label="{{ $organ['name'] }} — {{ $organ['diseases'] }}"
                 wire:key="organ-{{ $canonical }}" wire:click="selectOrgan('{{ $canonical }}')"
+                wire:loading.attr="disabled" wire:target="selectOrgan('{{ $canonical }}')"
                 wire:keydown.enter.prevent="selectOrgan('{{ $canonical }}')"
                 wire:keydown.space.prevent="selectOrgan('{{ $canonical }}')"
                 @class([
+                    'group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-white',
+                    'focus-visible:outline-none',
+                    'lg:border-[3px] dark:border-slate-700',
                     // Bigger than a touch target strictly needs to be, because the
                     // dot is not on a plain background: it sits on a busy pink
                     // illustration and has to be found before it is aimed at. The
@@ -102,8 +113,46 @@
                     'hover:opacity-100 focus-visible:opacity-100' => $isDimmed,
                     // The ping is what says "these are clickable", so it only runs
                     // while nothing is chosen and stops competing with selection.
-                    'after:absolute after:inset-0 after:rounded-full after:bg-danger/40 after:content-[""] after:animate-ping motion-reduce:after:hidden' => ! $isDimmed,
+                    // `content-['']` and not `content-[""]`: this class goes into a
+                    // `class="…"` attribute, and a raw double quote inside it closes
+                    // the attribute early. Everything after it on the tag — the ping
+                    // itself and the reduced-motion opt-out — was being parsed as
+                    // bogus attributes and thrown away. `@class` echoes its array
+                    // unescaped, so the quotes have to be avoided rather than escaped.
+                    'after:absolute after:inset-0 after:rounded-full after:bg-danger/40 after:content-[\'\'] after:animate-ping motion-reduce:after:hidden' => ! $isDimmed,
                 ])>
+
+                {{-- The spinner sits on the dot rather than replacing it, so the
+                     marker stays a marker while it waits. A scrim would turn the
+                     dot white, which is the one thing these already did wrong.
+
+                     The centring lives on the inner span, not on the one carrying
+                     `wire:loading`, and that is not a style preference. Livewire
+                     writes `style="display: inline-block"` onto a `wire:loading`
+                     element while its request is in flight, and an inline style
+                     beats every class on the element. So `flex items-center
+                     justify-center` on the `wire:loading` span itself did nothing:
+                     it was a block box, the alignment was inert, and the ring sat
+                     7.7px off centre in the corner of a 33px box.
+
+                     The outer span's display is irrelevant — `absolute inset-0`
+                     fills the padding box whatever it computes to. The inner span
+                     is never written to, so its flex centring holds.
+
+                     `z-10` is load-bearing for a different reason: the clickable
+                     ping is an `::after` pseudo-element, and a pseudo-element
+                     paints after positioned children, so without it the red ping
+                     animates over the spinner.
+
+                     The target carries the organ's name. All nineteen markers call
+                     `selectOrgan`, and a bare `wire:target="selectOrgan"` would put
+                     a spinner on every one of them at once. --}}
+                <span wire:loading wire:target="selectOrgan('{{ $canonical }}')" class="z-10 absolute inset-0">
+                    <span class="flex h-full w-full items-center justify-center rounded-full text-white">
+                        @include('anatomy.partials.spinner', ['size' => 'w-4 h-4'])
+                    </span>
+                </span>
+
                 <span aria-hidden="true"
                     class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full bg-slate-900/90 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-white opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-slate-700">
                     {{ $organ['name'] }} ({{ $organ['diseases'] }})

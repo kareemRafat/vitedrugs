@@ -634,6 +634,107 @@ class PartBodyMapTest extends TestCase
         $this->assertStringNotContainsString('Liver', $this->panelOf($component));
     }
 
+    /**
+     * The systems under the bird are a toggle group, not a list of links: clicking
+     * the one you are already on puts the map back to rest. Nothing carried that
+     * fact to a screen reader — the chips had no state attribute at all, while the
+     * view-mode switch directly above them did — so it is asserted here rather
+     * than left to be lost in a restyle.
+     */
+    #[Test]
+    public function the_system_chips_report_which_one_is_selected(): void
+    {
+        $digestive = $this->system('digestive', 'Digestive System');
+        $respiratory = $this->system('respiratory', 'Respiratory System');
+        $this->organ('Liver', 'liver', null, $digestive);
+        $this->organ('Lungs', 'lungs', null, $respiratory);
+
+        // Scoped to the buttons that call `selectSystem`. The view-mode switch
+        // carries `aria-pressed` too, so a page-wide match counts eight of them
+        // and proves nothing about the chips.
+        $pressed = function (Testable $component): array {
+            preg_match_all('/<button[^>]*selectSystem\([^>]*aria-pressed="(true|false)"/', $component->html(), $matches);
+
+            return $matches[1];
+        };
+
+        $component = Livewire::test('anatomy.body-map', ['part' => 'poultry']);
+
+        // Both chips start unpressed.
+        $this->assertSame(['false', 'false'], $pressed($component));
+
+        // Selecting one presses it and only it.
+        $component->call('selectSystem', 'respiratory');
+
+        $this->assertSame(['false', 'true'], $pressed($component));
+
+        // Clicking the selected one again puts the map back to rest, so the state
+        // has to be able to return to unpressed rather than only ever turning on.
+        $component->call('selectSystem', 'respiratory');
+
+        $this->assertSame(['false', 'false'], $pressed($component));
+    }
+
+    /**
+     * Each chip swaps its chevron for a spinner while its own request is in
+     * flight, so the swap is targeted by the system's name rather than by the bare
+     * method name. All twelve chips call `selectSystem`; a bare target would spin
+     * all of them at once, which tells the reader nothing about which one they
+     * pressed.
+     */
+    #[Test]
+    public function each_system_chip_targets_only_its_own_request(): void
+    {
+        $digestive = $this->system('digestive', 'Digestive System');
+        $respiratory = $this->system('respiratory', 'Respiratory System');
+        $this->organ('Liver', 'liver', null, $digestive);
+        $this->organ('Lungs', 'lungs', null, $respiratory);
+
+        $html = Livewire::test('anatomy.body-map', ['part' => 'poultry'])->html();
+
+        // Each chip targets itself, by name. Compared against the escaped form,
+        // because that is what the attribute holds in the raw HTML — the browser
+        // decodes it back to `selectSystem('digestive')` before Livewire reads it.
+        foreach (['digestive', 'respiratory'] as $system) {
+            $this->assertStringContainsString(
+                'wire:target="'.e("selectSystem('{$system}')").'"',
+                $html,
+            );
+        }
+
+        // No chip targets the bare method, which is what would spin all of them.
+        $this->assertStringNotContainsString(
+            'wire:target="selectSystem"',
+            $html,
+        );
+
+        // Every chip offers both states: a chevron at rest, a spinner in flight.
+        // Counted as the buttons that are both a `selectSystem` call and a toggle,
+        // because the panel's own body-system list calls `selectSystem` too and has
+        // no chevron to swap.
+        preg_match_all('/wire:click="selectSystem[^"]*"[^>]*aria-pressed="/', $html, $chips);
+
+        $this->assertCount(2, $chips[0]);
+        $this->assertSame(2, substr_count($html, 'wire:loading.remove'));
+
+        // One spinner per chip. Scoped to `selectSystem`, because a page-wide
+        // `wire:loading ` count credited these chips for the organ markers'
+        // spinners too — so it passed right up until a second control on the page
+        // grew one.
+        $this->assertSame(
+            count($chips[0]),
+            substr_count($html, 'wire:loading wire:target="selectSystem'),
+            'Every chip needs a spinner of its own.',
+        );
+
+        // And each chip locks while its request runs, so a double-click cannot
+        // toggle the selection back mid-flight. Asserted within the chip buttons:
+        // the markers and the panel's own system list carry `disabled` too.
+        foreach ($chips[0] as $chip) {
+            $this->assertStringContainsString('wire:loading.attr="disabled"', $chip);
+        }
+    }
+
     #[Test]
     public function the_url_carries_the_selection(): void
     {
@@ -736,6 +837,160 @@ class PartBodyMapTest extends TestCase
         $this->assertSame(
             collect(array_keys($this->labelledOrgans()))->sort()->values()->all(),
             collect($matches[1])->unique()->sort()->values()->all(),
+        );
+    }
+
+    /**
+     * A marker carried both a literal `class="…"` and an `@class([…])`, which puts
+     * two `class` attributes on one element. HTML forbids that and the browser keeps
+     * the first and discards the second, so every conditional class was dropped and
+     * the markers rendered as 6px white-bordered transparent squares: no size, no
+     * colour, no ping, and a selection that never looked selected.
+     *
+     * The assertion above could not have caught it. It counts `wire:key`, which was
+     * never affected, so the bird kept drawing all nineteen organs correctly while
+     * every one of them looked broken. This checks the tag itself.
+     */
+    #[Test]
+    public function a_marker_carries_exactly_one_class_attribute(): void
+    {
+        $this->organ('Liver', 'liver');
+
+        $html = $this->get('/poultry/body-map')->assertOk()->getContent();
+
+        preg_match('/<button\b[^>]*wire:key="organ-liver"[^>]*>/', $html, $tag);
+        $this->assertNotEmpty($tag, 'The liver marker did not render at all.');
+
+        $this->assertSame(
+            1,
+            substr_count($tag[0], 'class='),
+            'A tag cannot carry two class attributes; the browser silently drops the second, and with it every conditional class.',
+        );
+
+        // The classes that were being discarded, and the reason the markers looked
+        // like a white dot on the organ rather than a coloured marker.
+        foreach (['h-7', 'w-7', 'rounded-full', 'bg-danger', 'after:animate-ping', 'hover:scale-110'] as $class) {
+            $this->assertStringContainsString(
+                $class,
+                $tag[0],
+                "The marker lost `{$class}`, so it was never sized, coloured or animated.",
+            );
+        }
+    }
+
+    /**
+     * The markers carried an invisible hit-area expansion — `before:-inset-5`,
+     * and `-inset-7` on large screens — which is +20/+28px on every side of a
+     * 36px dot. That made each marker a 76-92px touch target on a bird that
+     * carries nineteen of them, and four organs became unreachable: the eye sat
+     * under the beak, the oesophagus under the trachea, the oviduct under the
+     * cloaca and the intestines under the caeca.
+     *
+     * Asserted on the markup rather than on geometry. PHPUnit cannot measure
+     * which marker wins a hit test, and a browser check is not something this
+     * suite can run — but the expansion is a single class list, and its absence
+     * is what keeps the organs reachable. Bigger dots are not the answer: 44px
+     * dots re-cover the trachea and the caeca.
+     */
+    #[Test]
+    public function a_marker_does_not_expand_its_hit_area_over_its_neighbours(): void
+    {
+        $this->organ('Liver', 'liver');
+
+        $html = $this->get('/poultry/body-map')->assertOk()->getContent();
+
+        preg_match('/<button\b[^>]*wire:key="organ-liver"[^>]*>/', $html, $tag);
+        $this->assertNotEmpty($tag, 'The liver marker did not render at all.');
+
+        foreach (['before:-inset-', 'before:absolute', 'before:content-'] as $expansion) {
+            $this->assertStringNotContainsString(
+                $expansion,
+                $tag[0],
+                'An expanded hit area makes this marker cover the organs nearest it, and the covered one cannot be clicked at all.',
+            );
+        }
+    }
+
+    /**
+     * Every marker shows a spinner while its own request is in flight, and only
+     * its own. All nineteen call `selectOrgan`, so the target has to carry the
+     * organ's name — a bare method target would put nineteen spinners on screen
+     * for one click and tell the reader nothing about what they pressed.
+     */
+    #[Test]
+    public function a_marker_spins_only_for_its_own_request(): void
+    {
+        $this->organ('Liver', 'liver');
+        $this->organ('Lungs', 'lungs', null, $this->system('respiratory', 'Respiratory System'));
+
+        $html = $this->get('/poultry/body-map')->assertOk()->getContent();
+
+        // Compared against the literal form. The marker writes this attribute out
+        // verbatim, so the quotes are raw — unlike the system chips, which build
+        // the string in PHP and print it through `{{ }}`, which escapes them.
+        foreach (['liver', 'lungs'] as $organ) {
+            $this->assertStringContainsString(
+                "wire:target=\"selectOrgan('{$organ}')\"",
+                $html,
+            );
+        }
+
+        $this->assertStringNotContainsString(
+            'wire:target="selectOrgan"',
+            $html,
+            'A bare target would spin every marker on the bird at once.',
+        );
+
+        // Each marker offers a spinner and locks while its request runs, so a
+        // double-click cannot queue a second one behind the first. Counted within
+        // the marker tags rather than page-wide: the system chips under the bird
+        // carry a `disabled` attribute too, and a page-wide count would credit
+        // their four to the markers' two.
+        preg_match_all('/<button\b[^>]*wire:key="organ-[a-z_]+"[^>]*>/', $html, $tags);
+        $markers = $tags[0];
+
+        $this->assertGreaterThan(0, count($markers));
+
+        foreach ($markers as $marker) {
+            $this->assertStringContainsString(
+                'wire:loading.attr="disabled"',
+                $marker,
+                'A marker that stays live mid-flight can be double-clicked into a second request.',
+            );
+        }
+
+        // One spinner per marker. `selectOrgan` in this count keeps the chips out:
+        // theirs target `selectSystem`.
+        $this->assertSame(
+            count($markers),
+            substr_count($html, 'wire:loading wire:target="selectOrgan'),
+        );
+
+        // The centring must live on an inner element, not on the `wire:loading`
+        // one. Livewire writes `style="display: inline-block"` onto a
+        // `wire:loading` element while its request is in flight, and an inline
+        // style beats every class on it — so flex alignment placed there is inert
+        // and the ring lands in the corner of the marker, off centre. Asserting
+        // the mechanism rather than the symptom, because "looks slightly off" is
+        // exactly the kind of regression that gets read as a taste change.
+        preg_match_all('/<span wire:loading wire:target="selectOrgan[^"]*"[^>]*>/', $html, $loadingSpans);
+
+        $this->assertNotEmpty($loadingSpans[0]);
+
+        foreach ($loadingSpans[0] as $span) {
+            foreach (['items-center', 'justify-center', 'justify-items', 'place-items'] as $inert) {
+                $this->assertStringNotContainsString(
+                    $inert,
+                    $span,
+                    "Livewire overrides this element's display during the request, so `{$inert}` on it does nothing.",
+                );
+            }
+        }
+
+        $this->assertSame(
+            count($markers),
+            substr_count($html, 'class="flex h-full w-full items-center justify-center rounded-full text-white"'),
+            'Each spinner needs an inner flex wrapper to be centred by.',
         );
     }
 
