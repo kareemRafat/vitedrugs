@@ -177,17 +177,23 @@ return array_replace_recursive($shared, [
         'all_letters' => 'الكل',
         'showing' => 'يعرض :count آفة',
         'clear' => 'امسح عوامل التصفية',
+        'loading' => 'جارٍ التحميل…',
 
         'unclassified' => 'غير مصنّفة بعد',
         'organ' => 'الأسماء',
+        'names_no_organ' => 'لا تسمّي عضوًا',
         'diseases_count' => ':count مرضًا',
         'caused_by' => 'الأسباب',
         'no_diseases' => 'لا يوجد مرض دواجن مرتبط بهذه الآفة بعد.',
+        'close' => 'إغلاق',
 
         'image_soon' => 'الصورة قريبًا',
         'empty' => 'لا توجد آفة مطابقة لعوامل التصفية. جرّب مسح البحث أو اختيار جهة جسدية أخرى.',
 
-        'showing' => 'يعرض',
+        // `pager_showing`, not a second `showing`: this is one flat array, and the
+        // filter bar's `showing` above already carries the count. See the note in
+        // lang/en/poultry.php.
+        'pager_showing' => 'يعرض',
         'of' => 'من',
         'previous_page' => 'السابق',
         'next_page' => 'التالي',

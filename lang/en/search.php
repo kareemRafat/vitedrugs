@@ -16,7 +16,9 @@ return [
     'no_results' => 'Check the spelling, or try a shorter or more general term.',
 
     // Read by the shared <x-pagination> component, one per bucket card.
-    'showing' => 'Showing',
+    // `pager_showing` rather than `showing`, matching every other namespace that
+    // feeds that component.
+    'pager_showing' => 'Showing',
     'of' => 'of',
     'previous_page' => 'Previous',
     'next_page' => 'Next',

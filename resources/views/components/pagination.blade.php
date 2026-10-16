@@ -23,7 +23,7 @@
             'text-sm text-body dark:text-slate-400',
             'hidden sm:block' => !$simple,
         ])>
-            {{ __($translationPrefix . '.showing') }}
+            {{ __($translationPrefix . '.pager_showing') }}
             {{ $paginator->firstItem() ?? 0 }}&ndash;{{ $paginator->lastItem() ?? 0 }}
             {{ __($translationPrefix . '.of') }}
             {{ number_format($paginator->total()) }}

@@ -67,7 +67,6 @@ class PoultryLesionAtlasTest extends TestCase
         $this->lesion('Cloacal prolapse', 'poultry');
 
         $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
-            ->call('toggleLesion', '1')
             ->html();
 
         $this->assertStringNotContainsString(':count', $html, 'A translation placeholder reached the page un-substituted.');
@@ -331,29 +330,40 @@ class PoultryLesionAtlasTest extends TestCase
 
     // ------------------------------------------------------------------- diseases
 
+    /**
+     * The diseases a lesion causes sit on the tile itself, linked, rather than
+     * behind a click. 571 of the 640 poultry lesions name exactly one disease,
+     * so an overlay to reach that one link was a page-dimming round trip for
+     * something already visible — this is the reader's next action, and it is
+     * directly reachable.
+     */
     #[Test]
-    public function expanding_a_lesion_lists_the_diseases_that_cause_it(): void
+    public function a_lesion_lists_the_diseases_that_cause_it(): void
     {
         $disease = $this->disease('Aflatoxicosis', 'poultry');
-        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        $this->lesion('Liver lesions', 'poultry', $disease);
 
         Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
-            ->call('toggleLesion', (string) $lesion->id)
-            ->assertSee(__('poultry.atlas.caused_by'))
             ->assertSee($disease->name);
     }
 
+    /**
+     * The link is a real link to the disease page. A tile that rendered the
+     * disease names as plain text would pass the assertion above and still leave
+     * the reader with nowhere to go from it.
+     */
     #[Test]
-    public function a_second_click_on_an_open_lesion_collapses_it(): void
+    public function a_causing_disease_links_to_its_page(): void
     {
         $disease = $this->disease('Aflatoxicosis', 'poultry');
-        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        $this->lesion('Liver lesions', 'poultry', $disease);
 
-        $component = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
-            ->call('toggleLesion', (string) $lesion->id)
-            ->assertSee(__('poultry.atlas.caused_by'))
-            ->call('toggleLesion', (string) $lesion->id)
-            ->assertDontSee(__('poultry.atlas.caused_by'));
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertStringContainsString(
+            route('poultry.diseases.show', $disease->slug),
+            $html,
+        );
     }
 
     /**
@@ -395,7 +405,6 @@ class PoultryLesionAtlasTest extends TestCase
         $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
 
         Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
-            ->call('toggleLesion', (string) $lesion->id)
             ->assertSee(__('poultry.atlas.image_soon'))
             ->assertDontSee('<img', false);
     }
@@ -424,9 +433,7 @@ class PoultryLesionAtlasTest extends TestCase
         });
 
         $small = $queries;
-        Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
-            ->call('toggleLesion', '1')
-            ->assertOk();
+        Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->assertOk();
         $atTwelve = $queries;
 
         // Twelve times the data must not cost twelve times the queries. This is
@@ -437,9 +444,7 @@ class PoultryLesionAtlasTest extends TestCase
         }
 
         $queries = 0;
-        Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
-            ->call('toggleLesion', '1')
-            ->assertOk();
+        Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->assertOk();
         $atFortyEight = $queries;
 
         $this->assertLessThanOrEqual(

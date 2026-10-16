@@ -105,6 +105,33 @@ html.dark [data-part='poultry'] {
 }
 
 @layer components {
+    /*
+    | Indeterminate progress bar, for requests that return a whole new page of
+    | rows rather than a fragment. `translateX` on a full-width bar rather than
+    | `width`, so the browser animates a transform instead of laying out on
+    | every frame.
+    */
+    @keyframes atlas-indeterminate {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .atlas-progress::after {
+        content: '';
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 0;
+        width: 40%;
+        border-radius: inherit;
+        background-color: var(--color-brand);
+        animation: atlas-indeterminate 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
     #hamburgerBtn.active .hamburger-line:nth-child(1) {
         transform: translateY(6px) rotate(45deg);
     }

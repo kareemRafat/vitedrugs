@@ -103,13 +103,15 @@ class LesionAtlasService
     /**
      * One page of lesions, carrying their diseases and the organ each names.
      *
-     * Search and body-system filtering happen here because they change which rows
-     * load. Letter filtering does not, and is left to the caller so the whole page
-     * costs one set of queries whether a letter is selected or not.
-     *
      * The paginator carries the disease lists for the rows on *this* page only.
      * That is the point of paginating: a section header needs a count, not a list
      * of every disease behind every lesion on every page. See `sectionCounts`.
+     *
+     * Every filter is applied here, in SQL, including the letter. The letter used
+     * to be applied by the caller *after* pagination, which made page 2 mean "rows
+     * 49 to 96 of the whole atlas, then keep the A's" — almost always nothing,
+     * while the pager underneath still offered thirteen more pages of the unfiltered
+     * set. A page has to be a page of what is being looked at.
      *
      * @return LengthAwarePaginator<int, array{
      *     id: int,
@@ -121,7 +123,7 @@ class LesionAtlasService
      *     diseases: Collection<int, Disease>,
      * }>
      */
-    public function lesionsPaginator(string $domain, string $search = '', string $system = '', string $part = 'poultry'): LengthAwarePaginator
+    public function lesionsPaginator(string $domain, string $search = '', string $system = '', string $part = 'poultry', string $letter = ''): LengthAwarePaginator
     {
         // The pager path is pinned from the route, deliberately.
         //
@@ -131,10 +133,27 @@ class LesionAtlasService
         // `wire:navigate` the browser resolves that against `/poultry/atlas` and
         // asks for `/poultry/poultry/atlas?page=2`, which 404s on every page after
         // the first. `withPath()` makes the links absolute whatever the lifecycle.
-        $findings = $this->query($domain, $search, $system)
+        $findings = $this->query($domain, $search, $system, $letter)
             ->paginate(self::PER_PAGE, ['*'], 'page')
-            ->withQueryString()
             ->withPath(route($part.'.atlas'));
+
+        // `withQueryString()` is the obvious call here and it is wrong on this page.
+        //
+        // It copies the *request's* query string onto the links, and a Livewire
+        // update has no query string: the filters travel in the request body and
+        // only reach the address bar through `#[Url]`. So the pager built
+        // `?page=2` with no filters on it, and following it dropped the reader out
+        // of the system they had selected while the section header above them still
+        // announced the system they thought they were reading. The header and the
+        // rows disagreed, which is the one thing this page cannot afford.
+        //
+        // The filters are named here instead, so a link carries what it needs
+        // whether it was rendered by a full page load or by a Livewire update.
+        $findings->appends(array_filter([
+            'q' => $search,
+            'system' => $system,
+            'letter' => $letter,
+        ], fn (string $value): bool => $value !== ''));
 
         if ($findings->isEmpty()) {
             return $findings;
@@ -153,7 +172,11 @@ class LesionAtlasService
                     return [
                         'id' => (int) $finding->getKey(),
                         'name' => $finding->localized_display_name,
-                        'letter' => $this->letterFor($finding->localized_display_name),
+                        // From the canonical name, not the localised one, so it
+                        // matches both the SQL filter and the rail. On the Arabic
+                        // page the localised first character is never `[A-Z]`, which
+                        // would make every letter filter there match nothing.
+                        'letter' => $this->letterFor($finding->display_name),
                         'tier' => $system === null
                             ? self::TIER_UNCLASSIFIED
                             : self::TIER_GROUPED,
@@ -180,15 +203,15 @@ class LesionAtlasService
      *
      * @return array<string, int>
      */
-    public function sectionCounts(string $domain, string $search = '', string $system = ''): array
+    public function sectionCounts(string $domain, string $search = '', string $system = '', string $letter = ''): array
     {
-        $cacheKey = $domain.'|'.$search.'|'.$system;
+        $cacheKey = $domain.'|'.$search.'|'.$system.'|'.$letter;
 
         if (isset($this->sectionCountCache[$cacheKey])) {
             return $this->sectionCountCache[$cacheKey];
         }
 
-        $ids = $this->query($domain, $search, $system)
+        $ids = $this->query($domain, $search, $system, $letter)
             ->pluck('findings.id')
             ->map(fn (int|string $id): int => (int) $id);
 
@@ -323,9 +346,9 @@ class LesionAtlasService
      *
      * @return array<string, string>
      */
-    public function systemNames(string $domain, string $search = '', string $system = ''): array
+    public function systemNames(string $domain, string $search = '', string $system = '', string $letter = ''): array
     {
-        $keys = array_keys($this->sectionCounts($domain, $search, $system));
+        $keys = array_keys($this->sectionCounts($domain, $search, $system, $letter));
 
         if ($keys === [] || $keys === [self::UNCLASSIFIED_KEY]) {
             return [];
@@ -350,13 +373,25 @@ class LesionAtlasService
      *
      * @return Builder<Finding>
      */
-    private function query(string $domain, string $search, string $system = ''): Builder
+    private function query(string $domain, string $search, string $system = '', string $letter = ''): Builder
     {
         return Finding::query()
             ->where('findings.ontology_type', Finding::ONTOLOGY_LESION)
             ->when($system !== '', fn (Builder $query): Builder => $query->whereIn(
                 'findings.id',
-                $this->structuresForSystem($domain, $system),
+                $this->findingsForSystem($domain, $system),
+            ))
+            // Matched on `display_name`, the same column `letters()` reads to build
+            // the rail, so a letter on the rail and a letter in the query can never
+            // mean two different things. Deliberately not the localised name: on the
+            // Arabic page that yields an Arabic first character, which is never
+            // `[A-Z]`, and every A-Z filter there would match nothing.
+            //
+            // `SUBSTR` rather than `LEFT` because the suite runs on SQLite in memory,
+            // which has no `LEFT`.
+            ->when($letter !== '', fn (Builder $query): Builder => $query->whereRaw(
+                'UPPER(SUBSTR(TRIM(findings.display_name), 1, 1)) = ?',
+                [$letter],
             ))
             ->whereExists(function ($query) use ($domain): void {
                 $query->select(DB::raw(1))
@@ -441,14 +476,36 @@ class LesionAtlasService
     }
 
     /**
+     * The lesion ids a body-system filter selects.
+     *
+     * Read off `assignments()` — the same map `sectionCounts()` and `sections()`
+     * group by — rather than off the structures table. The previous version asked
+     * the structures table for the ids belonging to a system and put them in
+     * `whereIn('findings.id', …)`, which compared a **finding** id against an
+     * **anatomical_structure** id. The two are different id spaces that happen to
+     * share a low range: digestive has 22 structures, ids 5–44, and those matched
+     * 18 findings with no digestive organ among them. After the `whereExists` that
+     * requires a live poultry disease, zero survived, so selecting any system
+     * rendered an empty page while the chip above it advertised 163 lesions.
+     *
+     * Deriving the ids from the matcher fixes that by construction: the filter and
+     * the counts now read from one source, so the number on the chip and the rows
+     * underneath it cannot disagree. That agreement is the whole point of the
+     * filter chip — a reader who picks "Digestive 163" is entitled to reach 163.
+     *
+     * It also costs nothing. `assignments()` is memoised per domain and has
+     * already been built by `sectionCounts()` and `systemNames()` on the same
+     * request, so this is a walk over an in-memory map rather than a query — the
+     * filter adds no round trip, it only adds a wider `whereIn`.
+     *
      * @return array<int, int>
      */
-    private function structuresForSystem(string $domain, string $system): array
+    private function findingsForSystem(string $domain, string $system): array
     {
-        return AnatomicalStructure::query()
-            ->forPart($domain)
-            ->whereHas('bodySystem', fn (Builder $query): Builder => $query->where('canonical_name', $system))
-            ->pluck('id')
+        return $this->assignments($domain)
+            ->filter(fn (AnatomicalStructure $structure): bool => (string) $structure->bodySystem->canonical_name === $system)
+            ->keys()
+            ->map(fn (int|string $id): int => (int) $id)
             ->all();
     }
 

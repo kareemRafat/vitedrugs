@@ -194,19 +194,31 @@ return array_replace_recursive($shared, [
         'all_letters' => 'All',
         'showing' => 'Showing :count lesions',
         'clear' => 'Clear filters',
+        // Shown in place of the count while a request is in flight, so the reader
+        // knows the number they are looking at is about to change.
+        'loading' => 'Loading…',
 
         'unclassified' => 'Not yet placed',
         'organ' => 'Names',
+        // A tile has to say something about a lesion that names no organ. Leaving
+        // the line out reads as a rendering fault rather than as the honest answer.
+        'names_no_organ' => 'Names no organ',
         'diseases_count' => ':count diseases',
         'caused_by' => 'Caused by',
         'no_diseases' => 'No poultry disease is linked to this lesion yet.',
+        'close' => 'Close',
 
         'image_soon' => 'Photograph coming soon',
         'empty' => 'No lesion matches these filters. Try clearing the search or choosing a different body system.',
 
         // Read by the shared <x-pagination> component, which is handed this
         // namespace as its translationPrefix.
-        'showing' => 'Showing',
+        //
+        // Renamed from a second `showing`. The filter bar above wanted
+        // "Showing :count lesions" and the pager wants a bare "Showing", but this
+        // is one flat array, so the second `showing` silently overwrote the first
+        // and the count never rendered — the page said "Showing" and nothing else.
+        'pager_showing' => 'Showing',
         'of' => 'of',
         'previous_page' => 'Previous',
         'next_page' => 'Next',
