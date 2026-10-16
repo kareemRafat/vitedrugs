@@ -48,16 +48,23 @@ class OrganAttachmentService
      * Every structure in the part with what is attached to it, keyed by structure
      * id.
      *
-     * Three queries for the whole page: the structures, the curated links, and
-     * the finding vocabulary. Matching happens in PHP because it is 58 organs
-     * against a thousand labels, and asking the database that 58 times to save
-     * a few milliseconds of string work is how a page ends up at two hundred
-     * queries.
+     * Four queries for the whole page: the structures, the curated links, the
+     * finding vocabulary, and the diseases with their classification. Matching
+     * happens in PHP because it is 58 organs against a thousand labels, and asking
+     * the database that 58 times to save a few milliseconds of string work is how a
+     * page ends up at two hundred queries.
+     *
+     * `derivedReasons` is the audit trail for the guessed tier: it says which label
+     * put each disease on this organ, which is the difference between "here are 38
+     * diseases that mention the liver somewhere" and a list a veterinarian can
+     * check. It is keyed by disease id and rides alongside `derived` rather than
+     * inside it, so the tier itself stays a plain collection of diseases.
      *
      * @return Collection<int, array{
      *     structure: AnatomicalStructure,
      *     mapped: Collection<int, Disease>,
      *     derived: Collection<int, Disease>,
+     *     derivedReasons: array<string, Collection<int, Finding>>,
      *     signs: Collection<int, Finding>,
      *     lesions: Collection<int, Finding>,
      * }>
@@ -99,6 +106,10 @@ class OrganAttachmentService
 
         $diseases = Disease::query()
             ->whereIn('id', $diseaseIds)
+            // The panel renders a zoonotic badge on every disease it lists. Loaded
+            // here rather than lazily, because the alternative is one query per row
+            // on an organ that reaches 38 of them.
+            ->with('diseaseClassification')
             ->orderBy('name')
             ->get()
             ->keyBy(fn (Disease $disease): string => (string) $disease->getKey());
@@ -117,7 +128,7 @@ class OrganAttachmentService
         return $structures->mapWithKeys(function (AnatomicalStructure $structure) use ($curatedByStructure, $matched, $diseases, $findings): array {
             $structureId = (int) $structure->getKey();
             $mappedIds = $curatedByStructure->get($structureId, collect());
-            $hits = $matched[$structureId] ?? ['disease_ids' => [], 'finding_ids' => []];
+            $hits = $matched[$structureId] ?? ['disease_ids' => [], 'finding_ids' => [], 'reasons' => []];
 
             $derivedIds = collect($hits['disease_ids'])
                 ->reject(fn (string $id): bool => $mappedIds->contains($id))
@@ -127,10 +138,22 @@ class OrganAttachmentService
             $matchedFindings = $findings
                 ->filter(fn (Finding $finding): bool => in_array((int) $finding->getKey(), $hits['finding_ids'], true));
 
+            $reasons = collect($hits['reasons'])->map(
+                fn (array $matching): Collection => $findings->filter(
+                    fn (Finding $finding): bool => in_array((int) $finding->getKey(), $matching, true),
+                )->values(),
+            );
+
             return [$structureId => [
                 'structure' => $structure,
                 'mapped' => $diseases->filter(fn (Disease $disease): bool => $mappedIds->contains((string) $disease->getKey()))->values(),
                 'derived' => $diseases->filter(fn (Disease $disease): bool => $derivedIds->contains((string) $disease->getKey()))->values(),
+                // Only the diseases the name match actually placed here. A curated
+                // disease is dropped from `derivedIds` above, and its labels are
+                // not this organ's evidence, so it gets no entry either.
+                'derivedReasons' => $reasons
+                    ->only($derivedIds->all())
+                    ->all(),
                 'signs' => $matchedFindings->where('ontology_type', 'sign')->values(),
                 // Everything that is not a clinical sign is a postmortem finding.
                 // `ontology_type` is null on 22 rows and those are lesions too —
@@ -146,7 +169,11 @@ class OrganAttachmentService
      * to.
      *
      * @param  Collection<int, AnatomicalStructure>  $structures
-     * @return array<int, array{disease_ids: array<int, string>, finding_ids: array<int, int>}>
+     * @return array<int, array{
+     *     disease_ids: array<int, string>,
+     *     finding_ids: array<int, int>,
+     *     reasons: array<string, array<int, int>>,
+     * }>
      */
     private function matchByName(Collection $structures, string $domain): array
     {
@@ -206,6 +233,14 @@ class OrganAttachmentService
             $matched[(int) $structure->getKey()] = [
                 'disease_ids' => $hits->pluck('disease_id')->unique()->values()->all(),
                 'finding_ids' => $hits->pluck('finding_id')->unique()->values()->all(),
+                // Which label put which disease here. A name match with no stated
+                // reason is indistinguishable from a curated link in the output, and
+                // this is the part that lets the page say "Hepatic necrosis" beside
+                // the disease it put on the liver.
+                'reasons' => $hits
+                    ->groupBy('disease_id')
+                    ->map(fn (Collection $rows): array => $rows->pluck('finding_id')->unique()->values()->all())
+                    ->all(),
             ];
         }
 

@@ -148,10 +148,21 @@ return array_replace_recursive($shared, [
         'lesions' => 'Post-mortem lesions',
         'organs' => 'Organs',
 
-        'mapped' => 'Mapped',
-        'derived' => 'Matched by name',
+        // These two are block headers, not labels. The disease list has one
+        // heading ("Diseases") and each tier explains itself underneath it, so
+        // there is no separate name for a curated link or a text match — only the
+        // sentence that says which one you are looking at.
         'mapped_note' => 'Linked to this organ in the source data.',
         'derived_note' => 'Attached because a recorded sign or lesion names this organ. Matched by text, not reviewed by a veterinarian — treat it as a starting point.',
+
+        // The caution that keeps a guessed match from reading as a curated one.
+        // "Matched on" names the label the match was made on, which is the only
+        // way a reader can tell a reasonable guess from a wrong one.
+        'matched_because' => 'Matched on:',
+        'and_more' => '+:count more',
+        'zoonotic' => 'Zoonotic',
+        'show_all' => 'Show all :count',
+        'show_less' => 'Show fewer',
 
         'organ_empty' => 'Nothing is recorded against this organ yet.',
         'system_empty' => 'No organ in this system has anything recorded against it yet.',

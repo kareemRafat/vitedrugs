@@ -6,8 +6,10 @@ use App\Models\Disease;
 use App\Models\LargeAnimals\AnatomicalStructure;
 use App\Models\LargeAnimals\BodySystem;
 use App\Models\LargeAnimals\ClinicalSign;
+use App\Models\LargeAnimals\DiseaseClassification;
 use App\Models\LargeAnimals\Finding;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -48,10 +50,12 @@ class PartBodyMapTest extends TestCase
 
         $disease->clinicalSigns()->attach($sign);
 
+        // The tier has no heading of its own: it is headed by the sentence that
+        // explains it, so that is what is asserted.
         $component = Livewire::test('anatomy.body-map', ['part' => 'poultry'])
             ->call('selectOrgan', 'liver')
             ->assertSee($disease->name)
-            ->assertSee(__('poultry.body_map.mapped'));
+            ->assertSee(__('poultry.body_map.mapped_note'));
 
         $this->assertSame(
             [$disease->slug],
@@ -81,10 +85,11 @@ class PartBodyMapTest extends TestCase
 
         $disease->clinicalSigns()->attach($sign);
 
+        // The caution is the block's header, so seeing it is what proves the
+        // guessed tier rendered — there is no separate name for it to assert.
         Livewire::test('anatomy.body-map', ['part' => 'poultry'])
             ->call('selectOrgan', 'liver')
             ->assertSee($disease->name)
-            ->assertSee(__('poultry.body_map.derived'))
             ->assertSee(__('poultry.body_map.derived_note'));
 
         $this->assertSame(
@@ -180,8 +185,379 @@ class PartBodyMapTest extends TestCase
         );
     }
 
-    // ------------------------------------------------------------ part scoping
+    // ------------------------------------------------------ why it was matched
 
+    /**
+     * A name match with no stated reason is a guess the reader cannot check, and a
+     * guess that looks like a curated link is the one failure this page cannot
+     * afford. The service therefore records which label put each disease on the
+     * organ, and the panel prints it under the disease.
+     */
+    #[Test]
+    public function a_name_matched_disease_carries_the_label_that_matched_it(): void
+    {
+        $this->organ('Liver', 'liver');
+        $disease = $this->poultryDisease('Mycotoxicosis');
+        $finding = Finding::factory()->create([
+            'canonical_name' => 'hepatic_necrosis',
+            'display_name' => 'Hepatic necrosis',
+            'ontology_type' => 'lesion',
+        ]);
+
+        $disease->clinicalSigns()->attach($this->sign(null, $finding));
+
+        $reasons = $this->entry('liver')['derivedReasons'][(string) $disease->getKey()];
+
+        $this->assertSame(
+            ['Hepatic necrosis'],
+            $reasons->pluck('display_name')->all(),
+        );
+
+        Livewire::test('anatomy.body-map', ['part' => 'poultry'])
+            ->call('selectOrgan', 'liver')
+            ->assertSee(__('poultry.body_map.matched_because'))
+            ->assertSee('Hepatic necrosis');
+    }
+
+    /**
+     * The reason trail is for the guessed tier only. A curated disease carries a
+     * link somebody made, and the labels that happen to name the organ are not that
+     * link — printing them would dress a curated row up as an inference, or worse,
+     * print nothing at all and leave the reason line half-rendered.
+     */
+    #[Test]
+    public function a_curated_disease_is_given_no_match_reason(): void
+    {
+        $organ = $this->organ('Liver', 'liver');
+        $disease = $this->poultryDisease('Coccidiosis');
+
+        $disease->clinicalSigns()->attach($this->sign($organ, Finding::factory()->create([
+            'canonical_name' => 'unrelated',
+            'display_name' => 'Unrelated label',
+            'ontology_type' => 'sign',
+        ])));
+
+        // A second label that does name the liver, so the only thing standing
+        // between this disease and a reason line is that it was curated.
+        $disease->clinicalSigns()->attach($this->sign(null, Finding::factory()->create([
+            'canonical_name' => 'liver_granulomas',
+            'display_name' => 'Liver granulomas',
+            'ontology_type' => 'lesion',
+        ])));
+
+        $entry = $this->entry('liver');
+
+        $this->assertSame([$disease->slug], $entry['mapped']->pluck('slug')->all());
+        $this->assertArrayNotHasKey((string) $disease->getKey(), $entry['derivedReasons']);
+    }
+
+    // ------------------------------------------------------- capped panel lists
+
+    /**
+     * The panel now prints a zoonotic badge on every disease row, which reads off
+     * `diseaseClassification`. Left lazy that is one query per disease, and the
+     * organ that triggers it — liver, at 38 — is the busiest the page has.
+     *
+     * Asserted as a budget rather than a count for the same reason the atlas does
+     * it: a query added on purpose should be visible here rather than discovered
+     * in production.
+     */
+    #[Test]
+    public function the_panel_stays_within_its_query_budget(): void
+    {
+        $this->organ('Liver', 'liver');
+
+        $this->attachLiverDiseases(6);
+
+        $queries = 0;
+        DB::listen(function () use (&$queries): void {
+            $queries++;
+        });
+
+        // The listener sees every statement on the connection, seeding included, so
+        // each render is measured as a delta rather than a running total.
+        $before = $queries;
+        Livewire::test('anatomy.body-map', ['part' => 'poultry'])
+            ->call('selectOrgan', 'liver')
+            ->assertOk();
+        $atSix = $queries - $before;
+
+        $this->attachLiverDiseases(6, from: 7);
+
+        $before = $queries;
+        Livewire::test('anatomy.body-map', ['part' => 'poultry'])
+            ->call('selectOrgan', 'liver')
+            ->assertOk();
+        $atTwelve = $queries - $before;
+
+        // Twice the diseases must not cost twice the queries. This is the assertion
+        // that actually proves there is no N+1; the ceiling below only stops one
+        // being added later.
+        $this->assertLessThanOrEqual(
+            $atSix,
+            $atTwelve,
+            "Six diseases took {$atSix} queries; twelve took {$atTwelve}. The count must not grow with the disease count.",
+        );
+
+        // 14 in practice: the seven the service issues (structures, body systems,
+        // the curated links, the label vocabulary, the diseases, their
+        // classifications and the findings) plus Livewire's own. Lazy-loading the
+        // classification instead would add one per row — twelve here, thirty-eight
+        // on a real liver — which is what this ceiling is here to stop.
+        $this->assertLessThanOrEqual(
+            18,
+            $atTwelve,
+            "The organ panel issued {$atTwelve} queries. Diseases and their classifications load eagerly.",
+        );
+    }
+
+    /**
+     * "Liver" reaches 38 diseases and "Trachea" 17. The panel shows a dozen and
+     * offers the rest, because a card that renders every row pushes the clinical
+     * signs and lesions off the bottom of it.
+     */
+    #[Test]
+    public function a_long_disease_list_is_capped_until_it_is_expanded(): void
+    {
+        $this->organ('Liver', 'liver');
+
+        foreach (range(1, 14) as $index) {
+            $disease = $this->poultryDisease(sprintf('Liver Disease %02d', $index));
+            $disease->clinicalSigns()->attach($this->sign(null, Finding::factory()->create([
+                'canonical_name' => "liver_label_{$index}",
+                'display_name' => 'Liver label '.$index,
+                'ontology_type' => 'lesion',
+            ])));
+        }
+
+        $capped = Livewire::test('anatomy.body-map', ['part' => 'poultry'])
+            ->call('selectOrgan', 'liver');
+
+        $capped->assertSee('Liver Disease 01')
+            ->assertSee('Liver Disease 12')
+            ->assertDontSee('Liver Disease 13')
+            ->assertSee(__('poultry.body_map.show_all', ['count' => 14]));
+
+        $capped->call('toggleSection', 'derived')
+            ->assertSet('expanded', ['derived' => true])
+            ->assertSee('Liver Disease 13')
+            ->assertSee('Liver Disease 14')
+            ->assertSee(__('poultry.body_map.show_less'));
+    }
+
+    /**
+     * Both tiers sit under one heading, and neither keeps a name of its own.
+     *
+     * "Mapped" and "matched by name" were near-synonyms, so two different kinds
+     * of claim read as one category; and neither said what had actually happened.
+     * The tiers are still separated — solid against dashed, and a curated link
+     * never sits under the text-match caution — but each block is now headed by
+     * the sentence that explains it, and the reader is asked to learn no
+     * vocabulary to see the difference.
+     *
+     * @see PartBodyMapTest::a_curated_clinical_sign_links_its_disease_to_the_organ()
+     */
+    #[Test]
+    public function both_tiers_share_one_diseases_heading(): void
+    {
+        $liver = $this->organ('Liver', 'liver');
+
+        // One curated link, so both blocks render and the heading is contested.
+        $curated = $this->poultryDisease('Coccidiosis');
+        $curated->clinicalSigns()->attach($this->sign($liver, Finding::factory()->create([
+            'canonical_name' => 'unrelated_label',
+            'display_name' => 'Unrelated label',
+            'ontology_type' => 'sign',
+        ])));
+
+        $label = $this->sign(null, Finding::factory()->create([
+            'canonical_name' => 'liver_lesions',
+            'display_name' => 'Liver lesions',
+            'ontology_type' => 'lesion',
+        ]));
+
+        foreach (range(1, 3) as $index) {
+            $disease = $this->poultryDisease(sprintf('Liver Disease %02d', $index));
+            $disease->clinicalSigns()->attach($label);
+        }
+
+        $panel = $this->panelOf(
+            Livewire::test('anatomy.body-map', ['part' => 'poultry'])->call('selectOrgan', 'liver'),
+        );
+
+        // One heading, carrying both tiers' counts. Matched on the markup rather
+        // than the bare word, because the heading also has to be the one holding
+        // the total — "one occurrence of the string Diseases" would pass just as
+        // happily on two headings that each counted only their own tier.
+        preg_match_all(
+            '/<h3[^>]*>\s*'.preg_quote(__('poultry.body_map.diseases'), '/').'\s*<span[^>]*>(\d+)<\/span>/',
+            $panel,
+            $heading,
+        );
+
+        $this->assertCount(
+            1,
+            $heading[0],
+            'Two tiers must not produce two "Diseases" headings.',
+        );
+        $this->assertSame(
+            '4',
+            $heading[1][0],
+            'The single heading must count the curated tier and the matched tier together.',
+        );
+
+        // Both blocks present, each headed by the sentence that explains it.
+        $this->assertStringContainsString(__('poultry.body_map.mapped_note'), $panel);
+        $this->assertStringContainsString(__('poultry.body_map.derived_note'), $panel);
+
+        // And neither block carries a name again.
+        foreach (['Mapped', 'Matched by name'] as $jargon) {
+            $this->assertStringNotContainsString($jargon, $panel);
+        }
+    }
+
+    /**
+     * The other half of the cap. An organ with fewer diseases than the cap shows
+     * all of them, so it must offer nothing to expand — a "Show all 5" over a list
+     * of five is a button that does nothing, and it is what the panel rendered
+     * until both disease tiers were gated on the same test the findings already
+     * used.
+     *
+     * Both tiers are populated on purpose: they were the two call sites that
+     * ignored the test, and a liver carrying two curated links and five matches is
+     * the smallest case that catches either one.
+     */
+    #[Test]
+    public function a_list_under_the_cap_offers_no_expand_control(): void
+    {
+        $liver = $this->organ('Liver', 'liver');
+
+        // Two curated links, on a label that names nothing — so they stay curated
+        // and never also turn up in the matched tier.
+        foreach (range(1, 2) as $index) {
+            $disease = $this->poultryDisease(sprintf('Curated Disease %02d', $index));
+            $disease->clinicalSigns()->attach($this->sign($liver, Finding::factory()->create([
+                'canonical_name' => "unrelated_label_{$index}",
+                'display_name' => 'Unrelated label '.$index,
+                'ontology_type' => 'sign',
+            ])));
+        }
+
+        // Five name matches, against a cap of twelve.
+        $label = $this->sign(null, Finding::firstOrCreate(
+            ['canonical_name' => 'liver_lesions'],
+            ['display_name' => 'Liver lesions', 'ontology_type' => 'lesion'],
+        ));
+
+        foreach (range(1, 5) as $index) {
+            $disease = $this->poultryDisease(sprintf('Liver Disease %02d', $index));
+            $disease->clinicalSigns()->attach($label);
+        }
+
+        $entry = $this->entry('liver');
+
+        $this->assertCount(2, $entry['mapped']);
+        $this->assertCount(5, $entry['derived']);
+
+        $panel = $this->panelOf(
+            Livewire::test('anatomy.body-map', ['part' => 'poultry'])->call('selectOrgan', 'liver'),
+        );
+
+        // Seven rows, all visible, so the panel carries no expand control at all.
+        $this->assertStringNotContainsString('toggleSection', $panel);
+        $this->assertStringNotContainsString(__('poultry.body_map.show_all', ['count' => 2]), $panel);
+        $this->assertStringNotContainsString(__('poultry.body_map.show_all', ['count' => 5]), $panel);
+        $this->assertStringNotContainsString(__('poultry.body_map.show_less'), $panel);
+    }
+
+    /**
+     * Opening one organ's list and then selecting another must not carry the
+     * expansion across — arriving at the trachea to find the liver's rows already
+     * open is the sort of state leak that makes a panel feel like it is lying.
+     */
+    #[Test]
+    public function changing_organ_folds_the_previous_sections_back(): void
+    {
+        $this->organ('Liver', 'liver');
+        $this->organ('Trachea', 'trachea', null, $this->system('respiratory', 'Respiratory System'));
+
+        Livewire::test('anatomy.body-map', ['part' => 'poultry'])
+            ->call('selectOrgan', 'liver')
+            ->call('toggleSection', 'derived')
+            ->assertSet('expanded', ['derived' => true])
+            ->call('selectOrgan', 'trachea')
+            ->assertSet('expanded', []);
+    }
+
+    /**
+     * The section name arrives from the markup and a Livewire payload is the
+     * client's to edit, so an unknown key opens nothing rather than becoming a
+     * free-text flag on the component.
+     */
+    #[Test]
+    public function an_unknown_section_cannot_be_toggled(): void
+    {
+        $this->organ('Liver', 'liver');
+
+        Livewire::test('anatomy.body-map', ['part' => 'poultry'])
+            ->call('selectOrgan', 'liver')
+            ->call('toggleSection', 'not-a-section')
+            ->assertSet('expanded', []);
+    }
+
+    /**
+     * A zoonotic disease on the map is a biosafety signal, and it is only useful if
+     * it arrives before the reader opens the disease. It rides on the row rather
+     * than on the disease page, which means the classification has to be loaded
+     * with the list — lazily it is one query per row on a 38-disease organ.
+     */
+    #[Test]
+    public function a_zoonotic_disease_is_flagged_on_its_row(): void
+    {
+        $this->organ('Liver', 'liver');
+
+        $zoonotic = $this->poultryDisease('Salmonellosis');
+        DiseaseClassification::factory()->create([
+            'disease_id' => $zoonotic->getKey(),
+            'zoonotic' => true,
+        ]);
+
+        $notZoonotic = $this->poultryDisease('Aflatoxicosis');
+        DiseaseClassification::factory()->create([
+            'disease_id' => $notZoonotic->getKey(),
+            'zoonotic' => false,
+        ]);
+
+        // One label shared by both diseases: both are on the liver for the same
+        // reason, which is the point of the row being about the match and not the
+        // disease.
+        $label = $this->sign(null, Finding::factory()->create([
+            'canonical_name' => 'liver_lesions',
+            'display_name' => 'Liver lesions',
+            'ontology_type' => 'lesion',
+        ]));
+
+        $zoonotic->clinicalSigns()->attach($label);
+        $notZoonotic->clinicalSigns()->attach($label);
+
+        $html = $this->panelOf(
+            Livewire::test('anatomy.body-map', ['part' => 'poultry'])->call('selectOrgan', 'liver'),
+        );
+
+        // Both diseases reach the liver, so both are listed...
+        $this->assertStringContainsString($zoonotic->name, $html);
+        $this->assertStringContainsString($notZoonotic->name, $html);
+
+        // ...and only the zoonotic one is flagged. A badge on every row is
+        // decoration, not a signal.
+        $this->assertSame(
+            1,
+            substr_count($html, __('poultry.body_map.zoonotic')),
+            'Exactly one of the two diseases is zoonotic, so exactly one row carries the badge.',
+        );
+    }
+
+    // ------------------------------------------------------------ part scoping
     /**
      * The anatomy vocabulary is one shared table and a bird has no rumen. Without
      * `anatomical_structures.domain` the chicken diagram offers teats.
@@ -282,10 +658,14 @@ class PartBodyMapTest extends TestCase
     {
         $this->organ('Thyroid gland', 'thyroid_gland');
 
+        // Asserting the whole block is absent rather than a heading that no
+        // longer exists: the caution text appearing at all would mean a tier was
+        // rendered, which is the failure this is here to catch.
         Livewire::test('anatomy.body-map', ['part' => 'poultry'])
             ->call('selectOrgan', 'thyroid_gland')
             ->assertSee(__('poultry.body_map.organ_empty'))
-            ->assertDontSee(__('poultry.body_map.derived'));
+            ->assertDontSee(__('poultry.body_map.derived_note'))
+            ->assertDontSee(__('poultry.body_map.mapped_note'));
     }
 
     /**
@@ -543,12 +923,42 @@ class PartBodyMapTest extends TestCase
 
     private function sign(?AnatomicalStructure $structure, Finding $finding): ClinicalSign
     {
-        return ClinicalSign::factory()->create([
-            'anatomical_structure_id' => $structure?->id,
-            'finding_id' => $finding->id,
-            'canonical_name' => $finding->canonical_name,
-            'display_name' => $finding->display_name,
-        ]);
+        return ClinicalSign::firstOrCreate(
+            ['finding_id' => $finding->id],
+            [
+                'anatomical_structure_id' => $structure?->id,
+                'canonical_name' => $finding->canonical_name,
+                'display_name' => $finding->display_name,
+            ],
+        );
+    }
+
+    /**
+     * Poultry diseases that reach the liver by name, for the query-budget test.
+     *
+     * One shared label rather than one per disease: the budget is about the panel
+     * loading diseases and their classifications, not about the matcher, and the
+     * helper is called twice in one test, so the label has to be reusable.
+     */
+    private function attachLiverDiseases(int $count, int $from = 1): void
+    {
+        $finding = Finding::firstOrCreate(
+            ['canonical_name' => 'liver_lesions'],
+            ['display_name' => 'Liver lesions', 'ontology_type' => 'lesion'],
+        );
+
+        $label = $this->sign(null, $finding);
+
+        foreach (range($from, $from + $count - 1) as $index) {
+            $disease = $this->poultryDisease(sprintf('Liver Disease %02d', $index));
+
+            DiseaseClassification::factory()->create([
+                'disease_id' => $disease->getKey(),
+                'zoonotic' => $index % 3 === 0,
+            ]);
+
+            $disease->clinicalSigns()->attach($label);
+        }
     }
 
     /**
