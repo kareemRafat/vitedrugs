@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Poultry;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LargeAnimals\ProductController;
 use App\Models\Disease;
 
 /**
@@ -18,6 +19,21 @@ use App\Models\Disease;
 class DiseaseController extends Controller
 {
     private const PART = 'poultry';
+
+    /**
+     * The disease list.
+     *
+     * Holds no logic of its own. Scoping to the domain, the alphabetisation, the
+     * letter rail and the three per-disease counts are the shared component's —
+     * this exists only to hand it the right part, the same thin shape
+     * `ProductController` takes.
+     *
+     * @see ProductController
+     */
+    public function index()
+    {
+        return view('diseases.index', ['part' => self::PART]);
+    }
 
     public function show(string $slug)
     {

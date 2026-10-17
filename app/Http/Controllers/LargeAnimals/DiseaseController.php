@@ -9,6 +9,21 @@ use Illuminate\View\View;
 
 class DiseaseController extends Controller
 {
+    /**
+     * The disease list.
+     *
+     * Holds no logic of its own. Scoping to the domain, the alphabetisation, the
+     * letter rail and the three per-disease counts are the shared component's —
+     * this exists only to hand it the right part, the same thin shape
+     * `ProductController` takes.
+     *
+     * @see ProductController
+     */
+    public function index(): View
+    {
+        return view('diseases.index', ['part' => 'large-animals']);
+    }
+
     public function show(string $slug): RedirectResponse|View
     {
         $disease = Disease::query()

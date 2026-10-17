@@ -427,6 +427,13 @@ class LesionAtlasService
     }
 
     /**
+     * The diseases each lesion names, keyed by finding id.
+     *
+     * Every lesion's own list is sorted A-Z by localised name — see the note
+     * below the return. Callers rely on that: the tile shows the first three and
+     * the atlas modal shows the rest, so an unordered list means the three a reader
+     * can see change between renders.
+     *
      * @param  Collection<int, Finding>  $findings
      * @return Collection<int, Collection<int, Disease>>
      */
@@ -447,6 +454,15 @@ class LesionAtlasService
             ->get()
             ->keyBy(fn (Disease $disease): string => (string) $disease->getKey());
 
+        // Sorted by localised name, per lesion.
+        //
+        // The `orderBy('name')` above sorts the lookup map, which is keyed by id
+        // and therefore throws its order away — a lesion's rows came out in
+        // whatever order the join returned them, so the tile's first three chips
+        // and the atlas modal's full list were both arbitrary. Localised rather
+        // than canonical, because the Arabic page must read A-Z in Arabic; the
+        // ordering is case-insensitive so a lowercase second name does not sort
+        // ahead of every capitalised one.
         return $links
             ->groupBy('finding_id')
             ->map(fn (Collection $rows): Collection => $rows
@@ -454,6 +470,10 @@ class LesionAtlasService
                 ->unique()
                 ->map(fn (int|string $id): ?Disease => $diseases->get((string) $id))
                 ->filter()
+                ->sortBy(
+                    fn (Disease $disease): string => mb_strtolower($disease->localized_name),
+                    SORT_NATURAL | SORT_FLAG_CASE,
+                )
                 ->values());
     }
 

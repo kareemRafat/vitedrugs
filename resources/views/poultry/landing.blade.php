@@ -10,6 +10,7 @@
         // builds it lands, so the grid never links to a 404.
         $serviceRoutes = [
             'diagnosis' => route('poultry.diagnosis'),
+            'diseases' => route('poultry.diseases.index'),
             'filter' => route('poultry.filter'),
             'search' => route('poultry.search'),
             'compare' => route('poultry.comparison'),
@@ -20,6 +21,7 @@
 
         $serviceIcons = [
             'diagnosis' => 'stethoscope',
+            'diseases' => 'bug',
             'filter' => 'sliders-horizontal',
             'search' => 'search',
             'compare' => 'columns-3',

@@ -39,6 +39,8 @@ Route::group([
 
         Route::get('products', ProductController::class)->name('poultry.products.index');
 
+        // Before `{slug}` so the literal path cannot be read as a slug.
+        Route::get('diseases', [DiseaseController::class, 'index'])->name('poultry.diseases.index');
         Route::get('diseases/{slug}', [DiseaseController::class, 'show'])->name('poultry.diseases.show');
 
         Route::get('signs/{sign}', [SignController::class, 'show'])->name('poultry.signs.show');

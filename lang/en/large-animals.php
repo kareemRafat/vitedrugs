@@ -5,6 +5,12 @@ return [
         'landing' => 'Drugs Home',
         'search' => 'Search',
         'diagnosis' => 'Diagnosis',
+        // Added with the part disease list. The navbar rendered the raw key
+        // `large-animals.nav.diseases` until this existed — a matching
+        // `'diseases' =>` was already present further down the file, in the
+        // *breadcrumb* block, which is how grepping for the key passes while the
+        // nav block is still missing it.
+        'diseases' => 'Diseases',
         'filter' => 'Filter',
         'comparison' => 'Comparison',
         'products' => 'Drugs',
@@ -327,6 +333,45 @@ return [
         'empty_desc' => 'No product matches these filters. Try clearing one, or search by a different term.',
     ],
 
+    /*
+    | The part disease list — `resources/views/diseases/index.blade.php`, shared by
+    | both sections (§9.19). Poultry reads these keys through the
+    | `array_replace_recursive` layering in its own `poultry.php`, so a key added
+    | here arrives for free and only wording that is wrong for birds is overridden
+    | there.
+    |
+    | Read by the shared <x-pagination> component, which is handed this namespace as
+    | its translationPrefix.
+    */
+    'diseases_list' => [
+        'title' => 'Disease Library | VetPedia',
+        'heading' => 'Disease Library',
+        'subtitle' => 'Every disease recorded for this section — browse by name, or jump to a letter, then open one for its clinical signs, post-mortem lesions and treatment.',
+        'badge' => 'Diseases',
+        'total' => 'Diseases recorded',
+        'directory_title' => 'All diseases',
+        'showing' => 'Showing :count diseases',
+        'letter_nav' => 'Jump to letter',
+        'signs' => 'Clinical signs',
+        'lesions' => 'Gross lesions',
+        'drugs' => 'Drugs',
+        'view_disease' => 'View disease',
+        'clear_letter' => 'Clear the letter filter',
+        'empty_title' => 'No diseases here',
+        'empty_desc' => 'No disease in this section begins with that letter. Try another, or clear the filter to see all of them.',
+
+        // Read by the shared <x-pagination> component, which is handed this
+        // namespace as its translationPrefix.
+        //
+        // Not a second `showing`: this is one flat array, so a duplicate key would
+        // silently overwrite the filter-bar string above and the count would never
+        // render — the page would say "Showing" and nothing else.
+        'pager_showing' => 'Showing',
+        'of' => 'of',
+        'previous_page' => 'Previous',
+        'next_page' => 'Next',
+    ],
+
     'disease' => [
         'title' => ':name | VetPedia Drugs',
         'disease' => 'Disease',
@@ -469,6 +514,14 @@ return [
             'projects' => [
                 'title' => 'Veterinary Projects',
                 'description' => 'Feasibility studies, investment guides and practice guidelines for the large animal sector.',
+            ],
+            'diseases' => [
+                'title' => 'Disease Library',
+                'description' => 'Every disease recorded for this section — browse by name or jump to a letter, then open one for its clinical signs and lesions.',
+            ],
+            'products' => [
+                'title' => 'Drug Catalogue',
+                'description' => 'Drugs with a recorded dose for a large animal species — active ingredients, dosing by species, and withdrawal periods for meat and milk.',
             ],
             'search' => [
                 'title' => 'Smart Search',

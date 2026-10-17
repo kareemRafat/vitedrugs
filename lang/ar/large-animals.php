@@ -5,6 +5,11 @@ return [
         'landing' => 'الرئيسية',
         'search' => 'البحث',
         'diagnosis' => 'التشخيص',
+        // أُضيف مع مكتبة الأمراض. كان شريط التنقل يطبع المفتاح
+        // `large-animals.nav.diseases` حرفيًا قبل وجود هذا السطر — فكان هناك
+        // مفتاح `'diseases' =>` مطابق في أسفل الملف داخل كتلة `breadcrumb`، وهو ما
+        // يجعل البحث عن المفتاح ينجح بينما كتلة `nav` ما زالت تفتقده.
+        'diseases' => 'الأمراض',
         'filter' => 'التصفية',
         'comparison' => 'المقارنة',
         'products' => 'الأدوية',
@@ -327,6 +332,38 @@ return [
         'empty_desc' => 'لا يوجد دواء يطابق عوامل التصفية هذه. جرّب مسح أحدها أو ابحث بكلمة أخرى.',
     ],
 
+    /*
+    | The part disease list — `resources/views/diseases/index.blade.php`, shared by
+    | both sections. Poultry reads these keys through the `array_replace_recursive`
+    | layering in `lang/ar/poultry.php`, so only wording that is wrong for birds is
+    | overridden there.
+    |
+    | تُقرأ `pager_showing` و`previous_page` و`next_page` بواسطة المكوّن المشترك
+    | <x-pagination>، الذي يتلقّى هذا النطاق بوصفه `translationPrefix`.
+    */
+    'diseases_list' => [
+        'title' => 'مكتبة الأمراض | VetPedia',
+        'heading' => 'مكتبة الأمراض',
+        'subtitle' => 'كل الأمراض المسجَّلة في هذا القسم — تصفَّحها بالاسم أو انتقل إلى حرف، ثم افتح أي مرض لتقرأ أعراضه السريرية وآفاته بعد الوفاة وعلاجه.',
+        'badge' => 'الأمراض',
+        'total' => 'الأمراض المسجَّلة',
+        'directory_title' => 'كل الأمراض',
+        'showing' => 'يعرض :count مرضًا',
+        'letter_nav' => 'انتقل إلى حرف',
+        'signs' => 'الأعراض السريرية',
+        'lesions' => 'الآفات العينية',
+        'drugs' => 'الأدوية',
+        'view_disease' => 'عرض المرض',
+        'clear_letter' => 'امسح تصفية الحرف',
+        'empty_title' => 'لا توجد أمراض هنا',
+        'empty_desc' => 'لا يوجد مرض في هذا القسم يبدأ بهذا الحرف. جرّب حرفًا آخر، أو امسح التصفية لعرضها كلها.',
+
+        'pager_showing' => 'يعرض',
+        'of' => 'من',
+        'previous_page' => 'السابق',
+        'next_page' => 'التالي',
+    ],
+
     'disease' => [
         'title' => ':name | فيتبيديا للأدوية',
         'disease' => 'المرض',
@@ -479,6 +516,14 @@ return [
             'search' => [
                 'title' => 'البحث الذكي',
                 'description' => 'ابحث في الأمراض والعلامات والكائنات الممرضة — بما في ذلك المرادفات والاختصارات.',
+            ],
+            'diseases' => [
+                'title' => 'مكتبة الأمراض',
+                'description' => 'كل الأمراض المسجَّلة في هذا القسم — تصفَّحها بالاسم أو انتقل إلى حرف، ثم افتح أي مرض لتقرأ أعراضه السريرية وآفاته.',
+            ],
+            'products' => [
+                'title' => 'دليل الأدوية',
+                'description' => 'أدوية جرعاتها مسجَّلة لحيوان من الحيوانات الكبيرة — المواد الفعالة، والجرعات حسب النوع، وفترات السحب للحم والحليب.',
             ],
         ],
         'stats_heading' => 'نظرة على قاعدة المعرفة',

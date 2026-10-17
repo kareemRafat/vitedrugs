@@ -55,6 +55,10 @@ return array_replace_recursive($shared, [
                 'title' => 'Disease Comparison',
                 'description' => 'Put up to four bird diseases side by side to see which signs tell them apart and which signs they all share.',
             ],
+            'diseases' => [
+                'title' => 'Disease Library',
+                'description' => 'Every bird disease on record — browse by name or jump to a letter, then open one for its clinical signs, post-mortem lesions and treatment.',
+            ],
             'products' => [
                 'title' => 'Drug Catalogue',
                 'description' => 'Drugs with a recorded poultry dose — active ingredients, dosing by bird, and withdrawal periods for meat and eggs.',
@@ -205,6 +209,10 @@ return array_replace_recursive($shared, [
         'names_no_organ' => 'Names no organ',
         'diseases_count' => ':count diseases',
         'caused_by' => 'Caused by',
+        // The `+N` chip. An aria-label rather than a title attribute, because the
+        // visible text is "+12" and that is not a label — a screen reader reads
+        // the chip as twelve-something otherwise.
+        'all_diseases' => 'Show all :count diseases',
         'no_diseases' => 'No poultry disease is linked to this lesion yet.',
         'close' => 'Close',
 

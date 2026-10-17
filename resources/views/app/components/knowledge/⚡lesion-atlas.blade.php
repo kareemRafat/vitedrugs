@@ -20,15 +20,32 @@ use Livewire\WithPagination;
  * lesion's photograph is the first thing worth seeing, so a tile is a frame at
  * the photograph's aspect ratio and the name sits under it.
  *
- * There is no drawer. It was built and then cut, and the reason is the data
- * rather than the taste: 571 of the 640 poultry lesions name exactly one
- * disease. A drawer over that shows the name, the organ, the system and the
- * photograph frame the tile already had, plus a single disease link — so every
- * click dims the page, slides a panel in, and hands back what was already on
- * screen. What the drawer would really be for is the full-size photograph, and
- * there is no media table in this application to put one in. When photographs
- * arrive, the drawer comes back for the image and the long tail; the worst
- * lesion here names 43 diseases, which is the only list too long for a tile.
+ * There is no drawer, and there never will be one for the photograph. It was
+ * built and then cut, and the reason is the data rather than the taste: 571 of
+ * the 640 poultry lesions name exactly one disease. A drawer over that shows the
+ * name, the organ, the system and the photograph frame the tile already had, plus
+ * a single disease link — so every click dims the page, slides a panel in, and
+ * hands back what was already on screen. What the drawer would really be for is
+ * the full-size photograph, and there is no media table in this application to
+ * put one in. When photographs arrive, the drawer comes back for the image and
+ * the long tail; the worst lesion here names 43 diseases, which is the only list
+ * too long for a tile.
+ *
+ * **The long tail gets a modal, and the modal is not a drawer.** The tile shows
+ * three disease chips and a `+N`, and that count was a dead `<span>` — every
+ * reader who could not read the last two names on their own tile had no way to
+ * reach them anywhere on the site. There is no lesion page to link out to either,
+ * so the missing names had to surface here.
+ *
+ * The modal is small and holds names only, which is the distinction from the
+ * drawer: it hides the page for a list rather than replacing a tile with a panel,
+ * and it says nothing the tile did not already say. It is Alpine over the shared
+ * `<x-modal>` rather than a Livewire property, because the page already holds
+ * every disease for the lesion — the count on the tile is computed from the very
+ * collection the dialog lists — so a round trip to fetch them would cost a query
+ * and a spinner to return data the reader is already looking at. The payload is
+ * built only for a tile that has a tail, because 571 of 640 lesions have nothing
+ * to open.
  *
  * The diseases a lesion causes therefore sit on the tile, linked. That also
  * makes the one thing a reader came for reachable without a round trip.
@@ -519,7 +536,8 @@ new class extends Component
                                             // one lesion names 43 diseases — but a tile
                                             // listing all of them is a wall of chips and
                                             // stops being scannable, which is the one thing
-                                            // this grid is for.
+                                            // this grid is for. The rest are one click away
+                                            // in the modal below.
                                             $shown = $lesion['diseases']->take(3);
                                             $rest = $lesion['diseases']->count() - $shown->count();
                                         @endphp
@@ -538,9 +556,21 @@ new class extends Component
                                             @endforeach
                                             @if ($rest > 0)
                                                 <li>
-                                                    <span class="inline-block rounded-xs bg-neutral-secondary-soft dark:bg-slate-700 px-1.5 py-0.5 text-[11px] tabular-nums text-body dark:text-slate-300">
+                                                    {{-- A button, not a span, and the only control on the tile that is not a link
+                                                         out. The whole list is in the payload rather than
+                                                         fetched: the page already has every disease for
+                                                         this lesion, so opening this costs no request
+                                                         and no query. Built inside the `@if` on purpose
+                                                         — 571 of 640 lesions name exactly one disease,
+                                                         and the unconditional version pays a `route()`
+                                                         call per disease across all 48 tiles of a page
+                                                         to build a list almost none of them can open. --}}
+                                                    <button type="button"
+                                                        x-on:click="$dispatch('atlas-diseases', { title: @js($lesion['name']), diseases: @js($lesion['diseases']->map(fn ($disease): array => ['name' => $disease->localized_name, 'url' => route($this->part.'.diseases.show', $disease->slug)])->all()) })"
+                                                        aria-label="{{ $t('all_diseases', ['count' => $lesion['diseases']->count()]) }}"
+                                                        class="inline-block rounded-xs bg-neutral-secondary-soft dark:bg-slate-700 px-1.5 py-0.5 text-[11px] tabular-nums text-body dark:text-slate-300 hover:underline cursor-pointer">
                                                         +{{ $rest }}
-                                                    </span>
+                                                    </button>
                                                 </li>
                                             @endif
                                         </ul>
@@ -565,4 +595,32 @@ new class extends Component
         </div>
     @endif
     </div>
+
+    {{-- The atlas modal.
+
+         One dialog for the whole grid, not one per tile. Forty-eight tiles would
+         mean forty-eight copies of this markup sitting in the DOM doing nothing,
+         and the payload — which disease, which URL — is the same shape every time,
+         so a single dialog reading it off `detail` holds the same information.
+
+         Mounted outside the `space-y-6` run for the same reason the note above
+         gives: a child of a `space-y-*` element loses its `:last-child` status the
+         moment something renders after it. The dialog is fixed-positioned and out
+         of flow so it does not disturb the footer on its own account, but keeping
+         the overlay a sibling rather than the last child keeps that guarantee true
+         for good rather than true until this line was added. --}}
+    <x-modal open-event="atlas-diseases" title-id="atlas-diseases-title" :label="$t('close')">
+        <p class="text-xs font-medium text-body dark:text-slate-400">{{ $t('caused_by') }}</p>
+        <ul class="mt-2.5 flex flex-col gap-1.5">
+            {{-- `detail` is null until a tile opens it, hence the guard. The whole
+                 list is rendered here, including the three already on the tile, so
+                 the dialog is a complete answer on its own rather than a top-up. --}}
+            <template x-for="disease in (detail?.diseases ?? [])" :key="disease.url">
+                <li>
+                    <a :href="disease.url" x-text="disease.name"
+                        class="block truncate rounded-xs bg-danger-soft border border-danger-subtle px-2 py-1 text-xs text-fg-danger-strong hover:underline dark:text-red-300"></a>
+                </li>
+            </template>
+        </ul>
+    </x-modal>
 </div>

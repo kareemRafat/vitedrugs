@@ -10,6 +10,8 @@ use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\Finding;
 use App\Models\LargeAnimals\FindingImage;
 use App\Services\Knowledge\LesionAtlasService;
+use DOMDocument;
+use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -392,6 +394,293 @@ class PoultryLesionAtlasTest extends TestCase
 
         $this->assertNull($entries->firstWhere('id', $orphan->id));
         $this->assertNotNull($entries->firstWhere('id', $live->id));
+    }
+
+    // ------------------------------------------------------ the atlas modal
+
+    /**
+     * The count on the tile used to be a dead `<span>`.
+     *
+     * A lesion naming 43 diseases showed three chips and a "+40" that led
+     * nowhere: no link, no handler, and no lesion page anywhere on the site to
+     * link out to. Every reader who could not read the last two names on the
+     * tile had no route to them at all. This asserts the chip is a real control
+     * that says how many it is hiding — "12" on its own reads as a tally, not as
+     * an invitation.
+     */
+    #[Test]
+    public function a_lesion_with_more_diseases_than_the_tile_shows_offers_the_rest(): void
+    {
+        $this->lesionWithDiseases('Liver lesions', 'poultry', [
+            'Aflatoxicosis', 'Botulism', 'Cholera', 'Newcastle', 'Salmonellosis',
+        ]);
+
+        Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
+            ->assertSee('+2')
+            ->assertSee(__('poultry.atlas.all_diseases', ['count' => 5]));
+    }
+
+    /**
+     * **The chip has to be a control.** This is the assertion the test above cannot
+     * make on its own.
+     *
+     * `assertSee('+2')` and `assertSee('Show all 5 diseases')` both pass against the
+     * dead `<span>` this replaced, because the markup and the aria-label were never
+     * the problem — the element was. Both strings are there and the chip still opens
+     * nothing, which is precisely the state this page shipped in and precisely the
+     * state a reader cannot describe as broken. So the tag is matched instead: a
+     * `<button>` whose body is the count, carrying the handler that opens the dialog.
+     *
+     * Matching the whole element rather than a substring is also what makes this safe
+     * against the modal's own close button — that one wraps an icon, not a number, so
+     * there is only ever one match.
+     */
+    #[Test]
+    public function the_tail_chip_is_a_button_that_opens_the_dialog_not_a_tally(): void
+    {
+        $this->lesionWithDiseases('Liver lesions', 'poultry', [
+            'Aflatoxicosis', 'Botulism', 'Cholera', 'Newcastle', 'Salmonellosis',
+        ]);
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertSame(
+            1,
+            preg_match('/<button\b[^>]*>\s*\+2\s*<\/button>/s', $html, $chip),
+            'The +N chip is not a button. It reads as a tally and opens nothing.',
+        );
+        $this->assertStringContainsString(
+            '$dispatch(\'atlas-diseases\'',
+            $chip[0],
+            'The button renders but carries no handler, so it is the old dead chip in new markup.',
+        );
+    }
+
+    /**
+     * **All of them, not the hidden remainder.**
+     *
+     * The dialog opens from a chip that already shows three names, so the
+     * tempting implementation is to pass only what the tile is missing and let
+     * the two halves add up. That makes the dialog useless as a reference — you
+     * cannot copy a list out of it, and the tile and the dialog disagree about
+     * order. It has to stand on its own.
+     */
+    #[Test]
+    public function the_modal_carries_every_disease_not_only_the_hidden_ones(): void
+    {
+        $names = ['Aflatoxicosis', 'Botulism', 'Cholera', 'Newcastle', 'Salmonellosis'];
+        $diseases = collect($names)
+            ->map(fn (string $name): Disease => $this->disease($name, 'poultry'));
+
+        $lesion = $this->lesion('Liver lesions', 'poultry', $diseases->first());
+        $sign = $lesion->clinicalSigns()->firstOrFail();
+
+        $diseases->slice(1)->each(fn (Disease $disease) => $disease->clinicalSigns()->attach($sign));
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        foreach ($diseases as $disease) {
+            $this->assertStringContainsString(
+                $disease->slug,
+                $html,
+                "The modal payload omits {$disease->name}. Its tile shows three names and the reader has nowhere else to find the rest.",
+            );
+        }
+    }
+
+    /**
+     * Nothing to open, nothing offered.
+     *
+     * 571 of 640 lesions name exactly one disease. A "+0" button — or one on a
+     * tile whose three chips are the whole list — is a control that opens a dialog
+     * containing what the reader was already looking at.
+     */
+    #[Test]
+    public function a_lesion_whose_diseases_all_fit_on_the_tile_offers_no_dialog(): void
+    {
+        $this->lesionWithDiseases('Liver lesions', 'poultry', ['Aflatoxicosis', 'Botulism', 'Cholera']);
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertStringNotContainsString(
+            "\$dispatch('atlas-diseases'",
+            $html,
+            'A tile whose diseases all fit carries a dialog payload and a button that opens nothing.',
+        );
+        $this->assertStringNotContainsString(
+            __('poultry.atlas.all_diseases', ['count' => 3]),
+            $html,
+        );
+    }
+
+    /**
+     * One dialog for the whole grid.
+     *
+     * The obvious per-tile implementation puts a copy of the modal inside every
+     * tile. Forty-eight copies is forty-eight dialogs wired to forty-eight events,
+     * and they are indistinguishable to a reader opening them with the keyboard.
+     * Asserted on the *count* of the listener rather than its presence, because a
+     * single working one hides the other forty-seven.
+     */
+    #[Test]
+    public function the_modal_is_mounted_once_for_the_whole_grid(): void
+    {
+        $this->lesionWithDiseases('Liver lesions', 'poultry', [
+            'Aflatoxicosis', 'Botulism', 'Cholera', 'Newcastle',
+        ]);
+        // Distinct names, not a second copy of the first lesion's list: `diseases.name`
+        // is unique, and a shared name would make this a test of the constraint.
+        $this->lesionWithDiseases('Cloacal prolapse', 'poultry', [
+            'Dystocia', 'Egg drop', 'Hypovitaminosis', 'Rickets',
+        ]);
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertSame(
+            1,
+            substr_count($html, 'atlas-diseases.window'),
+            'The atlas mounted a dialog per tile. One listener, one dialog.',
+        );
+    }
+
+    /**
+     * **The two ways out that do not require finding the close button.**
+     *
+     * Escape is bound on `window` rather than the panel, so it works before
+     * anything inside has focus — and the backdrop is a sibling of the panel
+     * rather than its parent, so a click that lands on a long disease name does
+     * not close the dialog under the reader's cursor.
+     */
+    #[Test]
+    public function the_modal_closes_on_escape_and_on_the_backdrop(): void
+    {
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertStringContainsString('keydown.escape.window', $html);
+        $this->assertStringContainsString('x-on:click="hide()"', $html);
+        $this->assertStringContainsString('role="dialog"', $html);
+        $this->assertStringContainsString('aria-modal="true"', $html);
+    }
+
+    /**
+     * **The whole Alpine expression survives the HTML parser.**
+     *
+     * This is here because the dialog shipped broken once and nothing caught it.
+     * The focus trap's selector needs `"` in it, so it is written `\"` inside an
+     * attribute — and HTML has no escape character inside an attribute value. The
+     * parser ended `x-data` at that quote, Alpine was handed an object literal
+     * cut off mid-string, and *every* method in it silently stopped existing. The
+     * page rendered perfectly, every test above passed, and the console filled
+     * with `hide is not defined` / `detail is not defined`. No server-side
+     * assertion on the response body can see that, because the damage is done by
+     * the browser's parser and not by Blade.
+     *
+     * So parse the response the way a browser would and assert the attribute
+     * survived intact. `assertStringContainsString('cycle', $html)` would pass on
+     * the broken markup — the text `cycle` is in the HTML either way, just not
+     * inside the attribute Alpine reads.
+     */
+    #[Test]
+    public function the_modals_alpine_expression_is_intact_once_the_browser_has_parsed_it(): void
+    {
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $document = new DOMDocument;
+        libxml_use_internal_errors(true);
+        $document->loadHTML('<?xml encoding="utf-8" ?>'.$html);
+        libxml_clear_errors();
+
+        $xpath = new DOMXPath($document);
+
+        // The element that listens for the atlas event is the modal's root, and
+        // its `x-data` is what Alpine evaluates. The attribute name holds a colon
+        // and a full stop, neither of which is legal unquoted in an XPath name
+        // step, so it is matched on `name()` rather than written inline.
+        $roots = $xpath->query('//*[@*[name()="x-on:atlas-diseases.window"]]');
+
+        $this->assertNotFalse($roots, 'The XPath query itself failed.');
+        $this->assertSame(1, $roots->length, 'The modal root carrying the event listener was not found.');
+
+        $expression = $roots->item(0)->getAttribute('x-data');
+
+        $this->assertNotEmpty(
+            $expression,
+            'x-data is empty. An attribute truncated by the HTML parser parses as an empty string, which is how the dialog shipped with every method undefined.',
+        );
+
+        // Every method, and the literal the truncation used to eat.
+        foreach (['show(', 'hide(', 'cycle(', '[tabindex=\\"-1\\"]'] as $fragment) {
+            $this->assertStringContainsString(
+                $fragment,
+                $expression,
+                "The parsed x-data is missing {$fragment}. The expression was cut short, so Alpine binds none of it.",
+            );
+        }
+
+        // The failure this guards is a *parse* error, so the expression has to be
+        // syntactically whole too — balanced braces are the cheapest proxy and the
+        // truncation always left them unbalanced.
+        $this->assertSame(
+            substr_count($expression, '{'),
+            substr_count($expression, '}'),
+            'The x-data braces do not balance, so it cannot be a complete object literal.',
+        );
+    }
+
+    /**
+     * A-Z, and in the reader's language.
+     *
+     * The per-lesion list came out in whatever order the join returned, so the
+     * three names on the tile — and the dialog's list, which has the same source —
+     * could differ between two renders of the same page. Sorted on the localised
+     * name: `orderBy('name')` sorts the id-keyed lookup map, which throws its own
+     * order away, and the canonical name would leave the Arabic page unsorted.
+     */
+    #[Test]
+    public function a_lesions_diseases_are_ordered_alphabetically(): void
+    {
+        $this->lesionWithDiseases('Liver lesions', 'poultry', ['Newcastle', 'Botulism', 'Aflatoxicosis']);
+
+        $diseases = app(LesionAtlasService::class)
+            ->lesionsPaginator('poultry')
+            ->getCollection()
+            ->first()['diseases'];
+
+        $this->assertSame(
+            ['Aflatoxicosis', 'Botulism', 'Newcastle'],
+            $diseases->map(fn (Disease $disease): string => $disease->localized_name)->all(),
+        );
+    }
+
+    /**
+     * The chip says how many diseases it is hiding, and the dialog's close
+     * button says what it is — in the reader's language.
+     *
+     * Both are asserted in Arabic because each is built from a translation, and
+     * the English tests above cannot catch either falling back to the key. The
+     * close label especially: `<x-modal>` is shared, and a shared component that
+     * reaches into `poultry.*` for its own button label reads in English the
+     * moment anybody mounts it on another part. Its `label` prop is required for
+     * that reason, and this is the assertion that keeps it wired.
+     *
+     * The lesion name stays Latin deliberately: `Str::slug()` strips Arabic to an
+     * empty string, so an Arabic lesion name would push an empty `canonical_name`
+     * into the fixtures and fail on a column that has nothing to do with this.
+     */
+    #[Test]
+    public function the_rest_of_a_lesions_diseases_are_readable_in_arabic(): void
+    {
+        app()->setLocale('ar');
+
+        $this->lesionWithDiseases('Liver lesions', 'poultry', [
+            'أفلاتوكسينوزيس', 'تسمم غذائي', 'كوليرا', 'نيوكاسل',
+        ]);
+
+        Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
+            ->assertSee('+1')
+            ->assertSee(__('poultry.atlas.all_diseases', ['count' => 4], 'ar'), false)
+            ->assertSee(__('poultry.atlas.close', [], 'ar'), false)
+            ->assertSee(__('poultry.atlas.caused_by', [], 'ar'), false);
     }
 
     // -------------------------------------------------------- the photographs
@@ -883,6 +1172,30 @@ class PoultryLesionAtlasTest extends TestCase
      * budget test does when it scales the lesion count up to prove there is no
      * N+1. Nothing about a disease is randomised here anyway.
      */
+    /**
+     * One lesion carried by several diseases.
+     *
+     * The atlas reaches a disease through the clinical sign that reports the
+     * lesion, and `lesion()` builds exactly one sign and hands back only the
+     * finding. So the extra diseases are attached to that sign afterwards rather
+     * than to further signs — a second sign per disease would make them separate
+     * lesions and each tile would show one disease, which is the case under test
+     * everywhere else on this file.
+     *
+     * @param  array<int, string>  $diseaseNames
+     */
+    private function lesionWithDiseases(string $name, string $domain, array $diseaseNames): Finding
+    {
+        $lesion = $this->lesion($name, $domain, $this->disease($diseaseNames[0], $domain));
+        $sign = $lesion->clinicalSigns()->firstOrFail();
+
+        foreach (array_slice($diseaseNames, 1) as $diseaseName) {
+            $this->disease($diseaseName, $domain)->clinicalSigns()->attach($sign);
+        }
+
+        return $lesion;
+    }
+
     private function disease(string $name, string $domain): Disease
     {
         return Disease::query()->create([

@@ -1,9 +1,13 @@
 # Poultry Section Plan — Vetpedia
 
-> **Status:** v18 — **Phases 1, 2, 4, 5 and 7 built; Phase 6 partially; Phase 3 partially.**
-> Phase 1: 50/57 · Phase 2: 10/11 · Phase 3: 5/15 · Phase 4: 12/17 · Phase 5: 11/12 · Phase 6: 7/12 · Phase 7: 12/12
-> **Date:** 2026-10-13
-> **Supersedes:** v1–v17
+> **Status:** v22 — **Phases 1, 2, 4, 5, 7, 8 and 10 built; Phase 6 partially; Phase 3 partially.**
+> Phase 1: 50/57 · Phase 2: 9/11 · Phase 3: 10/15 · Phase 4: 12/17 · Phase 5: 11/12 · Phase 6: 7/12 · Phase 7: 13/13 · Phase 8: 19/19 · Phase 9: 12/14 · Phase 10: 14/14
+> **Date:** 2026-10-17
+> **Supersedes:** v1–v21
+>
+> ⚠️ **This header read v18 while the changelog ran to v21, and Phase 2 was counted 10/11 against an
+> actual 9/11.** Both are corrected above, and every phase count was re-derived from the checkboxes
+> rather than carried forward.
 
 ---
 
@@ -765,14 +769,61 @@ about it. Everything else on the site links into these pages.
 > to a disease detail page. Without one, every link on those pages dead-ended back into
 > `/large-animals/diseases/{slug}` — re-theming the page as Large Animals, which is the exact defect
 > §2.1 was closing. So `Poultry\DiseaseController` and the detail route were pulled forward. The
-> **browse/list half of Phase 3 remains unbuilt** and is still the bulk of the remaining work here.
+> **browse/list half of Phase 3 was built at v22** — see §3.1.
+
+### 3.1 The disease list (v22)
+
+The list is `knowledge.⚡disease-list`, one Livewire SFC serving `/poultry/diseases` and
+`/large-animals/diseases`, with two thin controllers that do nothing but name the part and two page
+shells. Shared for §9.19's reason, and the saving was real: large-animals had **no** disease list at
+all before this and got one from the same component.
+
+**The plan asked to copy a large-animal card that does not exist.** Both parts went from the hub
+straight to `diseases/{slug}`. The only disease list in the application is `/drugs/diseases`, which
+answers a different question — *which diseases does this drug treat* — is unscoped by design, and is
+**not portable**: it searches with `whereFullText([...], 'boolean')` and derives its letter rail from
+`UPPER(LEFT(name, 1))`, both MySQL-only. Neither can run under the SQLite test database, which is
+very likely why that page has no tests and an unverified search. The new list uses `SUBSTR`, which
+both engines accept. **The drugs list was left alone** — it is pre-existing behaviour on the part
+this work does not touch, and widening this pass to fix it would have put an untested page's
+behaviour at risk for no gain here.
+
+**The sign/lesion counts are the part of this page most likely to be got wrong.** `findings.
+ontology_type` is nullable and is null on the curated signs — Pyrexia, Inappetence and Hemorrhagic
+diarrhea — so counting `ontology_type = 'sign'` drops the three most common signs in the clinical
+vocabulary. Phase 7 hit exactly this on the comparison matrix. The list counts signs by **excluding**
+lesions and lesions by **matching** them, which is the rule `Disease::signItems()` and
+`Disease::lesionItems()` already use, so a card and its detail page cannot disagree about what a
+disease carries. Both halves are asserted, and both were confirmed to fail against the naive
+`= 'sign'` spelling before the rule was settled.
+
+Three subqueries on the one paginator query, not three loaded relations — 21 cards × 3 relations is
+63 queries on a full page, and the ceiling in the test is what stops a regression back to it.
+
+**The letter rail is read from the canonical name, never the localised one.** On the Arabic page the
+localised first character is never `[A-Z]`, so a localised alphabet matches nothing there — the same
+lesson the atlas records.
+
+**The page would have been unreachable.** Neither part's header had a Diseases link
+(`main-header.blade.php` lists diagnosis/filter/comparison/products and more per part, and only the
+drugs branch had `diseases.index`), and neither hub had a card. A route nobody can navigate to is not
+a feature, so the header link and the hub card went in on both parts. Both nav keys already existed.
+
+**Two smaller things, both guards rather than features.** The Arabic name renders only when it
+*differs* from the English one — every one of the 30 curated rows stores `name_ar` identical to
+`name`, and `⚡part-catalogue` already shipped that duplication once. And `<x-letter-nav>` was dead
+code carrying six `rounded-lg` classes that do not render under Flowbite v4; it is now used, and the
+stale classes are gone.
+
+`PoultryDiseaseListTest`, 21 tests. **358 passed, 8 skipped** — the 8 skips are the pre-existing
+`markTestSkipped` locale-redirect and admin smoke tests.
 
 ### Tasks
 
 - [x] Add `Poultry\DiseaseController` mirroring `LargeAnimals\DiseaseController` — ⏩ pulled forward at v11; resolves strictly against `domain = poultry`
-- [ ] Add the list route, paginated, alphabetised, filtered to `domain = poultry`
-- [ ] Add letter/group navigation for browsing 151 entries
-- [ ] Build the list view using the existing Large Animals disease card as the base
+- [x] Add the list route, paginated, alphabetised, filtered to `domain = poultry` — built as `knowledge.⚡disease-list`, one shared SFC serving `/poultry/diseases` **and** `/large-animals/diseases` (§9.19). Verified live: 151 and 18, each exactly matching `SELECT domain, COUNT(*) … WHERE is_active = 1`, with no leakage in either direction
+- [x] Add letter/group navigation for browsing 151 entries — 22 letters derived from the part's own pool rather than hardcoded A–Z. See §3.1 for why the rail could not be the existing `<x-letter-nav>` unchanged
+- [x] Build the list view using the existing Large Animals disease card as the base — ⚠️ **the premise was false and the plan has been corrected.** There is no large-animal disease card. Neither part had a list: both went from the hub straight to `diseases/{slug}`, and the only disease list in the application is `/drugs/diseases`, which serves a different question. Built new, keyed on `$part`, modelled on `⚡part-catalogue`
 - [x] Add the detail route, resolved by slug, scoped to `domain = poultry` — ⏩ pulled forward at v11; a large-animal slug is a **404** here, asserted by test
 - [ ] Show: name, Arabic name, description, etiology, affected species, bird types, age groups, synonyms — **partial.** The shared view renders name, Arabic name, description, etiology, affected species, zoonotic/notifiable/OIE classification, the knowledge-payload sections and related products. **`bird_types`, `age_groups` and `synonyms` are not shown** — the first two have no table (§1.4)
 - [x] Show the symptom list with each symptom's weight, pathognomonic and required flags
@@ -780,10 +831,10 @@ about it. Everything else on the site links into these pages.
 - [ ] Extend `DiseaseArticleBuilder` to render the 8 new knowledge sections: gross lesions, microscopic lesions, field diagnosis clues, epidemiological clues, pathognomonic findings, differential diagnoses, morbidity/mortality, important organs — **blocked on the bulk JSON import (§1.6); 2 of 151 diseases carry a payload**
 - [ ] Show the **treatment** section — ⚠️ note only 17 of 154 diseases have treatment data, so render a graceful empty state
 - [ ] Link each disease to the diagnosis tool, pre-loaded with its key symptoms
-- [ ] Link each disease to the drugs that treat it (Phase 9)
+- [x] Link each disease to the drugs that treat it (Phase 9) — **was never ticked and was already done.** Phase 10 built it: `resources/views/app/diseases/show.blade.php:195-234` renders the products block and both `DiseaseController`s eager-load the relation. Ticked on the evidence, not on the intention
 - [x] Add `404` handling for unknown slugs — via `firstOrFail`; asserted by test
 - [ ] Add Arabic names/descriptions for at least the top 20 diseases
-- [ ] Feature tests: list renders, detail renders, unknown slug 404s, large-animal slug rejected — **3 of 4 covered** at v11: detail renders, unknown slug 404s, large-animal slug rejected. **The list-render assertion waits on the list route**
+- [x] Feature tests: list renders, detail renders, unknown slug 404s, large-animal slug rejected — **4 of 4.** `PoultryDiseaseListTest`, 21 tests, added with the list
 
 ---
 
@@ -1573,7 +1624,7 @@ not agree:
 - [x] Thin controllers `Poultry\ProductController` / `LargeAnimals\ProductController`, mirroring `CompareController`
 - [x] Routes inside the localization group — `poultry.products.index` (`routes/poultry.php:34`), `large-animals.products.index` (`routes/large-animals.php:43`)
 - [x] Navbar link on both parts — desktop + mobile, `app/layouts/main-header.blade.php`; covered by `PartNavigationTest`
-- [ ] Landing hub card on **both** parts — done on poultry only. `large-animals/landing.blade.php:9` `$serviceRoutes` / `$serviceIcons` have no `products` entry, and `large-animals.landing.services.products.*` is missing from both `lang/en/large-animals.php:444` and `lang/ar/large-animals.php`
+- [x] Landing hub card on **both** parts — **closed at v22.** The large-animals landing was missing both the `products` entry and `large-animals.landing.services.products.*` in either locale; all four are now present, alongside a new `diseases` card on both hubs
 - [x] Eager-load `products` on both `DiseaseController`s — `Poultry/DiseaseController.php:38`, `LargeAnimals/DiseaseController.php:24`. Unscoped on purpose: a poultry disease may list a drug whose dose is only recorded for cattle
 - [x] Confirm `/drugs/products` is unaffected — same 30 products, same filters, same URLs — asserted by `PartProductCatalogueTest`
 - [x] `PartProductCatalogueTest` — 28 tests, all passing: inclusion rule, part isolation, withdrawal present vs not-recorded, each filter, search breadth, empty state, disease→product link, drugs catalogue unaffected, Arabic render, translation-key resolution
@@ -1646,6 +1697,7 @@ the body text. The drugs catalogue card (§8) already solved this and the part c
 
 | Version | Change |
 |---|---|
+| **v22** | **The disease list, `/poultry/diseases` and `/large-animals/diseases`.** One shared SFC, `knowledge.⚡disease-list`, with two thin controllers and two page shells — §9.19 again, and the saving was larger than expected: **large-animals had no disease list at all** and got one from the same component. **The plan asked to copy a large-animal card that does not exist** — both parts went from the hub straight to `diseases/{slug}`, so the browse half of Phase 3 was never half-built, it was unbuilt, and the task text was wrong about what existed. The only list in the application is `/drugs/diseases`, which answers a different question, is unscoped by design, and **is not portable**: it searches with `whereFullText([...], 'boolean')` and derives its rail from `UPPER(LEFT(name, 1))`, both MySQL-only, neither runnable under the SQLite test database — which is the likely reason that page has no tests. Left alone; this pass does not touch the drugs part. **The counts are the part most likely to be got wrong.** `findings.ontology_type` is nullable and is null on the curated signs — Pyrexia, Inappetence, Hemorrhagic diarrhea — so `= 'sign'` drops the three most common signs in the clinical vocabulary. Phase 7 hit this on the comparison matrix; the list counts signs by **excluding** lesions, matching the rule `Disease::signItems()` already uses so a card and its detail page cannot disagree. Both halves asserted, and both confirmed to fail against the naive spelling before the rule was settled. Three subqueries on the one paginator query rather than three loaded relations. Rail read from the canonical name, never the localised one. **The page would have been unreachable**: neither header had a Diseases link and neither hub had a card, so both were wired. Two guards rather than features: the Arabic name renders only when it differs (all 30 curated rows store `name_ar` identical to `name`, and `⚡part-catalogue` already shipped that duplication once), and `<x-letter-nav>` — dead code carrying six `rounded-lg` classes that do not render under Flowbite v4 — is now used and its stale classes are gone. Also closed Phase 10's last box: the large-animals hub had no drug-catalogue card. **358 passed, 8 skipped.** |
 | **v21** | **Phase 8 built: `/poultry/body-map`. The star note was the phase, and it was false.** *"important_organs_affected is populated for 152 diseases — only the illustration is missing."* There is no such column, and `knowledge_payload` (20 of 169 diseases, **zero** with that key) does not carry it either. The curated path `diseases → disease_clinical_sign → clinical_signs → anatomical_structures` reaches **2 of 151** poultry diseases; **1741 of 1744** poultry sign rows have a null structure and **all 641 lesions resolve to zero**; `findings` has no `anatomical_location`, so "928 JSON lesions" refers to a column that was never migrated. **A diagram built on the curated path alone is a chicken with nothing on it.** What rescued the phase is a third path the plan never considered: the finding vocabulary *names* its organs — "Liver lesions", "Hepatic necrosis", "Tracheal hemorrhage" — and matching each structure's name against those labels reaches **32 of 48 organs and 119 of 151 diseases**. The page shows both tiers and names them: **mapped** (2, somebody made that link) and **matched by name** (119, this codebase inferred it), the second rendered inside a warning box that says it has not been reviewed by a veterinarian and never written back to the database. Vocabulary needed real work: word-boundary matching so "Crop" does not swallow "Cropped beak"; a 5-character stem so "Cloaca" reaches "Cloacal prolapse" and "Duodenum" reaches "Duodenal necrosis"; a curated adjective map because nothing gets from "liver" to "hepatic"; and a `NOT_A_STEM` list after the first pass gave "Oral Cavity" the label "Obliterated Marrow Cavity" and "Blood Vessels" every bloody label in the table. **Two data defects fixed on the way, both already shipped:** nine body systems existed twice (`digestive` *and* `digestive_system`, same display name, different structures — the findings filter has been listing "Digestive System" twice), and `FilterService` read "system with no structures" as "no filter" and returned the entire 151-disease list when someone picked "Systemic". Merged 31 → 23 systems, exactly 11 of which hold structures. `anatomical_structures.domain` added, nullable, `null` = every part, ten organs scoped to `large_animal` — the chicken diagram was otherwise offering teats. **The illustration was not the blocker it was called:** no image exists anywhere in the repo, so it is hand-drawn inline SVG, schematic, and the page says so. **One silent performance bug caught by measuring rather than assuming:** `#[Computed]` caches on *property* access, and calling `$this->attachments()` runs the real method — the page went from 6 queries to 30 until that was found; 9 total now. |
 | **v20** | **Phase 10 closed: 12 of 13 tasks ticked against the code, one genuinely outstanding.** The remaining box is the large-animals landing hub card — the poultry landing has a `products` entry in `$serviceRoutes` / `$serviceIcons`, the large-animal one has none, and neither `lang/en/large-animals.php` nor `lang/ar/large-animals.php` carries `landing.services.products.*`, so it stays unticked rather than being ticked on the strength of the navbar link that does work. Everything else was verified by reading the code rather than trusting v19: both scopes present (`Product.php:114`, `:135`), both thin controllers, both routes inside the localization group, `products` eager-loaded on both `DiseaseController`s, 28 `PartProductCatalogueTest` tests passing. Two card defects fixed in passing (§10.4): the trade name rendered at `text-base`, one step above the `text-sm` headings inside the same card, and **the Arabic name was printed under it on all 30 cards** because every row stores `trade_name_ar` identical to `trade_name` — `/drugs/products` had the same duplication and is guarded now too. Separately, the shared `page-hero` behind the drugs pages had one unclosed `<div>`, so the blue gradient was wrapping the entire page body on 8 pages. |
 | **v19** | **Phase 10 built: `/poultry/products` and `/large-animals/products`.** The plan said *"decide how a product is marked as poultry-applicable"* and treated it as a formality. It was the only real decision in the phase: **`products` is one shared table with no species column**, and the three available traces disagree — 15 products have a poultry dose, 12 treat a poultry disease, 6 carry a poultry withdrawal figure, 24 match at least one. Dosing won because it is the only one of the three that is a statement *about the animal*, which leaves 15 rather than 24 and excludes six products (Ketofen, Panacur, Fasinex, Doxypen, Sulfivet, Terramycin) for a reason that can be stated. The page shows 15 of 30 and that is the filter working, not a broken import. No migration — `Product::applicableTo()` and `withPartRelations()` are scopes, and the second is constrained rather than filtered afterwards so a poultry card never lists a cattle dose. **Withdrawal is never omitted and never blank**: 6 of 30 products have a poultry figure, and on a food-animal page an empty box reads as "no restriction", so the gap is stated in words instead. Cards link out to `/drugs/products/{slug}` — one URL per product beats a detail page scoped to 15 rows. Also: `Disease::getLocalizedNameAttribute()` moved to a shared `HasLocalizedName` trait (it was the only model with one; four others lacked it) and now covers `Species`, `Company`, `ActiveIngredient` and `DosageForm`; `milk_days` is hidden on the poultry page because it is meaningless for a bird and the source data populates it anyway; an N+1 fixed on both disease controllers, where the shared view's related-products block queried `diseases` lazily on every page. **Two implementation bugs the tests caught, both silent:** `wherePivot('role', …)` inside `whereHas` emits an unqualified `"pivot" = ?` rather than `product_company"."role"` on a relation declared `withPivot('role')`, so the manufacturer filter matched nothing and the page returned zero rows with no error anywhere; and an eager-load constraint is handed a **`Relation`** while a `whereHas` nested inside it is handed a **`Builder`**, so both are typed on the union. **236 passed, 8 skipped.** |

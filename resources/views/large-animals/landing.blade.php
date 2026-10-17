@@ -8,23 +8,27 @@
     @php
         $serviceRoutes = [
             'diagnosis' => route('large-animals.diagnosis'),
+            'diseases' => route('large-animals.diseases.index'),
             'filter' => route('large-animals.filter'),
             'comparison' => route('large-animals.comparison'),
             'microorganisms' => route('large-animals.microorganisms.index'),
             'articles' => route('large-animals.medical-articles.index'),
             'specializations' => route('large-animals.specializations.index'),
             'projects' => route('large-animals.projects.index'),
+            'products' => route('large-animals.products.index'),
             'search' => route('large-animals.search'),
         ];
 
         $serviceIcons = [
             'diagnosis' => 'stethoscope',
+            'diseases' => 'bug',
             'filter' => 'sliders-horizontal',
             'comparison' => 'columns-3',
             'microorganisms' => 'microscope',
             'articles' => 'file-text',
             'specializations' => 'layers',
             'projects' => 'folder-kanban',
+            'products' => 'pill',
             'search' => 'search',
         ];
 
