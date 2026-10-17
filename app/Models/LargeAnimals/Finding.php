@@ -2,6 +2,7 @@
 
 namespace App\Models\LargeAnimals;
 
+use App\Enums\OntologyType;
 use Database\Factories\FindingFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,19 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Finding extends Model
 {
     use HasFactory;
-
-    /**
-     * A post-mortem finding.
-     *
-     * The only value on `ontology_type` that changes how a finding is read: a
-     * lesion is something you see when you open the bird, everything else is a
-     * clinical observation. The column is nullable and *is* null on the curated
-     * signs — Pyrexia, Inappetence and Hemorrhagic diarrhea — so "is it a
-     * lesion?" has to be asked by exclusion rather than by matching a positive
-     * clinical value. `Disease::signItems()` and `Disease::lesionItems()` are
-     * the two places that question is asked.
-     */
-    public const ONTOLOGY_LESION = 'lesion';
 
     protected static function newFactory(): Factory
     {
@@ -53,6 +41,11 @@ class Finding extends Model
     protected $casts = [
         'is_noisy' => 'boolean',
         'is_general_sign' => 'boolean',
+        // Cast rather than compared as a bare string. `signItemsOfType()` took a
+        // string and compared it with `===` against this attribute — which would
+        // have compared `OntologyType` to `string` and matched nothing at all,
+        // silently emptying every lesion list in the application.
+        'ontology_type' => OntologyType::class,
     ];
 
     public function parent(): BelongsTo
@@ -68,5 +61,18 @@ class Finding extends Model
     public function clinicalSigns(): HasMany
     {
         return $this->hasMany(ClinicalSign::class);
+    }
+
+    /**
+     * Photographs of this finding, most relevant first.
+     *
+     * Only lesions have one in practice — the atlas is the only page that renders
+     * them — but the relation is on `Finding` rather than on a separate lesion
+     * model because a lesion *is* a finding. Anything that mounts an anatomical
+     * structure can have a picture attached.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(FindingImage::class)->orderBy('sort_order');
     }
 }

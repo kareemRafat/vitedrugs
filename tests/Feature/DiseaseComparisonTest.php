@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\OntologyType;
 use App\Models\Disease;
 use App\Models\LargeAnimals\AnatomicalStructure;
 use App\Models\LargeAnimals\ClinicalSign;
@@ -326,9 +327,9 @@ class DiseaseComparisonTest extends TestCase
         $respiratory = $this->anatomy('Respiratory tract');
         $digestive = $this->anatomy('Digestive tract');
 
-        $shared = $this->sign('pyrexia', 'Pyrexia', 'sign', $respiratory);
-        $onlyFirst = $this->sign('coughing', 'Coughing', 'sign', $respiratory);
-        $onlySecond = $this->sign('diarrhoea', 'Diarrhoea', 'sign', $digestive);
+        $shared = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $respiratory);
+        $onlyFirst = $this->sign('coughing', 'Coughing', OntologyType::Sign, $respiratory);
+        $onlySecond = $this->sign('diarrhoea', 'Diarrhoea', OntologyType::Sign, $digestive);
 
         $this->poultryDisease('Coccidiosis', [$shared, $onlyFirst]);
         $this->poultryDisease('Newcastle Disease', [$shared, $onlySecond]);
@@ -362,8 +363,8 @@ class DiseaseComparisonTest extends TestCase
     {
         $respiratory = $this->anatomy('Respiratory tract');
 
-        $shared = $this->sign('pyrexia', 'Pyrexia', 'sign', $respiratory);
-        $onlyFirst = $this->sign('coughing', 'Coughing', 'sign', $respiratory);
+        $shared = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $respiratory);
+        $onlyFirst = $this->sign('coughing', 'Coughing', OntologyType::Sign, $respiratory);
 
         $this->poultryDisease('Coccidiosis', [$shared, $onlyFirst]);
         $this->poultryDisease('Newcastle Disease', [$shared]);
@@ -387,8 +388,8 @@ class DiseaseComparisonTest extends TestCase
     {
         $anatomy = $this->anatomy('Respiratory tract');
 
-        $shared = $this->sign('pyrexia', 'Pyrexia', 'sign', $anatomy);
-        $onlyFirst = $this->sign('coughing', 'Coughing', 'sign', $anatomy);
+        $shared = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $anatomy);
+        $onlyFirst = $this->sign('coughing', 'Coughing', OntologyType::Sign, $anatomy);
 
         $this->poultryDisease('Coccidiosis', [$shared, $onlyFirst]);
         $this->poultryDisease('Newcastle Disease', [$shared]);
@@ -414,8 +415,8 @@ class DiseaseComparisonTest extends TestCase
     {
         $anatomy = $this->anatomy('Respiratory tract');
 
-        $inTwo = $this->sign('coughing', 'Coughing', 'sign', $anatomy);
-        $everywhere = $this->sign('pyrexia', 'Pyrexia', 'sign', $anatomy);
+        $inTwo = $this->sign('coughing', 'Coughing', OntologyType::Sign, $anatomy);
+        $everywhere = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $anatomy);
 
         $this->poultryDisease('Coccidiosis', [$inTwo, $everywhere]);
         $this->poultryDisease('Newcastle Disease', [$inTwo, $everywhere]);
@@ -449,8 +450,8 @@ class DiseaseComparisonTest extends TestCase
     {
         $anatomy = $this->anatomy('Respiratory tract');
 
-        $sign = $this->sign('coughing', 'Coughing', 'sign', $anatomy);
-        $lesion = $this->sign('consolidation', 'Consolidation', 'lesion', $anatomy);
+        $sign = $this->sign('coughing', 'Coughing', OntologyType::Sign, $anatomy);
+        $lesion = $this->sign('consolidation', 'Consolidation', OntologyType::Lesion, $anatomy);
 
         $this->poultryDisease('Coccidiosis', [$sign, $lesion]);
         $this->poultryDisease('Newcastle Disease', [$sign, $lesion]);
@@ -525,7 +526,7 @@ class DiseaseComparisonTest extends TestCase
     public function test_the_organs_tab_is_absent_until_the_bulk_import_lands(): void
     {
         $anatomy = $this->anatomy('Respiratory tract');
-        $sign = $this->sign('pyrexia', 'Pyrexia', 'sign', $anatomy);
+        $sign = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $anatomy);
 
         $this->poultryDisease('Coccidiosis', [$sign]);
         $this->poultryDisease('Newcastle Disease', [$sign]);
@@ -544,7 +545,7 @@ class DiseaseComparisonTest extends TestCase
     {
         $anatomy = $this->anatomy('Respiratory tract');
 
-        $relational = $this->sign('pyrexia', 'Pyrexia', 'sign', $anatomy);
+        $relational = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $anatomy);
 
         $first = $this->poultryDisease('Coccidiosis', [$relational], [
             'knowledge_payload' => ['clinical_signs' => [
@@ -567,7 +568,7 @@ class DiseaseComparisonTest extends TestCase
     public function test_a_tab_with_no_data_is_not_rendered_at_all(): void
     {
         $anatomy = $this->anatomy('Respiratory tract');
-        $sign = $this->sign('pyrexia', 'Pyrexia', 'sign', $anatomy);
+        $sign = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $anatomy);
 
         $this->poultryDisease('Coccidiosis', [$sign]);
         $this->poultryDisease('Newcastle Disease', [$sign]);
@@ -609,8 +610,8 @@ class DiseaseComparisonTest extends TestCase
     public function test_every_translation_key_on_the_page_resolves(): void
     {
         $anatomy = $this->anatomy('Respiratory tract');
-        $shared = $this->sign('pyrexia', 'Pyrexia', 'sign', $anatomy);
-        $only = $this->sign('coughing', 'Coughing', 'sign', $anatomy);
+        $shared = $this->sign('pyrexia', 'Pyrexia', OntologyType::Sign, $anatomy);
+        $only = $this->sign('coughing', 'Coughing', OntologyType::Sign, $anatomy);
 
         $this->poultryDisease('Coccidiosis', [$shared, $only]);
         $this->poultryDisease('Newcastle Disease', [$shared]);
@@ -679,13 +680,13 @@ class DiseaseComparisonTest extends TestCase
     private function sign(
         string $canonicalName,
         string $displayName,
-        ?string $ontologyType,
+        ?OntologyType $ontologyType,
         AnatomicalStructure $anatomy,
     ): ClinicalSign {
         $finding = Finding::factory()->create([
             'canonical_name' => $canonicalName,
             'display_name' => $displayName,
-            'category' => $ontologyType === Finding::ONTOLOGY_LESION ? 'postmortem' : 'clinical',
+            'category' => $ontologyType === OntologyType::Lesion ? 'postmortem' : 'clinical',
             'ontology_type' => $ontologyType,
         ]);
 

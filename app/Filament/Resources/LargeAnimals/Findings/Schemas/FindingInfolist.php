@@ -24,8 +24,13 @@ class FindingInfolist
                             ->placeholder('-'),
                         TextEntry::make('category')
                             ->placeholder('-'),
+                        // Reads the enum label and its colour rather than the raw
+                        // string, which is the point of casting it: on this page
+                        // `lesion` / `sign` / an empty box are three very different
+                        // facts about the same row and the box gave no hint.
                         TextEntry::make('ontology_type')
-                            ->placeholder('-'),
+                            ->badge()
+                            ->placeholder('—'),
                         TextEntry::make('parent.display_name')
                             ->placeholder('-'),
                         TextEntry::make('slug')

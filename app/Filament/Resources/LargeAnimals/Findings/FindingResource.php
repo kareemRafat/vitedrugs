@@ -7,6 +7,7 @@ use App\Filament\Resources\LargeAnimals\Findings\Pages\CreateFinding;
 use App\Filament\Resources\LargeAnimals\Findings\Pages\EditFinding;
 use App\Filament\Resources\LargeAnimals\Findings\Pages\ListFindings;
 use App\Filament\Resources\LargeAnimals\Findings\Pages\ViewFinding;
+use App\Filament\Resources\LargeAnimals\Findings\RelationManagers\ImagesRelationManager;
 use App\Filament\Resources\LargeAnimals\Findings\Schemas\FindingForm;
 use App\Filament\Resources\LargeAnimals\Findings\Schemas\FindingInfolist;
 use App\Filament\Resources\LargeAnimals\Findings\Tables\FindingsTable;
@@ -44,7 +45,9 @@ class FindingResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ImagesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

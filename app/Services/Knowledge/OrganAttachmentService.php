@@ -2,6 +2,7 @@
 
 namespace App\Services\Knowledge;
 
+use App\Enums\OntologyType;
 use App\Models\Disease;
 use App\Models\LargeAnimals\AnatomicalStructure;
 use App\Models\LargeAnimals\Finding;
@@ -154,12 +155,25 @@ class OrganAttachmentService
                 'derivedReasons' => $reasons
                     ->only($derivedIds->all())
                     ->all(),
-                'signs' => $matchedFindings->where('ontology_type', 'sign')->values(),
+                // Compared against the enum, not `'sign'`. A cast attribute is an
+                // `OntologyType` instance by the time it reaches a Collection, and
+                // `OntologyType::Sign == 'sign'` is false in PHP — so the string
+                // form of this filter silently returned zero rows.
+                'signs' => $matchedFindings->filter(
+                    fn (Finding $finding): bool => $finding->ontology_type === OntologyType::Sign,
+                )->values(),
                 // Everything that is not a clinical sign is a postmortem finding.
-                // `ontology_type` is null on 22 rows and those are lesions too —
-                // Phase 7 learned that lesson matching `'sign'` exactly, which
-                // silently dropped Pyrexia, Inappetence and Hemorrhagic diarrhea.
-                'lesions' => $matchedFindings->where(fn (Finding $finding): bool => $finding->ontology_type !== 'sign')->values(),
+                // `ontology_type` is null on 17 rows and those are counted here as
+                // lesions — Phase 7 learned that lesson matching `'sign'` exactly,
+                // which silently dropped Pyrexia, Inappetence and Hemorrhagic
+                // diarrhea. It is also the *wrong* side of that trade: the nulls
+                // include plainly clinical signs (Pyrexia, Cough, Bloat, Mastitis),
+                // so this branch is what puts them on the body map under "lesions".
+                // `Disease::signItems()` reads the same rows as signs. They cannot
+                // both be right; backfilling the 17 rows is what settles it.
+                'lesions' => $matchedFindings->filter(
+                    fn (Finding $finding): bool => $finding->ontology_type !== OntologyType::Sign,
+                )->values(),
             ]];
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OntologyType;
 use App\Models\Concerns\HasDomain;
 use App\Models\Concerns\HasLocalizedName;
 use App\Models\LargeAnimals\ClinicalSign;
@@ -87,7 +88,7 @@ class Disease extends Model
      *
      * @return array<string, string> Lower-cased canonical name => display name.
      */
-    public function signItemsOfType(string $ontologyType): array
+    public function signItemsOfType(OntologyType $ontologyType): array
     {
         return $this->clinicalSigns
             ->filter(fn (ClinicalSign $sign): bool => $sign->finding?->ontology_type === $ontologyType)
@@ -104,20 +105,24 @@ class Disease extends Model
      */
     public function lesionItems(): array
     {
-        return $this->signItemsOfType(Finding::ONTOLOGY_LESION);
+        return $this->signItemsOfType(OntologyType::Lesion);
     }
 
     /**
      * Every finding that is not a post-mortem lesion.
      *
-     * Matched by *excluding* lesions rather than by matching `'sign'` exactly,
+     * Matched by *excluding* lesions rather than by matching `Sign` exactly,
      * because `findings.ontology_type` is nullable — and is null on the curated
      * signs: **Pyrexia**, **Inappetence** and **Hemorrhagic diarrhea** on the
-     * poultry side today. Matching `'sign'` silently dropped all three, pyrexia
+     * poultry side today. Matching `Sign` silently dropped all three, pyrexia
      * being the single most common sign in the clinical vocabulary.
      *
-     * A post-mortem finding is explicitly typed `lesion`; anything not typed as
-     * one is a clinical observation. That is the assumption encoded here.
+     * A post-mortem finding is explicitly typed `Lesion`; anything not typed as
+     * one is a clinical observation. That is the assumption encoded here, and it
+     * is the assumption `OrganAttachmentService` contradicts — that one reads a
+     * null as a *lesion*, which is why Pyrexia and Cough currently appear on the
+     * body map under "lesions". Backfilling those 17 rows lets both sides use
+     * `===` and drop the whole question.
      *
      * @return array<string, string>
      *
@@ -126,7 +131,7 @@ class Disease extends Model
     public function signItems(): array
     {
         return $this->clinicalSigns
-            ->filter(fn (ClinicalSign $sign): bool => $sign->finding?->ontology_type !== Finding::ONTOLOGY_LESION)
+            ->filter(fn (ClinicalSign $sign): bool => $sign->finding?->ontology_type !== OntologyType::Lesion)
             ->mapWithKeys(fn (ClinicalSign $sign): array => [
                 mb_strtolower(trim((string) $sign->canonical_name)) => $sign->localized_display_name,
             ])

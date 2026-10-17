@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Poultry;
 
+use App\Enums\OntologyType;
 use App\Http\Controllers\Controller;
 use App\Models\Disease;
 use App\Models\LargeAnimals\Finding;
@@ -29,7 +30,7 @@ class PoultryLandingController extends Controller
                     ->count(),
 
                 'lesions' => Finding::query()
-                    ->where('ontology_type', 'lesion')
+                    ->where('ontology_type', OntologyType::Lesion->value)
                     ->whereHas('clinicalSigns.diseases', fn (Builder $diseases): Builder => $diseases
                         ->where('domain', Disease::DOMAIN_POULTRY))
                     ->count(),

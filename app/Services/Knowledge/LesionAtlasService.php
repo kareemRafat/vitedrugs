@@ -2,10 +2,12 @@
 
 namespace App\Services\Knowledge;
 
+use App\Enums\OntologyType;
 use App\Models\Disease;
 use App\Models\LargeAnimals\AnatomicalStructure;
 use App\Models\LargeAnimals\BodySystem;
 use App\Models\LargeAnimals\Finding;
+use App\Models\LargeAnimals\FindingImage;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -121,6 +123,7 @@ class LesionAtlasService
      *     structure: AnatomicalStructure|null,
      *     system: BodySystem|null,
      *     diseases: Collection<int, Disease>,
+     *     photo: FindingImage|null,
      * }>
      */
     public function lesionsPaginator(string $domain, string $search = '', string $system = '', string $part = 'poultry', string $letter = ''): LengthAwarePaginator
@@ -133,7 +136,12 @@ class LesionAtlasService
         // `wire:navigate` the browser resolves that against `/poultry/atlas` and
         // asks for `/poultry/poultry/atlas?page=2`, which 404s on every page after
         // the first. `withPath()` makes the links absolute whatever the lifecycle.
+        // Eager-loaded rather than read per tile: one extra query covers all 48
+        // rows on the page, and the alternative is 48 of them. The relation is
+        // `findings -> images`, and the atlas renders the first one, so the
+        // `orderBy` on the relation is what decides which that is.
         $findings = $this->query($domain, $search, $system, $letter)
+            ->with('images')
             ->paginate(self::PER_PAGE, ['*'], 'page')
             ->withPath(route($part.'.atlas'));
 
@@ -183,6 +191,11 @@ class LesionAtlasService
                         'structure' => $structure,
                         'system' => $system,
                         'diseases' => $diseases->get((int) $finding->getKey(), collect()),
+                        // Null until a photograph has been uploaded. The tile draws
+                        // a framed placeholder rather than a broken image, which is
+                        // the honest state for 640 lesions that have never been
+                        // photographed.
+                        'photo' => $finding->images->first(),
                     ];
                 })
                 ->values(),
@@ -376,7 +389,7 @@ class LesionAtlasService
     private function query(string $domain, string $search, string $system = '', string $letter = ''): Builder
     {
         return Finding::query()
-            ->where('findings.ontology_type', Finding::ONTOLOGY_LESION)
+            ->where('findings.ontology_type', OntologyType::Lesion->value)
             ->when($system !== '', fn (Builder $query): Builder => $query->whereIn(
                 'findings.id',
                 $this->findingsForSystem($domain, $system),

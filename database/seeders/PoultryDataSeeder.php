@@ -299,7 +299,12 @@ class PoultryDataSeeder extends Seeder
         $map = [];
 
         foreach ($dump['findings'] ?? [] as $row) {
-            [$ontologyType, $category] = self::FINDING_TYPES[$row['type']] ?? ['finding', null];
+            // The fallback was `['finding', null]`, which is not a value anything
+            // in this application recognises — it matched neither the atlas filter
+            // nor the body map's test, so an unmapped dump type produced a row
+            // that appeared on no page. An unknown type is a clinical sign, which
+            // is the same rule `Disease::signItems()` applies.
+            [$ontologyType, $category] = self::FINDING_TYPES[$row['type']] ?? ['sign', null];
 
             // The dump mixes "sudden death" with "sudden_death" for the same
             // concept. Normalising to spaces lets both collapse onto the one

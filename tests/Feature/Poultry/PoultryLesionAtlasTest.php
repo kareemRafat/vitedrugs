@@ -2,14 +2,17 @@
 
 namespace Tests\Feature\Poultry;
 
+use App\Enums\OntologyType;
 use App\Models\Disease;
 use App\Models\LargeAnimals\AnatomicalStructure;
 use App\Models\LargeAnimals\BodySystem;
 use App\Models\LargeAnimals\ClinicalSign;
 use App\Models\LargeAnimals\Finding;
+use App\Models\LargeAnimals\FindingImage;
 use App\Services\Knowledge\LesionAtlasService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
@@ -391,7 +394,7 @@ class PoultryLesionAtlasTest extends TestCase
         $this->assertNotNull($entries->firstWhere('id', $live->id));
     }
 
-    // -------------------------------------------------------- the missing images
+    // -------------------------------------------------------- the photographs
 
     /**
      * Phase 9 planned photographs behind a `media_assets` table this application
@@ -402,11 +405,117 @@ class PoultryLesionAtlasTest extends TestCase
     public function a_lesion_with_no_photograph_renders_a_placeholder_not_a_broken_image(): void
     {
         $disease = $this->disease('Aflatoxicosis', 'poultry');
-        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        $this->lesion('Liver lesions', 'poultry', $disease);
 
         Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
             ->assertSee(__('poultry.atlas.image_soon'))
             ->assertDontSee('<img', false);
+    }
+
+    /**
+     * The photograph replaces the placeholder — not alongside it. Asserting both
+     * `<img` and `image_soon` at once is the only way to catch a tile that draws
+     * the frame *and* the caption, which reads as an upload that half-worked.
+     */
+    #[Test]
+    public function a_lesion_with_a_photograph_renders_it_instead_of_the_placeholder(): void
+    {
+        $disease = $this->disease('Aflatoxicosis', 'poultry');
+        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        $image = FindingImage::factory()->create([
+            'finding_id' => $lesion->id,
+            'image' => 'findings/'.$lesion->id.'/liver.jpg',
+            'caption' => 'Pale, mottled liver',
+        ]);
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertStringContainsString(
+            Storage::disk('public')->url($image->image),
+            $html,
+        );
+        $this->assertStringContainsString('loading="lazy"', $html);
+        $this->assertStringNotContainsString(__('poultry.atlas.image_soon'), $html);
+    }
+
+    /**
+     * `alt` names the lesion so a screen reader says *which* lesion the picture
+     * belongs to; the caption goes in `title`, where it describes it. Same string
+     * in both would do neither job — and an `alt` of "liver photograph" is worse
+     * than none when the lesion name is already on the tile.
+     */
+    #[Test]
+    public function a_photograph_is_alt_texted_with_the_lesion_not_the_filename(): void
+    {
+        $disease = $this->disease('Aflatoxicosis', 'poultry');
+        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        FindingImage::factory()->create([
+            'finding_id' => $lesion->id,
+            'image' => 'findings/'.$lesion->id.'/liver.jpg',
+            'caption' => 'Pale, mottled liver',
+        ]);
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertStringContainsString('alt="Liver lesions"', $html);
+        $this->assertStringContainsString('title="Pale, mottled liver"', $html);
+    }
+
+    /**
+     * A caption is required in neither language, so a tile photographed with
+     * nothing written must render no `title` attribute at all rather than an
+     * empty one — which is what a naive `title="{{ $caption }}"` emits.
+     */
+    #[Test]
+    public function an_uncaptioned_photograph_renders_no_title_attribute(): void
+    {
+        $disease = $this->disease('Aflatoxicosis', 'poultry');
+        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        FindingImage::factory()->uncaptioned()->create([
+            'finding_id' => $lesion->id,
+        ]);
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertStringContainsString('<img', $html);
+        $this->assertStringNotContainsString('title=""', $html);
+    }
+
+    /**
+     * The first row by `sort_order` is the one on the tile, so the ordering
+     * Filament's drag handle writes has to decide what the reader sees. Asserted
+     * because `Finding::images()` carries an `orderBy` for exactly this reason
+     * and nothing else on the page depends on it.
+     */
+    #[Test]
+    public function the_tile_shows_the_lowest_sort_order_photograph(): void
+    {
+        $disease = $this->disease('Aflatoxicosis', 'poultry');
+        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        FindingImage::factory()->create(['finding_id' => $lesion->id, 'image' => 'findings/second.jpg', 'sort_order' => 5]);
+        FindingImage::factory()->create(['finding_id' => $lesion->id, 'image' => 'findings/first.jpg', 'sort_order' => 1]);
+
+        $html = Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])->html();
+
+        $this->assertStringContainsString('findings/first.jpg', $html);
+        $this->assertStringNotContainsString('findings/second.jpg', $html);
+    }
+
+    /**
+     * Only one photograph per tile. Rendering all of them would mean N+1 `url()`
+     * calls and a tile whose height depends on its upload history.
+     */
+    #[Test]
+    public function only_the_first_photograph_of_many_reaches_the_page(): void
+    {
+        $disease = $this->disease('Aflatoxicosis', 'poultry');
+        $lesion = $this->lesion('Liver lesions', 'poultry', $disease);
+        FindingImage::factory()->create(['finding_id' => $lesion->id, 'image' => 'findings/first.jpg', 'sort_order' => 1]);
+        FindingImage::factory()->create(['finding_id' => $lesion->id, 'image' => 'findings/second.jpg', 'sort_order' => 2]);
+
+        Livewire::test('knowledge.lesion-atlas', ['part' => 'poultry'])
+            ->assertSee('findings/first.jpg')
+            ->assertDontSee('findings/second.jpg');
     }
 
     // ------------------------------------------------------------- query budget
@@ -748,7 +857,7 @@ class PoultryLesionAtlasTest extends TestCase
         $finding = Finding::factory()->create([
             'canonical_name' => str($name)->slug('_')->toString(),
             'display_name' => $name,
-            'ontology_type' => Finding::ONTOLOGY_LESION,
+            'ontology_type' => OntologyType::Lesion,
         ]);
 
         $sign = ClinicalSign::factory()->create([

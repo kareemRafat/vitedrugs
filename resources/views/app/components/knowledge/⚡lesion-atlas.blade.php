@@ -469,14 +469,35 @@ new class extends Component
                         @foreach ($section['lesions'] as $lesion)
                             <div class="group flex flex-col bg-neutral-primary-soft dark:bg-slate-800 rounded-base border border-default-medium dark:border-slate-600 hover:border-brand hover:shadow-md dark:hover:border-brand transition-all overflow-hidden">
                                 <div class="relative flex aspect-4/3 w-full flex-col items-center justify-center gap-1 bg-neutral-secondary-soft dark:bg-slate-900/40 border-b border-default-medium dark:border-slate-700">
-                                    <x-lucide-image-off class="w-6 h-6 text-body dark:text-slate-500 group-hover:text-fg-brand transition-colors duration-150" />
-                                    {{-- Not a visible caption: forty-eight tiles all
-                                         reading "photograph coming soon" is noise on a
-                                         page whose job is to be scannable. It is
-                                         announced instead, because the frame being a
-                                         placeholder rather than a failed image is
-                                         exactly what a screen reader needs told. --}}
-                                    <span class="sr-only">{{ $t('image_soon') }}</span>
+                                    {{-- The photograph, when there is one. The frame
+                                         keeps the same 4:3 box either way, so a
+                                         page of photographed lesions and a page of
+                                         unphotographed ones are the same grid —
+                                         which is what makes the atlas useful while
+                                         it is still filling up. --}}
+                                    @if ($lesion['photo'] !== null)
+                                        {{-- `alt` names the image so a screen reader
+                                             says which lesion it belongs to; `title`
+                                             carries the caption, which describes it.
+                                             Same string would do neither job
+                                             properly. --}}
+                                        <img src="{{ $lesion['photo']->url() }}"
+                                            alt="{{ $lesion['name'] }}"
+                                            @if ($lesion['photo']->localized_caption !== '')
+                                                title="{{ $lesion['photo']->localized_caption }}"
+                                            @endif
+                                            loading="lazy"
+                                            class="absolute inset-0 h-full w-full object-cover" />
+                                    @else
+                                        <x-lucide-image-off class="w-6 h-6 text-body dark:text-slate-500 group-hover:text-fg-brand transition-colors duration-150" />
+                                        {{-- Not a visible caption: forty-eight tiles all
+                                             reading "photograph coming soon" is noise on a
+                                             page whose job is to be scannable. It is
+                                             announced instead, because the frame being a
+                                             placeholder rather than a failed image is
+                                             exactly what a screen reader needs told. --}}
+                                        <span class="sr-only">{{ $t('image_soon') }}</span>
+                                    @endif
                                 </div>
                                 <div class="flex flex-col gap-1 p-3 grow">
                                     <h3 class="text-sm font-semibold text-heading dark:text-white leading-snug line-clamp-2">{{ $lesion['name'] }}</h3>

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LargeAnimals\Findings\Tables;
 
+use App\Enums\OntologyType;
 use App\Models\Disease;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -29,6 +30,7 @@ class FindingsTable
                 TextColumn::make('category')
                     ->searchable(),
                 TextColumn::make('ontology_type')
+                    ->badge()
                     ->searchable(),
                 IconColumn::make('is_noisy')
                     ->boolean(),
@@ -40,6 +42,14 @@ class FindingsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                // Without this the table is 1,089 rows of two different things —
+                // 640 lesions and 432 clinical signs — under one heading called
+                // "Findings". Photographing lesions means working through them, and
+                // scrolling past every sign to find them is not that.
+                SelectFilter::make('ontology_type')
+                    ->label('Type')
+                    ->options(OntologyType::class),
+
                 // Derived, not stored. A finding like "diarrhea" is used by both
                 // sections, so a single domain column would have to lie about it.
                 // This answers "what does the poultry section actually use?" from

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Poultry;
 
+use App\Enums\OntologyType;
 use App\Models\Disease;
 use App\Models\LargeAnimals\AnatomicalStructure;
 use App\Models\LargeAnimals\BodySystem;
@@ -74,12 +75,17 @@ class PoultryDataSeederTest extends TestCase
 
         $lesion = Finding::query()->where('canonical_name', 'enlarged spleen')->first();
 
-        $this->assertSame('lesion', $lesion->ontology_type);
+        // The enum, not the stored string. The column still holds `'lesion'` —
+        // `finding_images` and the seeder both read it as a plain string — but
+        // the attribute is cast, and asserting the raw value here would pass on a
+        // row the application could not actually interpret.
+        $this->assertSame(OntologyType::Lesion, $lesion->ontology_type);
+        $this->assertSame('lesion', $lesion->getRawOriginal('ontology_type'));
         $this->assertSame('postmortem', $lesion->category);
 
         $sign = Finding::query()->where('canonical_name', 'reduced egg production')->first();
 
-        $this->assertSame('sign', $sign->ontology_type);
+        $this->assertSame(OntologyType::Sign, $sign->ontology_type);
         $this->assertSame('clinical', $sign->category);
     }
 
