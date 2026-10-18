@@ -244,7 +244,11 @@ class PartProductCatalogueTest extends TestCase
     public function the_dosage_form_filter_narrows_the_list(): void
     {
         $form = DosageForm::factory()->create(['name' => 'Oral Solution', 'slug' => 'oral-solution']);
-        $other = DosageForm::factory()->create(['name' => 'Bolus', 'slug' => 'bolus']);
+        // Deliberately outside DosageFormFactory's name pool. The factory derives
+        // its slug from a shared `unique()->randomElement()` draw, so pinning a
+        // name that is also in that pool lets a later plain create collide on the
+        // slug — which is exactly what this test is not meant to be testing.
+        $other = DosageForm::factory()->create(['name' => 'Bolus Form', 'slug' => 'bolus-form']);
 
         // The factory assigns a random dosage form, so every form has to be set
         // explicitly or the filter is testing nothing — and a random form can
@@ -356,7 +360,7 @@ class PartProductCatalogueTest extends TestCase
     #[Test]
     public function resetting_clears_every_filter(): void
     {
-        $form = DosageForm::factory()->create(['name' => 'Bolus', 'slug' => 'bolus']);
+        $form = DosageForm::factory()->create(['name' => 'Bolus Form', 'slug' => 'bolus-form']);
         $this->productDosedFor($this->poultrySpecies(), 'Amoxivet');
 
         $component = $this->poultryComponent()

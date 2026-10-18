@@ -15,13 +15,21 @@ class ProductFactory extends Factory
 
     public function definition(): array
     {
+        // "Amoxivet" and "Baytril" are deliberately absent from this pool.
+        // PartProductCatalogueTest pins those two names onto specific products and
+        // then asserts by name that one part's page never shows the other part's
+        // drug. If a randomly-created product could also be called "Baytril", that
+        // assertion would fail for a reason that has nothing to do with the
+        // filtering under test — a cross-test failure driven purely by which names
+        // this generator happens to hand out.
         $tradeName = fake()->unique()->randomElement([
-            'Amoxivet', 'Baytril', 'Ivomec', 'Terramycin', 'Tylan',
+            'Ivomec', 'Terramycin', 'Tylan',
             'Finadyne', 'Metacam', 'Dectomax', 'Nuflor', 'Closamectin',
             'Ripercol', 'Sulfivet', 'Tribrissen', 'Excenel', 'Doxypen',
             'Colivet', 'Linco-Spectin', 'Panacur', 'Droncit', 'Fasinex',
             'Trodax', 'Butox', 'Ectodex', 'Ketofen', 'Resflor',
             'Draxxin', 'Pulmotil', 'Advocin', 'Vetrimoxin', 'Norodine',
+            'Penstrep', 'AviCel', 'Oxytetracycline',
         ]);
 
         return [

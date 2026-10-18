@@ -10,11 +10,18 @@ use App\Models\DosageForm;
 use App\Models\Product;
 use App\Models\Species;
 
+/**
+ * Serves `/drugs`.
+ *
+ * Distinct from HomeController on purpose: `/` was redesigned, and this hub was
+ * not. Its view is app.drugs — the pre-redesign landing markup kept verbatim.
+ * Pointing this at app.landing would silently redesign the drugs hub.
+ */
 class LandingController extends Controller
 {
     public function __invoke()
     {
-        return view('app.landing', [
+        return view('app.drugs', [
             'productsCount' => Product::count(),
             'companiesCount' => Company::count(),
             'diseasesCount' => Disease::count(),

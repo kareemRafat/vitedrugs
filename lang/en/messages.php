@@ -56,6 +56,195 @@ return [
     ],
 
     'landing' => [
+
+        // ------------------------------------------------------------------ meta
+        'meta' => [
+            'title' => 'VetPedia — Veterinary Drug Database & Knowledge Platform',
+            'description' => 'Bilingual reference of veterinary drugs, diseases, active ingredients and pharmaceutical companies, with dosages, withdrawal periods and drug interactions.',
+            'keywords' => 'veterinary drugs, veterinary diseases, active ingredients, withdrawal period, drug interaction, veterinary formulary',
+        ],
+
+        // ---------------------------------------------------------------- header
+        'header' => [
+            'home' => 'VetPedia home',
+            'primary_nav' => 'Primary navigation',
+            'pillars' => 'What We Cover',
+            'knowledge_bases' => 'Knowledge Bases',
+            'statistics' => 'Statistics',
+            'search' => 'Focus search',
+            'toggle_theme' => 'Toggle light and dark mode',
+            'switch_to_en' => 'Switch to English',
+            'switch_to_ar' => 'التبديل إلى الواجهة العربية',
+            'sign_in' => 'Sign in',
+            'open_menu' => 'Open navigation menu',
+            'close_menu' => 'Close menu',
+            'drawer_sections' => 'On this page',
+            'drawer_sign_in' => 'Sign in to your account',
+            'toggle_user_menu' => 'Toggle user menu',
+        ],
+
+        // ------------------------------------------------------------------ hero
+        'hero' => [
+            'image_alt' => 'Veterinarian examining cattle in a barn clinic',
+            'heading' => 'Your Complete Guide to Veterinary Pharmaceuticals',
+            'subtitle' => 'A bilingual reference of veterinary drugs, diseases, active ingredients and pharmaceutical companies — with dosages, withdrawal periods and drug interactions linked to every product.',
+            'search_placeholder' => 'Search products, diseases, ingredients...',
+            'search_button' => 'Search',
+            'cta_browse' => 'Explore the Database',
+            'cta_diagnose' => 'Start a Diagnosis',
+        ],
+
+        // --------------------------------------------------------------- pillars
+        'pillars' => [
+            'eyebrow' => 'What VetPedia Covers',
+            'heading' => 'Built For Clinical Precision',
+            'subtitle' => 'Four things the platform actually does — a structured product schema, a full Arabic translation, the clinical fields you need at the point of care, and a working channel for reporting errors.',
+
+            // 01 — replaces the reference's "direct pipeline from EMA, FDA CVM and SFDA"
+            'item1_title' => 'Structured Data',
+            'item1_image_alt' => 'Tabular veterinary product records',
+            'item1_tag' => 'Structured Schema',
+            'item1_desc' => 'Product monographs are imported from source documents and normalised into one schema: dosages, indications, contraindications, precautions, side effects and withdrawal periods.',
+
+            // 02 — replaces an unverifiable claim of "calibrated medical translation"
+            'item2_title' => 'Bilingual Engine',
+            'item2_image_alt' => 'The same interface shown in English and Arabic',
+            'item2_tag' => 'Bilingual EN / AR',
+            'item2_desc' => 'Every product, disease, ingredient and company carries Arabic alongside English, and the entire interface — including this page — lays out right-to-left.',
+
+            // 03 — replaces a claim of probabilistic differential ranking, which
+            // the large-animals diagnostic wizard does not do
+            'item3_title' => 'Clinical Fields',
+            'item3_image_alt' => 'Veterinary clinical reference material',
+            'item3_tag' => 'Clinical Fields',
+            'item3_desc' => 'Dose by species, withdrawal periods, drug interactions, contraindications and side effects sit on the record itself — not in a separate document you have to find.',
+
+            // 04 — replaces a claim of continuous automated pharmacovigilance
+            'item4_title' => 'Corrections Welcome',
+            'item4_image_alt' => 'A veterinary editorial review desk',
+            'item4_tag' => 'Editorial Review',
+            'item4_desc' => 'Spotted a wrong dose or a bad translation? Send it through the form at the bottom of this page and it lands in the editorial inbox for triage.',
+        ],
+
+        // -------------------------------------------------------------- chapters
+        'chapters' => [
+            'eyebrow' => 'Browse the Platform',
+            'heading' => 'Three Knowledge Bases',
+            'subtitle' => 'Large animal medicine, the drug database, and poultry health — each with its own diagnostic tools, disease library and product formulary.',
+            'cta_all' => 'View all solutions',
+
+            'item1_title' => 'Large Animals',
+            'item1_image_alt' => 'Cattle in a barn',
+            'item1_desc' => 'Clinical signs, differential syndromes and a diagnostic wizard for cattle and equine practice, cross-referenced to the product formulary.',
+            'item1_cta' => 'Open Large Animals',
+
+            'item2_title' => 'Veterinary Drugs',
+            'item2_image_alt' => 'Veterinary pharmaceutical products',
+            'item2_desc' => 'Product monographs with strengths, dosing, indications, contraindications, withdrawal periods and interactions, filterable by species and dosage form.',
+            'item2_cta' => 'Browse the Formulary',
+
+            'item3_title' => 'Poultry Health',
+            'item3_image_alt' => 'Poultry flock health',
+            'item3_desc' => 'A disease library and diagnostic pathway for broiler and layer operations, with an interactive body map for localising signs.',
+            'item3_cta' => 'Open Poultry Health',
+        ],
+
+        // ----------------------------------------------------------------- stats
+        'stats' => [
+            'eyebrow' => 'Live Database Counts',
+            'heading' => 'What Is Actually In The Database.',
+            'subtitle' => 'Every figure below is counted from live records at the moment you loaded this page. Nothing here is a projection or a marketing figure.',
+            'primary_badge' => 'Primary Benchmark',
+            'total_records' => 'Records Indexed',
+            'total_records_desc' => 'The combined total of products, diseases, active ingredients, companies, dosage forms and species currently indexed.',
+
+            'breakdown' => 'Live count',
+
+            // Short labels for the prominent card's breakdown chips.
+            'products_short' => 'Products',
+            'diseases_short' => 'Diseases',
+            'ingredients_short' => 'Ingredients',
+            'companies_short' => 'Companies',
+            'dosage_forms_short' => 'Dosage forms',
+            'species_short' => 'Species',
+
+            'diseases' => 'Diseases Catalogued',
+            'diseases_desc' => 'Veterinary disease entities with linked clinical signs and treatments.',
+
+            'ingredients' => 'Active Ingredients Indexed',
+            'ingredients_desc' => 'Active substances, each linked to the products and withdrawal periods that reference it.',
+
+            'products' => 'Products In The Formulary',
+            'products_desc' => 'Product monographs with dosing, indications and safety records.',
+
+            'companies' => 'Manufacturers & Suppliers',
+            'companies_desc' => 'Manufacturers, agents and distributors behind the products in the formulary.',
+
+            // :count is substituted by HomeController with the real 30-day delta.
+            'added_this_month' => ':count added this month',
+        ],
+
+        // --------------------------------------------------------------- contact
+        'contact' => [
+            'eyebrow' => 'Get In Touch',
+            'heading' => 'Questions, Corrections, or a Formulary Request?',
+            'subtitle' => 'Messages sent from this page are stored and reviewed by the site editors. Tell us what you need and include your role so we can route it.',
+
+            'channel1_title' => 'Clinical Inquiries',
+            'channel1_desc' => 'Monograph queries, dosing questions, interaction checks and translation corrections.',
+            'channel1_cta' => 'Send a message',
+
+            'channel2_title' => 'Institutional & Formularies',
+            'channel2_desc' => 'Teaching institutions, hospital groups and formulary maintainers looking to reuse the data.',
+            'channel2_cta' => 'Send a message',
+
+            // Replaces the reference's "replies within 24 clinical hours" promise.
+            'triage_badge' => 'Editorial Triage',
+            'triage_title' => 'Every message reaches a real inbox',
+            'triage_desc' => 'Submissions are written to the database and appear in the staff inbox, where they are marked read once reviewed. There is no automated reply and no guaranteed response time.',
+
+            'form_title' => 'Send a Message',
+            'form_subtitle' => 'All fields marked required must be completed. Fields marked optional can be left blank.',
+        ],
+
+        // ------------------------------------------------------------------ blog
+        'blog' => [
+            'eyebrow' => 'Blog & News',
+            'heading' => 'Latest From The Blog',
+            'read_more' => 'Read More',
+        ],
+
+        // ------------------------------------------------------------------- cta
+        'cta' => [
+            'heading' => 'Ready to explore?',
+            'subtitle' => 'Search the formulary, run a diagnostic pathway, or send us a question about a record you think is wrong.',
+            'browse' => 'Browse the database',
+            'contact' => 'Contact us',
+        ],
+
+        // ---------------------------------------------------------------- footer
+        'footer' => [
+            'tagline' => 'Bilingual veterinary pharmaceutical database and clinical decision-support platform for veterinarians, pharmacologists, and researchers.',
+            'disclaimer' => 'Educational reference only — not a substitute for professional veterinary judgement.',
+            'bilingual_note' => 'Every record carries Arabic alongside English, with full right-to-left support.',
+            'platform' => 'Platform',
+            'resources' => 'Resources',
+            'language' => 'Language',
+            'link_large_animals' => 'Large Animals Clinical Hub',
+            'link_drugs' => 'Veterinary Drugs Database',
+            'link_poultry' => 'Poultry Husbandry & Diseases',
+            'link_ingredients' => 'Active Ingredients Index',
+            'link_compare' => 'Compare Products',
+            'link_blog' => 'Clinical Blog',
+            'link_about' => 'About VetPedia',
+            'link_contact' => 'Contact & Data Submission',
+            'link_privacy' => 'Privacy Policy',
+            'link_terms' => 'Terms of Service',
+            'back_to_top' => 'Back to top',
+        ],
+    ],
+
+    'drugs_hub' => [
         'title' => 'VetPedia — Veterinary Drug Database & Knowledge Platform',
         'meta_description' => 'VetPedia is a comprehensive veterinary drug database, disease knowledge base, active ingredient reference, and pharmaceutical company directory.',
         'badge' => 'Veterinary Knowledge Platform',
@@ -115,6 +304,14 @@ return [
         'why_item4_desc' => 'Full English and Arabic support for the veterinary community across the region.',
         'database' => 'Database',
         'total_records' => 'Total Records',
+    ],
+
+    'contact_categories' => [
+        'formulary_integration' => 'Formulary Integration',
+        'monograph_correction' => 'Monograph Correction',
+        'institutional_licensing' => 'Institutional Licensing',
+        'pharmacovigilance' => 'Pharmacovigilance Report',
+        'general_feedback' => 'General Feedback',
     ],
 
     'nav' => [
@@ -460,6 +657,10 @@ return [
             'email_placeholder' => 'name@example.com',
             'subject_label' => 'Subject',
             'subject_placeholder' => 'What is this about?',
+            'role_label' => 'Clinical Title / Role',
+            'role_placeholder' => 'DVM, Clinical Toxicologist',
+            'category_label' => 'Inquiry Category',
+            'category_placeholder' => 'Select a category',
             'message_label' => 'Message',
             'message_placeholder' => 'Write your message...',
             'submit' => 'Send Message',

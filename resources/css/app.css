@@ -142,3 +142,171 @@ html.dark [data-part='poultry'] {
         transform: translateY(-6px) rotate(-45deg);
     }
 }
+
+/* =========================================================== *
+ *  Landing page scope — indigo/slate reference palette.
+ *
+ *  Exists for one reason. The `.dark` block at the top of this
+ *  file remaps --color-slate-50…800 so that the Flowbite
+ *  semantic tokens stay legible in dark mode. A literal copy of
+ *  the reference design uses `bg-slate-50` and `text-slate-600`
+ *  as *design* colours, so under that remap the page would render
+ *  near-white surfaces on a dark background — the exact opposite
+ *  of the reference.
+ *
+ *  Re-declaring the stock Tailwind values here restores the
+ *  reference palette. Custom properties inherit, and the nearest
+ *  ancestor declaration wins regardless of specificity, so this
+ *  neutralises the remap for the whole `.landing-scope` subtree
+ *  without touching a single other page.
+ *
+ *  The values are Tailwind v4's oklch palette verbatim — using
+ *  hand-rounded hex here would introduce a subtle shift.
+ * =========================================================== */
+
+.landing-scope {
+    --color-slate-50: oklch(98.4% 0.003 247.858);
+    --color-slate-100: oklch(96.8% 0.007 247.896);
+    --color-slate-200: oklch(92.9% 0.013 255.508);
+    --color-slate-300: oklch(86.9% 0.022 252.894);
+    --color-slate-400: oklch(70.4% 0.04 256.788);
+    --color-slate-500: oklch(55.4% 0.046 257.417);
+    --color-slate-600: oklch(44.6% 0.043 257.281);
+    --color-slate-700: oklch(37.2% 0.044 257.287);
+    --color-slate-800: oklch(27.9% 0.041 260.031);
+    --color-slate-900: oklch(20.8% 0.042 265.755);
+    --color-slate-950: oklch(12.9% 0.042 264.695);
+
+    /* Scoped to the reference's font stack — `html` keeps the site's Instrument Sans. */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+    color-scheme: light dark;
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ RTL */
+
+/*
+ * Arabic swaps to IBM Plex Sans Arabic and loosens the leading — Arabic glyphs
+ * carry no ascenders/descenders the way Latin does, so Latin leading looks
+ * cramped once the script changes.
+ */
+[dir='rtl'] .landing-scope,
+.landing-scope[dir='rtl'] {
+    font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+    line-height: 1.68;
+}
+
+/*
+ * Negative tracking is a Latin display-type trick. On Arabic it pulls the
+ * connected letterforms into each other and visibly damages the joins, so
+ * letter-spacing is zeroed out inside the scope only.
+ */
+[dir='rtl'] .landing-scope .tracking-tight,
+[dir='rtl'] .landing-scope .tracking-tighter,
+.landing-scope[dir='rtl'] .tracking-tight,
+.landing-scope[dir='rtl'] .tracking-tighter {
+    letter-spacing: 0 !important;
+}
+
+/*
+ * `text-transform: uppercase` is a no-op on Arabic — there is no case — but it
+ * would still uppercase any Latin run mixed into the copy.
+ */
+[dir='rtl'] .landing-scope .uppercase,
+.landing-scope[dir='rtl'] .uppercase {
+    text-transform: none;
+}
+
+/* ---------------------------------------------------------- scrims */
+
+/*
+ * Bottom-up wash so overlay copy stays legible on any photograph.
+ *
+ * The hero builds its three scrim layers from Tailwind utilities instead — it
+ * needs directional and vertical gradients that a single named class cannot
+ * express — so there is deliberately no `.hero-image-scrim` counterpart here.
+ */
+.landing-scope .card-photo-scrim {
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.2) 60%, transparent 100%);
+}
+
+/* ---------------------------------------------------------- vertical labels */
+
+/* The pillar cards' rotated edge captions. */
+.landing-scope .vertical-label {
+    writing-mode: vertical-rl;
+}
+
+[dir='rtl'] .landing-scope .vertical-label,
+.landing-scope[dir='rtl'] .vertical-label {
+    writing-mode: vertical-lr;
+}
+
+/* ---------------------------------------------------------- ambient orbs */
+
+@keyframes orb-float-1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(40px, -30px) scale(1.08);
+    }
+}
+
+@keyframes orb-float-2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-35px, 25px) scale(0.94);
+    }
+}
+
+.landing-scope .animate-orb-1 {
+    animation: orb-float-1 18s ease-in-out infinite;
+}
+
+.landing-scope .animate-orb-2 {
+    animation: orb-float-2 22s ease-in-out infinite;
+}
+
+/* Decorative motion only — never a cue, so it is dropped outright on request. */
+@media (prefers-reduced-motion: reduce) {
+
+    .landing-scope .animate-orb-1,
+    .landing-scope .animate-orb-2 {
+        animation: none;
+    }
+
+    .landing-scope *,
+    .landing-scope *::before,
+    .landing-scope *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /*
+     * The landing layout puts `scroll-smooth` on <html>, and the root element is
+     * NOT inside .landing-scope, so the rule above cannot reach it. Smooth
+     * scrolling is exactly the kind of motion this query exists to suppress.
+     * `auto` is already every other page's effective value, so this changes
+     * nothing for them.
+     */
+    html {
+        scroll-behavior: auto !important;
+    }
+}

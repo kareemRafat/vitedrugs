@@ -43,6 +43,23 @@ class ContactSubmissionResource extends Resource
         return [];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $unread = ContactSubmission::unread()->count();
+
+        return $unread > 0 ? (string) $unread : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Unread messages';
+    }
+
     public static function getPages(): array
     {
         return [

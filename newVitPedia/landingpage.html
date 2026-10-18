@@ -1,0 +1,984 @@
+<!DOCTYPE html><html class="scroll-smooth" dir="ltr" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VetPedia — Your Complete Guide to Veterinary Pharmaceuticals</title>
+<meta content="Comprehensive database of veterinary drugs, diseases, active ingredients, and pharmaceutical companies — all in one place. Authoritative, clinical decision support for veterinarians." name="description">
+<!-- Fonts: Inter & IBM Plex Sans Arabic -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Play CDN with Logical Properties Support -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'IBM Plex Sans Arabic', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef7ff',
+              100: '#d9edff',
+              200: '#bcdfff',
+              300: '#8ecbff',
+              400: '#58adff',
+              500: '#2f88ff',
+              600: '#4f46e5', // Primary indigo
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            },
+            accent: {
+              orange: '#f97316',
+              sky: '#0ea5e9',
+              emerald: '#10b981',
+              violet: '#8b5cf6',
+            }
+          },
+          letterSpacing: {
+            tighter: '-0.04em',
+            tight: '-0.02em',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Baseline typography and fluid scaling */
+    :root {
+      color-scheme: light dark;
+    }
+    
+    body {
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* RTL Specific Styling Adjustments */
+    [dir="rtl"] {
+      font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+      line-height: 1.68;
+    }
+    
+    [dir="rtl"] .tracking-tight,
+    [dir="rtl"] .tracking-tighter {
+      letter-spacing: 0 !important;
+    }
+    
+    [dir="rtl"] .text-transform-none {
+      text-transform: none !important;
+    }
+    
+    /* Custom Scrim Overlays for Photography */
+    .hero-image-scrim {
+      background: radial-gradient(circle at 75% 30%, transparent 40%, rgba(15, 23, 42, 0.4) 95%);
+    }
+    
+    .card-photo-scrim {
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.2) 60%, transparent 100%);
+    }
+
+    /* Ambient drifting orbs animation */
+    @keyframes orb-float-1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -30px) scale(1.08); }
+    }
+    @keyframes orb-float-2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-35px, 25px) scale(0.94); }
+    }
+    .animate-orb-1 {
+      animation: orb-float-1 18s ease-in-out infinite;
+    }
+    .animate-orb-2 {
+      animation: orb-float-2 22s ease-in-out infinite;
+    }
+    
+    /* Interactive card subtle glow on hover */
+    .hover-card-orange:hover {
+      box-shadow: 0 20px 35px -10px rgba(249, 115, 22, 0.22);
+    }
+    .hover-card-indigo:hover {
+      box-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.25);
+    }
+    .hover-card-emerald:hover {
+      box-shadow: 0 20px 35px -10px rgba(16, 185, 129, 0.22);
+    }
+  </style>
+<style id="mobileview-hide-scrollbars">
+          *::-webkit-scrollbar { width: 0px !important; height: 0px !important; display: none !important; }
+          * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+        </style></head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen selection:bg-indigo-500 selection:text-white transition-colors duration-300">
+<!-- =========================================================================
+       SECTION 1: HEADER (Sticky, Translucent, Backdrop Blur, RTL/Mobile Ready)
+       ========================================================================= -->
+<header class="fixed top-4 inset-x-0 z-50 flex justify-center px-4 sm:px-6 pointer-events-none transition-all duration-300" id="site-header">
+<div class="w-full max-w-6xl mx-auto pointer-events-auto">
+<div class="flex items-center justify-between h-14 px-5 sm:px-6 rounded-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-md shadow-lg shadow-indigo-950/5 dark:shadow-black/30 border border-slate-200/80 dark:border-slate-800/80 transition-all duration-300">
+<!-- Left: Wordmark -->
+<div class="flex items-center gap-3">
+<a aria-label="VetPedia Home" class="group flex items-center gap-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg py-1 px-1.5" href="#">
+<span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+<!-- Clinical cross / data node inline SVG icon -->
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M12 3v18M3 12h18"></path>
+<circle cx="12" cy="12" fill="currentColor" fill-opacity="0.3" r="3"></circle>
+</svg>
+</span>
+<span class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white font-sans">
+              Vet<span class="text-indigo-600 dark:text-indigo-400">Pedia</span>
+</span>
+</a>
+</div>
+<!-- Center Navigation (Desktop) -->
+<nav aria-label="Primary Navigation" class="hidden lg:flex items-center gap-8 text-[15px] font-medium text-slate-600 dark:text-slate-300">
+<a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" href="#browse-hub">Large Animals</a>
+<a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" href="#browse-hub">Drugs</a>
+<a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" href="#browse-hub">Poultry</a>
+<a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" href="#database-stats">Statistics</a>
+<a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" href="#latest-blog">Blog</a>
+<a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" href="#about">About</a>
+<a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" href="#footer">Contact</a>
+</nav>
+<!-- Right Cluster: Search, Dark Mode, Language Switcher, Sign In Button -->
+<div class="flex items-center gap-2.5 sm:gap-4">
+<!-- Quick Search Icon Button -->
+<button aria-label="Focus Search Database" class="p-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" onclick="document.getElementById('hero-search-input')?.focus(); window.scrollTo({top: 0, behavior: 'smooth'});" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Dark Mode Toggle Button (Persistent & Working) -->
+<button aria-label="Toggle light and dark color mode" class="p-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" id="theme-toggle" type="button">
+<!-- Sun icon (shown in dark mode) -->
+<svg class="w-5 h-5 hidden dark:block text-amber-400" fill="none" id="theme-icon-sun" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="4"></circle>
+<path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14-1.41 1.41" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<!-- Moon icon (shown in light mode) -->
+<svg class="w-5 h-5 block dark:hidden text-slate-700" fill="none" id="theme-icon-moon" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Bilingual Switcher: EN | ع -->
+<div class="relative inline-flex items-center bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-lg border border-slate-200/80 dark:border-slate-700/80 text-xs font-semibold">
+<button aria-label="Switch to English interface" class="px-2 py-1 rounded bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm transition-all" id="lang-en-btn" type="button">
+              EN
+            </button>
+<span class="text-slate-300 dark:text-slate-600 px-0.5 select-none">|</span>
+<button aria-label="التبديل إلى الواجهة العربية" class="px-2 py-1 rounded text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all font-sans" id="lang-ar-btn" type="button">
+              ع
+            </button>
+</div>
+<!-- Solid Primary Sign In Button -->
+<a class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm shadow-indigo-600/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2" href="#signin">
+            Sign in
+          </a>
+<!-- Mobile Hamburger Trigger -->
+<button aria-expanded="false" aria-label="Open mobile navigation menu" class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" id="mobile-menu-trigger" type="button">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+<!-- Mobile Full-Height Slide-in Drawer -->
+<div aria-modal="true" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden transition-opacity duration-300" id="mobile-drawer" role="dialog">
+<div class="fixed top-0 bottom-0 end-0 w-full max-w-xs bg-slate-50 dark:bg-slate-900 p-6 shadow-2xl flex flex-col justify-between overflow-y-auto transform transition-transform duration-300 translate-x-full rtl:-translate-x-full" id="mobile-drawer-panel">
+<div>
+<div class="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Vet<span class="text-indigo-600 dark:text-indigo-400">Pedia</span>
+</span>
+<button aria-label="Close menu" class="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" id="mobile-drawer-close" type="button">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<div class="mt-6 space-y-6">
+<div>
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Knowledge Bases</p>
+<nav class="space-y-1">
+<a class="drawer-nav-item block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="#browse-hub">Large Animals</a>
+<a class="drawer-nav-item block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="#browse-hub">Drugs &amp; Formulations</a>
+<a class="drawer-nav-item block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="#browse-hub">Poultry Husbandry</a>
+</nav>
+</div>
+<div>
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Platform &amp; Support</p>
+<nav class="space-y-1">
+<a class="drawer-nav-item block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="#database-stats">Live Database Stats</a>
+<a class="drawer-nav-item block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="#how-it-works">How It Works</a>
+<a class="drawer-nav-item block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="#latest-blog">Clinical Blog</a>
+<a class="drawer-nav-item block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" href="#footer">Contact &amp; Research</a>
+</nav>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-slate-200 dark:border-slate-800">
+<a class="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-sm" href="#signin">
+            Sign in to Clinician Portal
+          </a>
+</div>
+</div>
+</div>
+</header>
+<main>
+<!-- =========================================================================
+         SECTION 2: HERO (Full-bleed Split Layout, 85vh min, Editorial 35mm photo)
+         ========================================================================= -->
+<section class="relative pt-28 pb-20 lg:pt-36 lg:pb-24 overflow-hidden border-b border-slate-800 bg-slate-950 text-white min-h-[85vh] flex items-center">
+<!-- Full Bleed Photography Background -->
+<div class="absolute inset-0 z-0">
+<img alt="Veterinarian examining dairy cow in modern barn clinic" class="w-full h-full object-cover object-center" src="../public/images/landing/hero.png">
+<!-- Scrim layers for high readability -->
+<div class="absolute inset-0 bg-slate-950/75 mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/35 rtl:bg-gradient-to-l"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60"></div>
+</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+<div class="max-w-3xl flex flex-col items-start text-start">
+<!-- Eyebrow Badge -->
+<!-- H1 Heading -->
+<h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.12] mb-4 font-sans" data-ar="دليلك الشامل للأدوية البيطرية والقرارات السريرية" data-en="Your Complete Guide to Veterinary Pharmaceuticals">
+            Your Complete Guide to Veterinary Pharmaceuticals
+          </h1>
+<!-- Subtitle -->
+<p class="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl mb-8 font-normal" data-ar="قاعدة بيانات شاملة للأدوية البيطرية والأمراض والمكونات الفعالة والشركات المصنعة — كل ذلك في مرجع موثوق واحد." data-en="Comprehensive database of veterinary drugs, diseases, active ingredients, and pharmaceutical companies — all in one place.">
+            Comprehensive database of veterinary drugs, diseases, active ingredients, and pharmaceutical companies — all in one place.
+          </p>
+<!-- Hero Search Bar -->
+<form action="#search-results" class="w-full max-w-xl relative flex items-center mb-6" onsubmit="event.preventDefault();">
+<div class="absolute inset-y-0 start-0 ps-4 flex items-center pointer-events-none text-slate-400">
+<svg class="w-5 h-5 ms-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<input class="w-full py-3.5 ps-12 pe-28 text-sm sm:text-base rounded-full bg-slate-900/90 backdrop-blur-md border border-slate-700/80 text-white placeholder:text-slate-400 shadow-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/30 transition-all" data-ar-placeholder="ابحث عن المنتجات، الأمراض، المواد الفعالة..." data-en-placeholder="Search products, diseases, ingredients..." id="hero-search-input" placeholder="Search products, diseases, ingredients..." type="search">
+<button class="absolute inset-y-1.5 end-1.5 px-5 py-2 rounded-full text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" type="submit">
+<span class="" data-ar="بحث" data-en="Search">Search</span>
+</button>
+</form>
+<!-- Action Buttons -->
+<div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-10">
+<a class="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 shadow-lg shadow-indigo-600/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" href="#browse-hub">
+<span class="" data-ar="استكشف قاعدة البيانات" data-en="Explore the Database">Explore the Database</span>
+<svg class="w-4 h-4 ms-2 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+<a class="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-slate-100 bg-slate-900/80 hover:bg-slate-800/90 backdrop-blur-md border border-slate-700/80 shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" href="#how-it-works">
+<svg class="w-4 h-4 me-2 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="" data-ar="بدء تشخيص سريري" data-en="Start a Diagnosis">Start a Diagnosis</span>
+</a>
+</div>
+<!-- Metric Strip 4-up -->
+</div>
+</div>
+</section>
+<!-- =========================================================================
+         SECTION 3: "THREE PARTS" HUB (Centerpiece of the entire platform)
+         ========================================================================= -->
+<section class="py-20 lg:py-28 bg-slate-50 dark:bg-slate-950 border-y border-slate-200/80 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-white" id="about"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-12 sm:mb-16"><div class="text-center max-w-3xl mx-auto flex flex-col items-center"><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm mb-4"><span class="w-2 h-2 rounded-full bg-sky-500 dark:bg-sky-400"></span><span class="text-xs font-mono font-bold tracking-wider text-sky-600 dark:text-sky-400 uppercase">WHY VETPEDIA — CLINICAL PILLARS</span></div><h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans mb-4">Built For Clinical Precision</h2><p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto font-normal">Engineered specifically for veterinarians, toxicologists, and pharmacologists — authoritative data and synchronized intelligence across four institutional pillars.</p></div></div><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-xl dark:shadow-2xl bg-white dark:bg-slate-900 items-stretch"><article class="relative group min-h-[520px] lg:min-h-[640px] flex flex-col justify-between p-8 sm:p-10 pt-16 sm:pt-20 border-b sm:border-b-0 sm:border-r border-slate-200/80 dark:border-slate-800/80 overflow-hidden"><div class="absolute inset-0 z-0"><img src="https://lh3.googleusercontent.com/aida/AEtjO1WDnh_YB1BYmZzy7_rRXbkv8MgQOn3P-j-vTBh-tBSdT1kyBkqWfrHPX2qnO6xzpaVGgGHAZJbjWn6IWVITUDrVZouTTnj8sJ-DvmcUYWpD2EgXXQRCvBAk4QCRG3-WJIQvV6Oqy66p6g5YgUncR0t6ffG0l6MoJcRTQO2Yttb0ipURqGb49R0ECmAapqgJCBzKTCRSk7GgYol9UTy4V9x3GgBT_DNBfQMnsy9TPf6LNnyEefQs2VrhbMwY" alt="Structured Data &amp; Official Monographs" class="w-full h-full object-cover object-center filter brightness-[0.7] dark:brightness-[0.6] contrast-[1.1] group-hover:scale-105 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/50"></div></div><div class="relative z-10 text-center"><span class="block text-6xl sm:text-7xl font-extrabold text-white tracking-tight mb-4 font-sans drop-shadow-md leading-none">01</span><h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide">Structured Data</h3><p class="text-xs sm:text-sm text-slate-200 dark:text-slate-300 font-normal leading-relaxed max-w-xs mx-auto">Direct pipeline from official EMA, FDA CVM, and SFDA veterinary summaries of product characteristics (SPCs).</p></div><div class="relative z-10 flex flex-col items-center pt-8 mt-auto"><span class="text-[11px] font-mono tracking-widest text-slate-300 dark:text-slate-400 uppercase select-none mb-3" style="writing-mode: vertical-rl;">TRUSTED DATA</span><div class="w-px h-12 bg-slate-400/80 dark:bg-slate-600/80"></div></div></article><article class="relative group min-h-[520px] lg:min-h-[640px] flex flex-col justify-between p-8 sm:p-10 pt-16 sm:pt-20 border-b sm:border-b-0 lg:border-r border-slate-200/80 dark:border-slate-800/80 overflow-hidden"><div class="absolute inset-0 z-0"><img src="https://lh3.googleusercontent.com/aida/AEtjO1Xibzr10_-9yEESekwIg_FPH-MlUbRg8B_VChJTEePDDaUw0aaH9LUVvwQLnK1YNPDIhEsfORrHEvLEWBBeKZVGrhT-rCLGoB9WWzFuGfoy3Bz46nMedMlJrVWZ6W8c_6wiOPdfZs7ahuyMmJMlSkv0NStCtb-BWbsHX5PT802Diuu_HUDDH8nP3U87tOOVCwVK193JGAk1DUgNh8rmJ2LXjcMl93bB5o86stQXdJ_GzgsfxqGL8PvrmKI" alt="Bilingual Clinical Engine" class="w-full h-full object-cover object-center filter brightness-[0.7] dark:brightness-[0.6] contrast-[1.1] group-hover:scale-105 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/50"></div></div><div class="relative z-10 text-center"><span class="block text-6xl sm:text-7xl font-extrabold text-white tracking-tight mb-4 font-sans drop-shadow-md leading-none">02</span><h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide">Bilingual Engine</h3><p class="text-xs sm:text-sm text-slate-200 dark:text-slate-300 font-normal leading-relaxed max-w-xs mx-auto">Calibrated medical translation honoring standard Arabization conventions for pharmacology and pathology with complete RTL support.</p></div><div class="relative z-10 flex flex-col items-center pt-8 mt-auto"><span class="text-[11px] font-mono tracking-widest text-slate-300 dark:text-slate-400 uppercase select-none mb-3" style="writing-mode: vertical-rl;">BILINGUAL EN / AR</span><div class="w-px h-12 bg-slate-400/80 dark:bg-slate-600/80"></div></div></article><article class="relative group min-h-[520px] lg:min-h-[640px] flex flex-col justify-between p-8 sm:p-10 pt-16 sm:pt-20 border-b sm:border-b-0 sm:border-r border-sky-500/40 overflow-hidden bg-sky-950/40"><div class="absolute inset-0 z-0"><img src="https://lh3.googleusercontent.com/aida/AEtjO1U3nXIysI4VM6GPGTEeE536h2NFXcusmw80jnAllpXp9qXIsIbn8jupanoqeSlWwFujuXcA1ePpBQRv93Xneol5kYYqct0d0JjGNFnScDlbu7roGCdoLHqoTUxvQ6veQRYQt6Cn4wg05w7CnnQqqeVGSQ--Rb_qdf5QmLDauJYhHNqz_3HVqJS1ylt4aGwlhn5_vGOm6E47Wec80nZXdgZCdZQZzpfNJcaVKduL7tKtJKqp4A9tta9hd-tr" alt="Clinical Decision Support" class="w-full h-full object-cover object-center filter brightness-[0.7] contrast-[1.15] group-hover:scale-105 transition-transform duration-700"><div class="absolute inset-0 bg-sky-600/75 mix-blend-multiply"></div><div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-sky-900/60 to-sky-800/40"></div></div><div class="relative z-10 text-center"><span class="block text-6xl sm:text-7xl font-extrabold text-white tracking-tight mb-4 font-sans drop-shadow-lg leading-none">03</span><h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide">Decision Tools</h3><p class="text-xs sm:text-sm text-sky-100 font-normal leading-relaxed max-w-xs mx-auto">Input field observations to rank probabilistic differentials and instantly compute validated active ingredient dosages and clearance timers.</p></div><div class="relative z-10 flex flex-col items-center pt-8 mt-auto"><span class="text-[11px] font-mono tracking-widest text-sky-200 uppercase select-none mb-3" style="writing-mode: vertical-rl;">DECISION TOOLS</span><div class="w-px h-12 bg-sky-300/80"></div></div></article><article class="relative group min-h-[520px] lg:min-h-[640px] flex flex-col justify-between p-8 sm:p-10 pt-16 sm:pt-20 overflow-hidden"><div class="absolute inset-0 z-0"><img src="https://lh3.googleusercontent.com/aida/AEtjO1Xpnmf1VK1K55FHqTvp0gGMMOu83VA2YPhdwkhYYuaC-IgZeTEDuzPjdDMR4OgFSQZolRNrgWGhpznrKeTmW-LwTzZwDkb0gWjJZLNUyh8dsXZBVz7AjII2razavQb44SBWqUmT9UUqeWTSvvXiDrRcj1jV0SqQZVRiTw6A-iGZp6xjD0nkbw1TcscTGv546qcDYvwC0ZiiT_HCJaAjwnqowtG4TBGWDTV6dAc4W_mh2MSTo3h45QrTwJY" alt="Real-Time Pharmacovigilance" class="w-full h-full object-cover object-center filter brightness-[0.7] dark:brightness-[0.6] contrast-[1.1] group-hover:scale-105 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/50"></div></div><div class="relative z-10 text-center"><span class="block text-6xl sm:text-7xl font-extrabold text-white tracking-tight mb-4 font-sans drop-shadow-md leading-none">04</span><h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide">Pharmacovigilance</h3><p class="text-xs sm:text-sm text-slate-200 dark:text-slate-300 font-normal leading-relaxed max-w-xs mx-auto">Continuous active surveillance for adverse event notifications, label revisions, and dynamic withdrawal recalibration protocols.</p></div><div class="relative z-10 flex flex-col items-center pt-8 mt-auto"><span class="text-[11px] font-mono tracking-widest text-slate-300 dark:text-slate-400 uppercase select-none mb-3" style="writing-mode: vertical-rl;">REGULATORY SYNC</span><div class="w-px h-12 bg-slate-400/80 dark:bg-slate-600/80"></div></div></article></div></div></section><section class="py-20 lg:py-28 bg-slate-950 relative border-y border-slate-800/80 overflow-hidden text-white" id="browse-hub"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Centered Section Header -->
+<div class="text-center max-w-3xl mx-auto mb-14 lg:mb-16 flex flex-col items-center"><div class="flex items-center justify-center gap-2 mb-4"><span class="text-amber-400 font-mono font-bold text-sm tracking-wider">/ 02</span><span class="text-xs font-bold tracking-widest text-slate-400 uppercase">BROWSE THE PLATFORM</span></div><h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.08] mb-4 font-sans" data-ar="حلول متقدمة للرعاية البيطرية الحديثة" data-en="SOLUTIONS FOR MODERN VETERINARY CARE">SOLUTIONS FOR MODERN VETERINARY CARE</h2><p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mb-8" data-ar="من التشخيص السريري إلى الإرشادات الدوائية المعتمدة، نوفر بيانات دقيقة لكافة الفصائل." data-en="From diagnostics to pharmacological guidance, we deliver structured, evidence-based data across species and clinical settings.">From diagnostics to pharmacological guidance, we deliver structured, evidence-based data across species and clinical settings.</p><a class="inline-flex items-center justify-between gap-3 px-5 py-3 border border-slate-700/80 bg-slate-900/60 text-xs font-bold tracking-wider uppercase text-slate-200 hover:bg-slate-800 hover:text-white transition-all rounded shadow-sm" href="#drugs"><span class="" data-ar="عرض جميع الحلول" data-en="View all solutions">View all solutions</span><span class="text-sm leading-none">↗</span></a></div>
+<!-- 3 Equal Cards in Single Responsive Row (1 col mobile, 3 cols desktop) -->
+<div class="relative bg-slate-950 rounded-2xl md:rounded-3xl border border-slate-800/80 overflow-hidden shadow-2xl"><div class="hidden md:block absolute start-8 top-0 bottom-0 w-px bg-slate-800 z-20 pointer-events-none"></div><div class="divide-y divide-slate-800/80"><article class="group relative flex flex-col md:flex-row items-stretch justify-between min-h-[220px] lg:min-h-[250px] overflow-hidden bg-slate-950 transition-all duration-500 hover:bg-slate-900/60"><div class="absolute inset-0 z-0 overflow-hidden"><img alt="Large Animals Veterinary Care" class="w-full h-full object-cover object-center filter brightness-[0.85] contrast-[1.1] transition-transform duration-700 ease-out group-hover:scale-105 group-hover:brightness-95" src="https://lh3.googleusercontent.com/aida/AEtjO1WDnh_YB1BYmZzy7_rRXbkv8MgQOn3P-j-vTBh-tBSdT1kyBkqWfrHPX2qnO6xzpaVGgGHAZJbjWn6IWVITUDrVZouTTnj8sJ-DvmcUYWpD2EgXXQRCvBAk4QCRG3-WJIQvV6Oqy66p6g5YgUncR0t6ffG0l6MoJcRTQO2Yttb0ipURqGb49R0ECmAapqgJCBzKTCRSk7GgYol9UTy4V9x3GgBT_DNBfQMnsy9TPf6LNnyEefQs2VrhbMwY"><div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent rtl:bg-gradient-to-l"></div><div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent md:hidden"></div></div><div class="relative z-10 flex items-start gap-5 lg:gap-8 p-6 sm:p-8 lg:p-10 flex-1 max-w-2xl"><div class="flex flex-col"><span class="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase mb-2">/ 02</span><h3 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white uppercase mb-2 font-sans">LARGE ANIMALS</h3><p class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-md mb-4">Where clinical signs meet precise therapeutics. Comprehensive differential diagnosis tools for cattle and equine health.</p><a class="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase text-amber-400 hover:text-white transition-colors" href="#large-animals"><span class="" data-ar="استكشاف الفصل" data-en="Explore Chapter">EXPLORE CHAPTER</span><span class="transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">→</span></a></div></div><div class="relative z-10 flex items-end md:items-center justify-between md:justify-end px-6 pb-6 pt-0 md:p-8 lg:p-10 shrink-0"><div class="flex flex-col items-center font-mono"><span class="text-xl lg:text-2xl font-bold tracking-widest text-white">01</span><div class="w-6 h-0.5 bg-slate-600 my-1"></div><span class="text-xs tracking-widest text-slate-400 font-medium">03</span></div></div></article><article class="group relative flex flex-col md:flex-row items-stretch justify-between min-h-[220px] lg:min-h-[250px] overflow-hidden bg-slate-950 transition-all duration-500 hover:bg-slate-900/60"><div class="absolute inset-0 z-0 overflow-hidden"><img alt="Veterinary Pharmaceuticals and Drugs" class="w-full h-full object-cover object-center filter brightness-[0.85] contrast-[1.1] transition-transform duration-700 ease-out group-hover:scale-105 group-hover:brightness-95" src="https://lh3.googleusercontent.com/aida/AEtjO1Xibzr10_-9yEESekwIg_FPH-MlUbRg8B_VChJTEePDDaUw0aaH9LUVvwQLnK1YNPDIhEsfORrHEvLEWBBeKZVGrhT-rCLGoB9WWzFuGfoy3Bz46nMedMlJrVWZ6W8c_6wiOPdfZs7ahuyMmJMlSkv0NStCtb-BWbsHX5PT802Diuu_HUDDH8nP3U87tOOVCwVK193JGAk1DUgNh8rmJ2LXjcMl93bB5o86stQXdJ_GzgsfxqGL8PvrmKI"><div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent rtl:bg-gradient-to-l"></div><div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent md:hidden"></div></div><div class="relative z-10 flex items-start gap-5 lg:gap-8 p-6 sm:p-8 lg:p-10 flex-1 max-w-2xl"><div class="flex flex-col"><span class="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase mb-2">/ 02</span><h3 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white uppercase mb-2 font-sans">VETERINARY DRUGS</h3><p class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-md mb-4">Certified product monographs and pharmacokinetics. Rigorous active ingredient data, withdrawal intervals, and interactions.</p><a class="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase text-amber-400 hover:text-white transition-colors" href="#drugs"><span class="" data-ar="استكشاف الفصل" data-en="Explore Chapter">EXPLORE CHAPTER</span><span class="transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">→</span></a></div></div><div class="relative z-10 flex items-end md:items-center justify-between md:justify-end px-6 pb-6 pt-0 md:p-8 lg:p-10 shrink-0"><div class="flex flex-col items-center font-mono"><span class="text-xl lg:text-2xl font-bold tracking-widest text-white">02</span><div class="w-6 h-0.5 bg-slate-600 my-1"></div><span class="text-xs tracking-widest text-slate-400 font-medium">03</span></div></div></article><article class="group relative flex flex-col md:flex-row items-stretch justify-between min-h-[220px] lg:min-h-[250px] overflow-hidden bg-slate-950 transition-all duration-500 hover:bg-slate-900/60"><div class="absolute inset-0 z-0 overflow-hidden"><img alt="Commercial Poultry Flock Science" class="w-full h-full object-cover object-center filter brightness-[0.85] contrast-[1.1] transition-transform duration-700 ease-out group-hover:scale-105 group-hover:brightness-95" src="https://lh3.googleusercontent.com/aida/AEtjO1U3nXIysI4VM6GPGTEeE536h2NFXcusmw80jnAllpXp9qXIsIbn8jupanoqeSlWwFujuXcA1ePpBQRv93Xneol5kYYqct0d0JjGNFnScDlbu7roGCdoLHqoTUxvQ6veQRYQt6Cn4wg05w7CnnQqqeVGSQ--Rb_qdf5QmLDauJYhHNqz_3HVqJS1ylt4aGwlhn5_vGOm6E47Wec80nZXdgZCdZQZzpfNJcaVKduL7tKtJKqp4A9tta9hd-tr"><div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent rtl:bg-gradient-to-l"></div><div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent md:hidden"></div></div><div class="relative z-10 flex items-start gap-5 lg:gap-8 p-6 sm:p-8 lg:p-10 flex-1 max-w-2xl"><div class="flex flex-col"><span class="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase mb-2">/ 02</span><h3 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white uppercase mb-2 font-sans">POULTRY HEALTH</h3><p class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-md mb-4">Biosecurity and commercial flock integrity. Deep pathological guidance for high-density broiler and layer operations.</p><a class="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase text-amber-400 hover:text-white transition-colors" href="#poultry"><span class="" data-ar="استكشاف الفصل" data-en="Explore Chapter">EXPLORE CHAPTER</span><span class="transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">→</span></a></div></div><div class="relative z-10 flex items-end md:items-center justify-between md:justify-end px-6 pb-6 pt-0 md:p-8 lg:p-10 shrink-0"><div class="flex flex-col items-center font-mono"><span class="text-xl lg:text-2xl font-bold tracking-widest text-white">03</span><div class="w-6 h-0.5 bg-slate-600 my-1"></div><span class="text-xs tracking-widest text-slate-400 font-medium">03</span></div></div></article></div></div>
+</div></section>
+<!-- =========================================================================
+         SECTION 4: "DATABASE IN NUMBERS" (Deep Slate/Near-Black Wide Band)
+         ========================================================================= -->
+<section class="py-20 lg:py-28 bg-[#f4f6f9] dark:bg-slate-950 text-slate-900 dark:text-white relative border-y border-slate-200/80 dark:border-slate-800/80" id="database-stats">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header matching reference image -->
+    <div class="max-w-4xl mb-12 sm:mb-14">
+      <div class="flex items-center gap-2 mb-3 text-slate-500 dark:text-slate-400 font-mono text-xs sm:text-sm font-semibold tracking-wider uppercase">
+        <span class="">→</span>
+        <span class="">DATABASE INDEX &amp; ACCURACY — CLINICAL BENCHMARKS</span>
+      </div>
+      <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.08] font-sans mb-4">
+        5 VetPedia metrics that actually matter.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl font-normal">
+        Most veterinary databases show 20 metrics that don't drive clinical outcomes. These 5 do — build your diagnostic and prescribing workflows around them.
+      </p>
+    </div>
+
+    <!-- 5 KPI Grid matching reference: 1 prominent full-height card on left, 2x2 grid on right -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <!-- Card 1: Primary KPI (Prominent Blue Card, lg:col-span-4) -->
+      <div class="lg:col-span-4 flex">
+        <div class="w-full rounded-3xl bg-[#1e4b7a] dark:bg-[#1e3a8a] text-white p-7 sm:p-8 flex flex-col justify-between shadow-lg shadow-indigo-950/10 border border-transparent">
+          <div>
+            <p class="text-xs font-mono font-bold tracking-widest text-sky-200 uppercase mb-3 flex items-center gap-1.5">
+              <span class="">→</span> PRIMARY BENCHMARK
+            </p>
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-4">
+              Monograph accuracy
+            </h3>
+            <div class="text-6xl sm:text-7xl font-extrabold tracking-tight text-white mb-4 font-sans">
+              99.4%
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/15 text-white text-xs font-semibold backdrop-blur-sm">
+              <span class="">↑</span> +12 pts vs legacy SPC
+            </div>
+          </div>
+          <div class="pt-8 mt-8 border-t border-white/15">
+            <p class="text-xs sm:text-sm text-sky-100/90 leading-relaxed font-normal">
+              % of active monographs cross-referenced with EMA, SFDA, and FDA CVM. <strong class="text-white font-semibold">The one number that ties VetPedia to clinical dosing confidence.</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: 2x2 Clean White Cards (lg:col-span-8) -->
+      <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Card 2: Top-Left Card -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div>
+            <p class="text-xs font-mono font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase mb-2">
+              DISEASES CATALOGUED
+            </p>
+            <div class="text-5xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3 font-sans">
+              480+
+            </div>
+            <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+              <span class="">↑</span> +18 new this month
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-6 leading-relaxed">
+            Bovine, equine, and avian pathological entities with differential diagnosis.
+          </p>
+        </div>
+
+        <!-- Card 3: Top-Right Card -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div>
+            <p class="text-xs font-mono font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase mb-2">
+              PEER-REVIEW SCORE
+            </p>
+            <div class="text-5xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3 font-sans">
+              9.4<span class="text-2xl font-normal text-slate-400 dark:text-slate-500"> /10</span>
+            </div>
+            <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+              <span class="">↑</span> +0.4
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-6 leading-relaxed">
+            Avg. clinical peer-reviewer rating per monograph query.
+          </p>
+        </div>
+
+        <!-- Card 4: Bottom-Left Card -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div>
+            <p class="text-xs font-mono font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase mb-2">
+              ACTIVE INGREDIENTS INDEXED
+            </p>
+            <div class="text-5xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3 font-sans">
+              390+
+            </div>
+            <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+              <span class="">↑</span> +24 validated
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-6 leading-relaxed">
+            Complete withdrawal periods and pharmacological cross-interaction matrix.
+          </p>
+        </div>
+
+        <!-- Card 5: Bottom-Right Card -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div>
+            <p class="text-xs font-mono font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase mb-2">
+              FORMULARY VOLUME
+            </p>
+            <div class="text-5xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3 font-sans">
+              1,240+
+            </div>
+            <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+              <span class="">↑</span> +160 verified
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-6 leading-relaxed">
+            Approved brand veterinary products across 160+ pharmaceutical manufacturers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><section class="py-20 lg:py-28 bg-[#f4f6f9] dark:bg-slate-950 text-slate-900 dark:text-white relative border-t border-slate-200/80 dark:border-slate-800/80 overflow-hidden" id="contact">
+  <!-- Global Cartographic Map Texture Background -->
+  <div class="absolute inset-0 z-0 pointer-events-none opacity-40 dark:opacity-20 mix-blend-multiply dark:mix-blend-luminosity overflow-hidden">
+    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBqaHyuf91-M-ur2R7i3D01w_slov3asKdhZKP580Wg76tM-qSD445yYy1AduaQjWp81S9lCMmsh0u23EUnHMdiZEcEdYZegswK-yGVnvip2JD-LCtIXV6GqTq9muEvWj7jm8PRUpP-Uf4EnrJOQKGZLiI-vmsflek78kRQZ9sdCl1uf2Z_G-eaxbyst0cWMhO77Ogti_vLAQEWEM2ncLyTN-mcP6vC6SW1bJf4eHVHdqHV3aPHaV83g" alt="Global Clinical Network Map" class="w-full h-full object-cover object-center filter contrast-[1.1]">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#f4f6f9] via-transparent to-[#f4f6f9] dark:from-slate-950 dark:via-transparent dark:to-slate-950"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Section Header -->
+    <div class="text-center max-w-3xl mx-auto mb-14 lg:mb-16 flex flex-col items-center">
+      <div class="flex items-center justify-center gap-2 mb-3">
+        <span class="text-indigo-600 dark:text-indigo-400 font-mono font-bold text-xs sm:text-sm tracking-wider">/ 05</span>
+        <span class="text-xs font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono">GET IN TOUCH — GLOBAL CLINICAL NETWORK</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-4 font-sans">
+        Connect with Our Clinical &amp; Editorial Team
+      </h2>
+      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl font-normal">
+        Have inquiries about monograph validation, institutional access, or formulary partnerships? Reach out to our veterinary pharmacologists and medical editors.
+      </p>
+    </div>
+
+    <!-- Two-Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+      <!-- Left Column: Direct Contact Channels & Regional Hubs -->
+      <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
+        <!-- Contact Detail Cards -->
+        <div class="space-y-4">
+          <!-- Channel 1: Clinical Operations -->
+          <div class="p-6 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1">Clinical Inquiries</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 leading-relaxed">Monograph queries, drug interaction verification &amp; SPC disputes.</p>
+                <a href="mailto:clinical@vetpedia.org" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">clinical@vetpedia.org</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Channel 2: Institutional Licensing & Formularies -->
+          <div class="p-6 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border border-sky-100 dark:border-sky-900/40 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1">Institutional &amp; Formularies</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 leading-relaxed">Hospital networks, veterinary academic faculties, and API licensing.</p>
+                <a href="mailto:partners@vetpedia.org" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">partners@vetpedia.org</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Response Guarantee & Global Nodes -->
+        <div class="p-6 rounded-3xl bg-[#1e4b7a] dark:bg-[#1e3a8a] text-white shadow-lg shadow-indigo-950/10 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-xs font-mono font-bold tracking-wider text-sky-200 uppercase">RAPID TRIAGE PROTOCOL</span>
+            </div>
+            <h4 class="text-lg font-bold text-white mb-1.5">Replies within 24 clinical hours</h4>
+            <p class="text-xs sm:text-sm text-sky-100/90 leading-relaxed font-normal mb-5">
+              Monograph errata requests undergo immediate escalation to board-certified veterinary pharmacologists.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/15 flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-1 rounded-md bg-white/15 text-white text-xs font-semibold backdrop-blur-sm">Boston, USA</span>
+            <span class="px-2.5 py-1 rounded-md bg-white/15 text-white text-xs font-semibold backdrop-blur-sm">London, UK</span>
+            <span class="px-2.5 py-1 rounded-md bg-white/15 text-white text-xs font-semibold backdrop-blur-sm">Riyadh, KSA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Crisp Modern Contact Form Card -->
+      <div class="lg:col-span-7">
+        <div class="rounded-3xl bg-white dark:bg-slate-900 p-8 sm:p-10 border border-slate-200/90 dark:border-slate-800 shadow-xl dark:shadow-2xl h-full flex flex-col justify-between">
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-2 font-sans">
+              Direct Communication Gateway
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6">
+              Please specify your clinical credentials for accelerated verification.
+            </p>
+
+            <form class="space-y-4" onsubmit="event.preventDefault();">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Full Name</label>
+                  <input type="text" placeholder="Dr. Sarah Jenkins" class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all" required="">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Clinical Title / Role</label>
+                  <input type="text" placeholder="DVM, Clinical Toxicologist" class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Institutional / Clinic Email</label>
+                  <input type="email" placeholder="s.jenkins@vetclinic.org" class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all" required="">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Inquiry Category</label>
+                  <select class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all">
+                    <option>Formulary Integration &amp; SPC Sync</option>
+                    <option>Drug Data &amp; Monograph Correction</option>
+                    <option>Institutional &amp; University Licensing</option>
+                    <option>Adverse Reaction / Pharmacovigilance Report</option>
+                    <option>General Editorial Feedback</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Message Details</label>
+                <textarea rows="4" placeholder="Describe the drug monograph, study protocol, or partnership scope..." class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none" required=""></textarea>
+              </div>
+
+              <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Encrypted transmission under ISO/HL7 clinical safety standards.
+                </p>
+                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 shadow-md shadow-indigo-600/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                  <span class="">Send Message</span>
+                  <span class="rtl:rotate-180 transition-transform group-hover:translate-x-1">→</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><section class="py-20 lg:py-24 bg-slate-50 dark:bg-slate-950 border-b border-slate-200/80 dark:border-slate-800/80 relative overflow-hidden" id="how-it-works">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center max-w-3xl mx-auto mb-14 flex flex-col items-center">
+      <div class="flex items-center justify-center gap-2 mb-3">
+        <span class="h-0.5 w-6 bg-amber-400"></span>
+        <span class="text-xs font-bold tracking-widest text-amber-600 dark:text-amber-400 uppercase font-mono">BLOG &amp; NEWS</span>
+        <span class="h-0.5 w-6 bg-amber-400"></span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
+        Latest News Directly <br>
+        <span class="text-amber-600 dark:text-amber-400">From Our Blog</span>
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div class="lg:col-span-6 h-full">
+        <article class="group bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
+          <div class="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
+            <img src="https://lh3.googleusercontent.com/aida/AEtjO1WDnh_YB1BYmZzy7_rRXbkv8MgQOn3P-j-vTBh-tBSdT1kyBkqWfrHPX2qnO6xzpaVGgGHAZJbjWn6IWVITUDrVZouTTnj8sJ-DvmcUYWpD2EgXXQRCvBAk4QCRG3-WJIQvV6Oqy66p6g5YgUncR0t6ffG0l6MoJcRTQO2Yttb0ipURqGb49R0ECmAapqgJCBzKTCRSk7GgYol9UTy4V9x3GgBT_DNBfQMnsy9TPf6LNnyEefQs2VrhbMwY" alt="Mastering Last Mile Clinical Care &amp; Herd Health" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute bottom-3 end-3 px-3 py-1 rounded-full text-xs font-bold text-white bg-amber-600 shadow-md tracking-wide">
+              Logistics
+            </span>
+          </div>
+          <div class="p-6 sm:p-8 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400 mb-3">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                    <line x1="16" x2="16" y1="2" y2="6"></line>
+                    <line x1="8" x2="8" y1="2" y2="6"></line>
+                    <line x1="3" x2="21" y1="10" y2="10"></line>
+                  </svg>
+                  May 12, 2025
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  3 Comments
+                </span>
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-6 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition leading-snug">
+                Mastering Last Mile Clinical Delivery Strategies For Success In Herd Care
+              </h3>
+            </div>
+            <div class="flex items-center justify-between pt-5 border-t border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/50 flex items-center justify-center font-bold text-amber-700 dark:text-amber-300 text-sm overflow-hidden shrink-0 shadow-sm">
+                  <span class="">C</span>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white leading-tight">Chris</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">May 12, 2025</p>
+                </div>
+              </div>
+              <a href="#how-it-works" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 transition shadow-md shadow-amber-600/30">
+                <span class="">Read More</span>
+                <span class="w-5 h-5 rounded-full bg-slate-900/20 flex items-center justify-center text-xs rtl:rotate-180">→</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="lg:col-span-6 flex flex-col gap-6 h-full">
+        <article class="group bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 grid grid-cols-1 sm:grid-cols-12 flex-1">
+          <div class="relative sm:col-span-5 aspect-[16/10] sm:aspect-auto overflow-hidden bg-slate-100 dark:bg-slate-800">
+            <img src="https://lh3.googleusercontent.com/aida/AEtjO1Xibzr10_-9yEESekwIg_FPH-MlUbRg8B_VChJTEePDDaUw0aaH9LUVvwQLnK1YNPDIhEsfORrHEvLEWBBeKZVGrhT-rCLGoB9WWzFuGfoy3Bz46nMedMlJrVWZ6W8c_6wiOPdfZs7ahuyMmJMlSkv0NStCtb-BWbsHX5PT802Diuu_HUDDH8nP3U87tOOVCwVK193JGAk1DUgNh8rmJ2LXjcMl93bB5o86stQXdJ_GzgsfxqGL8PvrmKI" alt="Launch of real-time monitoring" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute bottom-3 end-3 px-3 py-1 rounded-full text-xs font-bold text-white bg-amber-600 shadow-md tracking-wide">
+              Therapeutics
+            </span>
+          </div>
+          <div class="sm:col-span-7 p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                    <line x1="16" x2="16" y1="2" y2="6"></line>
+                    <line x1="8" x2="8" y1="2" y2="6"></line>
+                    <line x1="3" x2="21" y1="10" y2="10"></line>
+                  </svg>
+                  May 10, 2025
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  Comment
+                </span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition leading-snug">
+                VetPedia Announces Launch Of Real-Time Pharmacovigilance Monitoring
+              </h3>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/50 flex items-center justify-center font-bold text-amber-700 dark:text-amber-300 text-xs overflow-hidden shrink-0 shadow-sm">
+                  <span class="">K</span>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Kevin Cooper</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">May 10, 2025</p>
+                </div>
+              </div>
+              <a href="#how-it-works" aria-label="Read full article" class="w-9 h-9 rounded-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center shadow-md shadow-amber-600/30 transition">
+                <span class="text-sm leading-none rtl:rotate-180">→</span>
+              </a>
+            </div>
+          </div>
+        </article>
+        <article class="group bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 grid grid-cols-1 sm:grid-cols-12 flex-1">
+          <div class="relative sm:col-span-5 aspect-[16/10] sm:aspect-auto overflow-hidden bg-slate-100 dark:bg-slate-800">
+            <img src="https://lh3.googleusercontent.com/aida/AEtjO1U3nXIysI4VM6GPGTEeE536h2NFXcusmw80jnAllpXp9qXIsIbn8jupanoqeSlWwFujuXcA1ePpBQRv93Xneol5kYYqct0d0JjGNFnScDlbu7roGCdoLHqoTUxvQ6veQRYQt6Cn4wg05w7CnnQqqeVGSQ--Rb_qdf5QmLDauJYhHNqz_3HVqJS1ylt4aGwlhn5_vGOm6E47Wec80nZXdgZCdZQZzpfNJcaVKduL7tKtJKqp4A9tta9hd-tr" alt="Ensuring Biosecurity Quality Services" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute bottom-3 end-3 px-3 py-1 rounded-full text-xs font-bold text-white bg-amber-600 shadow-md tracking-wide">
+              Biosecurity
+            </span>
+          </div>
+          <div class="sm:col-span-7 p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                    <line x1="16" x2="16" y1="2" y2="6"></line>
+                    <line x1="8" x2="8" y1="2" y2="6"></line>
+                    <line x1="3" x2="21" y1="10" y2="10"></line>
+                  </svg>
+                  May 08, 2025
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  Comment
+                </span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition leading-snug">
+                We Ensure You The Best Quality Care &amp; Disease Prevention Standards
+              </h3>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/50 flex items-center justify-center font-bold text-amber-700 dark:text-amber-300 text-xs overflow-hidden shrink-0 shadow-sm">
+                  <span class="">A</span>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Alisa Fox</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">May 08, 2025</p>
+                </div>
+              </div>
+              <a href="#how-it-works" aria-label="Read full article" class="w-9 h-9 rounded-full bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center shadow-md shadow-amber-600/30 transition">
+                <span class="text-sm leading-none rtl:rotate-180">→</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- =========================================================================
+         SECTION 5: "HOW IT WORKS" (Three Numbered Steps on Connecting Timeline)
+         ========================================================================= -->
+<!-- =========================================================================
+         SECTION 6: "WHY VETPEDIA" (2x2 Feature Grid, Authority-Driven)
+         ========================================================================= -->
+<!-- =========================================================================
+         SECTION 7: "LATEST FROM THE BLOG" (3 Article Cards, Real Clinical Cover Photos)
+         ========================================================================= -->
+
+<!-- =========================================================================
+         SECTION 8: FINAL CTA BAND (Full-width, Deep Indigo->Sky Gradient)
+         ========================================================================= -->
+<section class="relative py-20 lg:py-24 bg-gradient-to-r rtl:bg-gradient-to-l from-indigo-700 via-indigo-600 to-sky-600 text-white overflow-hidden">
+<!-- Subtle blurred photo background at very low opacity -->
+<div class="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none">
+<img alt="" class="w-full h-full object-cover blur-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjQw9vxwDuz8kyUi8zNVI7VWZGsHBPHkAmUEtcJX3HP8xRUu54_urYmNP7A9CX5430QJVnXdW9DJKmQRFgdu93OymGke3RfBkfdicvN8ua5Ar3C6ZOOQQ7qcljY4gTmjDfHy7GqCIKu1a-yrF5XdqPLC2Yo8Zwy2pcAgE6t4QIzkEPu6IJiYRQ1SMScrIK9yiZWncXKip6nept6zFlR8XxOBYXMVyXaaAQUJNYB2k85pxy-yNjE4UtcA">
+</div>
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+<h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4" data-ar="هل أنت مستعد للاستكشاف؟" data-en="Ready to explore?">
+          Ready to explore?
+        </h2>
+<p class="text-lg sm:text-xl text-indigo-100 max-w-2xl mx-auto mb-10" data-ar="تفضل بالوصول لقاعدة البيانات الشاملة للأدوية البيطرية والأدلة السريرية الآن مجاناً." data-en="Access the full database of veterinary drugs, active ingredients, and clinical guides today.">
+          Access the full database of veterinary drugs, active ingredients, and clinical guides today.
+        </p>
+<div class="flex flex-wrap items-center justify-center gap-4">
+<a class="px-8 py-4 rounded-xl text-base font-bold text-indigo-900 bg-white hover:bg-slate-100 shadow-xl shadow-indigo-950/20 transition-all focus:outline-none focus:ring-2 focus:ring-white" href="#browse-hub">
+<span class="" data-ar="تصفح قاعدة البيانات" data-en="Browse the database">Browse the database</span>
+</a>
+<a class="px-8 py-4 rounded-xl text-base font-bold text-white bg-transparent border-2 border-white/80 hover:bg-white/10 transition-all focus:outline-none focus:ring-2 focus:ring-white" href="#contact">
+<span class="" data-ar="تواصل معنا" data-en="Contact us">Contact us</span>
+</a>
+</div>
+</div>
+</section>
+</main>
+<!-- =========================================================================
+       SECTION 9: FOOTER (4 Columns + Bottom Bar + Back to top)
+       ========================================================================= -->
+<footer class="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800" id="footer">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- 4 Columns -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-800">
+<!-- Column 1: Brand & Description (lg:col-span-4) -->
+<div class="lg:col-span-4">
+<a class="inline-flex items-center gap-2 mb-4" href="#">
+<span class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">V</span>
+<span class="text-2xl font-bold tracking-tight text-white font-sans">
+              Vet<span class="text-indigo-400">Pedia</span>
+</span>
+</a>
+<p class="text-sm text-slate-400 leading-relaxed mb-6 max-w-sm" data-ar="قاعدة بيانات دوائية بيطرية ثنائية اللغة ومنصة دعم قرارات سريرية للأطباء البيطريين والباحثين." data-en="Bilingual veterinary pharmaceutical database and clinical decision-support platform for veterinarians, pharmacologists, and researchers.">
+            Bilingual veterinary pharmaceutical database and clinical decision-support platform for veterinarians, pharmacologists, and researchers.
+          </p>
+<div class="text-xs text-slate-500">
+            Medical Grade · Open Clinical Access · ISO/HL7 Compliant
+          </div>
+</div>
+<!-- Column 2: Platform (lg:col-span-3) -->
+<div class="lg:col-span-3">
+<p class="text-xs font-bold text-white uppercase tracking-wider mb-4" data-ar="المنصة" data-en="Platform">Platform</p>
+<ul class="space-y-2.5 text-sm">
+<li class=""><a class="hover:text-white transition" href="#large-animals">Large Animals Clinical Hub</a></li>
+<li class=""><a class="hover:text-white transition" href="#drugs">Veterinary Drugs &amp; SPC</a></li>
+<li class=""><a class="hover:text-white transition" href="#poultry">Poultry Husbandry &amp; Diseases</a></li>
+<li class=""><a class="hover:text-white transition" href="#database-stats">A–Z Active Ingredients Index</a></li>
+<li class=""><a class="hover:text-white transition" href="#browse-hub">Drug Interaction Checker</a></li>
+</ul>
+</div>
+<!-- Column 3: Resources (lg:col-span-3) -->
+<div class="lg:col-span-3">
+<p class="text-xs font-bold text-white uppercase tracking-wider mb-4" data-ar="الموارد والدعم" data-en="Resources">Resources</p>
+<ul class="space-y-2.5 text-sm">
+<li class=""><a class="hover:text-white transition" href="#latest-blog">Clinical Blog &amp; Monographs</a></li>
+<li class=""><a class="hover:text-white transition" href="#about">About VetPedia Editorial Board</a></li>
+<li class=""><a class="hover:text-white transition" href="#contact">Contact &amp; Formulary Submission</a></li>
+<li class=""><a class="hover:text-white transition" href="#privacy">Privacy Policy</a></li>
+<li class=""><a class="hover:text-white transition" href="#terms">Terms of Clinical Service</a></li>
+</ul>
+</div>
+<!-- Column 4: Language Switch & Regulatory Notes (lg:col-span-2) -->
+<div class="lg:col-span-2">
+<p class="text-xs font-bold text-white uppercase tracking-wider mb-4" data-ar="اللغة" data-en="Language / اللغة">Language</p>
+<div class="flex flex-col gap-2 mb-6">
+<button class="text-start text-sm hover:text-indigo-400 transition flex items-center justify-between py-1" onclick="setLanguage('en')">
+<span class="">English (Default)</span>
+<span class="text-xs font-mono text-slate-500">EN</span>
+</button>
+<button class="text-start text-sm hover:text-indigo-400 transition flex items-center justify-between py-1 font-sans" onclick="setLanguage('ar')">
+<span class="">العربية (RTL)</span>
+<span class="text-xs font-mono text-slate-500">ع</span>
+</button>
+</div>
+<div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 text-[11px] text-slate-400 leading-tight">
+            Independent clinical index without commercial manufacturer bias.
+          </div>
+</div>
+</div>
+<!-- Bottom Bar with Copyright & Back to Top Affordance -->
+<div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+<p class="">
+          © <span class="" id="current-year">2026</span> VetPedia. Veterinary Drugs, Active Ingredients &amp; Clinical Decision Support Platform. All rights reserved.
+        </p>
+<button aria-label="Scroll back to top" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-white transition focus:outline-none focus:underline" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+<span class="">Back to top</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="m4.5 15.75 7.5-7.5 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</footer>
+<!-- =========================================================================
+       VANILLA JAVASCRIPT: THEME TOGGLE, MOBILE DRAWER, STICKY SCROLL, & RTL/BILINGUAL
+       ========================================================================= -->
+<script>
+    // 1. Dynamic Year
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // 2. Dark Mode Toggle with localStorage and prefers-color-scheme support
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        htmlElement.classList.add('dark');
+        localStorage.setItem('vetpedia-theme', 'dark');
+      } else {
+        htmlElement.classList.remove('dark');
+        localStorage.setItem('vetpedia-theme', 'light');
+      }
+    }
+
+    // Initialize Theme
+    const savedTheme = localStorage.getItem('vetpedia-theme');
+    if (savedTheme) {
+      applyTheme(savedTheme === 'dark');
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(prefersDark);
+    }
+
+    themeToggleBtn?.addEventListener('click', () => {
+      const currentlyDark = htmlElement.classList.contains('dark');
+      applyTheme(!currentlyDark);
+    });
+
+    // 3. Header Translucency & Shadow on Scroll
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('shadow-md', 'border-slate-300/80', 'dark:border-slate-800');
+        header.classList.remove('border-slate-200/60');
+      } else {
+        header.classList.remove('shadow-md', 'border-slate-300/80');
+        header.classList.add('border-slate-200/60');
+      }
+    });
+
+    // 4. Mobile Drawer Operability (Accessible, ESC-to-close, Focus Trap)
+    const drawerTrigger = document.getElementById('mobile-menu-trigger');
+    const drawerClose = document.getElementById('mobile-drawer-close');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const drawerPanel = document.getElementById('mobile-drawer-panel');
+    const drawerLinks = document.querySelectorAll('.drawer-nav-item');
+
+    function openDrawer() {
+      mobileDrawer.classList.remove('hidden');
+      drawerTrigger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        drawerPanel.classList.remove('translate-x-full', 'rtl:-translate-x-full');
+      }, 10);
+    }
+
+    function closeDrawer() {
+      drawerPanel.classList.add('translate-x-full', 'rtl:-translate-x-full');
+      drawerTrigger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        mobileDrawer.classList.add('hidden');
+      }, 300);
+    }
+
+    drawerTrigger?.addEventListener('click', openDrawer);
+    drawerClose?.addEventListener('click', closeDrawer);
+    mobileDrawer?.addEventListener('click', (e) => {
+      if (e.target === mobileDrawer) closeDrawer();
+    });
+    drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !mobileDrawer.classList.contains('hidden')) {
+        closeDrawer();
+      }
+    });
+
+    // 5. Bilingual Language & RTL Switcher
+    const langEnBtn = document.getElementById('lang-en-btn');
+    const langArBtn = document.getElementById('lang-ar-btn');
+
+    function setLanguage(lang) {
+      if (lang === 'ar') {
+        htmlElement.setAttribute('dir', 'rtl');
+        htmlElement.setAttribute('lang', 'ar');
+        langArBtn?.classList.add('bg-white', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-white', 'shadow-sm');
+        langArBtn?.classList.remove('text-slate-600', 'dark:text-slate-400');
+        langEnBtn?.classList.remove('bg-white', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-white', 'shadow-sm');
+        langEnBtn?.classList.add('text-slate-600', 'dark:text-slate-400');
+        
+        // Translate text elements with data-ar attributes
+        document.querySelectorAll('[data-ar]').forEach(el => {
+          el.textContent = el.getAttribute('data-ar');
+        });
+        document.querySelectorAll('[data-ar-placeholder]').forEach(el => {
+          el.setAttribute('placeholder', el.getAttribute('data-ar-placeholder'));
+        });
+        localStorage.setItem('vetpedia-lang', 'ar');
+      } else {
+        htmlElement.setAttribute('dir', 'ltr');
+        htmlElement.setAttribute('lang', 'en');
+        langEnBtn?.classList.add('bg-white', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-white', 'shadow-sm');
+        langEnBtn?.classList.remove('text-slate-600', 'dark:text-slate-400');
+        langArBtn?.classList.remove('bg-white', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-white', 'shadow-sm');
+        langArBtn?.classList.add('text-slate-600', 'dark:text-slate-400');
+        
+        // Restore English text
+        document.querySelectorAll('[data-en]').forEach(el => {
+          el.textContent = el.getAttribute('data-en');
+        });
+        document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+          el.setAttribute('placeholder', el.getAttribute('data-en-placeholder'));
+        });
+        localStorage.setItem('vetpedia-lang', 'en');
+      }
+    }
+
+    langEnBtn?.addEventListener('click', () => setLanguage('en'));
+    langArBtn?.addEventListener('click', () => setLanguage('ar'));
+
+    // Check initial language
+    const savedLang = localStorage.getItem('vetpedia-lang');
+    if (savedLang === 'ar') {
+      setLanguage('ar');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>
