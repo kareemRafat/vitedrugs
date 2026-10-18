@@ -544,13 +544,17 @@ class LandingPageTest extends TestCase
 
     /**
      * The footer's language block renders each supported locale as a bordered
-     * card, with the current one marked programmatically. Two things are pinned
-     * because both failed silently before: the card must carry `aria-current`,
-     * and the code beside each locale name must be the locale key rather than a
-     * slice of the native name - `mb_substr('العربية', 0, 2)` rendered as "ال".
+     * card, with the current one marked programmatically.
+     *
+     * The card used to carry the locale key — `EN` / `AR` — beside the native
+     * name. That line has been dropped: the native name is the whole label now,
+     * and a second short code under it read as clutter. What is still pinned is
+     * the bug that code was fixing — `mb_substr('العربية', 0, 2)` once rendered
+     * as "ال" — so a future edit that reintroduces a slice of the native name
+     * is still caught.
      */
     #[Test]
-    public function the_footer_language_cards_mark_the_active_locale_and_show_real_codes(): void
+    public function the_footer_language_cards_mark_the_active_locale(): void
     {
         foreach (['en', 'ar'] as $locale) {
             $footer = $this->landingIn($locale)->assertOk()->getContent();
@@ -571,10 +575,13 @@ class LandingPageTest extends TestCase
             $this->assertSame(1, substr_count($footer, 'aria-current="true"'));
             $this->assertSame(1, substr_count($footer, 'aria-current="false"'));
 
-            $this->assertStringContainsString('>EN</span>', $footer);
-            $this->assertStringContainsString('>AR</span>', $footer);
+            // The native name is the whole label now. The EN/AR codes that used
+            // to sit under it were dropped as clutter.
+            $this->assertStringContainsString('>English</span>', $footer);
+            $this->assertStringContainsString('>العربية</span>', $footer);
 
-            // The hack that produced "ال" instead of a language code.
+            // The hack that produced "ال" instead of a language code — a slice
+            // of the native name — must never come back.
             $this->assertStringNotContainsString('mb_substr', $footer);
 
             // No flag glyphs: regional-indicator emoji fall back to the letter
@@ -1201,6 +1208,120 @@ class LandingPageTest extends TestCase
         $this->assertStringContainsString('id="contactToast"', $content);
         $this->assertStringContainsString("window.Toast.show('contactToast', 'success'", $content);
         $this->assertStringContainsString("window.Toast.show('contactToast', 'error'", $content);
+    }
+
+    /**
+     * The homepage toast runs against the theme rather than with it: dark on a
+     * light page, light on a dark one.
+     *
+     * This is the one page where that is right. The toast is anchored bottom
+     * right, over the permanently dark contact band, so a theme-matching surface
+     * disappeared in light mode and read as a stray white card in dark mode.
+     *
+     * The colours are literal, not semantic, and that is load-bearing: the site's
+     * `.dark` block remaps --color-slate-50…800 for Flowbite legibility, which
+     * would turn the light-mode surface navy. slate-900 sits outside that remap
+     * and white is not remapped at all.
+     */
+    #[Test]
+    public function the_landing_toast_runs_against_the_theme(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        preg_match('~<div id="contactToast".*?role="alert"[^>]*class="([^"]*)"~s', $content, $toast);
+
+        $this->assertNotEmpty($toast, 'The landing toast is missing.');
+
+        $classes = $toast[1];
+
+        // Dark surface in light mode.
+        $this->assertStringContainsString('bg-slate-900', $classes);
+        $this->assertStringContainsString('text-slate-100', $classes);
+
+        // Flipped to a light surface in dark mode.
+        $this->assertStringContainsString('dark:bg-white', $classes);
+        $this->assertStringContainsString('dark:text-slate-900', $classes);
+
+        // The semantic tokens it used to be built from must not creep back in,
+        // or the remap takes the surface back over.
+        $this->assertStringNotContainsString('bg-neutral-primary-soft', $classes);
+    }
+
+    /**
+     * The inversion is opt-in, so the toast on /contact — which mounts its own,
+     * with the same id — keeps matching its theme. That page is entirely light or
+     * dark around the form, so there is nothing for a flipped surface to sit
+     * against.
+     */
+    #[Test]
+    public function the_contact_page_keeps_a_theme_matching_toast(): void
+    {
+        $content = $this->get('/contact')->assertOk()->getContent();
+
+        preg_match('~<div id="contactToast".*?role="alert"[^>]*class="([^"]*)"~s', $content, $toast);
+
+        $this->assertNotEmpty($toast, 'The /contact toast is missing.');
+
+        $this->assertStringContainsString('bg-neutral-primary-soft', $toast[1]);
+        $this->assertStringNotContainsString('dark:bg-white', $toast[1]);
+    }
+
+    /**
+     * The landing toast's icon is the page's indigo, not the semantic green.
+     *
+     * Two things have to hold, and they are checked separately because they fail
+     * independently:
+     *
+     *   1. The markup ships the indigo tile, so the icon is correct before any
+     *      JavaScript has run.
+     *   2. resources/js/toast.js rewrites the tile's classes on *every* show. If
+     *      only the Blade changed, the first message would flash indigo and then
+     *      snap back to green — which is what fixing the markup alone did.
+     *
+     * The `dark:` half is load-bearing too. The toast surface is flipped, so the
+     *      tile has to stay legible on the dark one in light mode and on the white one
+     * in dark mode. indigo-300 on white has nowhere near enough contrast.
+     */
+    #[Test]
+    public function the_landing_toast_uses_the_brand_icon_not_the_semantic_green(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        preg_match('~<div id="contactToast".*?</div>\s*</div>~s', $content, $toast);
+        $this->assertNotEmpty($toast, 'The landing toast is missing.');
+
+        $markup = $toast[0];
+
+        $this->assertStringContainsString('data-icon-tone="brand"', $markup);
+        $this->assertStringContainsString('text-indigo-300', $markup);
+        $this->assertStringNotContainsString('text-fg-success', $markup);
+
+        // And the script has to honour it, keyed the same way.
+        $script = (string) file_get_contents(resource_path('js/toast.js'));
+
+        $this->assertStringContainsString('brand:', $script);
+        $this->assertStringContainsString('text-indigo-300 bg-indigo-500/15', $script);
+        $this->assertStringContainsString('dark:text-indigo-600', $script);
+        $this->assertStringContainsString('toast.dataset.iconTone', $script);
+
+        // Errors stay red in the brand palette. A failure that recoloured itself
+        // to match the page would be a lie about how serious it is.
+        $this->assertMatchesRegularExpression(
+            '~brand:\s*\{[^}]*error: .text-fg-danger~s',
+            $script
+        );
+    }
+
+    /**
+     * Every other page keeps the semantic green. The tone is opt-in, and a green
+     * tick is the correct signal for a generic "that worked".
+     */
+    #[Test]
+    public function the_contact_page_keeps_the_semantic_success_icon(): void
+    {
+        $content = $this->get('/contact')->assertOk()->getContent();
+
+        $this->assertStringContainsString('data-icon-tone="success"', $content);
     }
 
     /**

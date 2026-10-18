@@ -108,11 +108,17 @@ new class extends Component
      mount `<x-toast id="contactToast">`; /contact mounts its own. --}}
 <div x-data x-on:contact-sent.window="window.Toast.show('contactToast', 'success', '{{ __('messages.pages.contact.success') }}')" x-on:contact-failed.window="window.Toast.show('contactToast', 'error', '{{ __('messages.pages.contact.error') }}')">
     @if ($this->isLanding())
-        {{-- Homepage inquiry form: name, clinical role, institutional email, category, message.
+        {{-- Homepage inquiry form: name, email, clinical role, category, message.
              Sits inside the permanently dark contact band, so every surface here is
-             dark in both themes and carries no `dark:` variants. --}}
-        <form wire:submit="submit" class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+             dark in both themes and carries no `dark:` variants.
+
+             Field order is the order a visitor fills it in — name and email, then
+             the two that classify the message — and each pair sits on one row.
+             The card gave this form roughly 620px before; it now has ~950px, so
+             the pairs are wide rather than cramped and the message box is worth
+             the extra rows. --}}
+        <form wire:submit="submit" class="space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                     <label for="name" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.name_label') }}</label>
                     <input type="text" name="name" id="name" wire:model.blur="name" required
@@ -123,23 +129,23 @@ new class extends Component
                     @enderror
                 </div>
                 <div>
-                    <label for="role" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.role_label') }}</label>
-                    <input type="text" name="role" id="role" wire:model.blur="role"
-                        class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('role') border-red-400/70 @enderror"
-                        placeholder="{{ __('messages.pages.contact.role_placeholder') }}">
-                    @error('role')
-                        <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
                     <label for="email" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.email_label') }}</label>
                     <input type="email" name="email" id="email" wire:model.blur="email" required
                         class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('email') border-red-400/70 @enderror"
                         placeholder="{{ __('messages.pages.contact.email_placeholder') }}">
                     @error('email')
+                        <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label for="role" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.role_label') }}</label>
+                    <input type="text" name="role" id="role" wire:model.blur="role"
+                        class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('role') border-red-400/70 @enderror"
+                        placeholder="{{ __('messages.pages.contact.role_placeholder') }}">
+                    @error('role')
                         <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
                     @enderror
                 </div>
@@ -160,8 +166,8 @@ new class extends Component
 
             <div>
                 <label for="message" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.message_label') }}</label>
-                <textarea name="message" id="message" rows="4" wire:model.blur="message" required
-                    class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none @error('message') border-red-400/70 @enderror"
+                <textarea name="message" id="message" rows="5" wire:model.blur="message" required
+                    class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all resize-y @error('message') border-red-400/70 @enderror"
                     placeholder="{{ __('messages.pages.contact.message_placeholder') }}"></textarea>
                 @error('message')
                     <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
@@ -169,11 +175,48 @@ new class extends Component
             </div>
 
             <div class="pt-2 flex justify-end">
-                <button type="submit" wire:loading.attr="disabled"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] shadow-lg shadow-[#0b1f38]/50 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-50">
-                    <span wire:loading.remove wire:target="submit">{{ __('messages.pages.contact.submit') }}</span>
-                    <span wire:loading wire:target="submit">...</span>
-                    <span class="rtl:rotate-180 transition-transform">&rarr;</span>
+                {{--
+                    Submitting state: the icon swaps, the label does not.
+
+                    Three things this gets right that the previous version did not:
+
+                      * The label never changes, so the button cannot change width
+                        mid-submit. Swapping "Send Message" for "Sending..." made
+                        the control visibly resize under the visitor's cursor.
+                      * Arrow and spinner are both inline SVGs at w-4 h-4, so they
+                        occupy exactly the same box and share a baseline. The old
+                        arrow was the `→` glyph, which renders at the text size —
+                        14px beside a 16px spinner.
+                      * `shrink-0` on both. Without it the icon is a flex item and
+                        gets squeezed when the label wraps, knocking it out of
+                        alignment on narrow screens.
+
+                    `wire:loading.attr="disabled"` is deliberately absent. Livewire
+                    already disables a submit button for the duration of its own
+                    form submission, and an *untargeted* wire:loading additionally
+                    fires on every `wire:model.blur` in this form — so the button
+                    used to grey out every time the visitor tabbed out of a field.
+
+                    `.delay.shortest` kills the flash: a validation failure returns
+                    in well under 50ms, and without the delay the spinner appeared
+                    on every failed submit.
+                --}}
+                <button type="submit"
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] shadow-lg shadow-[#0b1f38]/50 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed">
+                    <span>{{ __('messages.pages.contact.submit') }}</span>
+
+                    <span wire:loading.remove wire:target="submit" class="shrink-0 rtl:rotate-180 transition-transform" aria-hidden="true">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M5 12h14m0 0-6-6m6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+
+                    <span wire:loading wire:target="submit" wire:loading.delay.shortest wire:loading.inline-flex class="shrink-0" aria-hidden="true">
+                        <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </span>
                 </button>
             </div>
         </form>
@@ -233,19 +276,26 @@ new class extends Component
                 @enderror
             </div>
 
-            <button type="submit" wire:loading.attr="disabled"
-                class="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base shadow-xs transition-colors disabled:opacity-50">
-                <span wire:loading.remove wire:target="submit">
+            {{-- Same icon-swap treatment as the landing button above, for the same
+                 reasons: the label never changes so the button cannot resize, both
+                 icons are 16px so they share a baseline, and `shrink-0` keeps the
+                 icon from being squeezed when the label wraps. The old markup
+                 also shipped a hardcoded English "Sending..." instead of a
+                 translated one. --}}
+            <button type="submit"
+                class="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium rounded-base shadow-xs transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                <span>{{ __('messages.pages.contact.submit') }}</span>
+
+                <span wire:loading.remove wire:target="submit" class="shrink-0" aria-hidden="true">
                     <x-lucide-send class="w-4 h-4" />
                 </span>
-                <span wire:loading wire:target="submit">
+
+                <span wire:loading wire:target="submit" wire:loading.delay.shortest wire:loading.inline-flex class="shrink-0" aria-hidden="true">
                     <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
                 </span>
-                <span wire:loading.remove wire:target="submit">{{ __('messages.pages.contact.submit') }}</span>
-                <span wire:loading wire:target="submit">Sending...</span>
             </button>
         </form>
     @endif

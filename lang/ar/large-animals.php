@@ -538,6 +538,12 @@ return [
         'cta_title' => 'استكشف الأمراض حسب التخصص',
         'cta_subtitle' => 'الأمراض المعدية والأمراض الباطنة والأمراض المشتركة — منسّقة ومترابطة.',
         'cta_button' => 'تصفح التخصصات',
+
+        // The plain lists below the tool grid. Each is fed real rows and hides
+        // itself when its collection comes back empty.
+        'articles_heading' => 'أحدث المقالات الطبية',
+        'articles_subtitle' => 'مقالات منشورة مؤخراً عن تشخيص وعلاج ومراقبة الحالات في هذا القسم.',
+        'articles_view_all' => 'كل المقالات',
     ],
 
     'specializations' => [

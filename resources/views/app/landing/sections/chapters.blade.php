@@ -75,11 +75,6 @@
             <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mb-8">
                 {{ __('messages.landing.chapters.subtitle') }}
             </p>
-            <a href="{{ route('drugs.home') }}"
-                class="inline-flex items-center justify-between gap-3 px-5 py-3 border border-slate-700/80 bg-slate-900/60 text-xs font-bold tracking-wider uppercase text-slate-200 hover:bg-slate-800 hover:text-white transition-all rounded shadow-sm">
-                <span>{{ __('messages.landing.chapters.cta_all') }}</span>
-                <span class="text-sm leading-none rtl:rotate-180">&nearr;</span>
-            </a>
         </div>
         {{-- `items-stretch` is the default, and the end column relies on it: the
              grid row height comes from the taller start column, and the card

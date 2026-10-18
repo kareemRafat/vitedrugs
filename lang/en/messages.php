@@ -190,19 +190,21 @@ return [
             'heading' => 'Questions, Corrections, or a Formulary Request?',
             'subtitle' => 'Messages sent from this page are stored and reviewed by the site editors. Tell us what you need and include your role so we can route it.',
 
-            'channel1_title' => 'Clinical Inquiries',
-            'channel1_desc' => 'Monograph queries, dosing questions, interaction checks and translation corrections.',
-            'channel1_cta' => 'Send a message',
-
-            'channel2_title' => 'Institutional & Formularies',
-            'channel2_desc' => 'Teaching institutions, hospital groups and formulary maintainers looking to reuse the data.',
-            'channel2_cta' => 'Send a message',
-
-            // Replaces the reference's "replies within 24 clinical hours" promise.
-            'triage_badge' => 'Editorial Triage',
-            'triage_title' => 'Every message reaches a real inbox',
-            'triage_desc' => 'Submissions are written to the database and appear in the staff inbox, where they are marked read once reviewed. There is no automated reply and no guaranteed response time.',
-
+            /*
+             * `channel1_*`, `channel2_*` and `triage_*` used to live here.
+             *
+             * The two channel cards each linked to `#contact-form`, which is the
+             * form sitting next to them, and the triage card repeated the
+             * language switcher and About link the footer already carries.
+             * Between them they took 5 of the band's 12 columns and left the
+             * form about 620px wide. All three are gone; the form has the band
+             * to itself now.
+             *
+             * `live_badge` replaces the pulse-dot badge from the triage card —
+             * same signal, it is the one honest claim on this page: the form
+             * really does reach a staff inbox.
+             */
+            'live_badge' => 'Live',
             'form_title' => 'Send a Message',
             'form_subtitle' => 'All fields marked required must be completed. Fields marked optional can be left blank.',
         ],
@@ -267,6 +269,7 @@ return [
         'feature_companies_title' => 'Company Directory',
         'feature_companies_desc' => 'Find manufacturers, distributors, and agents in the veterinary pharmaceutical industry.',
         'latest_blog' => 'Latest from Blog',
+        'blog_subtitle' => 'Notes on veterinary pharmacology and clinical practice.',
         'view_all' => 'View All',
         'dosage_forms_badge' => 'Dosage Forms',
         'species_badge' => 'Species',
@@ -274,36 +277,18 @@ return [
         'cta_subtitle' => 'Start browsing our comprehensive veterinary pharmaceutical database.',
         'cta_browse' => 'Browse Products',
         'cta_register' => 'Create Account',
-        'how_heading' => 'How It Works',
-        'how_subtitle' => 'Three simple steps to find the veterinary information you need.',
-        'step1_title' => 'Search',
-        'step1_desc' => 'Search across thousands of veterinary products, diseases, active ingredients, and companies.',
-        'step2_title' => 'Browse',
-        'step2_desc' => 'Explore detailed profiles with indications, dosages, withdrawal periods, and clinical data.',
-        'step3_title' => 'Decide',
-        'step3_desc' => 'Access comprehensive information to make informed clinical decisions for animal health.',
-        'browse_heading' => 'Browse by Category',
-        'browse_subtitle' => 'Explore our veterinary knowledge base through these main categories.',
-        'browse_products' => 'Veterinary Products',
-        'browse_products_desc' => 'Full pharmaceutical profiles with dosage, indications, and more.',
-        'browse_diseases' => 'Animal Diseases',
-        'browse_diseases_desc' => 'Comprehensive disease knowledge with linked treatments.',
-        'browse_ingredients' => 'Active Ingredients',
-        'browse_ingredients_desc' => 'Reference library of pharmaceutical substances.',
-        'browse_companies' => 'Pharma Companies',
-        'browse_companies_desc' => 'Manufacturers, distributors, and agents directory.',
-        'why_heading' => 'Why VetPedia?',
-        'why_subtitle' => 'Built for veterinary professionals, researchers, and animal health practitioners.',
-        'why_item1_title' => 'Comprehensive Database',
-        'why_item1_desc' => 'Thousands of veterinary products, diseases, and active ingredients in one searchable platform.',
-        'why_item2_title' => 'Clinical Decision Support',
-        'why_item2_desc' => 'Detailed information on indications, contraindications, dosages, and withdrawal periods.',
-        'why_item3_title' => 'Trusted References',
-        'why_item3_desc' => 'Information compiled from veterinary monographs, product inserts, and scientific publications.',
-        'why_item4_title' => 'Bilingual Platform',
-        'why_item4_desc' => 'Full English and Arabic support for the veterinary community across the region.',
+        /*
+         * `how_*`, `step*_title/desc` and `why_*` used to live here. Those two
+         * sections restated what the library grid and the stats band already
+         * said, and every card in them pointed at products.index because there
+         * was nowhere else for them to go. `browse_*` went earlier for the same
+         * reason: it duplicated `feature_*` a screen apart.
+         */
         'database' => 'Database',
         'total_records' => 'Total Records',
+
+        // Added with the redesign: the stats band had no title of its own before.
+        'stats_heading' => 'The database at a glance',
     ],
 
     'contact_categories' => [
@@ -399,6 +384,7 @@ return [
         'back_to_top' => 'Back to top',
         'light_mode' => 'Light Mode',
         'dark_mode' => 'Dark Mode',
+        'close' => 'Close',
     ],
 
     'blog' => [

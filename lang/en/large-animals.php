@@ -540,6 +540,12 @@ return [
         'cta_title' => 'Explore diseases by specialty',
         'cta_subtitle' => 'Infectious diseases, internal medicine and zoonotic conditions — curated and cross-linked.',
         'cta_button' => 'Browse specializations',
+
+        // The plain lists below the tool grid. Each is fed real rows and hides
+        // itself when its collection comes back empty.
+        'articles_heading' => 'Latest medical articles',
+        'articles_subtitle' => 'Recently published pieces on the diagnosis, treatment and control of the conditions in this section.',
+        'articles_view_all' => 'All articles',
     ],
 
     'specializations' => [

@@ -27,7 +27,7 @@
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mb-4">
                     <span class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">V</span>
                     <span class="text-2xl font-bold tracking-tight text-white font-sans">
-                        Vet<span class="text-indigo-400">Pedia</span>
+                        ArVet<span class="text-indigo-400">Pedia</span>
                     </span>
                 </a>
                 <p class="text-sm text-slate-400 leading-relaxed mb-6 max-w-sm">
@@ -91,7 +91,6 @@
                                     'text-white' => $isCurrentLocale,
                                     'text-slate-200' => ! $isCurrentLocale,
                                 ])>{{ $properties['native'] }}</span>
-                                <span class="block text-[11px] font-mono uppercase text-slate-500">{{ strtoupper($localeCode) }}</span>
                             </span>
                             @if ($isCurrentLocale)
                                 <x-lucide-check class="w-4 h-4 shrink-0 text-indigo-300" />

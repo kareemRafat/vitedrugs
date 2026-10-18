@@ -89,10 +89,19 @@
 
     {{-- Contact feedback. The contact form dispatches `contact-sent` /
          `contact-failed`, but the layout has to own the element the toast script
-         looks up by id, otherwise those dispatches resolve to nothing. Anchored
-         bottom-right: the navbar floats at top-4 and the cookie consent occupies
-         the bottom-left corner. --}}
-    <x-toast id="contactToast" type="success" position="bottom" title="" message="" />
+         looks up by id, otherwise those dispatches resolve to nothing.
+
+         `invert` flips the toast against the theme — dark on a light page, light
+         on a dark one. This page is the reason it exists: the toast sits bottom
+         right, over the permanently dark contact band, so a theme-matching
+         surface made it vanish in light mode and read as a stray white card in
+         dark mode.
+
+         `icon-tone="brand"` puts the tick in the page's indigo rather than the
+         semantic green. Both halves have to move together: the toast surface is
+         flipped and the tile is tuned per surface, so a green tile on a white
+         toast and a white toast on a dark band were never the same composition. --}}
+    <x-toast id="contactToast" type="success" position="bottom" invert icon-tone="brand" title="" message="" />
 
     <x-cookie-consent />
 

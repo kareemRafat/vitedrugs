@@ -7,6 +7,7 @@ use App\Models\ContactSubmission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -49,6 +50,167 @@ class ContactSubmissionTest extends TestCase
         $bag = $component->instance()->getErrorBag();
 
         $this->assertTrue($bag->isEmpty(), 'Unexpected validation errors: '.$bag->toJson());
+    }
+
+    // ------------------------------------------------- the submitting state
+
+    /**
+     * Both variants share one submit button, and three things about its
+     * loading state failed silently before.
+     *
+     * @return array<string, array{0: string}>
+     */
+    public static function variants(): array
+    {
+        return [
+            'landing' => ['landing'],
+            'page' => ['page'],
+        ];
+    }
+
+    /**
+     * Livewire already disables a submit button for the length of its own form
+     * submission. The extra *untargeted* `wire:loading.attr="disabled"` on top of
+     * that fired on every `wire:model.blur` in the form, so the button greyed
+     * out whenever the visitor tabbed out of a field.
+     */
+    #[Test]
+    #[DataProvider('variants')]
+    public function the_submit_button_is_not_disabled_by_untargeted_loading(string $variant): void
+    {
+        $html = Livewire::test('contact.contact-form', ['variant' => $variant])->html();
+
+        $this->assertStringNotContainsString(
+            'wire:loading.attr="disabled"',
+            $html,
+            "The [{$variant}] submit button greys out on field blur again."
+        );
+    }
+
+    /**
+     * The button used to carry hardcoded English loading text: the /contact
+     * variant shipped a literal "Sending..." that Arabic visitors saw verbatim,
+     * and the landing variant shipped a bare "..." that said nothing at all.
+     *
+     * Asserted against the template source: the button now swaps an icon and
+     * leaves the label alone, so there is no translated loading string to find
+     * in the rendered page.
+     */
+    #[Test]
+    public function the_button_carries_no_hardcoded_english_loading_text(): void
+    {
+        $source = (string) file_get_contents(
+            resource_path('views/app/components/contact/⚡contact-form.blade.php')
+        );
+
+        $this->assertStringNotContainsString(
+            '>Sending...<',
+            $source,
+            'The submitting label is hardcoded English rather than translated.'
+        );
+    }
+
+    /**
+     * The submitting state swaps the icon, it does not swap the label.
+     *
+     * This is the whole shape of the fix. An earlier attempt swapped the text for
+     * "Sending...", which resized the button under the visitor's cursor and
+     * needed a new translation in both locales to say nothing the spinner did not
+     * already say.
+     */
+    #[Test]
+    #[DataProvider('variants')]
+    public function the_submit_button_swaps_its_icon_not_its_label(string $variant): void
+    {
+        $html = Livewire::test('contact.contact-form', ['variant' => $variant])->html();
+
+        preg_match('~<button type="submit".*?</button>~s', $html, $button);
+
+        $this->assertNotEmpty($button, "The [{$variant}] submit button is missing.");
+
+        $markup = $button[0];
+        $label = __('messages.pages.contact.submit');
+
+        $this->assertSame(
+            1,
+            substr_count($markup, $label),
+            "[{$variant}] should render the submit label exactly once."
+        );
+
+        // The label sits outside every loading directive, so the swap cannot
+        // touch it. Checked by position: the label has to come first in source
+        // order, ahead of the element that toggles.
+        $labelPosition = strpos($markup, $label);
+        $loadingPosition = strpos($markup, 'wire:loading wire:target="submit"');
+
+        $this->assertIsInt($labelPosition, "[{$variant}] has no submit label.");
+        $this->assertIsInt($loadingPosition, "[{$variant}] has no loading state.");
+
+        $this->assertLessThan(
+            $loadingPosition,
+            $labelPosition,
+            "[{$variant}] puts the label inside the toggled region, so it changes while submitting."
+        );
+    }
+
+    /**
+     * Both icons are the same size and neither may be squeezed, which is what
+     * keeps them on one baseline and stops the label drifting when it wraps.
+     *
+     * The old arrow was the `→` glyph at the text size — 14px beside a 16px
+     * spinner — so the two could not line up.
+     */
+    #[Test]
+    #[DataProvider('variants')]
+    public function both_icons_share_one_aligned_slot(string $variant): void
+    {
+        $html = Livewire::test('contact.contact-form', ['variant' => $variant])->html();
+
+        preg_match('~<button type="submit".*?</button>~s', $html, $button);
+        $markup = $button[0] ?? '';
+
+        // Idle icon and loading icon are both present and both fixed-width.
+        $this->assertSame(
+            2,
+            substr_count($markup, 'shrink-0'),
+            "[{$variant}] icons need shrink-0 so the label cannot squeeze them."
+        );
+
+        $this->assertMatchesRegularExpression(
+            '~wire:loading\.remove[^>]*class="[^"]*shrink-0[^"]*"[^>]*>\s*<(svg|x-lucide-send)~s',
+            $markup,
+            "[{$variant}] idle icon is not a fixed-size element in its own slot."
+        );
+
+        $this->assertMatchesRegularExpression(
+            '~wire:loading wire:target="submit"[^>]*>\s*<svg class="animate-spin w-4 h-4"~s',
+            $markup,
+            "[{$variant}] loading icon is not a 16px spinner in its own slot."
+        );
+    }
+
+    /**
+     * Both variants hold the swap back briefly. The delay is the point: a
+     * validation failure returns in well under 50ms, and without it the spinner
+     * flickered on every failed submit.
+     */
+    #[Test]
+    #[DataProvider('variants')]
+    public function the_sending_state_is_held_back_so_it_does_not_flicker(string $variant): void
+    {
+        $html = Livewire::test('contact.contact-form', ['variant' => $variant])->html();
+
+        $this->assertSame(
+            1,
+            substr_count($html, 'wire:loading wire:target="submit"'),
+            "[{$variant}] should toggle exactly one sending state."
+        );
+
+        $this->assertStringContainsString(
+            'wire:loading.delay.shortest',
+            $html,
+            "[{$variant}] flickers its sending state on a fast validation failure."
+        );
     }
 
     // ------------------------------------------------------- the landing variant

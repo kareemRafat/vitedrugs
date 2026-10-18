@@ -70,7 +70,7 @@
                     </svg>
                 </span>
                 <span class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white font-sans">
-                    Vet<span class="text-indigo-600 dark:text-indigo-400">Pedia</span>
+                    ArVet<span class="text-indigo-600 dark:text-indigo-400">Pedia</span>
                 </span>
             </a>
 

@@ -18,35 +18,20 @@
     chrome on a dark surface: a fine radial dot pattern plus two ambient glows,
     the same glow treatment the browse hub uses, left static so this band stays
     the calm counterpart to that section's motion.
+
+    What the three cards went for: two "channel" cards and a triage card used to
+    stack down the start side in a `lg:col-span-5`, leaving the form squeezed
+    into `lg:col-span-7` — about 620px of actual input width on a 1280px
+    canvas. Neither card linked anywhere useful: both channels just jumped to
+    `#contact-form`, which is the form beside them, and the triage card repeated
+    the language switcher and About link the footer already carries.
+
+    So the band is now one object. The form takes the full measure instead, at
+    `max-w-5xl` rather than the full `max-w-7xl` — pushing it to 1280px would
+    make each paired input ~590px wide, which reads as a broken form rather
+    than a generous one. Every field below is now roughly 1.5x wider than it
+    was.
 --}}
-@php
-    $channels = [
-        [
-            'tone' => 'indigo',
-            'icon' => 'envelope',
-            'title' => __('messages.landing.contact.channel1_title'),
-            'body' => __('messages.landing.contact.channel1_desc'),
-            'cta' => __('messages.landing.contact.channel1_cta'),
-        ],
-        [
-            'tone' => 'sky',
-            'icon' => 'building',
-            'title' => __('messages.landing.contact.channel2_title'),
-            'body' => __('messages.landing.contact.channel2_desc'),
-            'cta' => __('messages.landing.contact.channel2_cta'),
-        ],
-    ];
-
-    $channelIcons = [
-        'envelope' => '<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>',
-        'building' => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"/>',
-    ];
-
-    $channelTones = [
-        'indigo' => 'bg-indigo-500/15 border-indigo-400/25 text-indigo-300',
-        'sky' => 'bg-sky-500/15 border-sky-400/25 text-sky-300',
-    ];
-@endphp
 
 {{-- Permanently dark band: `bg-slate-950` with no `dark:` variant, so it reads the same in both themes. --}}
 <section class="py-20 lg:py-28 bg-slate-950 text-white relative border-t border-white/10 overflow-hidden scroll-mt-0" id="contact">
@@ -60,7 +45,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="text-center max-w-3xl mx-auto mb-14 lg:mb-16 flex flex-col items-center">
+        <div class="text-center max-w-3xl mx-auto mb-12 lg:mb-14 flex flex-col items-center">
             <div class="flex items-end justify-center gap-2 mb-3">
                 <span class="text-indigo-400 font-mono font-bold text-xs sm:text-sm tracking-wider">/ 04</span>
                 <span class="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">{{ __('messages.landing.contact.eyebrow') }}</span>
@@ -73,69 +58,37 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-            <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
-                <div class="space-y-4">
-                    @foreach ($channels as $channel)
-                        <div class="p-6 rounded-3xl bg-white/[0.06] backdrop-blur-md border border-white/10 hover:bg-white/[0.09] transition-colors">
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-2xl border flex items-center justify-center shrink-0 {{ $channelTones[$channel['tone']] }}">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                        {!! $channelIcons[$channel['icon']] !!}
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-1">{{ $channel['title'] }}</h3>
-                                    <p class="text-xs text-slate-300 mb-2 leading-relaxed">{{ $channel['body'] }}</p>
-                                    <a href="#contact-form" class="text-sm font-semibold text-indigo-300 hover:text-indigo-200 hover:underline">{{ $channel['cta'] }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+        {{--
+            One card, centred, at the width a form should actually be read at.
+            The heading moved inside it: with the side column gone there is
+            nothing to balance it against, and a form with its own header reads
+            as a single object rather than as a panel bolted next to copy.
+        --}}
+        <div class="max-w-5xl mx-auto">
+            <div class="rounded-3xl bg-slate-900/70 backdrop-blur-md border border-white/10 shadow-2xl shadow-black/40 overflow-hidden">
+                {{-- Header strip. The green pulse is the one live signal on the
+                     page: this form really does reach the staff inbox. --}}
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 px-8 sm:px-10 py-7 bg-white/[0.03] border-b border-white/10">
+                    <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-400/25 text-indigo-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>
+                        </svg>
+                    </span>
 
-                {{-- Replaces the reference's "replies within 24 clinical hours" card,
-                     which promised a service level this project does not operate. --}}
-                <div class="p-6 rounded-3xl bg-gradient-to-br from-indigo-950/80 to-slate-900/80 backdrop-blur-md border border-white/10 shadow-lg shadow-black/30 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span class="text-xs font-mono font-bold tracking-wider text-sky-200 uppercase">{{ __('messages.landing.contact.triage_badge') }}</span>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="text-xl sm:text-2xl font-bold text-white font-sans">
+                                {{ __('messages.landing.contact.form_title') }}
+                            </h3>
                         </div>
-                        <h4 class="text-lg font-bold text-white mb-1.5">{{ __('messages.landing.contact.triage_title') }}</h4>
-                        <p class="text-xs sm:text-sm text-sky-100/90 leading-relaxed font-normal mb-5">
-                            {{ __('messages.landing.contact.triage_desc') }}
-                        </p>
-                    </div>
-                    <div class="pt-4 border-t border-white/15 flex flex-wrap items-center gap-2">
-                        @foreach (['en' => 'English', 'ar' => 'العربية'] as $localeCode => $localeLabel)
-                            <a href="{{ \LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
-                                class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 text-white text-xs font-semibold backdrop-blur-sm transition-colors">
-                                {{ $localeLabel }}
-                            </a>
-                        @endforeach
-                        <a href="{{ route('about') }}"
-                            class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 text-white text-xs font-semibold backdrop-blur-sm transition-colors">
-                            {{ __('messages.landing.footer.link_about') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-7">
-                <div class="rounded-3xl bg-slate-900/70 backdrop-blur-md p-8 sm:p-10 border border-white/10 shadow-2xl shadow-black/40 h-full flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 font-sans">
-                            {{ __('messages.landing.contact.form_title') }}
-                        </h3>
-                        <p class="text-xs sm:text-sm text-slate-400 mb-6">
+                        <p class="text-sm text-slate-400 leading-relaxed">
                             {{ __('messages.landing.contact.form_subtitle') }}
                         </p>
                     </div>
+                </div>
 
-                    <div id="contact-form">
-                        @livewire('contact.contact-form', ['variant' => 'landing'])
-                    </div>
+                <div id="contact-form" class="px-8 sm:px-10 py-8 sm:py-10">
+                    @livewire('contact.contact-form', ['variant' => 'landing'])
                 </div>
             </div>
         </div>
