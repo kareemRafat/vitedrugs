@@ -18,8 +18,24 @@
     redrawn asset, not the Latin one flipped in CSS. It puts the animals and the
     wordmark on the start side with clear sky opposite, so the right-aligned copy
     lands on empty sky — the Latin file flipped with `scaleX(-1)` would have
-    mirrored the baked-in wordmark into unreadable text. The Arabic file has no
-    WebP counterpart, so the `<source>` is omitted there.
+    mirrored the baked-in wordmark into unreadable text.
+
+    Both files are now WebP + JPEG pairs at the same 1717x916, both encoded with
+    the same settings as the Latin pair. The Arabic file arrived as a lossless
+    PNG — 10.66 bits per pixel against the Latin JPEG's 0.92, which made it 2 MB
+    for the same frame and 40% of the whole landing image folder. Re-encoding it
+    to WebP brought it to 138 KB at an SSIM of 0.984, imperceptible on this
+    image, and the `<picture>` no longer has to special-case the direction.
+
+    Both files are 1717x916 and both keep the animals and the baked-in wordmark
+    on the same side, with open dark field opposite. That is the whole reason
+    `object-position` is set per direction below `lg`: a portrait phone box
+    crops a 16:9 frame to its middle ~30% of the width, and the middle is
+    exactly where the animals are — the copy landed on a buffalo's head, and
+    with no scrim there was nothing underneath it to carry the contrast.
+    Anchoring to the open side puts the copy back on empty dark sky, which is
+    what it was composed for. `lg:object-center` restores the full frame on
+    desktop, where the crop was already wide enough to show almost all of it.
 
     The heading is stacked over three lines via a `|` separator carried in the
     translation, so a translator controls the line composition instead of the
@@ -27,24 +43,28 @@
 --}}
 @php
     $heroIsRtl = app()->getLocale() === 'ar';
-    $heroFile = $heroIsRtl ? 'ARVETPEDIA RTL.png' : 'hero.jpg';
 
-    // `asset()` does not encode spaces in the path, and the Arabic filename has
-    // one; browsers tolerate it, but a percent-encoded URL is correct.
-    $heroSrc = str_replace(' ', '%20', asset("images/landing/{$heroFile}"));
+    // Both directions carry a full WebP + JPEG pair now. The Arabic file used to
+    // be a 2 MB lossless PNG with no WebP counterpart, which is the only reason
+    // the <source> below had to be conditional; it no longer does.
+    $heroWebpFile = $heroIsRtl ? 'ARVETPEDIA RTL.webp' : 'hero.webp';
+    $heroJpegFile = $heroIsRtl ? 'ARVETPEDIA RTL.jpg' : 'hero.jpg';
+
+    // `asset()` does not encode spaces in the path, and the Arabic filenames
+    // have one; browsers tolerate it, but a percent-encoded URL is correct.
+    $heroWebp = str_replace(' ', '%20', asset("images/landing/{$heroWebpFile}"));
+    $heroSrc = str_replace(' ', '%20', asset("images/landing/{$heroJpegFile}"));
 @endphp
 
 {{-- `pt-28` clears the floating pill, which sits between top-4 and top-16. --}}
 <section class="relative pt-28 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-slate-950 text-white min-h-svh flex items-center">
     <div class="absolute inset-0 z-0">
         <picture>
-            @unless ($heroIsRtl)
-                <source srcset="{{ asset('images/landing/hero.webp') }}" type="image/webp">
-            @endunless
+            <source srcset="{{ $heroWebp }}" type="image/webp">
             <img src="{{ $heroSrc }}"
                 alt="{{ __('messages.landing.hero.image_alt') }}"
                 width="1717" height="916" fetchpriority="high" decoding="async"
-                class="w-full h-full object-cover object-center">
+                class="w-full h-full object-cover {{ $heroIsRtl ? 'object-right' : 'object-left' }} lg:object-center">
         </picture>
     </div>
 

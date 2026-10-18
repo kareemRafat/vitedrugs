@@ -728,6 +728,128 @@ class LandingPageTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('~\b[pt]?y-\d~', $tag[0]);
     }
 
+    /**
+     * The pill does not compress, so below `sm` it drops its two widest controls
+     * to the drawer: the wordmark, search button, EN/ع switcher and hamburger
+     * together needed ~419px against the ~303px a 375px phone leaves inside the
+     * pill, and the layout's overflow-x-hidden clipped the hamburger off-screen.
+     * Asserted per control so either one can be reintroduced silently — which is
+     * exactly what reintroduces the overflow.
+     */
+    #[Test]
+    public function the_pill_drops_its_widest_controls_to_the_drawer_on_phones(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $start = strpos($content, '<header id="site-header"');
+        $header = substr($content, $start);
+
+        // The pill's toggle is the only one bound with a plain onclick; the
+        // drawer's copy is bound with @click, so this isolates the pill.
+        preg_match('~<button[^>]*onclick="landingSetTheme\(document\.documentElement\.classList\.contains\(.dark.\) \? .light. : .dark.\)"[^>]*>~', $header, $tag);
+
+        $this->assertNotEmpty($tag, 'The pill theme toggle could not be isolated.');
+        $this->assertStringContainsString(
+            'hidden sm:block',
+            $tag[0],
+            'The pill renders the theme toggle on phones, which is what overflows it.'
+        );
+
+        $this->assertMatchesRegularExpression(
+            '~<div class="relative hidden sm:inline-flex[^"]*">~',
+            $header,
+            'The pill renders the language switcher on phones, which is what overflows it.'
+        );
+    }
+
+    /**
+     * `pointer-events` inherits, and this backdrop is a child of the
+     * `pointer-events-none` <header>. It therefore inherited `none` and its own
+     *
+     * @click could never fire: tapping the dimmed area did nothing and only the X
+     * or a nav link closed the drawer.
+     */
+    #[Test]
+    public function the_drawer_backdrop_accepts_taps(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $start = strpos($content, '<header id="site-header"');
+        $header = substr($content, $start);
+
+        preg_match('~<div\b[^>]*\bclass="[^"]*\bfixed inset-0\b[^"]*"[^>]*>~s', $header, $tag);
+
+        $this->assertNotEmpty($tag, 'The drawer backdrop could not be isolated.');
+        $this->assertStringContainsString(
+            'pointer-events-auto',
+            $tag[0],
+            'The backdrop inherits pointer-events-none from the header and cannot be tapped.'
+        );
+    }
+
+    /**
+     * Without the lock the page scrolls behind the drawer under the finger, which
+     * is far more obvious on touch than on desktop. The flag is read from the same
+     * `drawerOpen` the drawer, Escape and the hamburger already write to, so
+     * there is no second source of truth to fall out of step.
+     */
+    #[Test]
+    public function the_open_drawer_locks_the_page_behind_it(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $start = strpos($content, '<header id="site-header"');
+        $header = substr($content, $start);
+
+        $this->assertStringContainsString(
+            "x-effect=\"document.body.style.overflow = drawerOpen ? 'hidden' : ''\"",
+            $header,
+            'The drawer no longer locks scrolling on the page behind it.'
+        );
+
+        // Resizing or rotating past lg leaves the drawer markup in the DOM but
+        // unreachable behind a visible navbar; the lock would then survive with
+        // no way to clear it.
+        $this->assertStringContainsString(
+            '@resize.window',
+            $header,
+            'The drawer cannot be dismissed by a resize, so the scroll lock can outlive it.'
+        );
+    }
+
+    /**
+     * Both hero photographs are 1717x916 with the animals and the baked-in
+     * wordmark on one side and open dark field opposite. A portrait phone crops a
+     * 16:9 frame to roughly its middle third — exactly the animals — and the hero
+     * carries no scrim, so the white copy had nothing underneath it. The crop
+     * therefore has to be anchored to the open side below lg, and to the side
+     * matching each file's own composition, not merely flipped.
+     */
+    #[Test]
+    public function the_hero_crops_to_the_open_side_of_its_photograph_on_phones(): void
+    {
+        foreach (['en' => 'object-left', 'ar' => 'object-right'] as $locale => $expected) {
+            $content = $this->landingIn($locale)->getContent();
+
+            $end = strpos($content, 'id="about"');
+            $hero = substr($content, 0, $end);
+
+            preg_match('~<picture>.*?</picture>~s', $hero, $tag);
+
+            $this->assertNotEmpty($tag, "The hero photograph could not be isolated in [{$locale}].");
+            $this->assertStringContainsString(
+                $expected,
+                $tag[0],
+                "The {$locale} hero does not anchor its mobile crop to the open side of the frame."
+            );
+            $this->assertStringContainsString(
+                'lg:object-center',
+                $tag[0],
+                "The {$locale} hero no longer restores the full frame on desktop."
+            );
+        }
+    }
+
     // -------------------------------------------------------------- navbar anchors
 
     #[Test]
@@ -1131,8 +1253,14 @@ class LandingPageTest extends TestCase
     /**
      * Arabic gets a redrawn photograph whose animals and wordmark sit on the
      * start side, because the Latin one flipped in CSS would mirror the
-     * baked-in "ARVETPEDIA" into unreadable text. The Arabic file ships as a
-     * PNG, so its `<picture>` must not offer the Latin WebP either.
+     * baked-in "ARVETPEDIA" into unreadable text. Neither direction may serve
+     * the other's files.
+     *
+     * Arabic used to ship as a lossless PNG, which was 2 MB for the same
+     * 1717x916 frame and left it the only photograph on the page with no WebP —
+     * the `<picture>` had to be written around it. It is a WebP + JPEG pair now
+     * like every other image, so both are asserted below: a regression back to
+     * a bare PNG would quietly cost Arabic visitors 2 MB again.
      */
     #[Test]
     public function the_hero_serves_a_different_photograph_in_arabic(): void
@@ -1147,9 +1275,32 @@ class LandingPageTest extends TestCase
         $arabic = $this->landingIn('ar')->getContent();
 
         // Percent-encoded: `asset()` leaves the space in the filename alone.
-        $this->assertStringContainsString('images/landing/ARVETPEDIA%20RTL.png', $arabic);
+        $this->assertStringContainsString('images/landing/ARVETPEDIA%20RTL.webp', $arabic);
+        $this->assertStringContainsString('images/landing/ARVETPEDIA%20RTL.jpg', $arabic);
         $this->assertStringNotContainsString('images/landing/hero.webp', $arabic);
         $this->assertStringNotContainsString('images/landing/hero.jpg', $arabic);
+    }
+
+    /**
+     * The Arabic photograph was a 2 MB lossless PNG at 10.66 bits per pixel —
+     * a photograph in a lossless container, against 0.92 for the Latin JPEG of
+     * the same 1717x916 frame. It was 40% of the landing image folder.
+     *
+     * Asserted against disk rather than against the markup, because nothing in
+     * the rendered HTML can tell a 138 KB WebP from a 2 MB one. A ceiling rather
+     * than an exact figure, so ordinary re-encodes do not trip it.
+     */
+    #[Test]
+    public function the_landing_photographs_are_not_stored_losslessly(): void
+    {
+        $rtl = public_path('images/landing/ARVETPEDIA RTL.webp');
+
+        $this->assertFileExists($rtl);
+        $this->assertLessThanOrEqual(
+            250 * 1024,
+            filesize($rtl),
+            'The Arabic hero is back to being far heavier than a photographic WebP should be.'
+        );
     }
 
     /**
