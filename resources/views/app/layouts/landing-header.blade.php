@@ -42,7 +42,7 @@
     {{-- pointer-events-none on the wrapper lets clicks fall through the gaps
          around the pill; the pill itself opts back in. --}}
     <div class="w-full max-w-6xl mx-auto pointer-events-auto">
-        <div class="flex items-center justify-between h-14 px-5 sm:px-6 rounded-full bg-white/80 dark:bg-slate-950/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 shadow-lg shadow-indigo-950/5 dark:shadow-black/30 transition-all duration-300"
+        <div class="flex items-center justify-between h-14 px-5 sm:px-6 rounded-full bg-slate-100/85 dark:bg-slate-950/90 backdrop-blur-md border border-slate-300/80 dark:border-slate-800/80 shadow-lg shadow-indigo-950/5 dark:shadow-black/30 transition-all duration-300"
             :class="scrolled ? 'shadow-xl shadow-indigo-950/10 dark:shadow-black/40' : ''">
 
             {{-- Wordmark --}}
@@ -61,7 +61,7 @@
 
             {{-- Desktop navigation --}}
             <nav aria-label="{{ __('messages.landing.header.primary_nav') }}"
-                class="hidden lg:flex items-center gap-8 text-[15px] font-medium text-slate-600 dark:text-slate-300">
+                class="hidden lg:flex items-center gap-8 text-[15px] font-semibold text-slate-600 dark:text-slate-300">
                 @foreach ($landingNav as $item)
                     <a href="{{ $item['hash'] }}"
                         class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">{{ $item['label'] }}</a>
@@ -112,7 +112,7 @@
                 @auth
                     <div x-data="{ userOpen: false }" class="hidden sm:block relative">
                         <button type="button" @click="userOpen = !userOpen" @click.outside="userOpen = false"
-                            class="w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                            class="w-9 h-9 rounded-full bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] text-white flex items-center justify-center text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                             aria-label="{{ __('messages.landing.header.toggle_user_menu') }}">
                             {{ substr(Auth::user()->name, 0, 1) }}
                         </button>
@@ -145,7 +145,7 @@
                     </div>
                 @else
                     <a href="{{ route('login') }}"
-                        class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm shadow-indigo-600/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
+                        class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] transition-all shadow-sm shadow-[#0b1f38]/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
                         {{ __('messages.landing.header.sign_in') }}
                     </a>
                 @endauth
@@ -206,7 +206,7 @@
                     <nav class="space-y-1">
                         @foreach ($landingNav as $item)
                             <a href="{{ $item['hash'] }}" @click="drawerOpen = false"
-                                class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">{{ $item['label'] }}</a>
+                                class="block px-3 py-2.5 rounded-lg text-base font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">{{ $item['label'] }}</a>
                         @endforeach
                     </nav>
                 </div>
@@ -215,10 +215,10 @@
             <div class="pt-6 border-t border-slate-200 dark:border-slate-800">
                 @auth
                     <a href="{{ route('profile.show') }}"
-                        class="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-sm">{{ __('messages.nav.dashboard') }}</a>
+                        class="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl text-base font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] transition shadow-sm">{{ __('messages.nav.dashboard') }}</a>
                 @else
                     <a href="{{ route('login') }}"
-                        class="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-sm">{{ __('messages.landing.header.drawer_sign_in') }}</a>
+                        class="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl text-base font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] transition shadow-sm">{{ __('messages.landing.header.drawer_sign_in') }}</a>
                 @endauth
             </div>
         </div>

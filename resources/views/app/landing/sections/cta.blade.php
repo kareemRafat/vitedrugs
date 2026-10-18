@@ -4,7 +4,7 @@
     Copy is honest: it does not claim the data is free, complete or regulator
     approved. It says what the visitor can actually do next.
 --}}
-<section class="relative py-20 lg:py-24 bg-gradient-to-r rtl:bg-gradient-to-l from-indigo-700 via-indigo-600 to-sky-600 text-white overflow-hidden">
+<section class="relative py-20 lg:py-24 bg-gradient-to-r rtl:bg-gradient-to-l from-[#1e4b7a] via-[#26628f] to-[#1e3a8a] dark:from-[#1e3a8a] dark:via-[#2563a8] dark:to-[#1e40af] text-white overflow-hidden">
     <div class="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none">
         <picture>
             <source srcset="{{ asset('images/landing/cta-texture.webp') }}" type="image/webp">
@@ -23,12 +23,8 @@
         </p>
         <div class="flex flex-wrap items-center justify-center gap-4">
             <a href="{{ route('drugs.home') }}"
-                class="px-8 py-4 rounded-xl text-base font-bold text-indigo-900 bg-white hover:bg-slate-100 shadow-xl shadow-indigo-950/20 transition-all focus:outline-none focus:ring-2 focus:ring-white">
+                class="px-8 py-4 rounded-xl text-base font-bold text-[#1e3a8a] bg-white hover:bg-slate-100 shadow-xl shadow-indigo-950/20 transition-all focus:outline-none focus:ring-2 focus:ring-white">
                 {{ __('messages.landing.cta.browse') }}
-            </a>
-            <a href="#contact"
-                class="px-8 py-4 rounded-xl text-base font-bold text-white bg-transparent border-2 border-white/80 hover:bg-white/10 transition-all focus:outline-none focus:ring-2 focus:ring-white">
-                {{ __('messages.landing.cta.contact') }}
             </a>
         </div>
     </div>

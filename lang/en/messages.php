@@ -86,7 +86,7 @@ return [
         // ------------------------------------------------------------------ hero
         'hero' => [
             'image_alt' => 'Veterinarian examining cattle in a barn clinic',
-            'heading' => 'Your Complete Guide to Veterinary Pharmaceuticals',
+            'heading' => 'Your Complete Guide to|Veterinary|Pharmaceuticals',
             'subtitle' => 'A bilingual reference of veterinary drugs, diseases, active ingredients and pharmaceutical companies — with dosages, withdrawal periods and drug interactions linked to every product.',
             'search_placeholder' => 'Search products, diseases, ingredients...',
             'search_button' => 'Search',
@@ -396,6 +396,7 @@ return [
         'loading' => 'Loading...',
         'switch_language' => 'Switch language',
         'toggle_theme' => 'Toggle theme',
+        'back_to_top' => 'Back to top',
         'light_mode' => 'Light Mode',
         'dark_mode' => 'Dark Mode',
     ],
@@ -665,6 +666,7 @@ return [
             'message_placeholder' => 'Write your message...',
             'submit' => 'Send Message',
             'success' => 'Your message has been sent successfully. We will get back to you soon.',
+            'error' => 'Please check the highlighted fields and try again.',
         ],
         'products' => [
             'submission' => [

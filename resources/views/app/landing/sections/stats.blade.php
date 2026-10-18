@@ -64,9 +64,9 @@
 <section class="py-20 lg:py-28 bg-[#f4f6f9] dark:bg-slate-950 text-slate-900 dark:text-white relative border-y border-slate-200/80 dark:border-slate-800/80 scroll-mt-0" id="database-stats">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mb-12 sm:mb-14">
-            <div class="flex items-center gap-2 mb-3 text-slate-500 dark:text-slate-400 font-mono text-xs sm:text-sm font-semibold tracking-wider uppercase">
-                <span class="rtl:rotate-180" aria-hidden="true">&rarr;</span>
-                <span>{{ __('messages.landing.stats.eyebrow') }}</span>
+            <div class="flex items-end gap-2 mb-3">
+                <span class="text-indigo-600 dark:text-indigo-400 font-mono font-bold text-xs sm:text-sm tracking-wider">/ 03</span>
+                <span class="text-xs font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono self-center">{{ __('messages.landing.stats.eyebrow') }}</span>
             </div>
             <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.08] font-sans mb-4">
                 {{ __('messages.landing.stats.heading') }}

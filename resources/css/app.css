@@ -192,13 +192,36 @@ html.dark [data-part='poultry'] {
 /* ------------------------------------------------------------------ RTL */
 
 /*
- * Arabic swaps to IBM Plex Sans Arabic and loosens the leading — Arabic glyphs
- * carry no ascenders/descenders the way Latin does, so Latin leading looks
- * cramped once the script changes.
+ * Arabic swaps to Cairo and loosens the leading — Arabic glyphs carry no
+ * ascenders/descenders the way Latin does, so Latin leading looks cramped once
+ * the script changes.
+ *
+ * The custom properties are redeclared here, not just `font-family`. Every
+ * section heading carries `font-sans`, which Tailwind compiles to
+ * `font-family: var(--font-sans)` — so overriding the family on this element
+ * alone leaves the headings on Inter while the body text around them is Cairo.
+ * Redefining the variable fixes both the inherited family and the utility.
+ *
+ * Cairo is listed before Inter rather than replacing it: Latin runs that survive
+ * inside an RTL line (a drug name, a number with units) still want the Latin
+ * face, and the browser picks per glyph.
+ *
+ * `--font-mono` keeps JetBrains Mono first for the Latin eyebrow numerals, with
+ * Cairo behind it purely as an Arabic fallback: JetBrains Mono has no Arabic
+ * glyphs, so without this the eyebrows would render in whatever generic
+ * monospace the OS happens to pick.
+ *
+ * The leading stays at 1.68, which is what IBM Plex Sans Arabic needed. Cairo
+ * carries taller vertical metrics than Inter, so if the Arabic page reads airy
+ * this is the one value to lower - nothing else depends on it.
  */
 [dir='rtl'] .landing-scope,
 .landing-scope[dir='rtl'] {
-    font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+    --font-sans: 'Cairo', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'JetBrains Mono', 'Cairo', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+    font-family: var(--font-sans);
     line-height: 1.68;
 }
 

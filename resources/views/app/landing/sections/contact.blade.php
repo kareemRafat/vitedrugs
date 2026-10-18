@@ -7,8 +7,17 @@
     project, so they are replaced by what is real: the form stores the message
     in the database and it appears in the staff inbox.
 
-    The map texture is drawn in CSS rather than loaded as an image — the
-    reference pointed at a remote CDN photograph that cannot be reproduced.
+    The band is permanently dark (`bg-slate-950`, no `dark:` variant), matching
+    the `/03` browse hub: the theme toggle flips the page around it, not this
+    band. It therefore renders identically in light and dark mode, and none of
+    its children carry `dark:` variants.
+
+    The texture is drawn in CSS rather than loaded as an image — the reference
+    pointed at a remote CDN photograph that cannot be reproduced. It replaces
+    the original hard 64px cartographic grid, which read as hard engineering
+    chrome on a dark surface: a fine radial dot pattern plus two ambient glows,
+    the same glow treatment the browse hub uses, left static so this band stays
+    the calm counterpart to that section's motion.
 --}}
 @php
     $channels = [
@@ -34,27 +43,32 @@
     ];
 
     $channelTones = [
-        'indigo' => 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-100 dark:border-indigo-900/40 text-indigo-600 dark:text-indigo-400',
-        'sky' => 'bg-sky-50 dark:bg-sky-950/60 border-sky-100 dark:border-sky-900/40 text-sky-600 dark:text-sky-400',
+        'indigo' => 'bg-indigo-500/15 border-indigo-400/25 text-indigo-300',
+        'sky' => 'bg-sky-500/15 border-sky-400/25 text-sky-300',
     ];
 @endphp
 
-<section class="py-20 lg:py-28 bg-[#f4f6f9] dark:bg-slate-950 text-slate-900 dark:text-white relative border-t border-slate-200/80 dark:border-slate-800/80 overflow-hidden scroll-mt-0" id="contact">
-    {{-- CSS-only cartographic texture: a fine grid plus a soft radial wash. --}}
-    <div class="absolute inset-0 z-0 pointer-events-none opacity-[0.35] dark:opacity-[0.15] overflow-hidden"
-        style="background-image:linear-gradient(to right,#94a3b8 1px,transparent 1px),linear-gradient(to bottom,#94a3b8 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 75%)">
+{{-- Permanently dark band: `bg-slate-950` with no `dark:` variant, so it reads the same in both themes. --}}
+<section class="py-20 lg:py-28 bg-slate-950 text-white relative border-t border-white/10 overflow-hidden scroll-mt-0" id="contact">
+    {{-- Ambient texture: a fine dot field over two soft brand glows, faded out at the edges. --}}
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute inset-0 opacity-40"
+            style="background-image:radial-gradient(circle,rgba(148,163,184,.30) 1px,transparent 1px);background-size:26px 26px;mask-image:radial-gradient(ellipse at 50% 35%,#000 25%,transparent 72%);-webkit-mask-image:radial-gradient(ellipse at 50% 35%,#000 25%,transparent 72%)">
+        </div>
+        <div class="absolute top-[-10%] start-[-8%] w-[32rem] h-[32rem] bg-indigo-600/25 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-[-15%] end-[-8%] w-[28rem] h-[28rem] bg-sky-500/20 rounded-full blur-3xl"></div>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center max-w-3xl mx-auto mb-14 lg:mb-16 flex flex-col items-center">
-            <div class="flex items-center justify-center gap-2 mb-3">
-                <span class="text-indigo-600 dark:text-indigo-400 font-mono font-bold text-xs sm:text-sm tracking-wider">/ 05</span>
-                <span class="text-xs font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono">{{ __('messages.landing.contact.eyebrow') }}</span>
+            <div class="flex items-end justify-center gap-2 mb-3">
+                <span class="text-indigo-400 font-mono font-bold text-xs sm:text-sm tracking-wider">/ 04</span>
+                <span class="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">{{ __('messages.landing.contact.eyebrow') }}</span>
             </div>
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-4 font-sans">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.12] mb-4 font-sans">
                 {{ __('messages.landing.contact.heading') }}
             </h2>
-            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl font-normal">
+            <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl font-normal">
                 {{ __('messages.landing.contact.subtitle') }}
             </p>
         </div>
@@ -63,7 +77,7 @@
             <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
                 <div class="space-y-4">
                     @foreach ($channels as $channel)
-                        <div class="p-6 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 shadow-sm">
+                        <div class="p-6 rounded-3xl bg-white/[0.06] backdrop-blur-md border border-white/10 hover:bg-white/[0.09] transition-colors">
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-2xl border flex items-center justify-center shrink-0 {{ $channelTones[$channel['tone']] }}">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -71,9 +85,9 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1">{{ $channel['title'] }}</h3>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 leading-relaxed">{{ $channel['body'] }}</p>
-                                    <a href="#contact-form" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">{{ $channel['cta'] }}</a>
+                                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-1">{{ $channel['title'] }}</h3>
+                                    <p class="text-xs text-slate-300 mb-2 leading-relaxed">{{ $channel['body'] }}</p>
+                                    <a href="#contact-form" class="text-sm font-semibold text-indigo-300 hover:text-indigo-200 hover:underline">{{ $channel['cta'] }}</a>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +96,7 @@
 
                 {{-- Replaces the reference's "replies within 24 clinical hours" card,
                      which promised a service level this project does not operate. --}}
-                <div class="p-6 rounded-3xl bg-[#1e4b7a] dark:bg-[#1e3a8a] text-white shadow-lg shadow-indigo-950/10 flex flex-col justify-between">
+                <div class="p-6 rounded-3xl bg-gradient-to-br from-indigo-950/80 to-slate-900/80 backdrop-blur-md border border-white/10 shadow-lg shadow-black/30 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center gap-2 mb-3">
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -109,12 +123,12 @@
             </div>
 
             <div class="lg:col-span-7">
-                <div class="rounded-3xl bg-white dark:bg-slate-900 p-8 sm:p-10 border border-slate-200/90 dark:border-slate-800 shadow-xl dark:shadow-2xl h-full flex flex-col justify-between">
+                <div class="rounded-3xl bg-slate-900/70 backdrop-blur-md p-8 sm:p-10 border border-white/10 shadow-2xl shadow-black/40 h-full flex flex-col justify-between">
                     <div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-2 font-sans">
+                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 font-sans">
                             {{ __('messages.landing.contact.form_title') }}
                         </h3>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6">
+                        <p class="text-xs sm:text-sm text-slate-400 mb-6">
                             {{ __('messages.landing.contact.form_subtitle') }}
                         </p>
                     </div>

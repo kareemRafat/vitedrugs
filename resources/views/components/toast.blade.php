@@ -3,6 +3,9 @@
     'type' => 'success',
     'title' => '',
     'message' => '',
+    // `top` clears nothing but sits at the viewport's top edge. `bottom` right-aligns
+    // itself on sm+ so it clears bottom-left widgets such as the cookie consent.
+    'position' => 'top',
 ])
 
 @php
@@ -13,9 +16,15 @@
         'info' => 'text-body bg-blue-50',
     ];
     $iconBox = $iconColors[$type] ?? $iconColors['success'];
+
+    $positionClasses = [
+        'top' => 'inset-x-4 top-4',
+        'bottom' => 'inset-x-4 bottom-4 sm:start-auto sm:end-4',
+    ];
+    $positionClass = $positionClasses[$position] ?? $positionClasses['top'];
 @endphp
 
-<div id="{{ $id }}" role="alert" class="fixed inset-x-4 top-4 z-[100] hidden flex items-center max-w-sm p-4 text-body bg-neutral-primary-soft rounded-base shadow-xs border border-default transition-all duration-300">
+<div id="{{ $id }}" role="alert" class="fixed {{ $positionClass }} z-[100] hidden flex items-center max-w-sm p-4 text-body bg-neutral-primary-soft rounded-base shadow-xs border border-default transition-all duration-300">
     <div class="inline-flex items-center justify-center shrink-0 w-7 h-7 {{ $iconBox }} rounded">
         @switch($type)
             @case('success')

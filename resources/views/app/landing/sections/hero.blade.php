@@ -13,14 +13,35 @@
     `min-h-screen` is used for the same reason it is used on mobile — 100vh
     includes the collapsing URL bar, which would push the bottom of the section
     below the fold.
+
+    In Arabic a separate photograph is served: `ARVETPEDIA RTL.png` is a
+    redrawn asset, not the Latin one flipped in CSS. It puts the animals and the
+    wordmark on the start side with clear sky opposite, so the right-aligned copy
+    lands on empty sky — the Latin file flipped with `scaleX(-1)` would have
+    mirrored the baked-in wordmark into unreadable text. The Arabic file has no
+    WebP counterpart, so the `<source>` is omitted there.
+
+    The heading is stacked over three lines via a `|` separator carried in the
+    translation, so a translator controls the line composition instead of the
+    template hard-coding English word order.
 --}}
+@php
+    $heroIsRtl = app()->getLocale() === 'ar';
+    $heroFile = $heroIsRtl ? 'ARVETPEDIA RTL.png' : 'hero.jpg';
+
+    // `asset()` does not encode spaces in the path, and the Arabic filename has
+    // one; browsers tolerate it, but a percent-encoded URL is correct.
+    $heroSrc = str_replace(' ', '%20', asset("images/landing/{$heroFile}"));
+@endphp
 
 {{-- `pt-28` clears the floating pill, which sits between top-4 and top-16. --}}
 <section class="relative pt-28 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-slate-950 text-white min-h-svh flex items-center">
     <div class="absolute inset-0 z-0">
         <picture>
-            <source srcset="{{ asset('images/landing/hero.webp') }}" type="image/webp">
-            <img src="{{ asset('images/landing/hero.jpg') }}"
+            @unless ($heroIsRtl)
+                <source srcset="{{ asset('images/landing/hero.webp') }}" type="image/webp">
+            @endunless
+            <img src="{{ $heroSrc }}"
                 alt="{{ __('messages.landing.hero.image_alt') }}"
                 width="1717" height="916" fetchpriority="high" decoding="async"
                 class="w-full h-full object-cover object-center">
@@ -31,7 +52,9 @@
         <div class="max-w-3xl flex flex-col items-start text-start">
 
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.12] mb-4 font-sans">
-                {{ __('messages.landing.hero.heading') }}
+                @foreach (explode('|', __('messages.landing.hero.heading')) as $headingLine)
+                    <span class="block">{{ $headingLine }}</span>
+                @endforeach
             </h1>
 
             <p class="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl mb-8 font-normal">
@@ -50,7 +73,7 @@
                     placeholder="{{ __('messages.landing.hero.search_placeholder') }}"
                     class="w-full py-3.5 ps-12 pe-28 text-sm sm:text-base rounded-full bg-slate-900/90 backdrop-blur-md border border-slate-700/80 text-white placeholder:text-slate-400 shadow-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/30 transition-all">
                 <button type="submit"
-                    class="absolute inset-y-1.5 end-1.5 px-5 py-2 rounded-full text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                    class="absolute inset-y-1.5 end-1.5 px-5 py-2 rounded-full text-sm font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] transition shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
                     {{ __('messages.landing.hero.search_button') }}
                 </button>
             </form>
@@ -60,7 +83,7 @@
                  only push the whole block off-centre. --}}
             <div class="flex flex-wrap items-center gap-3 sm:gap-4">
                 <a href="{{ route('drugs.home') }}"
-                    class="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 shadow-lg shadow-indigo-600/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                    class="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] shadow-lg shadow-[#0b1f38]/40 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
                     <span>{{ __('messages.landing.hero.cta_browse') }}</span>
                     <svg class="w-4 h-4 ms-2 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>

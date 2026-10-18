@@ -3,6 +3,7 @@
 use App\Enums\ContactCategory;
 use App\Models\ContactSubmission;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 new class extends Component
@@ -58,7 +59,16 @@ new class extends Component
 
     public function submit(): void
     {
-        $this->validate();
+        // The failure event is dispatched before the exception is rethrown: Livewire
+        // swallows the ValidationException after the error bag is set, so the
+        // already-registered dispatch still reaches the browser as an effect.
+        try {
+            $this->validate();
+        } catch (ValidationException $exception) {
+            $this->dispatch('contact-failed');
+
+            throw $exception;
+        }
 
         $category = $this->category !== null
             ? ContactCategory::from($this->category)
@@ -93,69 +103,74 @@ new class extends Component
 };
 ?>
 
-<div x-data x-on:contact-sent.window="window.Toast.show('contactToast', 'success', '{{ __('messages.pages.contact.success') }}')">
+{{-- Both listeners sit on the shared root, so every variant that dispatches the
+     events also gets the toast. The landing variant relies on the layout to
+     mount `<x-toast id="contactToast">`; /contact mounts its own. --}}
+<div x-data x-on:contact-sent.window="window.Toast.show('contactToast', 'success', '{{ __('messages.pages.contact.success') }}')" x-on:contact-failed.window="window.Toast.show('contactToast', 'error', '{{ __('messages.pages.contact.error') }}')">
     @if ($this->isLanding())
-        {{-- Homepage inquiry form: name, clinical role, institutional email, category, message. --}}
+        {{-- Homepage inquiry form: name, clinical role, institutional email, category, message.
+             Sits inside the permanently dark contact band, so every surface here is
+             dark in both themes and carries no `dark:` variants. --}}
         <form wire:submit="submit" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label for="name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.name_label') }}</label>
+                    <label for="name" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.name_label') }}</label>
                     <input type="text" name="name" id="name" wire:model.blur="name" required
-                        class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('name') border-red-500 @enderror"
+                        class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('name') border-red-400/70 @enderror"
                         placeholder="{{ __('messages.pages.contact.name_placeholder') }}">
                     @error('name')
-                        <p class="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <label for="role" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.role_label') }}</label>
+                    <label for="role" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.role_label') }}</label>
                     <input type="text" name="role" id="role" wire:model.blur="role"
-                        class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('role') border-red-500 @enderror"
+                        class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('role') border-red-400/70 @enderror"
                         placeholder="{{ __('messages.pages.contact.role_placeholder') }}">
                     @error('role')
-                        <p class="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label for="email" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.email_label') }}</label>
+                    <label for="email" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.email_label') }}</label>
                     <input type="email" name="email" id="email" wire:model.blur="email" required
-                        class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('email') border-red-500 @enderror"
+                        class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('email') border-red-400/70 @enderror"
                         placeholder="{{ __('messages.pages.contact.email_placeholder') }}">
                     @error('email')
-                        <p class="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <label for="category" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.category_label') }}</label>
+                    <label for="category" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.category_label') }}</label>
                     <select name="category" id="category" wire:model.blur="category" required
-                        class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('category') border-red-500 @enderror">
-                        <option value="">{{ __('messages.pages.contact.category_placeholder') }}</option>
+                        class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all @error('category') border-red-400/70 @enderror">
+                        <option value="" class="bg-slate-900">{{ __('messages.pages.contact.category_placeholder') }}</option>
                         @foreach ($this->categoryOptions() as $value => $label)
-                            <option value="{{ $value }}">{{ $label }}</option>
+                            <option value="{{ $value }}" class="bg-slate-900">{{ $label }}</option>
                         @endforeach
                     </select>
                     @error('category')
-                        <p class="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
 
             <div>
-                <label for="message" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.message_label') }}</label>
+                <label for="message" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">{{ __('messages.pages.contact.message_label') }}</label>
                 <textarea name="message" id="message" rows="4" wire:model.blur="message" required
-                    class="w-full py-3 px-4 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none @error('message') border-red-500 @enderror"
+                    class="w-full py-3 px-4 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none @error('message') border-red-400/70 @enderror"
                     placeholder="{{ __('messages.pages.contact.message_placeholder') }}"></textarea>
                 @error('message')
-                    <p class="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
+                    <p class="mt-1 text-xs font-medium text-red-300">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="pt-2 flex justify-end">
                 <button type="submit" wire:loading.attr="disabled"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 shadow-md shadow-indigo-600/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:opacity-50">
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold text-white bg-[#1e4b7a] dark:bg-[#1e3a8a] hover:bg-[#163a5e] dark:hover:bg-[#172d6e] active:bg-[#112c47] dark:active:bg-[#132354] shadow-lg shadow-[#0b1f38]/50 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-50">
                     <span wire:loading.remove wire:target="submit">{{ __('messages.pages.contact.submit') }}</span>
                     <span wire:loading wire:target="submit">...</span>
                     <span class="rtl:rotate-180 transition-transform">&rarr;</span>

@@ -37,12 +37,14 @@
         <meta name="robots" content="noindex, nofollow, noarchive">
     @endif
 
-    {{-- Reference font stack, loaded only on this page. Inter + IBM Plex Sans Arabic + JetBrains Mono.
+    {{-- Reference font stack, loaded only on this page. Inter + Cairo (Arabic) + JetBrains Mono.
+         Cairo replaced IBM Plex Sans Arabic; it is a variable family, so the whole
+         400-800 range is requested in one go and the browser synthesises nothing.
          The font-family itself is applied inside `.landing-scope`, never on `html`,
          so no other page changes type. --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     {{-- Dark mode: apply before render to prevent flash.
          Reads the same `theme` key the rest of the site writes, so the toggle stays
@@ -72,13 +74,25 @@
         @include('app.layouts.landing-header')
 
         {{-- No top padding here: the bar is flush and h-16, and the hero owns its
-             own clearance. Padding both would double the gap under the bar. --}}
-        <main class="flex-1">
+             own clearance. Padding both would double the gap under the bar.
+             `tabindex="-1"` so the scroll-to-top control can move focus here
+             after sending the page back up - see resources/js/back-to-top.js. --}}
+        <main tabindex="-1" class="flex-1 outline-none">
             @yield('content')
         </main>
 
         @include('app.layouts.landing-footer')
+
+        {{-- Landing-only, and inside the scope so it keeps the landing palette. --}}
+        <x-back-to-top />
     </div>
+
+    {{-- Contact feedback. The contact form dispatches `contact-sent` /
+         `contact-failed`, but the layout has to own the element the toast script
+         looks up by id, otherwise those dispatches resolve to nothing. Anchored
+         bottom-right: the navbar floats at top-4 and the cookie consent occupies
+         the bottom-left corner. --}}
+    <x-toast id="contactToast" type="success" position="bottom" title="" message="" />
 
     <x-cookie-consent />
 

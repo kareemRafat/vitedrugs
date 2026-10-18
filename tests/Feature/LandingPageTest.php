@@ -141,6 +141,34 @@ class LandingPageTest extends TestCase
         }
     }
 
+    /**
+     * One eyebrow treatment across the page: a mono `/ NN` index beside the
+     * section label. The hero has none (pinned separately) and the closing CTA
+     * band has none by choice, so the index runs 01-05 over the headed sections.
+     *
+     * Matched on the marker's own utility so the chapters' per-card indices -
+     * `/ 01`-`/ 03` on `tracking-widest` spans - cannot satisfy the assertion.
+     */
+    #[Test]
+    public function every_section_eyebrow_uses_the_same_indexed_marker(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        preg_match_all('~<span class="[^"]*tracking-wider">(/\s*0\d)</span>~', $content, $matches);
+
+        $markers = array_map('trim', $matches[1]);
+
+        $this->assertSame(['/ 01', '/ 02', '/ 03', '/ 04'], array_slice($markers, 0, 4));
+
+        foreach ($markers as $index => $marker) {
+            $this->assertSame(
+                '/ 0'.($index + 1),
+                $marker,
+                "Section eyebrow #{$index} is out of sequence."
+            );
+        }
+    }
+
     #[Test]
     public function the_stats_section_shows_live_counts(): void
     {
@@ -331,6 +359,43 @@ class LandingPageTest extends TestCase
         $this->assertStringNotContainsString('id="blog"', $content);
     }
 
+    /**
+     * The band was retoned from amber to the page's indigo primary. Pinned
+     * because the swap is silent: an `amber-*` token left behind reads as a
+     * deliberate accent rather than as drift.
+     */
+    #[Test]
+    public function the_blog_band_uses_the_page_accent_rather_than_amber(): void
+    {
+        Blog::factory()->create([
+            'blog_category_id' => BlogCategory::factory()->create()->id,
+            'author_id' => User::factory()->create()->id,
+            'is_active' => true,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $start = strpos($content, 'id="blog"');
+        // The next `<section` is the CTA band. Bounded by markup rather than by an
+        // id, because the CTA band has none — and slicing to the end of the
+        // document would swallow the cookie banner, which is legitimately orange.
+        $end = strpos($content, '<section', $start);
+
+        $this->assertNotFalse($start, 'The blog band did not render.');
+        $this->assertNotFalse($end);
+
+        $band = substr($content, $start, $end - $start);
+
+        $this->assertStringNotContainsString('amber-', $band);
+        $this->assertStringNotContainsString('orange-', $band);
+        // Step-agnostic on purpose: the accent has been retoned more than once
+        // (amber to indigo, then the button fills darkened). What matters is that
+        // the band carries the page's blue at all.
+        $this->assertStringContainsString('bg-indigo-', $band);
+        $this->assertStringContainsString('text-indigo-600 dark:text-indigo-400', $band);
+    }
+
     #[Test]
     public function the_blog_section_shows_real_metadata_not_placeholders(): void
     {
@@ -477,6 +542,53 @@ class LandingPageTest extends TestCase
         }
     }
 
+    /**
+     * The footer's language block renders each supported locale as a bordered
+     * card, with the current one marked programmatically. Two things are pinned
+     * because both failed silently before: the card must carry `aria-current`,
+     * and the code beside each locale name must be the locale key rather than a
+     * slice of the native name - `mb_substr('العربية', 0, 2)` rendered as "ال".
+     */
+    #[Test]
+    public function the_footer_language_cards_mark_the_active_locale_and_show_real_codes(): void
+    {
+        foreach (['en', 'ar'] as $locale) {
+            $footer = $this->landingIn($locale)->assertOk()->getContent();
+
+            $start = strpos($footer, 'id="footer"');
+            $this->assertNotFalse($start, 'The landing footer is missing.');
+            $footer = substr($footer, $start);
+
+            foreach (['en', 'ar'] as $target) {
+                $this->assertStringContainsString(
+                    'href="'.$this->localizedUrl($target).'"',
+                    $footer,
+                    "The {$locale} footer does not offer a link to the {$target} locale."
+                );
+            }
+
+            // Exactly one card is current: the visitor's own locale.
+            $this->assertSame(1, substr_count($footer, 'aria-current="true"'));
+            $this->assertSame(1, substr_count($footer, 'aria-current="false"'));
+
+            $this->assertStringContainsString('>EN</span>', $footer);
+            $this->assertStringContainsString('>AR</span>', $footer);
+
+            // The hack that produced "ال" instead of a language code.
+            $this->assertStringNotContainsString('mb_substr', $footer);
+
+            // No flag glyphs: regional-indicator emoji fall back to the letter
+            // pair on Windows, which rendered as "GB" and "AE" beside the names.
+            $this->assertStringNotContainsString("\u{1F1EC}\u{1F1E7}", $footer);
+            $this->assertStringNotContainsString("\u{1F1E6}\u{1F1EA}", $footer);
+        }
+    }
+
+    private function localizedUrl(string $locale): string
+    {
+        return \LaravelLocalization::getLocalizedURL($locale, null, [], true);
+    }
+
     // ------------------------------------------------------------- hero and chrome
 
     #[Test]
@@ -549,12 +661,39 @@ class LandingPageTest extends TestCase
         $header = substr($content, $start, 900);
 
         // Translucent + blurred, so the un-overlaid hero photo reads through it.
-        $this->assertStringContainsString('bg-white/80', $header);
+        // Slate-100 rather than white: the pill was darkened so it does not read
+        // as a hole punched in the hero photograph.
+        $this->assertStringContainsString('bg-slate-100/85', $header);
         $this->assertStringContainsString('backdrop-blur-md', $header);
 
         // Dark mode is the darker and more opaque of the two — slate-950, not -900.
-        $this->assertStringContainsString('dark:bg-slate-950/85', $header);
+        $this->assertStringContainsString('dark:bg-slate-950/90', $header);
         $this->assertStringNotContainsString('dark:bg-slate-900 border', $header);
+    }
+
+    /**
+     * The nav links are semibold in both the desktop bar and the mobile drawer —
+     * the drawer comment already claims it mirrors the desktop nav exactly.
+     */
+    #[Test]
+    public function the_navigation_links_are_semibold_in_bar_and_drawer(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $start = strpos($content, '<header id="site-header"');
+        $header = substr($content, $start);
+
+        $this->assertMatchesRegularExpression(
+            '~<nav[^>]*class="[^"]*font-semibold[^"]*"~',
+            $header,
+            'The desktop nav is not semibold.'
+        );
+
+        $this->assertMatchesRegularExpression(
+            '~<nav class="space-y-1">.*?font-semibold~s',
+            $header,
+            'The drawer nav is not semibold.'
+        );
     }
 
     #[Test]
@@ -578,7 +717,15 @@ class LandingPageTest extends TestCase
         // would double the gap under the navbar.
         $content = $this->get('/')->assertOk()->getContent();
 
-        $this->assertStringContainsString('<main class="flex-1">', $content);
+        preg_match('~<main\b[^>]*>~', $content, $tag);
+
+        $this->assertNotEmpty($tag, 'The landing page has no <main>.');
+
+        // Asserted by class rather than by whole tag: <main> also carries the
+        // tabindex the scroll-to-top control focuses, which is not what this
+        // test is about.
+        $this->assertStringContainsString('flex-1', $tag[0]);
+        $this->assertDoesNotMatchRegularExpression('~\b[pt]?y-\d~', $tag[0]);
     }
 
     // -------------------------------------------------------------- navbar anchors
@@ -677,6 +824,52 @@ class LandingPageTest extends TestCase
 
     // ---------------------------------------------------------------------- assets
 
+    /**
+     * Arabic type is applied through a stylesheet rule, so nothing in the rendered
+     * HTML can prove it — and the failure mode is silent: every section heading
+     * carries `font-sans`, which Tailwind compiles to `var(--font-sans)`. If the
+     * RTL block sets only `font-family`, the body text becomes Cairo while all
+     * seven headings stay on Inter. Asserted against the source so the variable
+     * cannot quietly drop out.
+     */
+    #[Test]
+    public function the_rtl_scope_redeclares_the_sans_variable_so_headings_follow_the_arabic_face(): void
+    {
+        $css = file_get_contents(resource_path('css/app.css'));
+
+        $this->assertIsString($css);
+
+        preg_match('~\[dir=.rtl.\]\s*\.landing-scope,\s*\.landing-scope\[dir=.rtl.\]\s*\{(.*?)\}~s', $css, $rule);
+
+        $this->assertNotEmpty($rule, 'The RTL .landing-scope rule is missing from app.css.');
+        $this->assertStringContainsString('--font-sans:', $rule[1]);
+        $this->assertStringContainsString("'Cairo'", $rule[1]);
+
+        // Eyebrows are `font-mono`, and JetBrains Mono has no Arabic glyphs.
+        $this->assertStringContainsString('--font-mono:', $rule[1]);
+        $this->assertStringContainsString('Cairo', $rule[1]);
+    }
+
+    /**
+     * Cairo is requested from Google Fonts on the landing page. A bad family or
+     * weight list returns a 400 and the page silently falls back to a system
+     * font, so the families are pinned by name.
+     */
+    #[Test]
+    public function the_landing_page_requests_the_arabic_face_and_its_weights(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        preg_match('~<link href="(https://fonts\.googleapis\.com/[^"]+)"~', $content, $link);
+
+        $this->assertNotEmpty($link, 'The landing page loads no Google Fonts stylesheet.');
+
+        $this->assertStringContainsString('family=Cairo:', $link[1]);
+        $this->assertStringContainsString('wght@400;500;600;700;800', $link[1]);
+        $this->assertStringContainsString('display=swap', $link[1]);
+        $this->assertStringNotContainsString('IBM+Plex', $link[1]);
+    }
+
     #[Test]
     public function the_pillar_cards_match_the_reference_structure(): void
     {
@@ -705,6 +898,37 @@ class LandingPageTest extends TestCase
 
         // Every card's photograph is dimmed, as the reference does.
         $this->assertSame(4, substr_count($pillars, 'brightness-[0.7]'));
+    }
+
+    /**
+     * The hub is an asymmetric 2x2: two equal cards down the start side and one
+     * card in the end column matching both. The height classes are what actually
+     * produce that split, so they are asserted rather than the intent behind them.
+     */
+    #[Test]
+    public function the_browse_hub_splits_into_two_stacked_cards_and_one_matching_card(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $start = strpos($content, 'id="browse-hub"');
+        $end = strpos($content, 'id="database-stats"');
+
+        $this->assertNotFalse($start);
+        $this->assertNotFalse($end);
+
+        $hub = substr($content, $start, $end - $start);
+
+        $this->assertStringContainsString('grid grid-cols-1 md:grid-cols-2', $hub);
+        $this->assertSame(3, substr_count($hub, '<article'));
+        $this->assertSame(2, substr_count($hub, 'flex-1 min-h-[260px]'));
+        $this->assertSame(1, substr_count($hub, 'h-full min-h-[300px]'));
+
+        // Vet Drugs is the card that spans both rows, so it is the end column's.
+        // `route('drugs.home')` renders as a URL, not as the route name.
+        $this->assertMatchesRegularExpression(
+            '~<div>\s*<article[^>]*h-full min-h-\[300px\].*?href="[^"]*/drugs"~s',
+            $hub
+        );
     }
 
     #[Test]
@@ -839,6 +1063,113 @@ class LandingPageTest extends TestCase
         $this->assertStringContainsString('wire:submit', $content);
         $this->assertStringContainsString('contact.contact-form', $content);
         $this->assertStringContainsString('id="contact-form"', $content);
+    }
+
+    /**
+     * The contact form dispatches `contact-sent` / `contact-failed`, but the
+     * toast script resolves those to nothing unless the layout actually renders
+     * the element it looks up by id. Without this the homepage submit cleared the
+     * fields in silence.
+     */
+    #[Test]
+    public function the_landing_layout_renders_the_toast_the_contact_form_drives(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('id="contactToast"', $content);
+        $this->assertStringContainsString("window.Toast.show('contactToast', 'success'", $content);
+        $this->assertStringContainsString("window.Toast.show('contactToast', 'error'", $content);
+    }
+
+    /**
+     * The contact band is permanently dark, like the browse hub, so the theme
+     * toggle flips the page around it rather than the band itself.
+     */
+    #[Test]
+    public function the_contact_band_is_dark_in_both_themes(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        preg_match('~<section[^>]*id="contact"[^>]*>~', $content, $tag);
+
+        $this->assertNotEmpty($tag, 'No section provides id="contact".');
+        $this->assertStringContainsString('bg-slate-950', $tag[0]);
+        $this->assertStringNotContainsString('dark:', $tag[0]);
+    }
+
+    /**
+     * The button's off-state lives in the markup, not in the script: without it
+     * the control is visible for the first paint, before app.js has run.
+     */
+    #[Test]
+    public function the_landing_page_offers_a_floating_back_to_top(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('id="backToTop"', $content);
+
+        preg_match('~<button[^>]*id="backToTop"[^>]*>~', $content, $tag);
+
+        $this->assertNotEmpty($tag);
+        $this->assertStringContainsString('fixed bottom-10 end-6', $tag[0]);
+        $this->assertStringContainsString('opacity-0', $tag[0]);
+        $this->assertStringContainsString('pointer-events-none', $tag[0]);
+    }
+
+    /**
+     * Landing only. The /drugs pages are long too, but promoting the control to
+     * app.layouts.master is a separate decision with its own palette to pick.
+     */
+    #[Test]
+    public function the_back_to_top_is_landing_only(): void
+    {
+        $this->get('/')->assertOk()->assertSee('id="backToTop"', false);
+
+        $this->get('/drugs')->assertOk()->assertDontSee('id="backToTop"', false);
+    }
+
+    /**
+     * Arabic gets a redrawn photograph whose animals and wordmark sit on the
+     * start side, because the Latin one flipped in CSS would mirror the
+     * baked-in "ARVETPEDIA" into unreadable text. The Arabic file ships as a
+     * PNG, so its `<picture>` must not offer the Latin WebP either.
+     */
+    #[Test]
+    public function the_hero_serves_a_different_photograph_in_arabic(): void
+    {
+        $english = $this->landingIn('en')->getContent();
+
+        $this->assertStringContainsString('images/landing/hero.webp', $english);
+        $this->assertStringContainsString('images/landing/hero.jpg', $english);
+        $this->assertStringNotContainsString('ARVETPEDIA', $english);
+        $this->assertStringNotContainsString('scale-x-[-1]', $english);
+
+        $arabic = $this->landingIn('ar')->getContent();
+
+        // Percent-encoded: `asset()` leaves the space in the filename alone.
+        $this->assertStringContainsString('images/landing/ARVETPEDIA%20RTL.png', $arabic);
+        $this->assertStringNotContainsString('images/landing/hero.webp', $arabic);
+        $this->assertStringNotContainsString('images/landing/hero.jpg', $arabic);
+    }
+
+    /**
+     * The headline is stacked over three lines by splitting the translation on
+     * `|`, so translators keep control of the line composition.
+     */
+    #[Test]
+    public function the_hero_heading_is_stacked_over_three_lines(): void
+    {
+        foreach (['en', 'ar'] as $locale) {
+            $content = $this->landingIn($locale)->getContent();
+
+            preg_match('~<h1\b.*?</h1>~s', $content, $tag);
+
+            $this->assertNotEmpty($tag, "The hero headline is missing in [{$locale}].");
+            $this->assertSame(3, substr_count($tag[0], '<span class="block">'));
+
+            // The separator is markup, so it must never reach the visitor.
+            $this->assertStringNotContainsString('|', $tag[0]);
+        }
     }
 
     // -------------------------------------------------------------------- setup

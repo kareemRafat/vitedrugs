@@ -96,9 +96,9 @@
 <section class="py-20 lg:py-28 bg-slate-50 dark:bg-slate-950 border-y border-slate-200/80 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-white scroll-mt-0" id="about">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-12 sm:mb-16">
         <div class="text-center max-w-3xl mx-auto flex flex-col items-center">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-slate-900/60 border border-slate-200 dark:bg-slate-800 shadow-sm mb-4">
-                <span class="w-2 h-2 rounded-full bg-sky-500 dark:bg-sky-400"></span>
-                <span class="text-xs font-mono font-bold tracking-wider text-sky-600 dark:text-sky-400 uppercase">{{ __('messages.landing.pillars.eyebrow') }}</span>
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="text-indigo-600 dark:text-indigo-400 font-mono font-bold text-xs sm:text-sm tracking-wider">/ 01</span>
+                <span class="text-xs font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono self-center">{{ __('messages.landing.pillars.eyebrow') }}</span>
             </div>
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans mb-4">
                 {{ __('messages.landing.pillars.heading') }}

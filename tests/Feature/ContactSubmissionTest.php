@@ -121,6 +121,49 @@ class ContactSubmissionTest extends TestCase
         $this->assertSame(0, ContactSubmission::count());
     }
 
+    /**
+     * The success toast is driven entirely by the `contact-sent` event, so the
+     * dispatch is what proves the visitor is told the message went through.
+     */
+    #[Test]
+    public function a_successful_submit_dispatches_contact_sent(): void
+    {
+        Livewire::test('contact.contact-form', ['variant' => 'landing'])
+            ->set(self::LANDING_VALID)
+            ->call('submit')
+            ->assertDispatched('contact-sent');
+    }
+
+    /**
+     * The dispatch has to be registered *before* the ValidationException is
+     * rethrown: Livewire swallows that exception only after the error bag is set,
+     * which is what lets the already-registered effect still reach the browser.
+     */
+    #[Test]
+    public function a_rejected_submit_dispatches_contact_failed(): void
+    {
+        Livewire::test('contact.contact-form', ['variant' => 'landing'])
+            ->set(self::LANDING_VALID)
+            ->set('email', 'not-an-email')
+            ->call('submit')
+            ->assertDispatched('contact-failed')
+            ->assertNotDispatched('contact-sent');
+    }
+
+    #[Test]
+    public function the_page_variant_reports_failure_the_same_way(): void
+    {
+        Livewire::test('contact.contact-form')
+            ->set([
+                'name' => 'Dr. Sarah Jenkins',
+                'email' => 'not-an-email',
+                'subject' => 'Question',
+                'message' => 'Hello.',
+            ])
+            ->call('submit')
+            ->assertDispatched('contact-failed');
+    }
+
     #[Test]
     public function the_landing_form_rejects_a_category_outside_the_enum(): void
     {

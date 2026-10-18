@@ -68,17 +68,36 @@
             {{-- Language --}}
             <div class="lg:col-span-2">
                 <p class="text-xs font-bold text-white uppercase tracking-wider mb-4">{{ __('messages.landing.footer.language') }}</p>
-                <div class="flex flex-col gap-2 mb-6">
+
+                <div class="flex flex-col gap-2.5 mb-6">
                     @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                        @php
+                            // getCurrentLocale() rather than app()->getLocale(), so "current"
+                            // is computed the same way the header switchers compute it.
+                            $isCurrentLocale = $localeCode === LaravelLocalization::getCurrentLocale();
+                        @endphp
                         <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
-                            class="text-start text-sm transition flex items-center justify-between py-1 {{ $localeCode === app()->getLocale() ? 'text-indigo-400' : 'hover:text-indigo-400' }}">
-                            <span>{{ $properties['native'] }}</span>
-                            <span class="text-xs font-mono text-slate-500">{{ strtoupper(mb_substr($properties['native'], 0, 2)) }}</span>
+                            aria-current="{{ $isCurrentLocale ? 'true' : 'false' }}"
+                            @class([
+                                'group flex items-center gap-3 p-3 rounded-xl border transition-all duration-300',
+                                'bg-indigo-600/15 border-indigo-400/50 shadow-lg shadow-indigo-950/20' => $isCurrentLocale,
+                                'bg-slate-800/60 border-slate-700/60 hover:bg-slate-800 hover:border-slate-600' => ! $isCurrentLocale,
+                            ])>
+                            <span class="flex-1 min-w-0">
+                                {{-- The code is the locale key. The old markup sliced the
+                                     native name instead, which rendered Arabic as "ال". --}}
+                                <span @class([
+                                    'block text-sm font-semibold truncate',
+                                    'text-white' => $isCurrentLocale,
+                                    'text-slate-200' => ! $isCurrentLocale,
+                                ])>{{ $properties['native'] }}</span>
+                                <span class="block text-[11px] font-mono uppercase text-slate-500">{{ strtoupper($localeCode) }}</span>
+                            </span>
+                            @if ($isCurrentLocale)
+                                <x-lucide-check class="w-4 h-4 shrink-0 text-indigo-300" />
+                            @endif
                         </a>
                     @endforeach
-                </div>
-                <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 text-[11px] text-slate-400 leading-tight">
-                    {{ __('messages.landing.footer.bilingual_note') }}
                 </div>
             </div>
         </div>
